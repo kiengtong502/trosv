@@ -388,6 +388,11 @@ export function AppShell({
   const isConversationThread = /^\/messages\/\d+/.test(location.pathname);
   const isMessagesChat = Boolean(user) && /^\/messages/.test(location.pathname);
 
+  /* New page: start at the top. Messages keep their own scroll containers. */
+  React.useEffect(() => {
+    if (!isMessagesChat) window.scrollTo(0, 0);
+  }, [location.pathname, isMessagesChat]);
+
   return (
     <div
       className={cn(
@@ -428,7 +433,13 @@ export function AppShell({
               className
             )}
           >
-            {screenSuspense ?? <Outlet />}
+            <div
+              key={isMessagesChat ? "messages" : location.pathname}
+              data-testid="route-fade"
+              className="animate-fade-in flex min-h-0 min-w-0 flex-1 flex-col"
+            >
+              {screenSuspense ?? <Outlet />}
+            </div>
           </main>
           {hideFooter ? null : <Footer />}
         </div>

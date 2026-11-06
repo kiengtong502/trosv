@@ -248,6 +248,23 @@
     }
 }
 
+/* Scroll-reveal (useReveal) and image fade-in. Only held back when motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+        transition: opacity 420ms ease-out, transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-reveal="pending"] {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    img[data-fade] {
+        transition: opacity 300ms ease-out, transform 200ms ease-out;
+    }
+    img[data-fade]:not([data-loaded]) {
+        opacity: 0;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

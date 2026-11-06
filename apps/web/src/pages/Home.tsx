@@ -11,6 +11,7 @@ import { ErrorState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
 import { ListingCard } from "@/components/ListingCard";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useReveal } from "@/hooks/useReveal";
 import { Search as SearchIcon, GraduationCap, MapPin } from "lucide-react";
 
 function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) {
@@ -104,6 +105,9 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
 
 export default function Home() {
   useDocumentTitle("Trang chủ · TROSV");
+  const revealNewest = useReveal();
+  const revealLists = useReveal();
+  const revealCta = useReveal();
   const [newest, setNewest] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -176,7 +180,7 @@ export default function Home() {
         </div>
 
         {/* Mới đăng */}
-        <section className="pb-12">
+        <section ref={revealNewest} className="pb-12">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight text-ink">Mới đăng</h2>
             <Link
@@ -213,7 +217,7 @@ export default function Home() {
 
         {/* School + city link lists */}
         {schools.length > 0 || cities.length > 0 ? (
-          <section className="grid gap-8 pb-16 md:grid-cols-2">
+          <section ref={revealLists} className="grid gap-8 pb-16 md:grid-cols-2">
             {schools.length > 0 ? (
               <div className="rounded-xl border border-line bg-card p-5">
                 <h2 className="mb-3 text-lg font-bold text-ink flex items-center gap-2">
@@ -269,7 +273,7 @@ export default function Home() {
         ) : null}
 
         {/* Landlord banner */}
-        <section className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-card p-8">
+        <section ref={revealCta} className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-card p-8">
           <div>
             <h2 className="text-2xl font-bold text-ink">Bạn có phòng cho thuê?</h2>
             <p className="mt-1 text-muted">

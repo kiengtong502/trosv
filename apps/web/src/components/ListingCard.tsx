@@ -121,6 +121,12 @@ export function ListingCard({
               alt=""
               loading="lazy"
               decoding="async"
+              data-fade
+              ref={(el) => {
+                if (el?.complete) el.dataset["loaded"] = "1";
+              }}
+              onLoad={(e) => { e.currentTarget.dataset["loaded"] = "1"; }}
+              onError={(e) => { e.currentTarget.dataset["loaded"] = "1"; }}
               width={640}
               height={427}
               className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.05]"
