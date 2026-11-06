@@ -1,3 +1,4 @@
+import { PlateBand } from "@/ui/plate-band";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { aiAreaSuggestions } from "@/api/aiApi";
@@ -71,11 +72,16 @@ export default function AiAreaSuggestions() {
       : new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(vnd / 1_000_000) + "tr";
 
   return (
-    <div className="mx-auto max-w-4xl p-5 pb-16">
-      <h1 className="text-3xl">Khu vực phù hợp</h1>
-      <p className="mt-2 max-w-prose text-lg text-ink-2">
-        Trợ lý AI gợi ý tối đa ba khu vực dựa trên ngân sách, trường học và thứ tự ưu tiên của bạn.
-      </p>
+    <>
+      <PlateBand
+        size="header"
+        title="Khu vực"
+        highlight="phù hợp"
+        description="Trợ lý AI gợi ý tối đa ba khu vực dựa trên ngân sách, trường học và thứ tự ưu tiên của bạn."
+        contentClassName="max-w-4xl px-5 sm:px-5 lg:px-5"
+      />
+
+      <div className="mx-auto max-w-4xl p-5 pb-16">
 
       <form
         onSubmit={(e) => {
@@ -200,6 +206,7 @@ export default function AiAreaSuggestions() {
           <p className="text-xs text-muted">Gợi ý tham khảo do AI tạo ra</p>
         </div>
       ) : null}
-    </div>
+      </div>
+    </>
   );
 }

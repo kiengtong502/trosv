@@ -1,3 +1,4 @@
+import { PlateBand } from "@/ui/plate-band";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
@@ -40,11 +41,16 @@ export default function AiRoommates() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-5 pb-16">
-      <h1 className="text-3xl">Bạn cùng phòng</h1>
-      <p className="mt-2 max-w-prose text-lg text-ink-2">
-        Trợ lý AI đề xuất sinh viên có sở thích gần giống bạn nhất, dựa trên hồ sơ của hai bên.
-      </p>
+    <>
+      <PlateBand
+        size="header"
+        title="Bạn"
+        highlight="cùng phòng"
+        description="Trợ lý AI đề xuất sinh viên có sở thích gần giống bạn nhất, dựa trên hồ sơ của hai bên."
+        contentClassName="max-w-4xl px-5 sm:px-5 lg:px-5"
+      />
+
+      <div className="mx-auto max-w-4xl p-5 pb-16">
 
       {loading ? (
         <div className="mt-8 flex flex-col items-center gap-3" aria-live="polite">
@@ -125,6 +131,7 @@ export default function AiRoommates() {
           <p className="col-span-full text-xs text-muted">Gợi ý tham khảo do AI tạo ra</p>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
