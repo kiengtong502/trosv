@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { GateScreen, FavoritesGateIllustration } from "@/components/gates";
 import { Button } from "@/ui/button";
 import { Skeleton } from "@/ui/badge";
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import { EmptyState, ErrorState } from "@/ui/empty-state";
 import { FavoriteEmptyIllustration } from "@/ui/icons";
 import { ListingCard } from "@/components/ListingCard";
@@ -78,10 +78,9 @@ export default function Favorites() {
   }
 
   const band = (
-    <PlateBand
-      size="header"
+    <PageHeader
       title="Phòng đã lưu"
-      contentClassName="px-5 sm:px-5 lg:px-5"
+      className="px-5 sm:px-5 lg:px-5"
       description={
         !loading && !error && listings.length > 0 ? (
           <span aria-live="polite" className="tabular-nums">

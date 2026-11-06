@@ -1,4 +1,4 @@
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
@@ -86,17 +86,16 @@ export default function LandlordDashboard() {
 
   return (
     <>
-      <PlateBand
-        size="header"
+      <PageHeader
         title="Quản lý tin đăng"
-        contentClassName="max-w-5xl px-5 sm:px-5 lg:px-5"
+        className="max-w-5xl px-5 sm:px-5 lg:px-5"
         description={
           <span aria-live="polite" className="tabular-nums">
             {rows.length} tin
           </span>
         }
         actions={
-          <Button asChild variant="flyer">
+          <Button asChild variant="primary">
             <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
           </Button>
         }

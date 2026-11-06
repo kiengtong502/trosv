@@ -77,10 +77,10 @@ export default function MessagesList() {
           isThreadOpen && "hidden md:flex"
         )}
       >
-        <div className="relative z-10 flex shrink-0 items-center justify-between bg-band px-4 py-3.5 text-white shadow-seam">
-          <h2 className="font-semibold text-base text-white">Tin nhắn</h2>
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3.5 bg-paper/50">
+          <h2 className="font-semibold text-base text-ink">Tin nhắn</h2>
           {convs.length > 0 ? (
-            <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-medium text-white">
+            <span className="rounded-full bg-tint px-2 py-0.5 text-xs font-medium text-ink-2">
               {convs.length}
             </span>
           ) : null}

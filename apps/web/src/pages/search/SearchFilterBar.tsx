@@ -43,7 +43,7 @@ export function FilterPill({
             "h-10 flex-none rounded-lg border px-3.5 text-sm font-medium transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
             active
-              ? "border-flyer bg-flyer font-semibold text-[#1c1915]"
+              ? "border-flyer bg-flyer font-semibold text-flyer-ink"
               : "border-white/30 bg-white/10 text-white hover:bg-white/20"
           )}
         >
@@ -341,7 +341,7 @@ export function SearchFilterBar({
         onClick={onToggleMap}
         className={
           "flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
-          "bg-flyer px-3 text-sm font-semibold text-[#1c1915] lg:hidden"
+          "bg-flyer px-3 text-sm font-semibold text-flyer-ink lg:hidden"
         }
         aria-pressed={showMap}
       >

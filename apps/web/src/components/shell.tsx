@@ -302,7 +302,7 @@ export function Footer() {
   ].filter((s) => s.url);
 
   return (
-    <footer data-testid="site-footer" className="on-navy relative bg-plate-band-to text-white">
+    <footer data-testid="site-footer" className="relative border-t border-line bg-card">
       <div className="mx-auto max-w-5xl px-5 py-6 text-center">
         <nav
           aria-label="Chân trang"
@@ -313,7 +313,7 @@ export function Footer() {
           <FooterLink to={ROUTES.LANDLORD}>Quản lý tin đăng</FooterLink>
           <FooterLink to={ROUTES.HOME}>Trợ giúp</FooterLink>
         </nav>
-        <p className="mt-4 text-xs text-white/70">© 2026 TROSV</p>
+        <p className="mt-4 text-xs text-muted">© 2026 TROSV</p>
         {socials.length > 0 ? (
           <div className="mt-3 flex items-center justify-center gap-1">
             {socials.map((s) => (
@@ -324,8 +324,8 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-full text-white/85",
-                  "transition-colors hover:bg-white/10 hover:text-white"
+                  "flex size-10 items-center justify-center rounded-full text-ink-2",
+                  "transition-colors hover:bg-tint hover:text-ink"
                 )}
               >
                 <SocialIcon />
@@ -357,7 +357,7 @@ function FooterLink({
   return (
     <Link
       to={to}
-      className="py-1 text-sm text-white/85 transition-colors hover:text-white hover:underline"
+      className="py-1 text-sm text-ink-2 transition-colors hover:text-ink hover:underline"
     >
       {children}
     </Link>
@@ -375,6 +375,9 @@ function SocialIcon() {
 
 /** Last scrollY per history entry (location.key), for Back/Forward restore. */
 const scrollPositions = new Map<string, number>();
+/** How long to keep retrying a restore while an async list is still loading. */
+const RESTORE_WINDOW_MS = 6000;
+const USER_INPUT_EVENTS = ["wheel", "touchstart", "keydown", "mousedown"] as const;
 
 export function AppShell({
   hideFooter,
@@ -413,15 +416,27 @@ export function AppShell({
       const started = performance.now();
       const restore = () => {
         window.scrollTo(0, target);
-        if (Math.abs(window.scrollY - target) > 2 && performance.now() - started < 2000) {
+        if (Math.abs(window.scrollY - target) > 2 && performance.now() - started < RESTORE_WINDOW_MS) {
           raf = requestAnimationFrame(restore);
         }
       };
-      if (target > 0) restore();
+      if (target > 0) {
+        restore();
+        /* The user takes over: stop restoring as soon as they scroll or type. */
+        for (const type of USER_INPUT_EVENTS) {
+          window.addEventListener(type, stopRestore, { capture: true, once: true, passive: true });
+        }
+      }
+    }
+    function stopRestore() {
+      cancelAnimationFrame(raf);
     }
     return () => {
       document.removeEventListener("click", save, true);
       window.removeEventListener("popstate", save, true);
+      for (const type of USER_INPUT_EVENTS) {
+        window.removeEventListener(type, stopRestore, { capture: true });
+      }
       cancelAnimationFrame(raf);
     };
   }, [location.key, isMessagesChat, navigationType]);

@@ -12,7 +12,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import {
   formatVndPreview,
   getInitialForm,
@@ -117,8 +117,7 @@ export default function Profile() {
 
   return (
     <>
-      <PlateBand
-        size="header"
+      <PageHeader
         leading={<Avatar name={user.name} size={64} />}
         title={user.name}
         description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}

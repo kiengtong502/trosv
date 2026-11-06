@@ -1,4 +1,4 @@
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { aiAreaSuggestions } from "@/api/aiApi";
@@ -73,12 +73,11 @@ export default function AiAreaSuggestions() {
 
   return (
     <>
-      <PlateBand
-        size="header"
+      <PageHeader
         title="Khu vực"
         highlight="phù hợp"
         description="Trợ lý AI gợi ý tối đa ba khu vực dựa trên ngân sách, trường học và thứ tự ưu tiên của bạn."
-        contentClassName="max-w-4xl px-5 sm:px-5 lg:px-5"
+        className="max-w-4xl px-5 sm:px-5 lg:px-5"
       />
 
       <div className="mx-auto max-w-4xl p-5 pb-16">

@@ -101,24 +101,22 @@ Verify contrast. Do not touch the map dark filter in this pass (it looked
 acceptable in screenshots).
 
 ### 4.2 The plate band (shared component)
-One component, three sizes, used per page:
+**Owner decision (2026-11-06, after seeing it on every page): the navy band is
+reserved for three places.** Everything else is a cream page with a plain dark
+title (`PageHeader`), so the band stays a brand moment instead of a repeated header.
 
-| Page | Size / treatment |
+| Page | Treatment |
 |---|---|
-| Home | Full hero: large band, art on the right, trust checkmarks, personalised row below |
-| Search `/rooms` | Slim strip (~64px) holding search input and filters; map + cards on cream |
-| Room detail | Short band behind back link + title; gallery overlaps its bottom edge |
-| Favorites, Messages list, Profile, Landlord dashboard / forms | Compact header (~120px): title + one line of context |
-| AI roommates / area suggestions | Medium band with yellow-highlighted keyword |
-| Chat conversation | No band; navy conversation header only |
-| Login / Register | Split screen; navy panel beside the art |
-| 404, empty states | Cream, unchanged |
+| Home | Full hero: large navy band, art on the right (art only from 1300px wide; below that the framed art sits under the text) |
+| Search `/rooms` | Slim navy strip (~64px) holding search input and filters; map + cards on cream |
+| Login / Register | Split screen; navy panel beside the form, art framed on it |
+| Everything else (Favorites, Profile, Landlord pages, AI pages, Room detail, Messages, footer, 404) | Cream page, plain `PageHeader` title (AI pages add a yellow-underlined keyword); no band |
+
+Focus on navy surfaces uses flyer yellow (the plate-blue ring disappears there).
 
 Home hero fixes: art must not clip on common widths (it did at 1360px); art is
 positioned right, text on the left. Align the listing carousel left edge with
 the content column (it sat ~20px off the heading and chips).
-
-My call: footer in navy to bookend the page.
 
 ### 4.3 Listing card (`components/ListingCard.tsx`)
 - Title heavier (up to two lines), address quieter (one line, truncated).

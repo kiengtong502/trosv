@@ -217,11 +217,11 @@ function Thread({ id }: ThreadProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col h-full max-h-full overflow-hidden bg-card">
       {/* Listing context header */}
-      <div className="relative z-10 shrink-0 flex items-center gap-3 bg-band p-3 text-white shadow-seam">
+      <div className="shrink-0 flex items-center gap-3 border-b border-line bg-paper/70 p-3 backdrop-blur-xs">
         <button
           type="button"
           onClick={() => { void navigate(ROUTES.MESSAGES); }}
-          className="rounded-lg p-2 text-white md:hidden hover:bg-white/10"
+          className="rounded-lg p-2 text-ink-2 md:hidden hover:bg-tint"
           aria-label="Về danh sách tin nhắn"
         >
           <ChevronDown className="size-4 rotate-90" aria-hidden />
@@ -237,9 +237,9 @@ function Thread({ id }: ThreadProps) {
           <Avatar name={other} size={40} />
         )}
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold text-sm text-white">{other}</p>
+          <p className="truncate font-semibold text-sm text-ink">{other}</p>
           {otherRole ? (
-            <p className="truncate text-xs text-white/80">{otherRole}</p>
+            <p className="truncate text-xs text-muted">{otherRole}</p>
           ) : null}
         </div>
       </div>

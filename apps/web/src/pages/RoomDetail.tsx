@@ -13,7 +13,6 @@ import { toast } from "@/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { formatPriceShort } from "@/lib/format";
-import { PlateBand } from "@/ui/plate-band";
 import { RoomLightbox } from "./room/RoomLightbox";
 import { RoomContactCard } from "./room/RoomContactCard";
 import { Sparkles, MapPin, Navigation, ArrowLeft } from "lucide-react";
@@ -155,33 +154,17 @@ export default function RoomDetail() {
   ];
 
   return (
-    <>
-      <PlateBand
-        size="header"
-        title={listing.title}
-        description={
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin className="size-4 text-flyer" aria-hidden />
-            <span>
-              {listing.address}
-              {listing.ward ? `, ${listing.ward.name}` : ""}
-            </span>
-          </span>
-        }
-        contentClassName="max-w-6xl pb-14 lg:px-6"
+    <div className="mx-auto max-w-6xl p-4 lg:p-6">
+      <Link
+        to={ROUTES.ROOMS}
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-plate transition-colors"
       >
-        <Link
-          to={ROUTES.ROOMS}
-          className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-white/80 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          Quay lại kết quả tìm kiếm
-        </Link>
-      </PlateBand>
+        <ArrowLeft className="size-4" aria-hidden />
+        Quay lại kết quả tìm kiếm
+      </Link>
 
-    <div className="relative z-20 mx-auto -mt-10 max-w-6xl p-4 pt-0 lg:p-6 lg:pt-0">
       {/* Photo mosaic: 1 large + 4, click to open lightbox */}
-      <div className="grid gap-2 overflow-hidden rounded-xl md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 md:[&>*:first-child]:col-span-1 md:[&>*:first-child]:row-span-2">
+      <div className="mt-3 grid gap-2 overflow-hidden rounded-xl md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2 md:[&>*:first-child]:col-span-1 md:[&>*:first-child]:row-span-2">
         {(cover ? [{ url: cover, id: 0 }, ...images.slice(0, 4)] : images.slice(0, 5)).map(
           (img, i) => (
             <button
@@ -212,8 +195,17 @@ export default function RoomDetail() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <div className="flex min-w-0 flex-col gap-8">
           <section>
+            <h1 className="text-3xl font-extrabold tracking-tight text-ink">{listing.title}</h1>
+            <p className="mt-2 flex items-center gap-1.5 text-sm text-muted">
+              <MapPin className="size-4 text-plate" aria-hidden />
+              <span>
+                {listing.address}
+                {listing.ward ? `, ${listing.ward.name}` : ""}
+              </span>
+            </p>
+
             {/* Quick facts card */}
-            <dl className="divide-y divide-line rounded-xl border border-line bg-card p-5 shadow-xs">
+            <dl className="mt-6 divide-y divide-line rounded-xl border border-line bg-card p-5 shadow-xs">
               {facts.map((f) => (
                 <div key={f.label} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
                   <dt className="text-sm font-medium text-muted">{f.label}</dt>
@@ -358,6 +350,5 @@ export default function RoomDetail() {
         />
       ) : null}
     </div>
-    </>
   );
 }

@@ -3,25 +3,22 @@ import { cn } from "@/lib/utils";
 
 /*
   PlateBand: the navy "street-name plate" that opens a page. One component,
-  three sizes, so every page shares the same brand moment.
+  two sizes, so the few places that use it share one brand moment.
 
   - hero:   full Home hero. `backdrop` (artwork) sits behind the content.
   - strip:  slim bar for tools (search + filters). No heading.
-  - header: compact page title with an optional description and actions.
+
+  Reserved for the Home hero and the Search strip; other pages use PageHeader.
 
   The highlighted keyword is the one place flyer yellow appears in a title.
 */
 
 export interface PlateBandProps {
-  size: "hero" | "strip" | "header";
+  size: "hero" | "strip";
   title?: ReactNode;
   /** Keyword shown on a yellow flyer tab after the title. */
   highlight?: string;
   description?: ReactNode;
-  /** Right-aligned buttons (header size). */
-  actions?: ReactNode;
-  /** Avatar or icon shown before the title (header size). */
-  leading?: ReactNode;
   /** Artwork rendered behind the content (hero size). */
   backdrop?: ReactNode;
   children?: ReactNode;
@@ -30,16 +27,13 @@ export interface PlateBandProps {
   contentClassName?: string;
 }
 
-/* Fixed dark ink: the yellow tab must stay legible in dark mode too. */
-const MARK = "rounded-md bg-flyer px-2 text-[#1c1915]";
+const MARK = "rounded-md bg-flyer px-2 text-flyer-ink";
 
 export function PlateBand({
   size,
   title,
   highlight,
   description,
-  actions,
-  leading,
   backdrop,
   children,
   className,
@@ -91,33 +85,6 @@ export function PlateBand({
           )}
         >
           {children}
-        </div>
-      </section>
-    );
-  }
-
-  if (size === "header") {
-    return (
-      <section
-        data-testid="plate-band"
-        data-size="header"
-        className={cn("relative z-10 bg-band text-white shadow-seam", className)}
-      >
-        <div
-          className={cn(
-            "mx-auto flex min-h-[120px] w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:px-8",
-            contentClassName
-          )}
-        >
-          <div className="flex min-w-0 items-center gap-4">
-            {leading}
-            <div className="min-w-0">
-              {heading}
-              {intro}
-              {children}
-            </div>
-          </div>
-          {actions ? <div className="flex flex-none items-center gap-2">{actions}</div> : null}
         </div>
       </section>
     );

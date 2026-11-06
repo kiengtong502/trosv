@@ -1,4 +1,4 @@
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -65,10 +65,9 @@ export default function LandlordForm() {
 
   return (
     <>
-      <PlateBand
-        size="header"
+      <PageHeader
         title={form7.isEdit ? "Sửa tin đăng" : "Đăng tin mới"}
-        contentClassName="max-w-4xl"
+        className="max-w-4xl"
         description={
           form7.isEdit
             ? "Cập nhật thông tin phòng trọ, giá cả và tiện ích của bạn."

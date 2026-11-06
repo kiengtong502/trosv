@@ -31,6 +31,7 @@
     --color-plate-band-from: #17479e;
     --color-plate-band-to: #123b86;
     --color-flyer: #ffd23f;
+    --color-flyer-ink: #1c1915;
     --color-moss: #4f6b35;
     --color-moss-tint: #e4ecd6;
     --color-danger: #c0392b;
@@ -59,6 +60,7 @@
     --color-plate-band-from: #0f2a5c;
     --color-plate-band-to: #0b2150;
     --color-flyer: #fbbf24;
+    --color-flyer-ink: #1c1915;
     --color-moss: #9bbd74;
     --color-moss-tint: #26331a;
     --color-danger: #f87171;
@@ -87,6 +89,7 @@
     --color-plate-band-from: var(--color-plate-band-from);
     --color-plate-band-to: var(--color-plate-band-to);
     --color-flyer: var(--color-flyer);
+    --color-flyer-ink: var(--color-flyer-ink);
     --color-moss: var(--color-moss);
     --color-moss-tint: var(--color-moss-tint);
     --color-danger: var(--color-danger);
@@ -219,8 +222,7 @@
 @layer utilities {
     /* Focus on navy: the global plate-blue ring vanishes on the band, so use
        flyer yellow. Specificity beats Tailwind's focus-visible:ring-* utilities. */
-    .bg-band :is(a, button, input, select, textarea, [tabindex]):focus-visible,
-    .on-navy :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+    .bg-band :is(a, button, input, select, textarea, [tabindex]):focus-visible {
         outline: 2px solid var(--color-flyer);
         outline-offset: 2px;
         --tw-ring-color: var(--color-flyer);

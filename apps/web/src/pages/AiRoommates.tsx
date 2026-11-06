@@ -1,4 +1,4 @@
-import { PlateBand } from "@/ui/plate-band";
+import { PageHeader } from "@/ui/page-header";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
@@ -42,12 +42,11 @@ export default function AiRoommates() {
 
   return (
     <>
-      <PlateBand
-        size="header"
+      <PageHeader
         title="Bạn"
         highlight="cùng phòng"
         description="Trợ lý AI đề xuất sinh viên có sở thích gần giống bạn nhất, dựa trên hồ sơ của hai bên."
-        contentClassName="max-w-4xl px-5 sm:px-5 lg:px-5"
+        className="max-w-4xl px-5 sm:px-5 lg:px-5"
       />
 
       <div className="mx-auto max-w-4xl p-5 pb-16">
