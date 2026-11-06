@@ -104,7 +104,7 @@ export function ListingCard({
       onMouseEnter={() => { onHover?.(listing.id); }}
       onMouseLeave={() => { onHover?.(null); }}
       className={cn(
-        "group flex flex-col rounded-xl border border-line bg-card motion-card hover:border-line-strong hover:shadow-pop",
+        "group relative flex flex-col rounded-xl border border-line bg-card shadow-card motion-card hover:border-line-strong hover:shadow-card-hover",
         className
       )}
     >
@@ -123,7 +123,7 @@ export function ListingCard({
               decoding="async"
               width={640}
               height={427}
-              className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.02]"
+              className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.05]"
             />
           ) : (
             <HousePlaceholder />
@@ -146,7 +146,7 @@ export function ListingCard({
             void handleHeartClick(e);
           }}
           className={cn(
-            "absolute right-2.5 top-2.5 flex size-8 items-center justify-center rounded-full bg-card/90 shadow-xs backdrop-blur-xs transition hover:scale-110",
+            "absolute right-2.5 top-2.5 z-10 flex size-8 items-center justify-center rounded-full bg-card/90 shadow-xs backdrop-blur-xs transition hover:scale-110",
             effectiveFav ? "text-danger" : "text-ink hover:text-danger"
           )}
         >
@@ -174,14 +174,15 @@ export function ListingCard({
       <div className="flex flex-1 flex-col p-3.5">
         <Link
           to={route(ROUTES.ROOM_DETAIL, { id: listing.id })}
-          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate rounded-xs"
+          /* Stretched link: the whole card opens the room. Controls sit above it (z-10). */
+          className="rounded-xs after:absolute after:inset-0 after:rounded-xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-plate"
         >
-          <h3 className="line-clamp-1 text-base font-semibold text-ink group-hover:text-plate transition-colors">
+          <h3 className="line-clamp-2 min-h-10 text-base font-bold leading-tight text-ink group-hover:text-plate transition-colors">
             {listing.title}
           </h3>
         </Link>
 
-        <div className="mt-1 flex items-center gap-1 text-xs text-muted">
+        <div className="mt-1.5 flex items-center gap-1 text-xs text-muted">
           <MapPin className="size-3.5 flex-none text-muted" aria-hidden />
           <span className="line-clamp-1">
             {listing.address}
@@ -189,15 +190,19 @@ export function ListingCard({
           </span>
         </div>
 
-        <div className="mt-2 flex items-center justify-between text-xs text-ink-2">
-          <span>
-            {listing.area_m2 != null ? `${listing.area_m2} m²` : ""}
-          </span>
+        <div className="mt-3 flex items-center justify-between gap-2 text-xs text-ink-2">
+          {listing.area_m2 != null ? (
+            <span className="rounded-full bg-tint px-2.5 py-1 font-semibold text-ink-2">
+              {listing.area_m2} m²
+            </span>
+          ) : (
+            <span />
+          )}
           <Rating value={listing.avg_rating} count={listing.reviews_count} />
         </div>
 
         {actionSlot ? (
-          <div className="mt-3 pt-2.5 border-t border-line">
+          <div className="relative z-10 mt-3 pt-2.5 border-t border-line">
             {actionSlot}
           </div>
         ) : null}
