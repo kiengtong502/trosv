@@ -1,6 +1,7 @@
 import React from "react";
 import { Input } from "@/ui/input";
 import { Chip } from "@/ui/badge";
+import { PlateBand } from "@/ui/plate-band";
 import { Popover, PopoverTrigger, PopoverContent } from "@/ui/popover";
 import { Map as MapIcon, List as ListIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -42,8 +43,8 @@ export function FilterPill({
             "h-10 flex-none rounded-lg border px-3.5 text-sm font-medium transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
             active
-              ? "border-plate bg-plate-tint text-plate font-semibold"
-              : "border-line-strong bg-card text-ink hover:bg-tint"
+              ? "border-flyer bg-flyer font-semibold text-[#1c1915]"
+              : "border-white/30 bg-white/10 text-white hover:bg-white/20"
           )}
         >
           {label}
@@ -146,7 +147,11 @@ export function SearchFilterBar({
   onSaveSearch,
 }: SearchFilterBarProps) {
   return (
-    <div className="sticky top-14 z-20 flex h-[55px] items-center gap-2 overflow-x-auto border-b border-line bg-paper px-4 min-[890px]:top-[72px] lg:z-10">
+    <PlateBand
+      size="strip"
+      className="sticky top-14 z-20 min-[890px]:top-[72px] lg:z-10"
+      contentClassName="gap-2 overflow-x-auto"
+    >
       <Input
         value={search.filters.q}
         onChange={(e) => { search.setFilter("q", e.target.value); }}
@@ -323,9 +328,9 @@ export function SearchFilterBar({
         type="button"
         onClick={onSaveSearch}
         className={
-          "ml-auto h-9 flex-none rounded-lg px-3 text-sm font-medium text-ink-2 " +
-          "transition-colors hover:bg-tint hover:text-ink focus-visible:outline-none " +
-          "focus-visible:ring-2 focus-visible:ring-plate"
+          "ml-auto h-9 flex-none rounded-lg px-3 text-sm font-medium text-white/85 " +
+          "transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none " +
+          "focus-visible:ring-2 focus-visible:ring-flyer"
         }
       >
         Lưu tìm kiếm
@@ -335,8 +340,8 @@ export function SearchFilterBar({
         type="button"
         onClick={onToggleMap}
         className={
-          "flex h-9 flex-none items-center gap-1.5 rounded-lg border border-plate " +
-          "bg-plate px-3 text-sm font-semibold text-white lg:hidden"
+          "flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
+          "bg-flyer px-3 text-sm font-semibold text-[#1c1915] lg:hidden"
         }
         aria-pressed={showMap}
       >
@@ -350,6 +355,6 @@ export function SearchFilterBar({
           </>
         )}
       </button>
-    </div>
+    </PlateBand>
   );
 }

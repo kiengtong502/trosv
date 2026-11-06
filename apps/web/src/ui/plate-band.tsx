@@ -84,7 +84,14 @@ export function PlateBand({
         data-size="strip"
         className={cn("relative z-10 bg-band text-white shadow-seam", className)}
       >
-        <div className="flex min-h-16 w-full items-center gap-3 px-4 py-3 sm:px-6">{children}</div>
+        <div
+          className={cn(
+            "flex min-h-16 w-full items-center gap-3 px-4 py-3 sm:px-6",
+            contentClassName
+          )}
+        >
+          {children}
+        </div>
       </section>
     );
   }
