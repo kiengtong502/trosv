@@ -30,9 +30,7 @@ export function ProfileAcademicCard({
   errors,
 }: ProfileAcademicCardProps) {
   return (
-    <div className="rounded-xl border border-line bg-card p-6 shadow-xs space-y-4">
-      <h2 className="text-base font-semibold text-ink">Học tập & Ngân sách</h2>
-
+    <div className="space-y-4">
       <Field
         id="p-school"
         label="Trường Đại học / Cao đẳng"

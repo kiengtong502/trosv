@@ -1,5 +1,20 @@
+import { Pencil } from "lucide-react";
 import { Field } from "@/ui/field";
+import { Switch } from "@/ui/switch";
+import { Button } from "@/ui/button";
+import { controlClass } from "@/ui/input";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/ui/dialog";
 import { HobbySelector } from "@/components/HobbySelector";
+import { parseHobbies } from "@/constants/hobbies";
 import {
   CLEANLINESS_LEVELS,
   PERSONALITY_OPTIONS,
@@ -29,6 +44,14 @@ interface ProfileHabitsCardProps {
   errors: { interests?: string | undefined };
 }
 
+const SELECT_CLASS = `${controlClass()} h-11 px-3 text-sm`;
+const MAX_SUMMARY_CHIPS = 6;
+
+/*
+  Roommate-matching preferences, kept light: one switch to opt in, two
+  dropdowns, a slider and a switch. Hobbies show as a short summary; the full
+  picker opens in a dialog on request. When matching is off the details hide.
+*/
 export function ProfileHabitsCard({
   lookingForRoommate,
   sleepSchedule,
@@ -39,186 +62,150 @@ export function ProfileHabitsCard({
   onChange,
   errors,
 }: ProfileHabitsCardProps) {
+  const hobbies = parseHobbies(interests);
+  const level = CLEANLINESS_LEVELS.find((l) => String(l.level) === cleanliness);
+
   return (
-    <div className="rounded-xl border border-line bg-card p-6 shadow-xs space-y-5">
-      <div className="border-b border-line pb-3">
-        <h2 className="text-base font-semibold text-ink">
-          Thói quen sinh hoạt & Ghép phòng
-        </h2>
-        <p className="text-xs text-muted mt-0.5">
-          Dùng để phân tích độ tương thích khi ghép bạn cùng phòng bằng AI
-        </p>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-ink">Tìm bạn ở cùng phòng</p>
+          <p className="text-sm text-muted">Hiển thị hồ sơ của bạn cho trợ lý ghép bạn cùng phòng AI</p>
+        </div>
+        <Switch
+          checked={lookingForRoommate}
+          onChange={(next) => { onChange("looking_for_roommate", next); }}
+          label="Tìm bạn ở cùng phòng"
+        />
       </div>
 
-      {/* Trạng thái tìm bạn cùng phòng */}
-      <div className="flex items-center justify-between rounded-lg bg-tint/40 p-3">
-        <div>
-          <div className="text-sm font-semibold text-ink">Tìm bạn ở cùng phòng</div>
-          <div className="text-xs text-muted">
-            Hiển thị hồ sơ trên trợ lý tìm bạn cùng phòng AI
+      {lookingForRoommate ? (
+        <div className="space-y-5 border-t border-line pt-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field id="p-sleep" label="Giờ giấc ngủ">
+              <select
+                id="p-sleep"
+                value={sleepSchedule}
+                onChange={(e) => { onChange("sleep_schedule", e.target.value); }}
+                className={SELECT_CLASS}
+              >
+                <option value="">Chưa chọn</option>
+                {SLEEP_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label} ({o.sub})
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field id="p-personality" label="Tính cách">
+              <select
+                id="p-personality"
+                value={personality}
+                onChange={(e) => { onChange("personality", e.target.value); }}
+                className={SELECT_CLASS}
+              >
+                <option value="">Chưa chọn</option>
+                {PERSONALITY_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label} ({o.sub})
+                  </option>
+                ))}
+              </select>
+            </Field>
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between gap-3">
+              <label htmlFor="p-clean" className="text-sm font-medium text-ink">
+                Độ sạch sẽ
+              </label>
+              <span className="text-sm text-muted">{level ? level.label : "Chưa chọn"}</span>
+            </div>
+            <input
+              id="p-clean"
+              type="range"
+              min={1}
+              max={5}
+              step={1}
+              value={cleanliness || "3"}
+              aria-valuetext={level ? level.label : "Chưa chọn"}
+              onChange={(e) => { onChange("cleanliness", e.target.value); }}
+              className="mt-2 h-8 w-full cursor-pointer accent-plate"
+            />
+            <div className="flex justify-between text-xs text-muted" aria-hidden>
+              <span>Thoải mái</span>
+              <span>Rất kỹ tính</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium text-ink">Hút thuốc</p>
+              <p className="text-sm text-muted">Bạn có hút thuốc trong phòng không?</p>
+            </div>
+            <Switch
+              checked={smoking}
+              onChange={(next) => { onChange("smoking", next); }}
+              label="Hút thuốc"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium text-ink">
+                Sở thích <span className="font-normal text-muted">· {hobbies.length}</span>
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="gap-1.5">
+                    <Pencil className="size-3.5" aria-hidden />
+                    Sửa sở thích
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-h-[85dvh] max-w-xl overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Sở thích của bạn</DialogTitle>
+                    <DialogDescription>
+                      Sở thích chung giúp AI gợi ý bạn cùng phòng hợp với bạn hơn.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <HobbySelector
+                    value={interests}
+                    onChange={(val) => { onChange("interests", val); }}
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="primary">Xong</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            {hobbies.length > 0 ? (
+              <ul className="mt-2 flex flex-wrap gap-1.5">
+                {hobbies.slice(0, MAX_SUMMARY_CHIPS).map((h) => (
+                  <li
+                    key={h.key}
+                    className="rounded-full border border-line bg-tint/50 px-3 py-1 text-sm text-ink-2"
+                  >
+                    {h.label}
+                  </li>
+                ))}
+                {hobbies.length > MAX_SUMMARY_CHIPS ? (
+                  <li className="px-1 py-1 text-sm text-muted">
+                    +{hobbies.length - MAX_SUMMARY_CHIPS}
+                  </li>
+                ) : null}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-muted">Chưa chọn sở thích nào.</p>
+            )}
+            {errors.interests ? (
+              <p role="alert" className="mt-1.5 text-sm text-danger">{errors.interests}</p>
+            ) : null}
           </div>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={lookingForRoommate}
-          onClick={() => {
-            onChange("looking_for_roommate", !lookingForRoommate);
-          }}
-          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate ${
-            lookingForRoommate ? "bg-moss" : "bg-sunken"
-          }`}
-        >
-          <span
-            className={`pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-xs transition duration-150 ease-in-out ${
-              lookingForRoommate ? "translate-x-5" : "translate-x-0"
-            }`}
-          />
-        </button>
-      </div>
-
-      {/* Giờ giấc ngủ */}
-      <div>
-        <div className="text-xs font-semibold text-muted mb-2 uppercase tracking-wide">
-          Giờ giấc ngủ nghỉ
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {SLEEP_OPTIONS.map((opt) => {
-            const isSelected = sleepSchedule === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange("sleep_schedule", opt.value);
-                }}
-                className={`rounded-lg border px-3 py-2 text-center text-xs font-medium transition-all ${
-                  isSelected
-                    ? "border-plate bg-plate-tint text-plate font-semibold ring-1 ring-plate/25"
-                    : "border-line bg-card text-ink-2 hover:bg-tint"
-                }`}
-              >
-                <div>{opt.label}</div>
-                <div className="text-[10px] text-muted opacity-80">{opt.sub}</div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Tính cách */}
-      <div>
-        <div className="text-xs font-semibold text-muted mb-2 uppercase tracking-wide">
-          Tính cách
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {PERSONALITY_OPTIONS.map((opt) => {
-            const isSelected = personality === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange("personality", opt.value);
-                }}
-                className={`rounded-lg border px-3 py-2 text-center text-xs font-medium transition-all ${
-                  isSelected
-                    ? "border-plate bg-plate-tint text-plate font-semibold ring-1 ring-plate/25"
-                    : "border-line bg-card text-ink-2 hover:bg-tint"
-                }`}
-              >
-                <div>{opt.label}</div>
-                <div className="text-[10px] text-muted opacity-80">{opt.sub}</div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Độ sạch sẽ */}
-      <div>
-        <div className="text-xs font-semibold text-muted mb-2 uppercase tracking-wide">
-          Độ sạch sẽ (1–5)
-        </div>
-        <div className="grid grid-cols-5 gap-1.5">
-          {CLEANLINESS_LEVELS.map((lvl) => {
-            const isSelected = cleanliness === String(lvl.level);
-            return (
-              <button
-                key={lvl.level}
-                type="button"
-                onClick={() => {
-                  onChange("cleanliness", String(lvl.level));
-                }}
-                className={`rounded-lg border py-2 text-center text-xs font-semibold transition-all ${
-                  isSelected
-                    ? "border-plate bg-plate text-white shadow-2xs"
-                    : "border-line bg-card text-ink-2 hover:bg-tint"
-                }`}
-              >
-                {lvl.level}
-              </button>
-            );
-          })}
-        </div>
-        {cleanliness ? (
-          <p className="mt-1.5 text-xs text-muted text-center">
-            Mức {cleanliness}:{" "}
-            <strong className="font-semibold text-ink">
-              {CLEANLINESS_LEVELS.find((c) => String(c.level) === cleanliness)?.label}
-            </strong>
-          </p>
-        ) : null}
-      </div>
-
-      {/* Hút thuốc */}
-      <div>
-        <div className="text-xs font-semibold text-muted mb-2 uppercase tracking-wide">
-          Hút thuốc
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              onChange("smoking", false);
-            }}
-            className={`rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
-              !smoking
-                ? "border-plate bg-plate-tint text-plate font-semibold ring-1 ring-plate/25"
-                : "border-line bg-card text-ink-2 hover:bg-tint"
-            }`}
-          >
-            Không hút thuốc
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              onChange("smoking", true);
-            }}
-            className={`rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
-              smoking
-                ? "border-plate bg-plate-tint text-plate font-semibold ring-1 ring-plate/25"
-                : "border-line bg-card text-ink-2 hover:bg-tint"
-            }`}
-          >
-            Có hút thuốc
-          </button>
-        </div>
-      </div>
-
-      {/* Sở thích */}
-      <Field
-        id="p-interests"
-        label="Sở thích & Lối sống"
-        error={errors.interests}
-      >
-        <HobbySelector
-          value={interests}
-          onChange={(val) => {
-            onChange("interests", val);
-          }}
-        />
-      </Field>
+      ) : null}
     </div>
   );
 }

@@ -78,6 +78,37 @@ export function isFormDirty(
   return false;
 }
 
+/**
+ * How complete the profile is, and what is still missing (in display order).
+ * Students are checked on 9 items, landlords on 3.
+ */
+export function getCompleteness(
+  form: ProfileFormState,
+  isStudent: boolean
+): { percent: number; missing: string[] } {
+  const checks: [string, boolean][] = [
+    ["Tên", form.name.trim() !== ""],
+    ["Số điện thoại", form.phone.trim() !== ""],
+    ["Giới thiệu bản thân", form.bio.trim() !== ""],
+  ];
+  if (isStudent) {
+    const hobbyCount = form.interests.split(",").filter((s) => s.trim() !== "").length;
+    checks.push(
+      ["Trường", form.school_id !== ""],
+      ["Ngân sách", form.budget_min !== "" && form.budget_max !== ""],
+      ["Giờ giấc ngủ", form.sleep_schedule !== ""],
+      ["Tính cách", form.personality !== ""],
+      ["Độ sạch sẽ", form.cleanliness !== ""],
+      ["Ít nhất 3 sở thích", hobbyCount >= 3]
+    );
+  }
+  const done = checks.filter(([, ok]) => ok).length;
+  return {
+    percent: Math.round((done / checks.length) * 100),
+    missing: checks.filter(([, ok]) => !ok).map(([label]) => label),
+  };
+}
+
 export function formatVndPreview(val: string): string {
   if (!val) return "";
   const n = parseInt(val.replace(/\D/g, ""), 10);

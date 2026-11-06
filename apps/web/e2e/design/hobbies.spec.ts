@@ -5,7 +5,10 @@ import { STUDENT, loginAs } from "./helpers";
 async function openProfile(page: Page) {
     await loginAs(page, STUDENT);
     await page.goto("/profile");
-    const picker = page.getByTestId("hobby-picker");
+    // The picker lives in a dialog opened from the "Ghép bạn cùng phòng" section.
+    await page.getByRole("button", { name: /Ghép bạn cùng phòng/ }).click();
+    await page.getByRole("button", { name: "Sửa sở thích" }).click();
+    const picker = page.getByRole("dialog").getByTestId("hobby-picker");
     await expect(picker).toBeVisible();
     return picker;
 }

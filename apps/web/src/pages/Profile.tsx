@@ -10,18 +10,31 @@ import { Avatar } from "@/ui/avatar";
 import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
-import { cn } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
+import { parseHobbies } from "@/constants/hobbies";
+import { formatPriceShort } from "@/lib/format";
 import { PageHeader } from "@/ui/page-header";
 import {
   formatVndPreview,
+  getCompleteness,
   getInitialForm,
   isFormDirty,
   type ProfileFormState,
 } from "./profile/profileTypes";
+import { ProfileSection } from "./profile/ProfileSection";
 import { ProfileBasicInfoCard } from "./profile/ProfileBasicInfoCard";
 import { ProfileAcademicCard } from "./profile/ProfileAcademicCard";
 import { ProfileHabitsCard } from "./profile/ProfileHabitsCard";
+
+type SectionKey = "basic" | "academic" | "match";
+
+/** Which section holds a field that the server rejected, so it can be opened. */
+function sectionOfField(field: string): SectionKey {
+  if (field === "school_id" || field.startsWith("budget_")) return "academic";
+  if (["interests", "sleep_schedule", "personality", "cleanliness", "smoking", "looking_for_roommate"].includes(field)) {
+    return "match";
+  }
+  return "basic";
+}
 
 export default function Profile() {
   useDocumentTitle("Hồ sơ · TROSV");
@@ -33,6 +46,7 @@ export default function Profile() {
   const [busy, setBusy] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [formError, setFormError] = useState("");
+  const [openSection, setOpenSection] = useState<SectionKey | null>("basic");
 
   const [lastUserId, setLastUserId] = useState<number | null>(null);
   if (user && (form === null || lastUserId !== user.id)) {
@@ -53,6 +67,10 @@ export default function Profile() {
 
   function set<K extends keyof ProfileFormState>(key: K, value: ProfileFormState[K]): void {
     setForm((f) => (f ? { ...f, [key]: value } : f));
+  }
+
+  function toggleSection(key: SectionKey): void {
+    setOpenSection((current) => (current === key ? null : key));
   }
 
   function resetForm(): void {
@@ -93,7 +111,10 @@ export default function Profile() {
       await refreshUser();
       toast("Đã lưu hồ sơ.");
     } catch (err) {
-      setFieldErrors(errFieldErrors(err));
+      const fe = errFieldErrors(err);
+      setFieldErrors(fe);
+      const firstBad = Object.keys(fe)[0];
+      if (firstBad) setOpenSection(sectionOfField(firstBad));
       setFormError(errMessage(err, "Không lưu được hồ sơ. Bạn thử lại nhé."));
     } finally {
       setBusy(false);
@@ -115,115 +136,170 @@ export default function Profile() {
 
   const err = (field: string): string | undefined => fieldErrors[field]?.[0];
 
+  // One-line summaries shown while a section is closed.
+  const min = Number(formValue.budget_min);
+  const max = Number(formValue.budget_max);
+  const budgetSummary =
+    min > 0 && max > 0
+      ? `${formatPriceShort(min)}–${formatPriceShort(max)}`
+      : min > 0
+      ? `từ ${formatPriceShort(min)}`
+      : max > 0
+      ? `đến ${formatPriceShort(max)}`
+      : "chưa đặt ngân sách";
+  const schoolName = schools.find((s) => String(s.id) === formValue.school_id)?.name;
+  const basicSummary = `${formValue.name} · ${formValue.phone || "chưa có số điện thoại"}`;
+  const academicSummary = `${schoolName ?? "Chưa chọn trường"} · ${budgetSummary}`;
+  const hobbyCount = parseHobbies(formValue.interests).length;
+  const matchSummary = `${formValue.looking_for_roommate ? "Bật" : "Tắt"} · ${hobbyCount} sở thích`;
+
+  const { percent, missing } = getCompleteness(formValue, isStudent);
+
   return (
     <>
       <PageHeader
-        leading={<Avatar name={user.name} size={64} />}
+        className="max-w-2xl"
+        leading={<Avatar name={user.name} size={56} />}
         title={user.name}
         description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}
         actions={
           isStudent ? (
-            <Button asChild variant="outline" size="sm" className="gap-1.5">
-              <Link to={route(ROUTES.STUDENT_PUBLIC, { id: user.id })}>
-                <span>Xem trang cá nhân công khai</span>
-                <ExternalLink className="size-3.5" aria-hidden />
-              </Link>
-            </Button>
+            <Link
+              to={route(ROUTES.STUDENT_PUBLIC, { id: user.id })}
+              className="text-sm font-medium text-plate hover:underline"
+            >
+              Xem trang công khai →
+            </Link>
           ) : null
         }
       />
 
-      <div className={cn("mx-auto px-4 py-8 sm:px-6 lg:px-8", isStudent ? "max-w-6xl" : "max-w-2xl")}>
-      <form onSubmit={(e) => { void save(e); }} className="space-y-6">
-        {formError ? (
-          <p role="alert" className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger">
-            {formError}
-          </p>
-        ) : null}
-
-        {isStudent ? (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
-            {/* Cột trái: Thông tin cơ bản + Học tập & Ngân sách */}
-            <div className="space-y-6 lg:col-span-5">
-              <ProfileBasicInfoCard
-                name={formValue.name}
-                phone={formValue.phone}
-                bio={formValue.bio}
-                onChange={set}
-                errors={{ name: err("name"), phone: err("phone"), bio: err("bio") }}
-                bioPlaceholder="Ví dụ: Sinh viên năm 2, hòa đồng, thích giữ phòng sạch sẽ..."
-                bioRows={4}
-              />
-
-              <ProfileAcademicCard
-                schools={schools}
-                schoolId={formValue.school_id}
-                budgetMin={formValue.budget_min}
-                budgetMax={formValue.budget_max}
-                budgetHint={budgetHint}
-                onChange={set}
-                errors={{
-                  school_id: err("school_id"),
-                  budget_min: err("budget_min"),
-                  budget_max: err("budget_max"),
-                }}
-              />
-            </div>
-
-            {/* Cột phải: Thói quen sinh hoạt & Ghép phòng */}
-            <div className="space-y-6 lg:col-span-7">
-              <ProfileHabitsCard
-                lookingForRoommate={formValue.looking_for_roommate}
-                sleepSchedule={formValue.sleep_schedule}
-                personality={formValue.personality}
-                cleanliness={formValue.cleanliness}
-                smoking={formValue.smoking}
-                interests={formValue.interests}
-                onChange={set}
-                errors={{ interests: err("interests") }}
-              />
-            </div>
+      <div className="mx-auto w-full max-w-2xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
+        <div data-testid="profile-completeness" className="mb-5">
+          <div className="flex items-baseline justify-between gap-3 text-sm">
+            <span className="font-semibold text-ink">Hồ sơ {percent}%</span>
+            {missing.length > 0 ? (
+              <span className="truncate text-muted">
+                Còn thiếu: {missing.slice(0, 3).join(", ")}
+                {missing.length > 3 ? "…" : ""}
+              </span>
+            ) : (
+              <span className="text-moss">Đã đầy đủ</span>
+            )}
           </div>
-        ) : (
-          /* Landlord view */
-          <div className="mx-auto max-w-2xl">
+          <div
+            role="progressbar"
+            aria-label="Mức hoàn thiện hồ sơ"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percent}
+            className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint"
+          >
+            <div
+              className="h-full rounded-full bg-moss transition-[width] duration-300"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+        </div>
+
+        <form onSubmit={(e) => { void save(e); }} className="space-y-3">
+          {formError ? (
+            <p role="alert" className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger">
+              {formError}
+            </p>
+          ) : null}
+
+          <ProfileSection
+            id="profile-basic"
+            title="Thông tin cơ bản"
+            summary={basicSummary}
+            open={openSection === "basic"}
+            onToggle={() => { toggleSection("basic"); }}
+          >
             <ProfileBasicInfoCard
               name={formValue.name}
               phone={formValue.phone}
               bio={formValue.bio}
               onChange={set}
               errors={{ name: err("name"), phone: err("phone"), bio: err("bio") }}
-              bioPlaceholder="Ví dụ: Chủ nhà thân thiện, phòng trọ an ninh, giờ giấc tự do..."
-              bioRows={3}
+              bioPlaceholder={
+                isStudent
+                  ? "Ví dụ: Sinh viên năm 2, hòa đồng, thích giữ phòng sạch sẽ..."
+                  : "Ví dụ: Chủ nhà thân thiện, phòng trọ an ninh, giờ giấc tự do..."
+              }
+              bioRows={isStudent ? 4 : 3}
             />
-          </div>
-        )}
+          </ProfileSection>
 
-        {/* Actions bar */}
-        <div className="flex items-center justify-between pt-4 border-t border-line">
-          {isDirty ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={resetForm}
-              disabled={busy}
+          {isStudent ? (
+            <>
+              <ProfileSection
+                id="profile-academic"
+                title="Học tập & ngân sách"
+                summary={academicSummary}
+                open={openSection === "academic"}
+                onToggle={() => { toggleSection("academic"); }}
+              >
+                <ProfileAcademicCard
+                  schools={schools}
+                  schoolId={formValue.school_id}
+                  budgetMin={formValue.budget_min}
+                  budgetMax={formValue.budget_max}
+                  budgetHint={budgetHint}
+                  onChange={set}
+                  errors={{
+                    school_id: err("school_id"),
+                    budget_min: err("budget_min"),
+                    budget_max: err("budget_max"),
+                  }}
+                />
+              </ProfileSection>
+
+              <ProfileSection
+                id="profile-match"
+                title="Ghép bạn cùng phòng"
+                summary={matchSummary}
+                open={openSection === "match"}
+                onToggle={() => { toggleSection("match"); }}
+              >
+                <ProfileHabitsCard
+                  lookingForRoommate={formValue.looking_for_roommate}
+                  sleepSchedule={formValue.sleep_schedule}
+                  personality={formValue.personality}
+                  cleanliness={formValue.cleanliness}
+                  smoking={formValue.smoking}
+                  interests={formValue.interests}
+                  onChange={set}
+                  errors={{ interests: err("interests") }}
+                />
+              </ProfileSection>
+            </>
+          ) : null}
+
+          {isDirty || busy ? (
+            <div
+              data-testid="profile-save-bar"
+              className="sticky bottom-16 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-card/95 p-3 shadow-pop backdrop-blur-xs lg:bottom-4"
             >
-              Khôi phục
-            </Button>
-          ) : <div />}
-
-          <Button
-            id="profile-submit-btn"
-            type="submit"
-            variant="primary"
-            loading={busy}
-            disabled={!isDirty || busy}
-          >
-            Lưu thay đổi
-          </Button>
-        </div>
-      </form>
+              <p className="text-sm font-medium text-ink">Có thay đổi chưa lưu</p>
+              <div className="flex items-center gap-2">
+                <Button type="button" variant="ghost" size="sm" onClick={resetForm} disabled={busy}>
+                  Khôi phục
+                </Button>
+                <Button
+                  id="profile-submit-btn"
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  loading={busy}
+                  disabled={!isDirty || busy}
+                >
+                  Lưu thay đổi
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </form>
       </div>
     </>
   );

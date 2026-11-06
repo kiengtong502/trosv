@@ -21,9 +21,7 @@ export function ProfileBasicInfoCard({
   bioRows = 4,
 }: ProfileBasicInfoCardProps) {
   return (
-    <div className="rounded-xl border border-line bg-card p-6 shadow-xs space-y-4">
-      <h2 className="text-base font-semibold text-ink">Thông tin cơ bản</h2>
-
+    <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id="p-name" label="Tên" error={errors.name} required>
           <Input
