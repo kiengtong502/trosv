@@ -263,8 +263,7 @@ state pattern across the pages above.
 2. **Map tiles (my call, owner delegated):** leave unchanged in this project.
    A hosted style needs a provider account and API key, which is outside the
    front-end work. Recorded as a recommended follow-up (4.5).
-3. **Dark mode warming and navy footer (my call, owner delegated):** go ahead
-   as specified in 4.1 and 4.2.
+3. **Dark mode warming (my call, owner delegated):** go ahead as specified in 4.1. The navy footer was dropped when the band was reduced to three places (see 4.2).
 4. **Phasing (my call, owner delegated):** Part A first, then Part B, because B
    screens inherit A's tokens and plate band.
 5. **Backend items (my call, owner delegated):** out of scope for this project.
