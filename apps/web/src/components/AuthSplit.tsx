@@ -8,16 +8,18 @@ export function AuthArt({ src, testId }: { src: string; testId: string }) {
   return (
     <div
       data-testid={testId}
-      className="relative hidden min-h-screen flex-1 overflow-hidden bg-sunken md:block"
+      className="relative hidden min-h-screen flex-1 items-center justify-center bg-band p-10 md:flex"
       aria-hidden
     >
-      <img
-        src={src}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+      <div className="relative h-full max-h-[760px] w-full max-w-[720px] overflow-hidden rounded-xl shadow-pop">
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
     </div>
   );
 }

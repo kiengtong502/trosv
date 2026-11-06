@@ -302,7 +302,7 @@ export function Footer() {
   ].filter((s) => s.url);
 
   return (
-    <footer className="relative border-t border-line bg-card">
+    <footer data-testid="site-footer" className="relative bg-plate-band-to text-white">
       <div className="mx-auto max-w-5xl px-5 py-6 text-center">
         <nav
           aria-label="Chân trang"
@@ -313,7 +313,7 @@ export function Footer() {
           <FooterLink to={ROUTES.LANDLORD}>Quản lý tin đăng</FooterLink>
           <FooterLink to={ROUTES.HOME}>Trợ giúp</FooterLink>
         </nav>
-        <p className="mt-4 text-xs text-muted">© 2026 TROSV</p>
+        <p className="mt-4 text-xs text-white/70">© 2026 TROSV</p>
         {socials.length > 0 ? (
           <div className="mt-3 flex items-center justify-center gap-1">
             {socials.map((s) => (
@@ -324,8 +324,8 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-full text-ink-2",
-                  "transition-colors hover:bg-tint hover:text-ink"
+                  "flex size-10 items-center justify-center rounded-full text-white/85",
+                  "transition-colors hover:bg-white/10 hover:text-white"
                 )}
               >
                 <SocialIcon />
@@ -357,7 +357,7 @@ function FooterLink({
   return (
     <Link
       to={to}
-      className="py-1 text-sm text-ink-2 transition-colors hover:text-ink hover:underline"
+      className="py-1 text-sm text-white/85 transition-colors hover:text-white hover:underline"
     >
       {children}
     </Link>
