@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { STUDENT, firstConversationId, loginAs } from "./helpers";
 
 const LISTINGS = "http://localhost:8000/api/listings**";
 
@@ -128,5 +129,59 @@ test.describe("route fade, image fade-in, scroll reveal", () => {
         await page.goto("/");
         const section = page.locator("section", { has: page.getByRole("heading", { name: "Mới đăng" }) });
         await expect(section).toHaveCSS("opacity", "1");
+    });
+});
+
+test.describe("small feedback motion", () => {
+    test.use({ viewport: { width: 1360, height: 900 } });
+
+    test("saving a room pops the heart, and un-saving restores it", async ({ page }) => {
+        await loginAs(page, STUDENT);
+        await page.goto("/rooms");
+        const heart = page.getByRole("button", { name: "Lưu phòng" }).first();
+        await expect(heart).toBeVisible();
+        await heart.click();
+        await expect(heart.locator("svg")).toHaveCSS("animation-name", "heart-pop");
+        const unsave = page.getByRole("button", { name: "Bỏ lưu phòng" }).first();
+        await expect(unsave).toHaveAttribute("aria-pressed", "true");
+        await unsave.click();
+        await expect(page.getByRole("button", { name: "Lưu phòng" }).first()).toHaveAttribute(
+            "aria-pressed",
+            "false"
+        );
+    });
+
+    test("a newly sent chat message fades in; history does not", async ({ page }) => {
+        const { token } = await loginAs(page, STUDENT);
+        const id = await firstConversationId(page, token);
+        test.skip(id === null, "seed data has no conversation for this user");
+        await page.goto(`/messages/${id}`);
+        const rows = page.locator('[data-testid="thread"] > div');
+        await expect(rows.first()).toBeVisible();
+        const before = await rows.count();
+        expect(await rows.first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+        await page.locator("textarea[aria-label=\"Tin nhắn\"]").fill(`ping ${Date.now()}`);
+        await page.getByRole("button", { name: "Gửi tin nhắn" }).click();
+        await expect(rows).toHaveCount(before + 1);
+        await expect(rows.last()).toHaveCSS("animation-name", "fade-up");
+    });
+
+    test("pagination buttons give press feedback", async ({ page }) => {
+        await page.goto("/rooms");
+        const current = page.locator('button[aria-current="page"]');
+        await expect(current).toBeVisible();
+        await expect(current).toHaveCSS("transition-property", /transform/);
+    });
+});
+
+test.describe("mobile map and list", () => {
+    test.use({ viewport: { width: 375, height: 800 } });
+
+    test("switching to the map fades the map pane in", async ({ page }) => {
+        await page.goto("/rooms");
+        await page.getByRole("button", { name: "Xem bản đồ" }).click();
+        const pane = page.getByTestId("map-pane");
+        await expect(pane).toBeVisible();
+        await expect(pane).toHaveCSS("animation-name", "fade-in");
     });
 });

@@ -52,6 +52,8 @@ export function ListingCard({
   const navigate = useNavigate();
   const [localFav, setLocalFav] = useState(listing.is_favorited === true);
   const [prevFav, setPrevFav] = useState(listing.is_favorited);
+  /* True only while the save pop plays; never on initial render. */
+  const [pop, setPop] = useState(false);
 
   if (listing.is_favorited !== prevFav) {
     setPrevFav(listing.is_favorited);
@@ -75,6 +77,8 @@ export function ListingCard({
       toast("Chức năng lưu phòng chỉ dành cho tài khoản sinh viên.");
       return;
     }
+
+    if (!effectiveFav) setPop(true);
 
     if (onFavToggle) {
       onFavToggle(listing);
@@ -159,9 +163,11 @@ export function ListingCard({
           <Heart
             className={cn(
               "size-4 transition-colors",
+              pop && "motion-heart-pop",
               effectiveFav ? "fill-danger stroke-danger text-danger" : "stroke-ink hover:stroke-danger"
             )}
             aria-hidden
+            onAnimationEnd={() => { setPop(false); }}
           />
         </button>
 

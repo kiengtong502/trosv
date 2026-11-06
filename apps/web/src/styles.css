@@ -141,6 +141,17 @@
             transform: scale(0.97);
         }
     }
+    @keyframes heart-pop {
+        0% {
+            transform: scale(1);
+        }
+        40% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
     @keyframes fade-up {
         from {
             opacity: 0;
@@ -206,6 +217,17 @@
   =============================================================================
 */
 @layer utilities {
+    /* Springy heart pop when a room is saved. */
+    .motion-heart-pop {
+        animation: heart-pop 450ms cubic-bezier(0.34, 1.8, 0.5, 1);
+    }
+
+    /* Entrance for things that appear after load (new chat messages).
+       `backwards` fill: no lingering transform once finished. */
+    .motion-enter {
+        animation: fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
     /* Navy plate gradient used by PlateBand, auth panel and footer. */
     .bg-band {
         background-image: linear-gradient(180deg, var(--color-plate-band-from) 0%, var(--color-plate-band-to) 100%);

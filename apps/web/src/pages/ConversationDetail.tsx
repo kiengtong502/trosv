@@ -149,6 +149,17 @@ function Thread({ id }: ThreadProps) {
 
   const grouped = useMemo(() => data.messages, [data.messages]);
 
+  /* Messages present when the thread first loaded never animate; only later ones do. */
+  const [baseline, setBaseline] = useState<{ convId: string; maxId: number } | null>(null);
+  if (isReady && (baseline === null || baseline.convId !== id)) {
+    setBaseline({
+      convId: id,
+      maxId: data.messages.reduce((max, msg) => Math.max(max, msg.id), 0),
+    });
+  }
+  const isNewMessage = (msgId: number): boolean =>
+    baseline !== null && baseline.convId === id && msgId > baseline.maxId;
+
   if (!data.loaded) {
     return (
       <div className="flex flex-col gap-3 p-4">
@@ -280,7 +291,7 @@ function Thread({ id }: ThreadProps) {
           const prevHasReactions = Boolean(prev && prev.reactions && Object.keys(prev.reactions).length > 0);
 
           return (
-            <div key={m.id} className="flex flex-col w-full">
+            <div key={m.id} className={cn("flex flex-col w-full", isNewMessage(m.id) && "motion-enter")}>
               {newDay ? <DaySeparator label={formatDayLabel(m.created_at)} /> : null}
               {showTimeGapHeader ? <TimeSeparator date={m.created_at} /> : null}
               <div

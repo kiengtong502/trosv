@@ -244,8 +244,9 @@ export default function Search() {
       <div className="flex flex-1 flex-col pt-3 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(420px,50%)]">
         {/* Listings column: Always on desktop, conditional on mobile */}
         <div
+          data-testid="list-pane"
           className={cn(
-            "px-4 pb-20 lg:order-2 lg:px-6 lg:pb-16",
+            "animate-fade-in px-4 pb-20 lg:order-2 lg:animate-none lg:px-6 lg:pb-16",
             mobileTab === "map" ? "hidden lg:block" : "block"
           )}
         >
@@ -298,7 +299,7 @@ export default function Search() {
                     onClick={() => { search.setPage(p); }}
                     aria-current={p === search.page ? "page" : undefined}
                     className={cn(
-                      "size-9 rounded-lg text-sm font-semibold tabular-nums transition-colors",
+                      "motion-press size-9 rounded-lg text-sm font-semibold tabular-nums transition-colors",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
                       p === search.page
                         ? "bg-plate text-white"
@@ -314,8 +315,9 @@ export default function Search() {
 
         {/* Map column: Always on desktop, conditional on mobile */}
         <div
+          data-testid="map-pane"
           className={cn(
-            "lg:order-1 lg:block",
+            "animate-fade-in lg:animate-none lg:order-1 lg:block",
             mobileTab === "map" ? "block h-[calc(100dvh-var(--nav-h)-115px)] w-full" : "hidden lg:block"
           )}
         >
