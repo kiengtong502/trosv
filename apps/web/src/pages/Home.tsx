@@ -6,6 +6,7 @@ import { getListings, getCities, getSchools } from "@/api/listingApi";
 import type { Listing, City, School } from "@/types/api";
 import { Button } from "@/ui/button";
 import { Skeleton } from "@/ui/badge";
+import { PlateBand } from "@/ui/plate-band";
 import { ErrorState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
 import { ListingCard } from "@/components/ListingCard";
@@ -125,41 +126,39 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero: neutral paper canvas with colorful hand-drawn bento art */}
-      <section className="relative flex items-center overflow-hidden bg-paper border-b border-line md:min-h-[420px]">
-        {/* Desktop full-width bento artwork */}
-        <img
-          src={ART_ASSETS.HERO_DESKTOP}
-          alt=""
-          width={2100}
-          height={623}
-          loading="eager"
-          className="hidden md:block absolute inset-0 h-full w-full object-cover pointer-events-none select-none"
-          onError={(e) => {
-            (e.currentTarget).style.display = "none";
-          }}
-        />
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 md:py-12 md:px-8">
-          <h1 className="max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl md:text-5xl lg:text-6xl">
-            Phòng trọ. Căn hộ.
-            <br />
-            Gần trường.
-          </h1>
-          <HeroSearch cities={cities} schools={schools} />
+      {/* Hero: navy plate band with the hand-drawn bento art anchored right */}
+      <PlateBand
+        size="hero"
+        title="Phòng trọ. Căn hộ."
+        highlight="Gần trường."
+        backdrop={
+          <img
+            src={ART_ASSETS.HERO_DESKTOP}
+            alt=""
+            width={2100}
+            height={623}
+            loading="eager"
+            className="hidden md:block absolute inset-0 h-full w-full object-cover object-right pointer-events-none select-none"
+            onError={(e) => {
+              (e.currentTarget).style.display = "none";
+            }}
+          />
+        }
+      >
+        <HeroSearch cities={cities} schools={schools} />
 
-          {/* Mobile-dedicated hero illustration: perfectly proportioned and complete on any phone */}
-          <div className="mt-1 w-full max-w-xl md:hidden">
-            <img
-              src={ART_ASSETS.HERO_MOBILE}
-              alt="Minh họa phòng trọ sinh viên"
-              width={680}
-              height={280}
-              loading="eager"
-              className="w-full h-auto rounded-2xl border border-line/60 bg-card shadow-2xs"
-            />
-          </div>
+        {/* Mobile-dedicated hero illustration: perfectly proportioned and complete on any phone */}
+        <div className="mt-1 w-full max-w-xl md:hidden">
+          <img
+            src={ART_ASSETS.HERO_MOBILE}
+            alt="Minh họa phòng trọ sinh viên"
+            width={680}
+            height={280}
+            loading="eager"
+            className="w-full h-auto rounded-2xl border border-line/60 bg-card shadow-2xs"
+          />
         </div>
-      </section>
+      </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">
         {/* Quick filter pills */}
@@ -204,7 +203,7 @@ export default function Home() {
           ) : newest.length === 0 ? (
             <SearchEmptyIllustration className="max-w-xs self-center" />
           ) : (
-            <div className="-mx-5 flex snap-x gap-4 overflow-x-auto px-5 pb-4">
+            <div className="-mx-5 flex snap-x scroll-pl-5 gap-4 overflow-x-auto px-5 pb-4">
               {newest.map((l) => (
                 <ListingCard
                   key={l.id}
