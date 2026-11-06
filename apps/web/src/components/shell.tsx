@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, NavigationType, Outlet, useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import {
   LogOut,
   ChevronDown,
@@ -302,7 +302,7 @@ export function Footer() {
   ].filter((s) => s.url);
 
   return (
-    <footer data-testid="site-footer" className="relative bg-plate-band-to text-white">
+    <footer data-testid="site-footer" className="on-navy relative bg-plate-band-to text-white">
       <div className="mx-auto max-w-5xl px-5 py-6 text-center">
         <nav
           aria-label="Chân trang"
@@ -373,6 +373,9 @@ function SocialIcon() {
 
 /* ---------- Shell ---------- */
 
+/** Last scrollY per history entry (location.key), for Back/Forward restore. */
+const scrollPositions = new Map<string, number>();
+
 export function AppShell({
   hideFooter,
   className,
@@ -388,10 +391,40 @@ export function AppShell({
   const isConversationThread = /^\/messages\/\d+/.test(location.pathname);
   const isMessagesChat = Boolean(user) && /^\/messages/.test(location.pathname);
 
-  /* New page: start at the top. Messages keep their own scroll containers. */
+  /* Scroll handling. A new page starts at the top. Browser Back/Forward (POP)
+     restores the position saved for that history entry, retrying for up to 2s
+     because list pages load asynchronously and are short at first.
+     Messages scroll inside their own containers, so they are left alone. */
+  const navigationType = useNavigationType();
   React.useEffect(() => {
-    if (!isMessagesChat) window.scrollTo(0, 0);
-  }, [location.pathname, isMessagesChat]);
+    if (isMessagesChat) return;
+    window.history.scrollRestoration = "manual";
+    /* Save at the moment of leaving (click or Back/Forward), before the next
+       page renders and clamps scrollY. Scroll events would race with that. */
+    const save = () => { scrollPositions.set(location.key, window.scrollY); };
+    document.addEventListener("click", save, true);
+    window.addEventListener("popstate", save, true);
+
+    let raf = 0;
+    if (navigationType !== NavigationType.Pop) {
+      window.scrollTo(0, 0);
+    } else {
+      const target = scrollPositions.get(location.key) ?? 0;
+      const started = performance.now();
+      const restore = () => {
+        window.scrollTo(0, target);
+        if (Math.abs(window.scrollY - target) > 2 && performance.now() - started < 2000) {
+          raf = requestAnimationFrame(restore);
+        }
+      };
+      if (target > 0) restore();
+    }
+    return () => {
+      document.removeEventListener("click", save, true);
+      window.removeEventListener("popstate", save, true);
+      cancelAnimationFrame(raf);
+    };
+  }, [location.key, isMessagesChat, navigationType]);
 
   return (
     <div

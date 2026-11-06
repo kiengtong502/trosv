@@ -138,7 +138,7 @@ export default function Home() {
             width={2100}
             height={623}
             loading="eager"
-            className="hidden md:block absolute inset-0 h-full w-full object-cover object-right pointer-events-none select-none"
+            className="hidden min-[1300px]:block absolute inset-0 h-full w-full object-cover object-right pointer-events-none select-none"
             onError={(e) => {
               (e.currentTarget).style.display = "none";
             }}
@@ -148,7 +148,7 @@ export default function Home() {
         <HeroSearch cities={cities} schools={schools} />
 
         {/* Mobile-dedicated hero illustration: perfectly proportioned and complete on any phone */}
-        <div className="mt-1 w-full max-w-xl md:hidden">
+        <div className="mt-1 w-full max-w-xl min-[1300px]:hidden">
           <img
             src={ART_ASSETS.HERO_MOBILE}
             alt="Minh họa phòng trọ sinh viên"

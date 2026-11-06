@@ -217,6 +217,16 @@
   =============================================================================
 */
 @layer utilities {
+    /* Focus on navy: the global plate-blue ring vanishes on the band, so use
+       flyer yellow. Specificity beats Tailwind's focus-visible:ring-* utilities. */
+    .bg-band :is(a, button, input, select, textarea, [tabindex]):focus-visible,
+    .on-navy :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+        outline: 2px solid var(--color-flyer);
+        outline-offset: 2px;
+        --tw-ring-color: var(--color-flyer);
+        --tw-ring-shadow: 0 0 #0000;
+    }
+
     /* Springy heart pop when a room is saved. */
     .motion-heart-pop {
         animation: heart-pop 450ms cubic-bezier(0.34, 1.8, 0.5, 1);

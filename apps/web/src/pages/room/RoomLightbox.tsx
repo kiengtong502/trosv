@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,7 +35,9 @@ export function RoomLightbox({
   const current = images[index];
   if (!current) return null;
 
-  return (
+  /* Portalled to <body>: an ancestor stacking context (the gallery overlap
+     wrapper) would otherwise cap this z-50 below the sticky header. */
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -86,6 +89,7 @@ export function RoomLightbox({
       <p aria-live="polite" className="absolute bottom-4 text-sm tabular-nums text-white">
         {index + 1} / {total}
       </p>
-    </div>
+    </div>,
+    document.body
   );
 }
