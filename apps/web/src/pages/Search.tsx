@@ -4,7 +4,7 @@ import { ROUTES, route } from "@/constants/routes";
 import { useListingSearch } from "@/hooks/useListingSearch";
 import type { Listing } from "@/types/api";
 import { Button } from "@/ui/button";
-import { Skeleton } from "@/ui/badge";
+import { ListingCardSkeleton } from "@/components/ListingCardSkeleton";
 import { ErrorState, EmptyState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
 import { ListingMap } from "@/components/ListingMap";
@@ -251,10 +251,10 @@ export default function Search() {
         >
           {search.loading ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Skeleton className="h-72" />
-              <Skeleton className="h-72" />
-              <Skeleton className="h-72" />
-              <Skeleton className="h-72" />
+              <ListingCardSkeleton />
+              <ListingCardSkeleton />
+              <ListingCardSkeleton />
+              <ListingCardSkeleton />
             </div>
           ) : search.error ? (
             <div>
@@ -274,7 +274,7 @@ export default function Search() {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2">
               {search.listings.map((l) => (
                 <ListingCard
                   key={l.id}

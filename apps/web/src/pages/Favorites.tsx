@@ -144,7 +144,7 @@ export default function Favorites() {
     <>
     {band}
     <div className="mx-auto w-full max-w-6xl flex-1 p-5 pb-16">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {listings.map((l) => (
           <ListingCard
             key={l.id}

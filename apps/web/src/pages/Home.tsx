@@ -5,17 +5,13 @@ import { ART_ASSETS } from "@/constants/assets";
 import { getListings, getCities, getSchools } from "@/api/listingApi";
 import type { Listing, City, School } from "@/types/api";
 import { Button } from "@/ui/button";
-import { Skeleton } from "@/ui/badge";
+import { ListingCardSkeleton } from "@/components/ListingCardSkeleton";
 import { PlateBand } from "@/ui/plate-band";
 import { ErrorState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
 import { ListingCard } from "@/components/ListingCard";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { Search as SearchIcon, GraduationCap, MapPin } from "lucide-react";
-
-function ListingCardSkeleton() {
-  return <Skeleton className="h-72 w-72 flex-none rounded-xl" />;
-}
 
 function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) {
   const [q, setQ] = useState("");
@@ -193,17 +189,17 @@ export default function Home() {
 
           {loading ? (
             <div className="flex gap-4 overflow-hidden">
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
+              <ListingCardSkeleton className="w-72 flex-none" />
+              <ListingCardSkeleton className="w-72 flex-none" />
+              <ListingCardSkeleton className="w-72 flex-none" />
+              <ListingCardSkeleton className="w-72 flex-none" />
             </div>
           ) : error ? (
             <ErrorState message="Không tải được phòng mới đăng. Bạn thử lại sau ít phút nhé." />
           ) : newest.length === 0 ? (
             <SearchEmptyIllustration className="max-w-xs self-center" />
           ) : (
-            <div className="-mx-5 flex snap-x scroll-pl-5 gap-4 overflow-x-auto px-5 pb-4">
+            <div className="motion-stagger -mx-5 flex snap-x scroll-pl-5 gap-4 overflow-x-auto px-5 pb-4">
               {newest.map((l) => (
                 <ListingCard
                   key={l.id}
