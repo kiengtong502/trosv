@@ -152,15 +152,32 @@ test.describe("small feedback motion", () => {
     });
 
     test("a newly sent chat message fades in; history does not", async ({ page }) => {
-        const { token } = await loginAs(page, STUDENT);
+        const { token, user } = (await loginAs(page, STUDENT)) as { token: string; user: { id: number } };
         const id = await firstConversationId(page, token);
         test.skip(id === null, "seed data has no conversation for this user");
+        // Fake the send so the demo database is never written to.
+        await page.route("http://localhost:8000/api/conversations/*/messages", async (route) => {
+            if (route.request().method() !== "POST") return route.continue();
+            await route.fulfill({
+                contentType: "application/json",
+                body: JSON.stringify({
+                    data: {
+                        id: 2_000_000_000,
+                        conversation_id: id,
+                        sender_id: user.id,
+                        body: "ping (mock)",
+                        created_at: new Date().toISOString(),
+                        is_mine: true,
+                    },
+                }),
+            });
+        });
         await page.goto(`/messages/${id}`);
         const rows = page.locator('[data-testid="thread"] > div');
         await expect(rows.first()).toBeVisible();
         const before = await rows.count();
         expect(await rows.first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
-        await page.locator("textarea[aria-label=\"Tin nhắn\"]").fill(`ping ${Date.now()}`);
+        await page.locator("textarea[aria-label=\"Tin nhắn\"]").fill("ping (mock)");
         await page.getByRole("button", { name: "Gửi tin nhắn" }).click();
         await expect(rows).toHaveCount(before + 1);
         await expect(rows.last()).toHaveCSS("animation-name", "fade-up");
