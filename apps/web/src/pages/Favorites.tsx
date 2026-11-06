@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { GateScreen, FavoritesGateIllustration } from "@/components/gates";
 import { Button } from "@/ui/button";
 import { Skeleton } from "@/ui/badge";
+import { PlateBand } from "@/ui/plate-band";
 import { EmptyState, ErrorState } from "@/ui/empty-state";
 import { FavoriteEmptyIllustration } from "@/ui/icons";
 import { ListingCard } from "@/components/ListingCard";
@@ -76,50 +77,74 @@ export default function Favorites() {
     }
   }
 
+  const band = (
+    <PlateBand
+      size="header"
+      title="Phòng đã lưu"
+      contentClassName="px-5 sm:px-5 lg:px-5"
+      description={
+        !loading && !error && listings.length > 0 ? (
+          <span aria-live="polite" className="tabular-nums">
+            {listings.length} phòng
+          </span>
+        ) : (
+          "Những phòng bạn muốn xem lại và so sánh sau."
+        )
+      }
+    />
+  );
+
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-6xl flex-1 p-5">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
+      <>
+        {band}
+        <div className="mx-auto w-full max-w-6xl flex-1 p-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-1 items-center justify-center p-6">
-        <ErrorState message={error} />
-      </div>
+      <>
+        {band}
+        <div className="flex flex-1 items-center justify-center p-6">
+          <ErrorState message={error} />
+        </div>
+      </>
     );
   }
 
   if (listings.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center p-6">
-        <EmptyState
-          illustration={<FavoriteEmptyIllustration />}
-          title="Bạn chưa lưu phòng nào"
-          description="Nhấn vào biểu tượng trái tim ở mỗi phòng để lưu lại và so sánh sau."
-          action={
-            <Button asChild>
-              <Link to={ROUTES.ROOMS}>Tìm phòng ngay</Link>
-            </Button>
-          }
-        />
-      </div>
+      <>
+        {band}
+        <div className="flex flex-1 items-center justify-center p-6">
+          <EmptyState
+            illustration={<FavoriteEmptyIllustration />}
+            title="Bạn chưa lưu phòng nào"
+            description="Nhấn vào biểu tượng trái tim ở mỗi phòng để lưu lại và so sánh sau."
+            action={
+              <Button asChild>
+                <Link to={ROUTES.ROOMS}>Tìm phòng ngay</Link>
+              </Button>
+            }
+          />
+        </div>
+      </>
     );
   }
 
   return (
+    <>
+    {band}
     <div className="mx-auto w-full max-w-6xl flex-1 p-5 pb-16">
-      <h1 className="text-3xl font-bold tracking-tight text-ink">Phòng đã lưu</h1>
-      <p aria-live="polite" className="mt-1 text-sm font-medium text-muted tabular-nums">
-        {listings.length} phòng
-      </p>
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {listings.map((l) => (
           <ListingCard
             key={l.id}
@@ -139,5 +164,6 @@ export default function Favorites() {
         ))}
       </div>
     </div>
+    </>
   );
 }

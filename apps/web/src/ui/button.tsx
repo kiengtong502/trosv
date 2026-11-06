@@ -25,6 +25,8 @@ const buttonVariants = cva(
         outline: "border-line-strong bg-card text-ink hover:bg-tint",
         ghost: "border-transparent bg-transparent text-ink hover:bg-tint",
         danger: "border-danger bg-danger text-white hover:bg-danger/90",
+        /* Primary action on the navy plate band: yellow tab, fixed dark ink. */
+        flyer: "border-flyer bg-flyer text-[#1c1915] hover:brightness-95",
       },
       size: {
         sm: "h-9 px-3",

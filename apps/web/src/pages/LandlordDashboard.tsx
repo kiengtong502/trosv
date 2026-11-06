@@ -1,3 +1,4 @@
+import { PlateBand } from "@/ui/plate-band";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
@@ -84,24 +85,26 @@ export default function LandlordDashboard() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl p-5 pb-16">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
-            Quản lý tin đăng
-          </h1>
-          <p aria-live="polite" className="mt-1 text-sm text-muted tabular-nums">
+    <>
+      <PlateBand
+        size="header"
+        title="Quản lý tin đăng"
+        contentClassName="max-w-5xl px-5 sm:px-5 lg:px-5"
+        description={
+          <span aria-live="polite" className="tabular-nums">
             {rows.length} tin
-          </p>
-        </div>
-        <Button asChild variant="primary">
-          <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
-        </Button>
-      </div>
+          </span>
+        }
+        actions={
+          <Button asChild variant="flyer">
+            <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
+          </Button>
+        }
+      />
 
+      <div className="mx-auto w-full max-w-5xl p-5 pb-16">
       {/* Filter Chips */}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {STATUS_FILTERS.map((s) => (
           <Chip
             key={s.value}
@@ -269,7 +272,8 @@ export default function LandlordDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
 

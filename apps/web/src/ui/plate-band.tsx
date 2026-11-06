@@ -20,10 +20,14 @@ export interface PlateBandProps {
   description?: ReactNode;
   /** Right-aligned buttons (header size). */
   actions?: ReactNode;
+  /** Avatar or icon shown before the title (header size). */
+  leading?: ReactNode;
   /** Artwork rendered behind the content (hero size). */
   backdrop?: ReactNode;
   children?: ReactNode;
   className?: string;
+  /** Overrides the inner column width/padding so the band lines up with the page below. */
+  contentClassName?: string;
 }
 
 /* Fixed dark ink: the yellow tab must stay legible in dark mode too. */
@@ -35,9 +39,11 @@ export function PlateBand({
   highlight,
   description,
   actions,
+  leading,
   backdrop,
   children,
   className,
+  contentClassName,
 }: PlateBandProps) {
   const heading =
     title != null || highlight ? (
@@ -90,11 +96,19 @@ export function PlateBand({
         data-size="header"
         className={cn("relative z-10 bg-band text-white shadow-seam", className)}
       >
-        <div className="mx-auto flex min-h-[120px] w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="min-w-0">
-            {heading}
-            {intro}
-            {children}
+        <div
+          className={cn(
+            "mx-auto flex min-h-[120px] w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:px-8",
+            contentClassName
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-4">
+            {leading}
+            <div className="min-w-0">
+              {heading}
+              {intro}
+              {children}
+            </div>
           </div>
           {actions ? <div className="flex flex-none items-center gap-2">{actions}</div> : null}
         </div>

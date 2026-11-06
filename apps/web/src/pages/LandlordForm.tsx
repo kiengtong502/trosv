@@ -1,3 +1,4 @@
+import { PlateBand } from "@/ui/plate-band";
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -63,27 +64,29 @@ export default function LandlordForm() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col p-4 sm:p-6 lg:p-8 pb-16">
-      <div className="mb-6 flex flex-col gap-2">
-        <Link
-          to={ROUTES.LANDLORD}
-          className={
-            "inline-flex items-center gap-1.5 text-sm font-medium text-muted " +
-            "hover:text-ink transition-colors w-fit"
-          }
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          <span>Quay lại Quản lý tin đăng</span>
-        </Link>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
-          {form7.isEdit ? "Sửa tin đăng" : "Đăng tin mới"}
-        </h1>
-        <p className="text-sm text-muted">
-          {form7.isEdit
+    <>
+      <PlateBand
+        size="header"
+        title={form7.isEdit ? "Sửa tin đăng" : "Đăng tin mới"}
+        contentClassName="max-w-4xl"
+        description={
+          form7.isEdit
             ? "Cập nhật thông tin phòng trọ, giá cả và tiện ích của bạn."
-            : "Điền thông tin chi tiết về phòng trọ để thu hút sinh viên tìm phòng."}
-        </p>
-      </div>
+            : "Điền thông tin chi tiết về phòng trọ để thu hút sinh viên tìm phòng."
+        }
+      />
+
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col p-4 sm:p-6 lg:p-8 pb-16">
+      <Link
+        to={ROUTES.LANDLORD}
+        className={
+          "mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted " +
+          "hover:text-ink transition-colors w-fit"
+        }
+      >
+        <ArrowLeft className="size-4" aria-hidden />
+        <span>Quay lại Quản lý tin đăng</span>
+      </Link>
 
       {form7.notice ? (
         <p role="alert" className="mb-6 rounded-xl bg-plate-tint p-4 text-sm text-ink border border-plate/20">
@@ -394,7 +397,8 @@ export default function LandlordForm() {
           </Button>
         </div>
       </form>
-    </div>
+      </div>
+    </>
   );
 }
 

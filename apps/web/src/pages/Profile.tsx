@@ -12,6 +12,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
+import { PlateBand } from "@/ui/plate-band";
 import {
   formatVndPreview,
   getInitialForm,
@@ -115,34 +116,25 @@ export default function Profile() {
   const err = (field: string): string | undefined => fieldErrors[field]?.[0];
 
   return (
-    <div className={cn("mx-auto px-4 py-8 sm:px-6 lg:px-8", isStudent ? "max-w-6xl" : "max-w-2xl")}>
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-line pb-6">
-        <div className="flex items-center gap-4">
-          <Avatar name={user.name} size={64} />
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-bold tracking-tight text-ink font-display">
-                {user.name}
-              </h1>
-              <span className="rounded-full bg-plate-tint px-2.5 py-0.5 text-xs font-semibold text-plate">
-                {isStudent ? "Sinh viên" : "Chủ nhà"}
-              </span>
-            </div>
-            <p className="text-sm text-muted">{user.email}</p>
-          </div>
-        </div>
+    <>
+      <PlateBand
+        size="header"
+        leading={<Avatar name={user.name} size={64} />}
+        title={user.name}
+        description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}
+        actions={
+          isStudent ? (
+            <Button asChild variant="outline" size="sm" className="gap-1.5">
+              <Link to={route(ROUTES.STUDENT_PUBLIC, { id: user.id })}>
+                <span>Xem trang cá nhân công khai</span>
+                <ExternalLink className="size-3.5" aria-hidden />
+              </Link>
+            </Button>
+          ) : null
+        }
+      />
 
-        {isStudent ? (
-          <Button asChild variant="outline" size="sm" className="self-start sm:self-auto gap-1.5">
-            <Link to={route(ROUTES.STUDENT_PUBLIC, { id: user.id })}>
-              <span>Xem trang cá nhân công khai</span>
-              <ExternalLink className="size-3.5" aria-hidden />
-            </Link>
-          </Button>
-        ) : null}
-      </div>
-
+      <div className={cn("mx-auto px-4 py-8 sm:px-6 lg:px-8", isStudent ? "max-w-6xl" : "max-w-2xl")}>
       <form onSubmit={(e) => { void save(e); }} className="space-y-6">
         {formError ? (
           <p role="alert" className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger">
@@ -233,6 +225,7 @@ export default function Profile() {
           </Button>
         </div>
       </form>
-    </div>
+      </div>
+    </>
   );
 }
