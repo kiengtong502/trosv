@@ -210,7 +210,6 @@ export function ProfileHabitsCard({
       <Field
         id="p-interests"
         label="Sở thích & Lối sống"
-        hint="Chọn sở thích để AI phân tích bạn cùng phòng có chung đam mê."
         error={errors.interests}
       >
         <HobbySelector

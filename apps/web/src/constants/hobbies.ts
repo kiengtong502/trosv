@@ -58,3 +58,22 @@ export function parseHobbies(
     .filter(Boolean)
     .map(formatHobby);
 }
+
+export interface HobbyGroup {
+  key: string;
+  label: string;
+  /** Keys from HOBBY_LIST, in display order. */
+  hobbies: string[];
+}
+
+/** Categories the picker shows. Every HOBBY_LIST key appears in exactly one group. */
+export const HOBBY_GROUPS: HobbyGroup[] = [
+  { key: "sport", label: "Thể thao & sức khỏe", hobbies: ["gym", "football", "badminton"] },
+  { key: "fun", label: "Giải trí", hobbies: ["music", "gaming", "movies", "photography", "art"] },
+  { key: "study", label: "Học tập & công nghệ", hobbies: ["reading", "studying", "coding"] },
+  { key: "life", label: "Đời sống", hobbies: ["cooking", "travel", "cafés", "pets"] },
+];
+
+/** How many hobbies give the AI roommate matcher enough to work with. */
+export const HOBBY_PICK_MIN = 3;
+export const HOBBY_PICK_MAX = 8;
