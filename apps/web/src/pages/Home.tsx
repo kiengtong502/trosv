@@ -126,7 +126,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero: neutral paper canvas with colorful hand-drawn bento art */}
-      <section className="relative flex items-center overflow-hidden bg-[#FAF8F5] dark:bg-[#0c1017] border-b border-line md:min-h-[420px]">
+      <section className="relative flex items-center overflow-hidden bg-paper border-b border-line md:min-h-[420px]">
         {/* Desktop full-width bento artwork */}
         <img
           src={ART_ASSETS.HERO_DESKTOP}
@@ -155,7 +155,7 @@ export default function Home() {
               width={680}
               height={280}
               loading="eager"
-              className="w-full h-auto rounded-2xl border border-line/60 bg-[#FAF8F5] dark:bg-card/40 shadow-2xs"
+              className="w-full h-auto rounded-2xl border border-line/60 bg-card shadow-2xs"
             />
           </div>
         </div>

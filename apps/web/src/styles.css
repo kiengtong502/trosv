@@ -15,49 +15,59 @@
   Everything else is quiet neutral paper and ink.
 */
 :root {
-    --color-paper: #f5f6f8;
-    --color-card: #ffffff;
-    --color-tint: #eceef2;
-    --color-sunken: #e2e5eb;
-    --color-line: #e1e4ea;
-    --color-line-strong: #b4bbc7;
-    --color-ink: #10141b;
-    --color-ink-2: #2e3440;
-    --color-muted: #566070;
+    --color-paper: #fbf8f1;
+    --color-card: #fffdf9;
+    --color-tint: #f2ebdf;
+    --color-sunken: #ebe3d4;
+    --color-line: #e9e0d1;
+    --color-line-strong: #c9bca7;
+    --color-ink: #1c1915;
+    --color-ink-2: #3a352d;
+    --color-muted: #6a6254;
 
     --color-plate: #17479e;
     --color-plate-hover: #113a85;
-    --color-plate-tint: #e4ebf7;
+    --color-plate-tint: #e7edf8;
+    --color-plate-band-from: #17479e;
+    --color-plate-band-to: #123b86;
     --color-flyer: #ffd23f;
-    --color-moss: #2e7d5b;
-    --color-moss-tint: #e1f1e9;
+    --color-moss: #4f6b35;
+    --color-moss-tint: #e4ecd6;
     --color-danger: #c0392b;
     --color-danger-tint: #fbe9e6;
 
-    --shadow-pop: 0 8px 24px -8px rgb(16 20 27 / 0.28), 0 0 0 1px rgb(16 20 27 / 0.04);
+    --shadow-pop: 0 8px 24px -8px rgb(28 25 21 / 0.28), 0 0 0 1px rgb(28 25 21 / 0.04);
+    --shadow-card: 0 1px 2px rgb(60 40 10 / 0.06), 0 4px 14px -6px rgb(60 40 10 / 0.12);
+    --shadow-card-hover: 0 2px 4px rgb(60 40 10 / 0.08), 0 14px 28px -10px rgb(60 40 10 / 0.25);
+    --shadow-seam: 0 10px 24px -14px rgb(10 30 80 / 0.5);
 }
 
 .dark {
-    --color-paper: #0b0f17;
-    --color-card: #131923;
-    --color-tint: #1a2230;
-    --color-sunken: #090c13;
-    --color-line: #222b3a;
-    --color-line-strong: #36445a;
-    --color-ink: #f0f3f8;
-    --color-ink-2: #c5cedd;
-    --color-muted: #8390a3;
+    --color-paper: #0f0e0c;
+    --color-card: #181613;
+    --color-tint: #211e1a;
+    --color-sunken: #0b0a09;
+    --color-line: #2a2620;
+    --color-line-strong: #433d34;
+    --color-ink: #f6f1e8;
+    --color-ink-2: #d4cdbf;
+    --color-muted: #9a9183;
 
     --color-plate: #3b82f6;
     --color-plate-hover: #60a5fa;
     --color-plate-tint: #162544;
+    --color-plate-band-from: #0f2a5c;
+    --color-plate-band-to: #0b2150;
     --color-flyer: #fbbf24;
-    --color-moss: #34d399;
-    --color-moss-tint: #064e3b;
+    --color-moss: #9bbd74;
+    --color-moss-tint: #26331a;
     --color-danger: #f87171;
     --color-danger-tint: #450a0a;
 
     --shadow-pop: 0 12px 32px -8px rgb(0 0 0 / 0.65), 0 0 0 1px rgb(255 255 255 / 0.08);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 4px 14px -6px rgb(0 0 0 / 0.5);
+    --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.4), 0 14px 28px -10px rgb(0 0 0 / 0.7);
+    --shadow-seam: 0 10px 24px -14px rgb(0 0 0 / 0.8);
 }
 
 @theme {
@@ -74,6 +84,8 @@
     --color-plate: var(--color-plate);
     --color-plate-hover: var(--color-plate-hover);
     --color-plate-tint: var(--color-plate-tint);
+    --color-plate-band-from: var(--color-plate-band-from);
+    --color-plate-band-to: var(--color-plate-band-to);
     --color-flyer: var(--color-flyer);
     --color-moss: var(--color-moss);
     --color-moss-tint: var(--color-moss-tint);
@@ -93,8 +105,11 @@
     --radius-xl: 12px;
     --radius-full: 9999px;
 
-    /* Floating surfaces only (menus, popovers). Cards stay flat. */
+    /* Floating surfaces (menus, popovers) and the soft card shadows. */
     --shadow-pop: var(--shadow-pop);
+    --shadow-card: var(--shadow-card);
+    --shadow-card-hover: var(--shadow-card-hover);
+    --shadow-seam: var(--shadow-seam);
 
     --nav-h: 56px;
 
@@ -191,6 +206,11 @@
   =============================================================================
 */
 @layer utilities {
+    /* Navy plate gradient used by PlateBand, auth panel and footer. */
+    .bg-band {
+        background-image: linear-gradient(180deg, var(--color-plate-band-from) 0%, var(--color-plate-band-to) 100%);
+    }
+
     /* Smooth card hover lift & shadow */
     .motion-card {
         transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms ease;
