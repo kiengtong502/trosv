@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Listing summary object per API_CONTRACT §3 - used for lists, favorites
  * and the map. Cover image = image with the smallest id.
+ *
+ * @mixin Listing
  */
 class ListingSummaryResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var Listing $listing */
@@ -59,7 +62,7 @@ class ListingSummaryResource extends JsonResource
     /** avg_rating from the withAvg aggregate, rounded to 1 decimal; null when unrated. */
     private function avgRating(): ?float
     {
-        if (! isset($this->reviews_avg_listing_rating) || $this->reviews_avg_listing_rating === null) {
+        if ($this->reviews_avg_listing_rating === null) {
             return null;
         }
 
@@ -72,7 +75,7 @@ class ListingSummaryResource extends JsonResource
      */
     private function distanceKm(): ?float
     {
-        if (! isset($this->distance_km)) {
+        if ($this->distance_km === null) {
             return null;
         }
 
@@ -88,6 +91,6 @@ class ListingSummaryResource extends JsonResource
     {
         $favoritedIds = $request->attributes->get('favorited_listing_ids');
 
-        return $favoritedIds !== null && in_array($this->id, $favoritedIds, true);
+        return is_array($favoritedIds) && in_array($this->id, $favoritedIds, true);
     }
 }

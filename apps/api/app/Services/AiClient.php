@@ -33,7 +33,7 @@ class AiClient
         try {
             $response = Http::timeout(self::TIMEOUT_SECONDS)
                 ->acceptJson()
-                ->post(rtrim(config('services.ai.url'), '/').'/'.ltrim($path, '/'), $payload);
+                ->post(rtrim(is_string(config('services.ai.url')) ? config('services.ai.url') : '', '/').'/'.ltrim($path, '/'), $payload);
         } catch (\Throwable) {
             throw new AiUnavailableException('AI service unreachable.');
         }
@@ -42,6 +42,7 @@ class AiClient
             throw new AiUnavailableException("AI service returned HTTP {$response->status()}.");
         }
 
+        /** @var mixed $data */
         $data = $response->json();
 
         if (! is_array($data)) {

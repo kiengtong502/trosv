@@ -37,7 +37,7 @@ class ReviewController extends Controller
      */
     public function store(ReviewStoreRequest $request, Listing $listing): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $data = $request->validated();
 

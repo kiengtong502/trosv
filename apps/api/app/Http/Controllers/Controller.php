@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\AuthorizesResources;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class Controller
 {
@@ -15,6 +18,18 @@ abstract class Controller
 
     /** Maximum page size for every paginated endpoint (step 4 convention). */
     protected const PER_PAGE_MAX = 50;
+
+    /** The authenticated user. Only for routes behind `auth:sanctum`; anything else is a 401. */
+    protected function authUser(Request $request): User
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            throw new AuthenticationException;
+        }
+
+        return $user;
+    }
 
     /**
      * Validate `per_page` (1..50) with a contract-shaped 422, so pagination
@@ -38,14 +53,20 @@ abstract class Controller
             'per_page' => 'Số tin mỗi trang',
         ]);
 
-        return (int) $validated['per_page'];
+        $perPage = is_array($validated) ? ($validated['per_page'] ?? null) : null;
+
+        return is_numeric($perPage) ? (int) $perPage : 12;
     }
 
     /**
      * Uniform paginated envelope { data, meta } around a JsonResource
      * collection. Keeps per_page as int in meta across all endpoints.
      *
-     * @param  class-string  $resourceClass
+     * @template TKey of array-key
+     * @template TValue
+     *
+     * @param  LengthAwarePaginator<TKey, TValue>  $page
+     * @param  class-string<JsonResource>  $resourceClass
      */
     protected function paginated(LengthAwarePaginator $page, string $resourceClass, Request $request): JsonResponse
     {

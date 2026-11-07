@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\URL;
  * Message object per API_CONTRACT §3. attachment_url is a temporary signed
  * URL (60 minutes) on the attachments route - opens directly in a browser
  * tab, no token needed. Both attachment fields are null without a file.
+ *
+ * @mixin Message
  */
 class MessageResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var Message $message */
@@ -41,7 +44,7 @@ class MessageResource extends JsonResource
                 ['message' => $message->id],
                 false,
             ) : null,
-            'created_at' => $message->created_at->toISOString(),
+            'created_at' => $message->created_at?->toISOString(),
         ];
     }
 }

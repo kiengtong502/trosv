@@ -1,9 +1,16 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import path from "node:path";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  test: {
+    environment: "jsdom",
+    include: ["src/**/*.test.{ts,tsx}"],
+    setupFiles: ["./src/test/setup.ts"],
+    restoreMocks: true,
+    // A test that prints a console error/warn it did not expect is a bug.
+  },
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {

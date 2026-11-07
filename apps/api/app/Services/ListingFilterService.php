@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Listing;
+use App\Models\School;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Encapsulates search, filtering, geo-distance and sorting for listings.
@@ -15,6 +15,7 @@ class ListingFilterService
      * Build the filtered and sorted Eloquent query for public listing search.
      *
      * @param  array<string, mixed>  $filters
+     * @return Builder<Listing>
      */
     public function buildQuery(array $filters): Builder
     {
@@ -24,13 +25,13 @@ class ListingFilterService
             ->withCount('reviews')
             ->withAvg('reviews', 'listing_rating');
 
-        $this->applySearchTerm($query, $filters['q'] ?? null);
+        $this->applySearchTerm($query, $this->text($filters['q'] ?? null));
         $this->applyPriceRange($query, $filters['price_min'] ?? null, $filters['price_max'] ?? null);
         $this->applyLocation($query, $filters['ward_id'] ?? null, $filters['city_id'] ?? null);
-        $this->applyRoomType($query, $filters['type'] ?? null);
-        $this->applyAmenities($query, $filters['amenity_ids'] ?? []);
+        $this->applyRoomType($query, $this->text($filters['type'] ?? null));
+        $this->applyAmenities($query, $this->ids($filters['amenity_ids'] ?? []));
         $this->applyDistance($query, $filters['school_id'] ?? null, $filters['max_km'] ?? null);
-        $this->applySorting($query, $filters['sort'] ?? 'newest');
+        $this->applySorting($query, $this->text($filters['sort'] ?? null) ?? 'newest');
 
         // Deterministic tiebreaker for stable pagination.
         $query->orderBy('id', 'desc');
@@ -38,6 +39,22 @@ class ListingFilterService
         return $query;
     }
 
+    private function text(mixed $value): ?string
+    {
+        return is_string($value) ? $value : null;
+    }
+
+    /** @return array<int, int|string> */
+    private function ids(mixed $value): array
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_filter($value, fn ($id) => is_int($id) || is_string($id)));
+    }
+
+    /** @param  Builder<Listing>  $query */
     protected function applySearchTerm(Builder $query, ?string $q): void
     {
         if (! empty($q)) {
@@ -49,6 +66,7 @@ class ListingFilterService
         }
     }
 
+    /** @param  Builder<Listing>  $query */
     protected function applyPriceRange(Builder $query, mixed $min, mixed $max): void
     {
         if ($min !== null) {
@@ -60,6 +78,7 @@ class ListingFilterService
         }
     }
 
+    /** @param  Builder<Listing>  $query */
     protected function applyLocation(Builder $query, mixed $wardId, mixed $cityId): void
     {
         if (! empty($wardId)) {
@@ -72,6 +91,7 @@ class ListingFilterService
         }
     }
 
+    /** @param  Builder<Listing>  $query */
     protected function applyRoomType(Builder $query, ?string $type): void
     {
         if (! empty($type)) {
@@ -80,6 +100,7 @@ class ListingFilterService
     }
 
     /**
+     * @param  Builder<Listing>  $query
      * @param  array<int, int|string>  $amenityIds
      */
     protected function applyAmenities(Builder $query, array $amenityIds): void
@@ -90,19 +111,21 @@ class ListingFilterService
         }
     }
 
+    /** @param  Builder<Listing>  $query */
     protected function applyDistance(Builder $query, mixed $schoolId, mixed $maxKm): void
     {
         // Distance calculation only when school_id is provided.
         if (! empty($schoolId)) {
-            $school = DB::table('schools')->find($schoolId);
+            $school = is_int($schoolId) || is_string($schoolId) ? School::query()->find($schoolId) : null;
 
-            if ($school && $school->latitude !== null && $school->longitude !== null) {
-                $max = $maxKm !== null ? (float) $maxKm : null;
+            if ($school !== null) {
+                $max = is_numeric($maxKm) ? (float) $maxKm : null;
                 $query->nearby((float) $school->latitude, (float) $school->longitude, $max);
             }
         }
     }
 
+    /** @param  Builder<Listing>  $query */
     protected function applySorting(Builder $query, string $sort): void
     {
         match ($sort) {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getListing, getListingReviews } from "@/api/listingApi";
 import { errMessage, errStatus } from "@/api/axiosClient";
 import type { Listing, Review, PaginationMeta } from "@/types/api";
+import { ignoreError } from "@/lib/async";
 
 /**
  * Data + actions for the /rooms/:id page: listing detail, review list
@@ -38,9 +39,7 @@ export function useRoomDetail(id: number) {
           setReviews(data);
           setReviewMeta(meta);
         })
-        .catch(() => {
-          /* silent */
-        });
+        .catch(ignoreError("record room view"));
     },
     [id],
   );

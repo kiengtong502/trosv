@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EnsureProductionConfig
 {
+    /** @param  Closure(Request): Response  $next */
     public function handle(Request $request, Closure $next): Response
     {
         if (app()->environment('production')) {

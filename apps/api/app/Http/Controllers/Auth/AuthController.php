@@ -36,7 +36,7 @@ class AuthController extends Controller
             'looking_for_roommate' => false,
         ]);
 
-        return static::tokenResponse($user, 201);
+        return self::tokenResponse($user, 201);
     }
 
     /**
@@ -45,17 +45,18 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validated();
+        $email = $request->string('email')->lower()->toString();
+        $password = $request->string('password')->toString();
 
-        $user = User::where('email', strtolower($credentials['email']))->first();
+        $user = User::where('email', $email)->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! $user || ! Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Email hoặc mật khẩu không đúng.'],
             ]);
         }
 
-        return static::tokenResponse($user);
+        return self::tokenResponse($user);
     }
 
     /**
@@ -63,7 +64,7 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['data' => new UserResource($request->user())]);
+        return response()->json(['data' => new UserResource($this->authUser($request))]);
     }
 
     /**
@@ -71,7 +72,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $this->authUser($request)->currentAccessToken()->delete();
 
         return response()->json(['data' => null]);
     }

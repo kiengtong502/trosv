@@ -34,10 +34,12 @@ class MessageDeleted implements ShouldBroadcastNow
 
     public function broadcastOn(): array
     {
+        $conversation = $this->message->conversation ?? throw new \LogicException('Message without a conversation.');
+
         $channels = [
             new PrivateChannel('conversation.'.$this->message->conversation_id),
-            new PrivateChannel('App.Models.User.'.$this->message->conversation->student_id),
-            new PrivateChannel('App.Models.User.'.$this->message->conversation->landlord_id),
+            new PrivateChannel('App.Models.User.'.$conversation->student_id),
+            new PrivateChannel('App.Models.User.'.$conversation->landlord_id),
         ];
 
         return $channels;
@@ -48,6 +50,7 @@ class MessageDeleted implements ShouldBroadcastNow
         return 'message.deleted';
     }
 
+    /** @return array<string, mixed> */
     public function broadcastWith(): array
     {
         return [
@@ -59,7 +62,7 @@ class MessageDeleted implements ShouldBroadcastNow
             'conversation' => [
                 'id' => $this->message->conversation_id,
                 'last_message' => $this->message->isUnsent()
-                    ? ['body' => 'Tin nhắn đã được thu hồi', 'created_at' => $this->message->created_at->toISOString()]
+                    ? ['body' => 'Tin nhắn đã được thu hồi', 'created_at' => $this->message->created_at?->toISOString()]
                     : null,
             ],
         ];

@@ -11,6 +11,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useAuth } from "@/context/AuthContext";
 import { Search } from "lucide-react";
 import { ConversationListItem } from "@/pages/messages/ConversationListItem";
+import { ignoreError } from "@/lib/async";
 
 /*
   Two panes from 890px (sidebar + thread), single pane on mobile where
@@ -34,7 +35,7 @@ export default function MessagesList() {
       .then((rows) => {
         if (active) setConvs(rows);
       })
-      .catch(() => {})
+      .catch(ignoreError("load conversations"))
       .finally(() => {
         if (active) setLoading(false);
       });

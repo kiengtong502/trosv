@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Conversation;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Broadcast;
 // One private channel per conversation: only the two participants may
 // subscribe. Outsiders are rejected (false), never 404 - channel auth
 // semantics differ from REST here.
-Broadcast::channel('conversation.{conversationId}', function ($user, int $conversationId) {
+Broadcast::channel('conversation.{conversationId}', function (User $user, int $conversationId) {
     $conversation = Conversation::find($conversationId);
 
     if (! $conversation) {
@@ -24,6 +25,6 @@ Broadcast::channel('conversation.{conversationId}', function ($user, int $conver
 });
 
 // Per-user private channel: unread badge + conversation-list updates.
-Broadcast::channel('App.Models.User.{id}', function ($user, int $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('App.Models.User.{id}', function (User $user, int $id) {
+    return $user->id === $id;
 });

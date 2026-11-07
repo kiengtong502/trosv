@@ -22,7 +22,7 @@ class MessageReactionController extends Controller
     {
         $this->authorizeParticipant($request, $message);
 
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $validated = $request->validated();
 
@@ -51,7 +51,7 @@ class MessageReactionController extends Controller
     {
         $this->authorizeParticipant($request, $message);
 
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $fresh = $message->fresh();
         $reactions = $fresh->reactions ?? [];

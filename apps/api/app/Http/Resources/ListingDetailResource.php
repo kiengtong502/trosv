@@ -13,15 +13,19 @@ use Illuminate\Support\Facades\Storage;
  * Listing detail object per API_CONTRACT §3: every summary field plus
  * description, created_at, images, amenities, landlord, ratings,
  * my_conversation_id and can_review.
+ *
+ * @mixin Listing
  */
 class ListingDetailResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var Listing $listing */
         $listing = $this->resource;
 
         // Summary fields first (same shape as lists).
+        /** @var array<string, mixed> $summary */
         $summary = (new ListingSummaryResource($listing))->resolve($request);
 
         return array_merge($summary, [
@@ -54,9 +58,10 @@ class ListingDetailResource extends JsonResource
      * - landlord_avg: reviews across ALL of the landlord's listings
      * - area_avg: reviews across ALL listings in the same ward
      */
+    /** @return array<string, mixed> */
     private function ratings(Listing $listing): array
     {
-        $listingAvg = isset($listing->reviews_avg_listing_rating) && $listing->reviews_avg_listing_rating !== null
+        $listingAvg = $listing->reviews_avg_listing_rating !== null
             ? (float) $listing->reviews_avg_listing_rating
             : $listing->reviews()->avg('listing_rating');
 
@@ -84,13 +89,15 @@ class ListingDetailResource extends JsonResource
     {
         $user = $request->user('sanctum');
 
-        if (! $user || $user->role !== User::ROLE_STUDENT) {
+        if (! $user instanceof User || $user->role !== User::ROLE_STUDENT) {
             return null;
         }
 
-        return $listing->conversations()
+        $id = $listing->conversations()
             ->where('student_id', $user->id)
             ->value('id');
+
+        return is_numeric($id) ? (int) $id : null;
     }
 
     /**
@@ -101,7 +108,7 @@ class ListingDetailResource extends JsonResource
     {
         $user = $request->user('sanctum');
 
-        if (! $user || $user->role !== User::ROLE_STUDENT || $myConversationId === null) {
+        if (! $user instanceof User || $user->role !== User::ROLE_STUDENT || $myConversationId === null) {
             return false;
         }
 

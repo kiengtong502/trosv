@@ -34,6 +34,7 @@ class MessageReacted implements ShouldBroadcastNow
         return 'message.reacted';
     }
 
+    /** @return array<string, mixed> */
     public function broadcastWith(): array
     {
         return [

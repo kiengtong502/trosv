@@ -29,7 +29,7 @@ class LandlordListingController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = $request->user()
+        $query = $this->authUser($request)
             ->listings()
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')
@@ -55,7 +55,7 @@ class LandlordListingController extends Controller
     {
         $data = $request->validated();
 
-        $listing = $request->user()->listings()->create([
+        $listing = $this->authUser($request)->listings()->create([
             ...collect($data)->except('amenity_ids')->all(),
             'status' => Listing::STATUS_AVAILABLE,
         ]);

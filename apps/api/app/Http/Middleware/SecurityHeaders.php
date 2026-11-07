@@ -57,6 +57,7 @@ class SecurityHeaders
         return self::STRICT_POLICY;
     }
 
+    /** @param  Closure(Request): Response  $next */
     public function handle(Request $request, Closure $next): Response
     {
         return self::apply($next($request));

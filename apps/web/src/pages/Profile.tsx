@@ -1,10 +1,9 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { errFieldErrors, errMessage } from "@/api/axiosClient";
 import { updateProfile } from "@/api/authApi";
-import { getSchools } from "@/api/listingApi";
-import type { School } from "@/types/api";
+import { useSchools } from "@/hooks/useReferenceData";
 import { Button } from "@/ui/button";
 import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -51,7 +50,7 @@ export default function Profile() {
   const isStudent = user?.role === "student";
   const initialForm = useMemo(() => (user ? getInitialForm(user) : null), [user]);
   const [form, setForm] = useState<ProfileFormState | null>(null);
-  const [schools, setSchools] = useState<School[]>([]);
+  const { data: schools } = useSchools();
   const [busy, setBusy] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [formError, setFormError] = useState("");
@@ -67,12 +66,6 @@ export default function Profile() {
     () => isFormDirty(form, initialForm, isStudent),
     [form, initialForm, isStudent],
   );
-
-  useEffect(() => {
-    getSchools()
-      .then(setSchools)
-      .catch(() => {});
-  }, []);
 
   const formValue = form;
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getConversations, getMessages, markRead } from "@/api/socialApi";
 import type { Conversation, Message } from "@/types/api";
+import { ignoreError } from "@/lib/async";
 
 /**
  * Conversation header + message list for the /messages/:id thread.
@@ -42,7 +43,7 @@ export function useConversationData(id: string | number): {
       .then((list) => {
         if (active) setConversation(list.find((c) => String(c.id) === String(id)) || null);
       })
-      .catch(() => {})
+      .catch(ignoreError("load conversation header"))
       .finally(() => {
         if (active) setConvLoaded(true);
       });
@@ -63,13 +64,9 @@ export function useConversationData(id: string | number): {
         if (!active) return;
         lastIdRef.current = rows.length > 0 ? (rows[rows.length - 1] as { id: number }).id : 0;
         setMessages(rows);
-        markRead(id).catch(() => {
-          /* silent */
-        });
+        markRead(id).catch(ignoreError("mark read after load"));
       })
-      .catch(() => {
-        // transient - the realtime subscriber is not affected
-      })
+      .catch(ignoreError("load messages"))
       .finally(() => {
         if (active) setLoaded(true);
       });

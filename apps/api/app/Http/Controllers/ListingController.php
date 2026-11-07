@@ -8,6 +8,7 @@ use App\Http\Resources\ListingSummaryResource;
 use App\Models\Listing;
 use App\Models\User;
 use App\Services\ListingFilterService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,7 @@ class ListingController extends Controller
             ], 422);
         }
 
-        $perPage = $validated['per_page'] ?? self::PER_PAGE_DEFAULT;
+        $perPage = is_numeric($validated['per_page'] ?? null) ? (int) $validated['per_page'] : self::PER_PAGE_DEFAULT;
 
         $query = $filterService->buildQuery($validated);
         $page = $query->paginate($perPage);
@@ -51,7 +52,7 @@ class ListingController extends Controller
             'meta' => [
                 'current_page' => $page->currentPage(),
                 'last_page' => $page->lastPage(),
-                'per_page' => (int) $perPage,
+                'per_page' => $perPage,
                 'total' => $page->total(),
             ],
         ]);
@@ -61,18 +62,25 @@ class ListingController extends Controller
      * Ids of listings on this page favorited by the current (student) user -
      * exactly ONE query. Guests and landlords get an empty set.
      */
-    private function favoritedListingIds(Request $request, $listings): array
+    /**
+     * @param  Collection<int, Listing>  $listings
+     * @return list<int|string>
+     */
+    private function favoritedListingIds(Request $request, Collection $listings): array
     {
         $user = $request->user('sanctum');
 
-        if (! $user || $user->role !== User::ROLE_STUDENT || $listings->isEmpty()) {
+        if (! $user instanceof User || $user->role !== User::ROLE_STUDENT || $listings->isEmpty()) {
             return [];
         }
 
-        return $user->favorites()
+        /** @var list<int|string> $ids */
+        $ids = $user->favorites()
             ->whereIn('listings.id', $listings->modelKeys())
             ->pluck('listings.id')
             ->all();
+
+        return $ids;
     }
 
     /**
@@ -85,7 +93,7 @@ class ListingController extends Controller
 
         // Hidden listings: 404 unless the viewer is the owner landlord.
         if ($listing->status === Listing::STATUS_HIDDEN
-            && (! $user || $user->id !== $listing->user_id)) {
+            && (! $user instanceof User || $user->id !== $listing->user_id)) {
             abort(404);
         }
 
@@ -94,7 +102,7 @@ class ListingController extends Controller
             ->loadAvg('reviews', 'listing_rating');
 
         // Personalize is_favorited when a logged-in student is viewing.
-        $favorited = $user && $user->role === User::ROLE_STUDENT
+        $favorited = $user instanceof User && $user->role === User::ROLE_STUDENT
             ? $user->favorites()->where('listings.id', $listing->id)->exists()
             : false;
         $request->attributes->set('favorited_listing_ids', $favorited ? [$listing->id] : []);

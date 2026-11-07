@@ -18,7 +18,7 @@ class FavoriteController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $page = $request->user()
+        $page = $this->authUser($request)
             ->favorites()
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')
@@ -48,7 +48,7 @@ class FavoriteController extends Controller
         }
 
         // syncWithoutDetaching: calling twice never errors nor duplicates.
-        $request->user()->favorites()->syncWithoutDetaching([$listing->id]);
+        $this->authUser($request)->favorites()->syncWithoutDetaching([$listing->id]);
 
         return response()->json(['data' => ['is_favorited' => true]]);
     }
@@ -65,7 +65,7 @@ class FavoriteController extends Controller
         }
 
         // Detaching a non-favorited listing is still a success.
-        $request->user()->favorites()->detach([$listing->id]);
+        $this->authUser($request)->favorites()->detach([$listing->id]);
 
         return response()->json(['data' => ['is_favorited' => false]]);
     }
