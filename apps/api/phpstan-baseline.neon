@@ -1,0 +1,1921 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Binary operation "\." between ''App\.Models\.User\.'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: app/Events/MessageDeleted.php
+
+		-
+			message: '#^Cannot access property \$landlord_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Events/MessageDeleted.php
+
+		-
+			message: '#^Cannot access property \$student_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Events/MessageDeleted.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Events/MessageDeleted.php
+
+		-
+			message: '#^Method App\\Events\\MessageDeleted\:\:broadcastWith\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/MessageDeleted.php
+
+		-
+			message: '#^Method App\\Events\\MessageReacted\:\:broadcastWith\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/MessageReacted.php
+
+		-
+			message: '#^Method App\\Events\\MessageSeen\:\:broadcastWith\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/MessageSeen.php
+
+		-
+			message: '#^Binary operation "\." between ''App\.Models\.User\.'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: app/Events/MessageSent.php
+
+		-
+			message: '#^Cannot access property \$landlord_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Events/MessageSent.php
+
+		-
+			message: '#^Cannot access property \$student_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Events/MessageSent.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Events/MessageSent.php
+
+		-
+			message: '#^Method App\\Events\\MessageSent\:\:broadcastWith\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/MessageSent.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/AiController.php
+
+		-
+			message: '#^Parameter \#1 \$me of method App\\Services\\Ai\\AreaRecommender\:\:suggest\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AiController.php
+
+		-
+			message: '#^Parameter \#1 \$me of method App\\Services\\Ai\\RoommateMatcher\:\:match\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AiController.php
+
+		-
+			message: '#^Cannot call method currentAccessToken\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Unsafe call to private method App\\Http\\Controllers\\Auth\\AuthController\:\:tokenResponse\(\) through static\:\:\.$#'
+			identifier: staticClassAccess.privateMethod
+			count: 2
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Cannot call method fresh\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Auth/ProfileController.php
+
+		-
+			message: '#^Cannot call method update\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Auth/ProfileController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Http/Controllers/Auth/ProfileController.php
+
+		-
+			message: '#^Parameter \#2 \$user of method App\\Http\\Controllers\\Auth\\ProfileController\:\:validateBudgetRange\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Auth/ProfileController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Pagination\\LengthAwarePaginator\:\:getCollection\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Cannot access offset ''per_page'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Cannot call method resolve\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Controller\:\:paginated\(\) has parameter \$page with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/Controller.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Cannot call method whereNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Parameter \#1 \$query of method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:unionAll\(\) expects Closure\|Illuminate\\Database\\Eloquent\\Builder\<\*\>\|Illuminate\\Database\\Query\\Builder, Illuminate\\Database\\Eloquent\\Relations\\HasMany given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Parameter \#2 \$sender of method App\\Services\\ConversationService\:\:sendMessage\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Parameter \#2 \$user of method App\\Services\\ConversationService\:\:markRead\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Parameter \#3 \$data of method App\\Services\\ConversationService\:\:sendMessage\(\) expects array\{body\?\: string\|null\}, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Parameter \#3 \$listing of method App\\Services\\ConversationService\:\:sendRoomLinkIfNecessary\(\) expects App\\Models\\Listing, App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ConversationController.php
+
+		-
+			message: '#^Cannot call method favorites\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/FavoriteController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:amenities\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/LandlordListingController.php
+
+		-
+			message: '#^Cannot call method listings\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/LandlordListingController.php
+
+		-
+			message: '#^Cannot call method sync\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/LandlordListingController.php
+
+		-
+			message: '#^Parameter \#1 \$ids of method Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<Illuminate\\Database\\Eloquent\\Model,Illuminate\\Database\\Eloquent\\Model,Illuminate\\Database\\Eloquent\\Relations\\Pivot,string\>\:\:sync\(\) expects array\|Illuminate\\Database\\Eloquent\\Model\|Illuminate\\Support\\Collection\|int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/LandlordListingController.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot access property \$role on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method exists\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method favorites\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method isEmpty\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method modelKeys\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method pluck\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ListingController\:\:favoritedListingIds\(\) has parameter \$listings with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ListingController\:\:favoritedListingIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ListingController\:\:favoritedListingIds\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:paginate\(\) expects \(Closure\(int\)\: \(int\|null\)\)\|int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ListingController.php
+
+		-
+			message: '#^Cannot access property \$deleted_at on App\\Models\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot access property \$deleted_for_user_ids on App\\Models\\Message\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot assign new offset to array\|string\.$#'
+			identifier: offsetAssign.dimType
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot call method isUnsent\(\) on App\\Models\\Message\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot call method lt\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot call method save\(\) on App\\Models\\Message\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function in_array expects array, array\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Property App\\Models\\Message\:\:\$deleted_for_user_ids \(string\|null\) does not accept array\<int, int\<0, max\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Http/Controllers/MessageDeletionController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Controllers/MessageReactionController.php
+
+		-
+			message: '#^Cannot assign offset decimal\-int\-string to array\|string\.$#'
+			identifier: offsetAssign.dimType
+			count: 1
+			path: app/Http/Controllers/MessageReactionController.php
+
+		-
+			message: '#^Cannot unset offset decimal\-int\-string on array\{\}\|string\.$#'
+			identifier: unset.offset
+			count: 2
+			path: app/Http/Controllers/MessageReactionController.php
+
+		-
+			message: '#^Property App\\Models\\Message\:\:\$reactions \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Http/Controllers/MessageReactionController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/ReviewController.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ReviewController.php
+
+		-
+			message: '#^Cannot access property \$headers on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Middleware/AddRequestId.php
+
+		-
+			message: '#^Cannot call method set\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/AddRequestId.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\AddRequestId\:\:handle\(\) has parameter \$next with no signature specified for Closure\.$#'
+			identifier: missingType.callable
+			count: 1
+			path: app/Http/Middleware/AddRequestId.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\AddRequestId\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/AddRequestId.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\ApiThrottle\:\:getHeaders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/ApiThrottle.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\ApiThrottle\:\:handle\(\) has parameter \$next with no signature specified for Closure\.$#'
+			identifier: missingType.callable
+			count: 1
+			path: app/Http/Middleware/ApiThrottle.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\ApiThrottle\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/ApiThrottle.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\EnsureProductionConfig\:\:handle\(\) has parameter \$next with no signature specified for Closure\.$#'
+			identifier: missingType.callable
+			count: 1
+			path: app/Http/Middleware/EnsureProductionConfig.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\EnsureProductionConfig\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/EnsureProductionConfig.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\EnsureRole\:\:handle\(\) has parameter \$next with no signature specified for Closure\.$#'
+			identifier: missingType.callable
+			count: 1
+			path: app/Http/Middleware/EnsureRole.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\EnsureRole\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Http/Middleware/EnsureRole.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\SecurityHeaders\:\:handle\(\) has parameter \$next with no signature specified for Closure\.$#'
+			identifier: missingType.callable
+			count: 1
+			path: app/Http/Middleware/SecurityHeaders.php
+
+		-
+			message: '#^Parameter \#1 \$response of static method App\\Http\\Middleware\\SecurityHeaders\:\:apply\(\) expects Symfony\\Component\\HttpFoundation\\Response, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/SecurityHeaders.php
+
+		-
+			message: '#^Cannot access property \$role on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Requests/Auth/ProfileUpdateRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/Auth/RegisterRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Http/Requests/Listing/ListingBrowseRequest.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_diff expects an array of values castable to string, array\<int, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/Listing/ListingFormRequest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\User\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Messaging/DirectMessageRequest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\User\>\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Messaging/DirectMessageRequest.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CityResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CityResource\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CityResource\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CityResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CityResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CityResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CityResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$body\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$coverImage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sender_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:avatarKey\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isHiddenFor\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isUnsent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Cannot access property \$path on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Cannot call method first\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ConversationResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Parameter \#1 \$path of method Illuminate\\Filesystem\\FilesystemAdapter\:\:url\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/ConversationResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:avatarKey\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Cannot access property \$role on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ListingDetailResource\:\:myConversationId\(\) should return int\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ListingDetailResource\:\:ratings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ListingDetailResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Parameter \#1 \$path of method Illuminate\\Filesystem\\FilesystemAdapter\:\:url\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:all\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 2
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Resources/ListingDetailResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ListingSummaryResource\:\:\$coverImage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ListingSummaryResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot access property \$path on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot call method first\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ListingSummaryResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Parameter \#1 \$path of method Illuminate\\Filesystem\\FilesystemAdapter\:\:url\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function in_array expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Http/Resources/ListingSummaryResource.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/MessageResource.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/MessageResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\MessageResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/MessageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$comment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$landlord_rating\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$listing_rating\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReviewResource\:\:\$student\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Cannot call method avatarKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ReviewResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SchoolResource\:\:\$ward\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Cannot access property \$type on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\SchoolResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/SchoolResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserPublicResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\UserPublicResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/UserPublicResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\UserResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\WardResource\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\WardResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\WardResource\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\WardResource\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\WardResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Cannot access property \$type on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\WardResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/WardResource.php
+
+		-
+			message: '#^Class App\\Models\\Amenity uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Amenity.php
+
+		-
+			message: '#^Method App\\Models\\Amenity\:\:listings\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Amenity.php
+
+		-
+			message: '#^Class App\\Models\\City uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/City.php
+
+		-
+			message: '#^Method App\\Models\\City\:\:schools\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/City.php
+
+		-
+			message: '#^Method App\\Models\\City\:\:wards\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/City.php
+
+		-
+			message: '#^Class App\\Models\\Conversation uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:lastMessage\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:listing\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:messages\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Class App\\Models\\Listing uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:amenities\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:conversations\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:coverImage\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:favoritedBy\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:images\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:reviews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:scopeNearby\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:scopeNearby\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:scopeVisible\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:scopeVisible\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\Listing\:\:ward\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Listing.php
+
+		-
+			message: '#^Method App\\Models\\ListingImage\:\:listing\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ListingImage.php
+
+		-
+			message: '#^Class App\\Models\\Message uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:conversation\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:sender\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function in_array expects array, array\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Class App\\Models\\Review uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Review.php
+
+		-
+			message: '#^Method App\\Models\\Review\:\:listing\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Review.php
+
+		-
+			message: '#^Method App\\Models\\Review\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Review.php
+
+		-
+			message: '#^Class App\\Models\\School uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:city\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:users\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Method App\\Models\\School\:\:ward\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/School.php
+
+		-
+			message: '#^Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:favorites\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:landlordConversations\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:listings\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:messages\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:reviews\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:school\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:studentConversations\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\Ward uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Ward.php
+
+		-
+			message: '#^Method App\\Models\\Ward\:\:city\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Ward.php
+
+		-
+			message: '#^Method App\\Models\\Ward\:\:listings\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Ward.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/MessagePolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$student_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/MessagePolicy.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\School\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\School\>\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\School\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\School\>\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:visible\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\:\:visible\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot access offset ''reason'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot access offset ''ward_id'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot call method whereBetween\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot call method withAvg\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<\(int\|string\),array\<string, float\|int\|string\|null\>\>\:\:get\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Parameter \#1 \$num of function round expects float\|int, float\|int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/Ai/AreaRecommender.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$amenities\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$area_m2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Listing\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Listing\>\:\:\$ward\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_slice expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\)\: array\{role\: mixed, content\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Ai/ChatAssistant.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Ward\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Ward\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/DescriptionGenerator.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/PriceAdvisor.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 4
+			path: app/Services/Ai/PriceAdvisor.php
+
+		-
+			message: '#^Parameter \#1 \$values of method App\\Services\\Ai\\PriceAdvisor\:\:median\(\) expects list\<float\|int\>, non\-empty\-list\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Ai/PriceAdvisor.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Cannot access offset ''id'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Cannot access offset ''reason'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Cannot access offset ''score'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Method App\\Services\\Ai\\RoommateMatcher\:\:candidatePayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$array of function usort contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<\(int\|string\),App\\Models\\User\>\:\:get\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function usort contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Services/Ai/RoommateMatcher.php
+
+		-
+			message: '#^Method App\\Services\\AiClient\:\:post\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AiClient.php
+
+		-
+			message: '#^Parameter \#1 \$string of function rtrim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AiClient.php
+
+		-
+			message: '#^Method App\\Services\\ConversationService\:\:sendMessage\(\) should return App\\Models\\Message but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ConversationService.php
+
+		-
+			message: '#^Parameter \#1 \$message of class App\\Events\\MessageSent constructor expects App\\Models\\Message, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Services/ConversationService.php
+
+		-
+			message: '#^Parameter \#1 \$paths of method Illuminate\\Filesystem\\FilesystemAdapter\:\:delete\(\) expects array\|string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ConversationService.php
+
+		-
+			message: '#^Parameter \#3 \$seenAt of class App\\Events\\MessageSeen constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ConversationService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:nearby\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Cannot access property \$latitude on array\<mixed\>\|object\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Cannot access property \$longitude on array\<mixed\>\|object\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 3
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applyAmenities\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applyDistance\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applyLocation\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applyPriceRange\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applyRoomType\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applySearchTerm\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:applySorting\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingFilterService\:\:buildQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Parameter \#1 \$id of method Illuminate\\Database\\Query\\Builder\:\:find\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Parameter \#2 \$amenityIds of method App\\Services\\ListingFilterService\:\:applyAmenities\(\) expects array\<int, int\|string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Parameter \#2 \$q of method App\\Services\\ListingFilterService\:\:applySearchTerm\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Parameter \#2 \$sort of method App\\Services\\ListingFilterService\:\:applySorting\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Parameter \#2 \$type of method App\\Services\\ListingFilterService\:\:applyRoomType\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ListingFilterService.php
+
+		-
+			message: '#^Method App\\Services\\ListingImageService\:\:uploadImages\(\) should return Illuminate\\Support\\Collection\<int, App\\Models\\ListingImage\> but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ListingImageService.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: bootstrap/app.php
+
+		-
+			message: '#^Parameter \$at of method Illuminate\\Foundation\\Configuration\\Middleware\:\:trustProxies\(\) expects array\<int, string\>\|string\|null, string\|true\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: bootstrap/app.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/app.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/cache.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/database.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/logging.php
+
+		-
+			message: '#^Parameter \#1 \$url of function parse_url expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/mail.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/sanctum.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/session.php
+
+		-
+			message: '#^Cannot access property \$ids on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/migrations/2026_10_11_000002_enforce_single_conversation_per_user_pair.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/migrations/2026_10_11_000002_enforce_single_conversation_per_user_pair.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\Listing\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: database/seeders/ConversationSeeder.php
+
+		-
+			message: '#^Cannot access property \$user_id on App\\Models\\Listing\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ConversationSeeder.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\Ward\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$latitude on App\\Models\\School\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$longitude on App\\Models\\School\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$name on App\\Models\\School\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$name on App\\Models\\Ward\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot call method align\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot call method color\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot call method size\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: database/seeders/ListingSeeder.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: routes/channels.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: routes/channels.php

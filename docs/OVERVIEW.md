@@ -166,17 +166,29 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 
 ## 6. Testing and CI
 
-- Frontend: `npm run typecheck`, `npm run lint`, and Playwright e2e
-  (`npm run test:e2e`, needs the API on `:8000` and the web app on `:5173`).
-  Specs in `e2e/design/` mock the messaging API so they never write to the demo
+- Frontend: `npm run typecheck`, `npm run lint` (typed `strictTypeChecked`,
+  `--max-warnings 0`, covers `src` and `e2e`), `npm run format:check`
+  (Prettier, 2 spaces) and Playwright e2e (`npm run test:e2e`, needs the API on
+  `:8000` and the web app on `:5173`; no retries, a flaky test is a bug). Specs
+  in `e2e/design/` mock the messaging API so they never write to the demo
   database; `e2e/design/helpers.ts` has `loginAs`.
-- CI (`.github/workflows/ci.yml`): `secrets` (gitleaks), `frontend`, `backend`
-  (Pint, tests, composer audit), `ai-service`, then `e2e` against a production
-  build served on `:4173` with a freshly seeded database. `e2e` is skipped when
-  any earlier job fails.
+- Backend: Pint, PHPStan/Larastan at level `max` (`apps/api/phpstan.neon`; the
+  existing debt is frozen in `phpstan-baseline.neon`, so any NEW finding fails;
+  shrink the baseline, never grow it), and PHPUnit configured to fail on
+  warnings, notices, deprecations, risky tests and stray output.
+- AI service: Ruff (lint + format), mypy `--strict`, pytest with every warning
+  turned into an error, `pip-audit`.
+- CI is zero-tolerance (`.github/workflows/ci.yml`): `backend`, `frontend`
+  (lint, format, typecheck, a build that fails on any warning, `npm audit`),
+  `ai-service`, `secrets` (gitleaks), `infra` (actionlint, hadolint, shellcheck,
+  `docker compose config`), `docker-build` (all three images), then `e2e`
+  against a production build on `:4173` with a freshly seeded database. `ci-ok`
+  is the single job to require in branch protection. Also: `codeql.yml` (SAST,
+  weekly too) and `dependency-review.yml` (PRs). Workflows run with read-only
+  permissions, pinned action SHAs, job timeouts and cancel-on-new-push (never on
+  `stable`).
 - Known gotchas: seed photos are served from the Docker web container on `:5174`
-  (`e2e/listings/images.spec.ts` fails without it); `npm run format:check`
-  already reports drift on untouched files.
+  (`e2e/listings/images.spec.ts` fails without it).
 
 ## 7. Working agreements
 

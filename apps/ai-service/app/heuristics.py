@@ -1,4 +1,5 @@
-from typing import Any, Optional
+from typing import Any
+
 from fastapi import HTTPException
 
 from app.schemas import (
@@ -79,9 +80,11 @@ def advise_price(req: PriceAdviceReq) -> dict[str, Any]:
         verdict = "low"
     else:
         verdict = "fair"
-    fair_min = _int_or(req.stats.get("min"), median * 0.9)
-    fair_max = _int_or(req.stats.get("max"), median * 1.1)
-    compare = "cao hon" if verdict == "high" else ("thap hon" if verdict == "low" else "tuong duong")
+    fair_min = _int_or(req.stats.get("min"), int(median * 0.9))
+    fair_max = _int_or(req.stats.get("max"), int(median * 1.1))
+    compare = (
+        "cao hon" if verdict == "high" else ("thap hon" if verdict == "low" else "tuong duong")
+    )
     return {
         "verdict": verdict,
         "fair_min": fair_min,
@@ -116,7 +119,7 @@ def _priority_bonus(area: dict[str, Any], priorities: set[str], avg: int, budget
     rules = (
         ("cheap", bool(avg) and avg <= budget_max),
         ("near_school", dist is not None and dist <= 3),
-        ("well_rated", bool(rating) and float(rating) >= 4),
+        ("well_rated", rating is not None and bool(rating) and float(rating) >= 4),
         ("many_options", _int_or(area.get("listings_count"), 0) >= 20),
     )
     return sum(weights[name] for name, hit in rules if name in priorities and hit)
@@ -153,8 +156,7 @@ def recommend_areas(req: AreasReq) -> dict[str, Any]:
     )
     return {
         "results": [
-            {"ward_id": wid, "reason": why}
-            for (sc, why), wid in ranked[: max(1, req.limit)]
+            {"ward_id": wid, "reason": why} for (sc, why), wid in ranked[: max(1, req.limit)]
         ]
     }
 
@@ -173,7 +175,7 @@ def _reply_about_deposit() -> str:
     )
 
 
-def _reply_about_price(listing: Optional[dict[str, Any]]) -> str:
+def _reply_about_price(listing: dict[str, Any] | None) -> str:
     """Cau tra loi FAKE_MODE cho nhom cau hoi ve gia (co/khong ngu canh tin)."""
     if listing:
         return (
@@ -231,6 +233,9 @@ def generate_description(req: DescriptionReq) -> dict[str, Any]:
         parts.append("co san " + ", ".join(req.amenities))
     if req.price:
         parts.append(f"gia thue {_int_or(req.price, 0):,} dong mot thang")
-    body = ", ".join(parts) + ". Khong gian thoang, phu hop sinh vien hoac nguoi di lam muon an toan, tien nghi gan nha. Lien he truc tiep qua tin nhan trong trang de xem phong va trao doi chi tiet."
+    body = (
+        ", ".join(parts)
+        + ". Khong gian thoang, phu hop sinh vien hoac nguoi di lam muon an toan, tien nghi gan nha. Lien he truc tiep qua tin nhan trong trang de xem phong va trao doi chi tiet."
+    )
     words = body.split()
     return {"description": " ".join(words[:130])}

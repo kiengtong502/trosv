@@ -1,4 +1,5 @@
 from typing import Any
+
 from fastapi import APIRouter, HTTPException
 
 from app.gemini import generate_price_advice_with_gemini, get_api_key, is_gemini_enabled
@@ -11,6 +12,7 @@ router = APIRouter()
 def guard_fake() -> None:
     """Non-2xx neu FAKE_MODE tat va khong co API key - backend doi thanh 503 theo contract."""
     import app.main as app_main
+
     fake_mode = getattr(app_main, "FAKE_MODE", True)
     if not fake_mode and not get_api_key():
         raise HTTPException(

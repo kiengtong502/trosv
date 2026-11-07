@@ -4,11 +4,30 @@ on:
   push:
     branches: [unstable, stable]
   pull_request:
-    branches: [unstable, refactor/pro-layout]
+    branches: [unstable, stable]
+  merge_group:
+  workflow_dispatch:
+
+# Least privilege: jobs only read the repo. Anything that needs more says so itself.
+permissions:
+  contents: read
+
+# A newer push to the same branch/PR replaces the running CI. `stable` is never
+# cancelled: the Deploy workflow keys off its CI result.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/stable' }}
+
+env:
+  CI: "true"
+  COMPOSER_NO_INTERACTION: "1"
+  NPM_CONFIG_FUND: "false"
+  NPM_CONFIG_UPDATE_NOTIFIER: "false"
 
 jobs:
   backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: apps/api
@@ -36,17 +55,27 @@ jobs:
           php-version: '8.3'
           coverage: none
 
+      - name: Validate composer.json and lock file
+        run: composer validate --strict
+
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Pint (style)
         run: ./vendor/bin/pint --test
+
+      # Larastan at the strictest level (max). The baseline only freezes the
+      # debt that existed when it was introduced: any NEW finding fails the job.
+      - name: PHPStan / Larastan (level max)
+        run: ./vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
       - name: Copy env for tests
         run: |
           cp .env.example .env
           php artisan key:generate --force
 
+      # phpunit.xml fails the run on warnings, notices, deprecations, risky and
+      # output-printing tests, so "green" really means zero warnings.
       - name: Tests
         run: php artisan test
         env:
@@ -58,10 +87,11 @@ jobs:
           DB_PASSWORD: rental
 
       - name: Composer audit
-        run: composer audit --no-interaction
+        run: composer audit --locked --no-interaction
 
   frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: apps/web
@@ -77,18 +107,39 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # ESLint (strictTypeChecked, --max-warnings 0) covers src and e2e.
       - name: Lint
         run: npm run lint
 
-      - name: Build
-        run: npm run build
+      - name: Format (Prettier)
+        run: npm run format:check
 
-      # Non-blocking until dependencies are reviewed: report only.
-      - name: npm audit (report)
-        run: npm audit --omit=dev || true
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Zero-warning build: any Vite/Rollup warning (oversized chunk, bad import...)
+      # fails the job, not just errors.
+      - name: Build (warnings are errors)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee build.log
+          if grep -Eiq '\(!\)|warning' build.log; then
+            echo "::error::the production build printed warnings"
+            exit 1
+          fi
+
+      # Blocking. Production dependencies must be clean at every severity; dev
+      # tooling may not carry a high/critical advisory.
+      - name: npm audit (production, any severity)
+        run: npm audit --omit=dev --audit-level=low
+
+      - name: npm audit (all, high and above)
+        run: npm audit --audit-level=high
 
   ai-service:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: apps/ai-service
@@ -107,16 +158,30 @@ jobs:
         run: |
           pip install -r requirements.txt -r requirements-dev.txt
 
+      - name: Ruff (lint)
+        run: ruff check --output-format=github .
+
+      - name: Ruff (format)
+        run: ruff format --check .
+
+      - name: mypy (strict)
+        run: mypy app
+
+      # pyproject.toml turns every warning into an error.
       - name: Contract tests
         run: pytest
         env:
           FAKE_MODE: "true"
+
+      - name: pip-audit
+        run: pip-audit -r requirements.txt
 
   # E2E: real browser against a real seeded API + the production bundle.
   # Runs after the cheap gates; also gates the Deploy workflow (it fires on
   # CI success on stable), so a red e2e blocks the deploy - intended.
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [backend, frontend, ai-service]
     services:
       postgres:
@@ -217,6 +282,17 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:4173
 
+      - name: Upload Playwright report and traces
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Dump server logs on failure
         if: failure()
         run: |
@@ -229,6 +305,7 @@ jobs:
 
   secrets:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -245,3 +322,71 @@ jobs:
           docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
             zricethezav/gitleaks:v8.30.1@sha256:b109bc5f8f76a38196a3e413704fc5b9e3c32360bce4e4b603bd6f45b3721dbb \
             detect --source /repo --redact -v
+
+  # Lints the pipeline itself and the infra files: a broken workflow, Dockerfile
+  # or shell script should fail here, not on the production deploy.
+  infra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: actionlint (workflows)
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
+            rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 \
+            -color
+
+      # DL3008 (pin apt versions) is ignored on purpose: the base images are
+      # Debian point releases, and pinned apt versions disappear from the mirrors.
+      - name: hadolint (Dockerfiles)
+        run: |
+          for f in apps/api/Dockerfile apps/web/Dockerfile apps/ai-service/Dockerfile; do
+            docker run --rm -i \
+              hadolint/hadolint@sha256:32dac94127fd60b7b7e3fbfc65e1383b9b5e25c9bfd7b8536de7a539fe68a12d \
+              hadolint --failure-threshold warning --ignore DL3008 - < "$f"
+          done
+
+      - name: shellcheck (scripts)
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
+            koalaman/shellcheck-alpine@sha256:7366322e994f1b364289c7f7d4b792846fbc9337ae29c89a489fb57ba8f4a8dc \
+            shellcheck --severity=warning scripts/*.sh infra/backup/backup.sh infra/deploy/deploy.sh
+
+      - name: docker compose config
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+          docker compose --profile tls --profile test config --quiet
+
+  # Every image must still build; this catches Dockerfile and lockfile drift
+  # before the deploy does.
+  docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Build backend image
+        run: docker build --pull apps/api
+      - name: Build web image
+        run: docker build --pull apps/web
+      - name: Build ai-service image
+        run: docker build --pull apps/ai-service
+
+  # One required check for branch protection: green only if every job above is
+  # green. A skipped or cancelled needed job counts as a failure.
+  ci-ok:
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [backend, frontend, ai-service, e2e, secrets, infra, docker-build]
+    steps:
+      - name: All jobs must have succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "results: $RESULTS"
+          for r in $RESULTS; do
+            [ "$r" = "success" ] || { echo "::error::a required job finished as '$r'"; exit 1; }
+          done

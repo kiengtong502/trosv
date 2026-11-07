@@ -55,4 +55,4 @@ COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD curl -sf http://127.0.0.1/ >/dev/null || exit 1
+    CMD ["curl", "-sf", "-o", "/dev/null", "http://127.0.0.1/"]

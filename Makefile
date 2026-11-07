@@ -39,11 +39,13 @@ test-ai: ## Chay kiem thu contract AI service bang pytest trong container ai-ser
 	$(COMPOSE) --profile test build ai-service-test
 	$(COMPOSE) --profile test run --rm -T ai-service-test pytest
 
-lint-api: ## Kiem tra code style backend voi Pint
-	cd apps/api && ./vendor/bin/pint --test
+lint-api: ## Kiem tra code style (Pint) va phan tich tinh (PHPStan/Larastan level max)
+	cd apps/api && ./vendor/bin/pint --test && ./vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
-lint-web: ## Kiem tra linting frontend voi ESLint
+lint-web: ## Kiem tra frontend: ESLint (0 warning), Prettier, tsc
 	npm --prefix apps/web run lint
+	npm --prefix apps/web run format:check
+	npm --prefix apps/web run typecheck
 
 build-web: ## Bien dich frontend SPA cho production
 	npm --prefix apps/web run build
