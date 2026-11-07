@@ -32,6 +32,8 @@ test.describe("listing card hierarchy", () => {
   });
 
   test("cards in one grid row keep equal height", async ({ page }) => {
+    // The staggered entrance moves cards by different amounts mid-flight; measure the settled layout.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/rooms");
     const cards = page.locator('[data-testid^="listing-card-"]');
     await expect(cards.nth(1)).toBeVisible();
