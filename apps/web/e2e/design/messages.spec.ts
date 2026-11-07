@@ -277,6 +277,8 @@ test.describe("quick replies", () => {
         await page.goto("/messages/1");
         const strip = page.getByTestId("quick-replies");
         await expect(strip).toBeVisible();
+        // Measure after the chips finish easing in, not mid-slide.
+        await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))));
         const tops = await strip
             .getByRole("button")
             .evaluateAll((els) => [...new Set(els.map((e) => Math.round(e.getBoundingClientRect().top)))]);
@@ -309,5 +311,203 @@ test.describe("messages on a phone", () => {
             );
             expect(overflow, path).toBeLessThanOrEqual(0);
         }
+    });
+});
+
+/* ---------- Small touches and motion ---------- */
+const ms = (v: string) => Math.round(parseFloat(v) * (v.endsWith("ms") ? 1 : 1000));
+const delays = async (loc: ReturnType<Page["locator"]>) =>
+    loc.evaluateAll((els) => els.map((e) => getComputedStyle(e).animationDelay));
+const names = async (loc: ReturnType<Page["locator"]>) =>
+    loc.evaluateAll((els) => els.map((e) => getComputedStyle(e).animationName));
+const increasing = (xs: number[]) => xs.every((x, i) => i === 0 || x > (xs[i - 1] ?? 0));
+
+test.describe("messages motion and small touches", () => {
+    test.use({ viewport: { width: 1360, height: 900 } });
+
+    test("conversation rows ease in one after another", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id);
+        await page.goto("/messages");
+        const rows = page.locator("ul > li").filter({ has: page.locator('a[data-testid^="conversation-"]') });
+        await expect(rows).toHaveCount(4);
+        expect(await names(rows)).toEqual(["fade-up", "fade-up", "fade-up", "fade-up"]);
+        expect(increasing((await delays(rows)).map(ms))).toBe(true);
+    });
+
+    test("an unread badge pops in", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id);
+        await page.goto("/messages");
+        await expect(row(page, 1).getByTestId("unread-badge")).toHaveCSS("animation-name", "pop-in");
+    });
+
+    test("messages ease in one after another when a thread opens", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, {
+            threads: {
+                2: [
+                    { id: 1, sender_id: 102, body: "Có em nhé.", mine: false, minutesAgo: 90 },
+                    { id: 2, sender_id: user.id, body: "Dạ có thang máy không anh?", mine: true, minutesAgo: 80 },
+                    { id: 3, sender_id: 102, body: "Có em nhé, tầng 3 nên đi lại tiện.", mine: false, minutesAgo: 70 },
+                    { id: 4, sender_id: user.id, body: "Cảm ơn anh.", mine: true, minutesAgo: 60 },
+                ],
+            },
+        });
+        await page.goto("/messages/2");
+        const rows = page.getByTestId("message-row");
+        await expect(rows).toHaveCount(4);
+        expect(await names(rows)).toEqual(["fade-up", "fade-up", "fade-up", "fade-up"]);
+        expect(increasing((await delays(rows)).map(ms))).toBe(true);
+    });
+
+    test("the day separator is a small pill, like the time separators", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, {
+            threads: { 2: [{ id: 1, sender_id: 102, body: "Có em nhé.", mine: false, minutesAgo: 90 }] },
+        });
+        await page.goto("/messages/2");
+        const pill = page.getByTestId("day-separator").first();
+        await expect(pill).toBeVisible();
+        const style = await pill.evaluate((el) => {
+            const s = getComputedStyle(el);
+            return { radius: parseFloat(s.borderTopLeftRadius), bg: s.backgroundColor };
+        });
+        expect(style.radius).toBeGreaterThanOrEqual(100);
+        expect(style.bg).not.toBe("rgba(0, 0, 0, 0)");
+    });
+
+    test("typing dots bounce", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, { threads: { 1: [] } });
+        await page.goto("/messages/1");
+        await expect(page.getByTestId("thread-header")).toBeVisible();
+        // The indicator only renders on a live "typing" event, so check the class it uses.
+        const name = await page.evaluate(() => {
+            const dot = document.createElement("i");
+            dot.className = "typing-dot";
+            document.body.appendChild(dot);
+            const n = getComputedStyle(dot).animationName;
+            dot.remove();
+            return n;
+        });
+        expect(name).toBe("dot-bounce");
+    });
+
+    test("the room card lifts when hovered", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, { threads: { 1: [] } });
+        await page.goto("/messages/1");
+        const card = page.getByTestId("thread-room-card");
+        await expect(card).toBeVisible();
+        await page.waitForTimeout(400);
+        await card.hover();
+        await page.waitForTimeout(400);
+        expect(await card.evaluate((el) => getComputedStyle(el).transform)).toBe("matrix(1, 0, 0, 1, 0, -2)");
+    });
+
+    test("quick replies fade in one by one", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, { threads: { 1: [] } });
+        await page.goto("/messages/1");
+        const chips = page.getByTestId("quick-replies").getByRole("button");
+        await expect(chips).toHaveCount(3);
+        expect(await names(chips)).toEqual(["fade-up", "fade-up", "fade-up"]);
+        expect(increasing((await delays(chips)).map(ms))).toBe(true);
+    });
+
+    test("the empty pane art floats gently", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id);
+        await page.goto("/messages");
+        await expect(page.getByTestId("messages-empty-pane").locator("img")).toHaveCSS("animation-name", "float-y");
+    });
+
+    test("with reduced motion nothing waits for a delay", async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, { threads: { 1: [] } });
+        await page.goto("/messages/1");
+        const chips = page.getByTestId("quick-replies").getByRole("button");
+        await expect(chips).toHaveCount(3);
+        for (const d of await delays(chips)) expect(ms(d)).toBe(0);
+        await expect(chips.nth(2)).toHaveCSS("opacity", "1");
+    });
+});
+
+test.describe("messages motion on a phone", () => {
+    test.use({ viewport: { width: 375, height: 800 } });
+
+    test("the thread slides in from the right and the list fades back", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        await mockMessaging(page, user.id, { threads: { 1: [] } });
+        await page.goto("/messages/1");
+        await expect(page.getByTestId("thread-pane")).toHaveCSS("animation-name", "slide-in-right");
+        await page.goto("/messages");
+        await expect(page.getByTestId("conversation-list")).toHaveCSS("animation-name", "fade-in");
+    });
+});
+
+test.describe("thread scrolling", () => {
+    test.use({ viewport: { width: 1360, height: 560 } });
+
+    test("stays at the latest message when a room preview finishes loading late", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        const filler: Msg[] = Array.from({ length: 8 }, (_, i) => ({
+            id: 10 + i,
+            sender_id: i % 2 ? user.id : 101,
+            body: `Tin nhắn số ${i + 1} để thread đủ dài và có thể cuộn.`,
+            mine: i % 2 === 1,
+            minutesAgo: 120 - i,
+        }));
+        await mockMessaging(page, user.id, {
+            threads: {
+                1: [
+                    ...filler,
+                    { id: 30, sender_id: user.id, body: "Chào bạn, mình quan tâm đến phòng trọ này:", mine: true, minutesAgo: 30 },
+                    { id: 31, sender_id: user.id, body: "/rooms/48", mine: true, minutesAgo: 30 },
+                    { id: 32, sender_id: 101, body: "Phòng vẫn còn nhé em.", mine: false, minutesAgo: 5 },
+                ],
+            },
+        });
+        // The room card grows the thread once its data arrives, after the first scroll.
+        await page.route("http://localhost:8000/api/listings/48", async (route) => {
+            await new Promise((r) => setTimeout(r, 700));
+            await route.continue();
+        });
+        await page.goto("/messages/1");
+        const thread = page.getByTestId("thread");
+        await expect(thread.getByText("Phòng vẫn còn nhé em.")).toBeVisible();
+        await expect(thread.getByText("Xem chi tiết")).toBeVisible({ timeout: 8000 });
+        await page.waitForTimeout(600);
+        const distance = await thread.evaluate((el) => el.scrollHeight - el.scrollTop - el.clientHeight);
+        expect(distance).toBeLessThanOrEqual(5);
+    });
+
+    test("does not yank you back down while you are reading older messages", async ({ page }) => {
+        const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
+        const filler: Msg[] = Array.from({ length: 14 }, (_, i) => ({
+            id: 10 + i,
+            sender_id: i % 2 ? user.id : 101,
+            body: `Tin nhắn số ${i + 1} để thread đủ dài và có thể cuộn.`,
+            mine: i % 2 === 1,
+            minutesAgo: 200 - i,
+        }));
+        await mockMessaging(page, user.id, {
+            threads: { 1: [...filler, { id: 40, sender_id: user.id, body: "/rooms/48", mine: true, minutesAgo: 10 }] },
+        });
+        await page.route("http://localhost:8000/api/listings/48", async (route) => {
+            await new Promise((r) => setTimeout(r, 900));
+            await route.continue();
+        });
+        await page.goto("/messages/1");
+        const thread = page.getByTestId("thread");
+        await expect(thread.getByText("Tin nhắn số 14")).toBeVisible();
+        // The reader scrolls up before the room card arrives.
+        await thread.evaluate((el) => { el.scrollTop = 40; });
+        await expect(thread.getByText("Xem chi tiết")).toBeVisible({ timeout: 8000 });
+        await page.waitForTimeout(500);
+        const top = await thread.evaluate((el) => el.scrollTop);
+        expect(top).toBeLessThan(200);
     });
 });

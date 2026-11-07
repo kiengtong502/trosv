@@ -22,6 +22,7 @@ import { Footer } from "@/components/shell";
 import { MessageBubble } from "@/pages/messages/MessageBubble";
 import { ThreadRoomCard } from "@/pages/messages/ThreadRoomCard";
 import { QuickReplies } from "@/pages/messages/QuickReplies";
+import { TypingDots } from "@/pages/messages/TypingDots";
 import {
   Paperclip,
   ArrowDown,
@@ -32,6 +33,9 @@ import {
 } from "lucide-react";
 
 const MESSAGE_MAX = 1000;
+/** On opening a thread, only the last few messages ease in (one after another). */
+const OPEN_STAGGER_COUNT = 8;
+const OPEN_STAGGER_STEP_MS = 45;
 
 function dayKey(iso: string): string {
   return new Date(iso).toDateString();
@@ -39,10 +43,13 @@ function dayKey(iso: string): string {
 
 function DaySeparator({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-3 py-2" aria-hidden={false}>
-      <div className="h-px flex-1 bg-line" />
-      <span className="text-xs text-muted">{label}</span>
-      <div className="h-px flex-1 bg-line" />
+    <div className="flex justify-center py-2">
+      <span
+        data-testid="day-separator"
+        className="rounded-full bg-tint px-3 py-0.5 text-[11.5px] font-semibold tracking-wide text-muted"
+      >
+        {label}
+      </span>
     </div>
   );
 }
@@ -153,11 +160,12 @@ function Thread({ id }: ThreadProps) {
   const grouped = useMemo(() => data.messages, [data.messages]);
 
   /* Messages present when the thread first loaded never animate; only later ones do. */
-  const [baseline, setBaseline] = useState<{ convId: string; maxId: number } | null>(null);
+  const [baseline, setBaseline] = useState<{ convId: string; maxId: number; tail: number[] } | null>(null);
   if (isReady && (baseline === null || baseline.convId !== id)) {
     setBaseline({
       convId: id,
       maxId: data.messages.reduce((max, msg) => Math.max(max, msg.id), 0),
+      tail: data.messages.slice(-OPEN_STAGGER_COUNT).map((msg) => msg.id),
     });
   }
   const isNewMessage = (msgId: number): boolean =>
@@ -272,6 +280,8 @@ function Thread({ id }: ThreadProps) {
       >
         {data.conversation.listing ? <ThreadRoomCard listing={data.conversation.listing} /> : null}
         {grouped.map((m, i) => {
+          const tailIndex =
+            baseline !== null && baseline.convId === id ? baseline.tail.indexOf(m.id) : -1;
           const prev = grouped[i - 1];
           const next = grouped[i + 1];
 
@@ -311,7 +321,12 @@ function Thread({ id }: ThreadProps) {
           const prevHasReactions = Boolean(prev && prev.reactions && Object.keys(prev.reactions).length > 0);
 
           return (
-            <div key={m.id} className={cn("flex flex-col w-full", isNewMessage(m.id) && "motion-enter")}>
+            <div
+              key={m.id}
+              data-testid="message-row"
+              className={cn("flex flex-col w-full", (isNewMessage(m.id) || tailIndex >= 0) && "motion-enter")}
+              style={tailIndex >= 0 ? { animationDelay: `${tailIndex * OPEN_STAGGER_STEP_MS}ms` } : undefined}
+            >
               {newDay ? <DaySeparator label={formatDayLabel(m.created_at)} /> : null}
               {showTimeGapHeader ? <TimeSeparator date={m.created_at} /> : null}
               <div
@@ -336,11 +351,7 @@ function Thread({ id }: ThreadProps) {
             </div>
           );
         })}
-        {realtime.otherTyping ? (
-          <p className="self-start text-xs italic text-muted" aria-live="polite">
-            Đang soạn…
-          </p>
-        ) : null}
+        {realtime.otherTyping ? <TypingDots /> : null}
       </div>
 
       {/* Scroll-to-latest */}
@@ -352,7 +363,7 @@ function Thread({ id }: ThreadProps) {
           }}
           aria-label="Xuống tin nhắn mới nhất"
           className={
-            "self-center flex items-center gap-1.5 -mt-10 mb-2 z-10 rounded-full " +
+            "animate-pop-in self-center flex items-center gap-1.5 -mt-10 mb-2 z-10 rounded-full " +
             "border border-line bg-card px-3 py-1.5 text-xs font-medium text-ink shadow-sm transition hover:bg-tint"
           }
         >

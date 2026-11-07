@@ -151,7 +151,7 @@ test.describe("small feedback motion", () => {
         );
     });
 
-    test("a newly sent chat message fades in; history does not", async ({ page }) => {
+    test("a newly sent chat message fades in immediately", async ({ page }) => {
         const { token, user } = (await loginAs(page, STUDENT)) as { token: string; user: { id: number } };
         const id = await firstConversationId(page, token);
         test.skip(id === null, "seed data has no conversation for this user");
@@ -176,11 +176,12 @@ test.describe("small feedback motion", () => {
         const rows = page.locator('[data-testid="thread"] > div');
         await expect(rows.first()).toBeVisible();
         const before = await rows.count();
-        expect(await rows.first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
         await page.locator("textarea[aria-label=\"Tin nhắn\"]").fill("ping (mock)");
         await page.getByRole("button", { name: "Gửi tin nhắn" }).click();
         await expect(rows).toHaveCount(before + 1);
         await expect(rows.last()).toHaveCSS("animation-name", "fade-up");
+        // A message you just sent appears straight away, with no stagger delay.
+        await expect(rows.last()).toHaveCSS("animation-delay", "0s");
     });
 
     test("pagination buttons give press feedback", async ({ page }) => {

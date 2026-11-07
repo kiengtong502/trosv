@@ -15,7 +15,7 @@ export function ThreadRoomCard({
   return (
     <div
       data-testid="thread-room-card"
-      className="mx-auto mb-3 flex w-full max-w-md items-center gap-3 rounded-xl border border-line bg-card p-2.5 shadow-card"
+      className="motion-enter mx-auto mb-3 flex w-full max-w-md items-center gap-3 rounded-xl border border-line bg-card p-2.5 shadow-card transition-[transform,box-shadow] duration-200 hover:shadow-card-hover hover:[transform:translateY(-2px)]"
     >
       {listing.cover_image ? (
         <img

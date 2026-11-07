@@ -70,7 +70,7 @@ export function ConversationListItem({
           {unread > 0 ? (
             <span
               data-testid="unread-badge"
-              className="flex h-5 min-w-5 flex-none items-center justify-center rounded-full bg-plate px-1.5 text-[11.5px] font-bold text-white"
+              className="flex h-5 min-w-5 flex-none animate-pop-in items-center justify-center rounded-full bg-plate px-1.5 text-[11.5px] font-bold text-white"
             >
               {unread}
             </span>

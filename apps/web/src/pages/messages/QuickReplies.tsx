@@ -14,7 +14,7 @@ export function QuickReplies({ onPick }: { onPick: (text: string) => void }) {
   return (
     <div
       data-testid="quick-replies"
-      className="mb-2.5 flex snap-x snap-proximity gap-2 overflow-x-auto overscroll-x-contain px-3 py-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [-webkit-mask-image:linear-gradient(90deg,transparent_0,#000_12px,#000_calc(100%-28px),transparent_100%)] [mask-image:linear-gradient(90deg,transparent_0,#000_12px,#000_calc(100%-28px),transparent_100%)] -mx-3 sm:-mx-5 sm:px-5"
+      className="motion-stagger mb-2.5 flex snap-x snap-proximity gap-2 overflow-x-auto overscroll-x-contain px-3 py-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [-webkit-mask-image:linear-gradient(90deg,transparent_0,#000_12px,#000_calc(100%-28px),transparent_100%)] [mask-image:linear-gradient(90deg,transparent_0,#000_12px,#000_calc(100%-28px),transparent_100%)] -mx-3 sm:-mx-5 sm:px-5"
     >
       {REPLIES.map((text) => (
         <button

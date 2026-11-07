@@ -19,7 +19,7 @@ export function MessagesEmptyPane() {
         alt=""
         width={1400}
         height={780}
-        className="w-full max-w-sm rounded-xl"
+        className="motion-float w-full max-w-sm rounded-xl"
         loading="lazy"
       />
       <h2 className="mt-6 font-display text-xl font-extrabold tracking-tight text-ink">

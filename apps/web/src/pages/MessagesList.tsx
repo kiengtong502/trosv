@@ -88,9 +88,10 @@ export default function MessagesList() {
   const sidebar = useMemo(
     () => (
       <div
+        data-testid="conversation-list"
         className={cn(
           "flex min-w-0 flex-1 flex-col md:max-w-[372px] md:flex-none border-r border-line bg-card h-full max-h-full overflow-hidden",
-          isThreadOpen && "hidden md:flex"
+          isThreadOpen ? "hidden md:flex" : "animate-fade-in md:animate-none"
         )}
       >
         <div className="shrink-0 px-4 pb-3 pt-4">
@@ -149,7 +150,7 @@ export default function MessagesList() {
         ) : visible.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-muted">Không tìm thấy cuộc trò chuyện nào.</p>
         ) : (
-          <ul className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 pb-3">
+          <ul className="motion-stagger flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 pb-3">
             {visible.map((c) => (
               <li key={c.id}>
                 <ConversationListItem
@@ -176,9 +177,10 @@ export default function MessagesList() {
       {/* Thread pane on desktop; on mobile the /messages/:id route renders
           inside the same Outlet region when a conversation is selected. */}
       <div
+        data-testid="thread-pane"
         className={cn(
           "min-w-0 flex-1 border-l border-line flex flex-col h-full max-h-full min-h-0 overflow-hidden",
-          !isThreadOpen && "hidden md:flex"
+          isThreadOpen ? "animate-slide-in-right md:animate-none" : "hidden md:flex"
         )}
       >
         <Outlet />
