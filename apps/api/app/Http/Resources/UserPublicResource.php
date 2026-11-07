@@ -22,6 +22,7 @@ class UserPublicResource extends JsonResource
             'name' => $user->name,
             'role' => $user->role,
             'bio' => $user->bio,
+            'avatar' => $user->avatarKey(),
             'school' => $user->school?->name,
             'budget_min' => $user->budget_min !== null ? (int) $user->budget_min : null,
             'budget_max' => $user->budget_max !== null ? (int) $user->budget_max : null,

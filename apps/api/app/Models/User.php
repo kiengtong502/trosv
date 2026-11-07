@@ -14,6 +14,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /** Keys of the hand-drawn avatars; the web app draws one SVG per key. */
+    public const AVATARS = [
+        'cat', 'plant', 'house', 'book', 'coffee', 'moon',
+        'robot', 'cloud', 'sun', 'backpack', 'headphones', 'mushroom',
+    ];
+
     // role values
     public const ROLE_STUDENT = 'student';
 
@@ -39,6 +45,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'bio',
+        'avatar',
         'school_id',
         'budget_min',
         'budget_max',
@@ -104,5 +111,13 @@ class User extends Authenticatable
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, 'student_id');
+    }
+
+    /** The stored avatar, or a stable one derived from the id for older accounts. */
+    public function avatarKey(): string
+    {
+        return in_array($this->avatar, self::AVATARS, true)
+            ? $this->avatar
+            : self::AVATARS[$this->id % count(self::AVATARS)];
     }
 }

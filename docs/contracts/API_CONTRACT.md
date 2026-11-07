@@ -41,12 +41,12 @@ Tài khoản mẫu (mật khẩu `password`): từ `student1@example.com` đến
 **User**
 ```json
 { "id": 1, "name": "Nguyễn Văn A", "email": "a@example.com", "role": "student",
-  "phone": "0901234567", "bio": null, "school_id": 1,
+  "phone": "0901234567", "bio": null, "avatar": "cat", "school_id": 1,
   "budget_min": 1500000, "budget_max": 3000000,
   "sleep_schedule": "normal", "cleanliness": 4, "smoking": false,
   "personality": "introvert", "interests": "music,gym", "looking_for_roommate": true }
 ```
-Các trường chỉ dành cho sinh viên sẽ là `null` với chủ nhà. `cleanliness` từ 1 đến 5. `interests` là chuỗi ngăn cách bằng dấu phẩy.
+Các trường chỉ dành cho sinh viên sẽ là `null` với chủ nhà. `cleanliness` từ 1 đến 5. `interests` là chuỗi ngăn cách bằng dấu phẩy. `avatar` luôn có giá trị (cả với chủ nhà); tài khoản cũ chưa chọn sẽ nhận một khóa cố định suy ra từ `id`. Khóa này cũng xuất hiện ở `other_user` của hội thoại, `GET /users/{id}`, `student` của đánh giá và `landlord` của chi tiết tin.
 
 **Listing (dạng tóm tắt, dùng cho danh sách và bản đồ)**
 ```json
@@ -104,7 +104,7 @@ Các trường chỉ dành cho sinh viên sẽ là `null` với chủ nhà. `cle
 | `POST /login` | Công khai | `email`, `password` | `data: { token, user }`. Sai thông tin: 422 |
 | `POST /logout` | User | | `data: null` |
 | `GET /me` | User | | `data: User` |
-| `PUT /profile` | User | Một hoặc nhiều trường: `name`, `phone`, `bio`, và với sinh viên `school_id`, `budget_min`, `budget_max` (max >= min), `sleep_schedule`, `cleanliness`, `smoking`, `personality`, `interests`, `looking_for_roommate` | `data: User` |
+| `PUT /profile` | User | Một hoặc nhiều trường: `name`, `phone`, `bio`, `avatar` (một trong 12 khóa: `cat`, `plant`, `house`, `book`, `coffee`, `moon`, `robot`, `cloud`, `sun`, `backpack`, `headphones`, `mushroom`), và với sinh viên `school_id`, `budget_min`, `budget_max` (max >= min), `sleep_schedule`, `cleanliness`, `smoking`, `personality`, `interests`, `looking_for_roommate` | `data: User` |
 
 ### Dữ liệu tham chiếu (cho dropdown và bản đồ)
 

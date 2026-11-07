@@ -18,6 +18,7 @@ class ReviewResource extends JsonResource
             'student' => $this->student ? [
                 'id' => $this->student->id,
                 'name' => $this->student->name,
+                'avatar' => $this->student->avatarKey(),
             ] : null,
             'listing_rating' => $this->listing_rating,
             'landlord_rating' => $this->landlord_rating,

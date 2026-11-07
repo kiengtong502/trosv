@@ -26,6 +26,7 @@ class UserResource extends JsonResource
             'role' => $user->role,
             'phone' => $user->phone,
             'bio' => $user->bio,
+            'avatar' => $user->avatarKey(),
             // Student-only fields (null for landlords).
             'school_id' => $isStudent ? $user->school_id : null,
             'budget_min' => $isStudent ? $user->budget_min : null,

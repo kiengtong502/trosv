@@ -39,6 +39,7 @@ class ListingDetailResource extends JsonResource
             'landlord' => $listing->landlord ? [
                 'id' => $listing->landlord->id,
                 'name' => $listing->landlord->name,
+                'avatar' => $listing->landlord->avatarKey(),
                 'phone' => $request->user('sanctum') ? $listing->landlord->phone : null,
             ] : null,
             'ratings' => $this->ratings($listing),

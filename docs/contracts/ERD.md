@@ -117,6 +117,7 @@ Hai quan hệ nhiều-nhiều là hai bảng nối: `amenity_listing` (tin đăn
 | role | string(20) | `student` hoặc `landlord` |
 | phone | string(20), null | |
 | bio | text, null | |
+| avatar | varchar(20), null | Khóa ảnh đại diện vẽ tay (`cat`, `plant`, `house`, `book`, `coffee`, `moon`, `robot`, `cloud`, `sun`, `backpack`, `headphones`, `mushroom`). Gán ngẫu nhiên lúc đăng ký; null thì API tự suy ra từ `id` |
 | school_id | bigint, null, FK schools | Chỉ sinh viên |
 | budget_min, budget_max | unsignedInteger, null | Chỉ sinh viên. `budget_max >= budget_min` |
 | sleep_schedule | string(10), null | `early`, `normal`, `late`. Chỉ sinh viên |

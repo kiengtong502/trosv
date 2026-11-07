@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -29,6 +30,7 @@ class AuthController extends Controller
             'email' => strtolower($data['email']),
             'password' => $data['password'], // hashed via the model cast
             'role' => $data['role'],
+            'avatar' => Arr::random(User::AVATARS),
             // ERD: looking_for_roommate is NOT NULL and defaults to false.
             // For landlords the UserResource always returns null instead.
             'looking_for_roommate' => false,

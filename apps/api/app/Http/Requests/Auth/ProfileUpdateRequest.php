@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:100'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
             'bio' => ['sometimes', 'nullable', 'string', 'max:2000'],
+            'avatar' => ['sometimes', 'string', Rule::in(User::AVATARS)],
         ];
 
         if ($this->user()->role === User::ROLE_STUDENT) {

@@ -246,7 +246,7 @@ class ListingDetailTest extends TestCase
 
         // student must expose only id + name.
         $firstStudent = $response->json('data.0.student');
-        $this->assertSame(['id', 'name'], array_keys($firstStudent));
+        $this->assertSame(['id', 'name', 'avatar'], array_keys($firstStudent));
     }
 
     // ------------------------------------------------------------------
