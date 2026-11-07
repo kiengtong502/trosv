@@ -16,7 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { addFavorite, removeFavorite } from "@/api/socialApi";
 import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 import { SearchFilterBar, TYPE_OPTIONS } from "./search/SearchFilterBar";
 
 const SORT_OPTIONS = [
@@ -70,8 +70,8 @@ export default function Search() {
       }
     }
     if (search.filters.price_min || search.filters.price_max) {
-      const min = search.filters.price_min ? formatPriceShort(Number(search.filters.price_min)) : "";
-      const max = search.filters.price_max ? formatPriceShort(Number(search.filters.price_max)) : "";
+      const min = search.filters.price_min ? formatVnd(Number(search.filters.price_min)) : "";
+      const max = search.filters.price_max ? formatVnd(Number(search.filters.price_max)) : "";
       const priceLabel =
         search.filters.price_min && search.filters.price_max
           ? `${min} – ${max}`

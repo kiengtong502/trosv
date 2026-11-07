@@ -1,3 +1,4 @@
+import { PriceRange } from "@/ui/price-range";
 import { PageHeader } from "@/ui/page-header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -7,7 +8,6 @@ import { getSchools } from "@/api/listingApi";
 import type { AiAreaSuggestion, School } from "@/types/api";
 import { Button } from "@/ui/button";
 import { Field } from "@/ui/field";
-import { Input } from "@/ui/input";
 import { Chip } from "@/ui/badge";
 import { EmptyState } from "@/ui/empty-state";
 import { AiUnavailableIllustration } from "@/ui/icons";
@@ -105,26 +105,18 @@ export default function AiAreaSuggestions() {
               ))}
             </select>
           </Field>
-          <Field id="as-min" label="Ngân sách tối thiểu">
-            <Input
-              id="as-min"
-              type="number"
-              min={0}
-              value={min}
-              onChange={(e) => { setMin(e.target.value); }}
-              placeholder="1.500.000"
+          <div className="sm:col-span-2">
+            <span className="mb-2 block text-sm font-medium text-ink">Ngân sách mỗi tháng</span>
+            <PriceRange
+              id="as-budget"
+              min={min}
+              max={max}
+              onChange={(lo, hi) => {
+                setMin(lo);
+                setMax(hi);
+              }}
             />
-          </Field>
-          <Field id="as-max" label="Ngân sách tối đa">
-            <Input
-              id="as-max"
-              type="number"
-              min={0}
-              value={max}
-              onChange={(e) => { setMax(e.target.value); }}
-              placeholder="3.000.000"
-            />
-          </Field>
+          </div>
         </div>
         <fieldset className="flex flex-wrap gap-2" aria-label="Ưu tiên">
           {PRIORITIES.map((p) => (

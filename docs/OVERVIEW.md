@@ -111,6 +111,11 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 - **Navy band** (`PlateBand`) is reserved for three places: the Home hero, the
   Search filter strip, and the Login/Register art panel. Every other page uses
   `PageHeader`: a plain title on cream.
+- **Price ranges** are one bar with two dots (`ui/price-range.tsx`, two native range
+  inputs on one track): 0–10.000.000đ in 100.000đ steps, dots stay a step apart,
+  a dot at its end means no limit. Used by the Search filter, AI area
+  suggestions and the Profile budget. Values are shown exactly (`2.400.000đ`),
+  never rounded to "tr". Landlord form price stays a single number box.
 - **Radius scale** is only `xs…xl` (no `2xl`).
 - **Motion**: shared utilities in `styles.css` (`motion-stagger`, `motion-enter`,
   `motion-press`, `motion-float`, `typing-dot`…). Rules: stagger animations use
@@ -134,8 +139,8 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   (`public/art/hero-doodles.svg`), the headline "Phòng trọ. Căn hộ." and a
   typed keyword that cycles "Gần trường." → "Giá rẻ." → "Tiện lợi." with a caret
   (`pages/home/TypedWord.tsx`; screen readers get the list once, reduced motion
-  shows the first phrase). The three newest rooms float at the right on wide
-  screens (`HeroDeck`): a fixed-size cluster inside the same `max-w-6xl` column as
+  shows the first phrase). Three drawn room cards float at the right on wide
+  screens (`HeroDeck`, now three hand-drawn room scenes rather than real listings): a fixed-size cluster inside the same `max-w-6xl` column as
   the page below, so it looks the same at every resolution and never clips text. Right under the hero, "Mới đăng" is one swipeable
   clothesline: each of the 8 newest rooms hangs from a rope with a peg
   (`RoomClothesline`, `Peg`); desktop arrows hide at either end. Below it, one

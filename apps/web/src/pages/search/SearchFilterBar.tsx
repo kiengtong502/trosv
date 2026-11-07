@@ -1,3 +1,4 @@
+import { PriceRange } from "@/ui/price-range";
 import React from "react";
 import { Input } from "@/ui/input";
 import { Chip } from "@/ui/badge";
@@ -251,31 +252,16 @@ export function SearchFilterBar({
           search.setFilter("price_max", "");
         }}
       >
-        <div className="grid grid-cols-2 gap-2">
-          <label htmlFor="filter-price-min" className="flex flex-col gap-1 text-xs font-medium text-ink-2">
-            Giá từ (VND)
-            <Input
-              id="filter-price-min"
-              type="number"
-              value={search.filters.price_min}
-              onChange={(e) => { search.setFilter("price_min", e.target.value); }}
-              placeholder="1.000.000"
-              aria-label="Giá tối thiểu (VND)"
-              className="h-10"
-            />
-          </label>
-          <label htmlFor="filter-price-max" className="flex flex-col gap-1 text-xs font-medium text-ink-2">
-            Giá đến (VND)
-            <Input
-              id="filter-price-max"
-              type="number"
-              value={search.filters.price_max}
-              onChange={(e) => { search.setFilter("price_max", e.target.value); }}
-              placeholder="3.000.000"
-              aria-label="Giá tối đa (VND)"
-              className="h-10"
-            />
-          </label>
+        <div className="w-64 max-w-full">
+          <PriceRange
+            id="filter-price"
+            min={search.filters.price_min}
+            max={search.filters.price_max}
+            onChange={(lo, hi) => {
+              search.setFilter("price_min", lo);
+              search.setFilter("price_max", hi);
+            }}
+          />
         </div>
       </FilterPill>
 

@@ -1,6 +1,6 @@
 import type { School } from "@/types/api";
 import { Field } from "@/ui/field";
-import { Input } from "@/ui/input";
+import { PriceRange } from "@/ui/price-range";
 import { SchoolCombobox } from "@/components/SchoolCombobox";
 
 interface ProfileAcademicCardProps {
@@ -48,42 +48,16 @@ export function ProfileAcademicCard({
       </Field>
 
       <div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            id="p-budget-min"
-            label="Ngân sách tối thiểu (VNĐ)"
-            error={errors.budget_min}
-          >
-            <Input
-              id="p-budget-min"
-              type="number"
-              min={0}
-              step={100000}
-              value={budgetMin}
-              onChange={(e) => {
-                onChange("budget_min", e.target.value);
-              }}
-              placeholder="1.500.000"
-            />
-          </Field>
-          <Field
-            id="p-budget-max"
-            label="Ngân sách tối đa (VNĐ)"
-            error={errors.budget_max}
-          >
-            <Input
-              id="p-budget-max"
-              type="number"
-              min={0}
-              step={100000}
-              value={budgetMax}
-              onChange={(e) => {
-                onChange("budget_max", e.target.value);
-              }}
-              placeholder="3.000.000"
-            />
-          </Field>
-        </div>
+        <span className="mb-2 block text-sm font-medium text-ink">Ngân sách mỗi tháng</span>
+        <PriceRange
+          id="p-budget"
+          min={budgetMin}
+          max={budgetMax}
+          onChange={(lo, hi) => {
+            onChange("budget_min", lo);
+            onChange("budget_max", hi);
+          }}
+        />
         {budgetHint ? (
           <p className="mt-2 text-xs text-muted">
             Khoảng dự kiến:{" "}

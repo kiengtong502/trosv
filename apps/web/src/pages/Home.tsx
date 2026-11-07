@@ -174,7 +174,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <HeroDeck listings={newest} />
+        <HeroDeck />
       </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">

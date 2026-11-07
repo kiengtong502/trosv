@@ -51,11 +51,12 @@ test.describe("home hero", () => {
         await expect(page.locator('img[src*="hero-art"]')).toHaveCount(0);
     });
 
-    test("three newest rooms float at the right of the hero on wide screens", async ({ page }) => {
+    test("three drawn room cards float at the right of the hero on wide screens", async ({ page }) => {
         await page.goto("/");
         const deck = page.getByTestId("hero-deck");
         await expect(deck).toBeVisible();
-        await expect(deck.locator("a")).toHaveCount(3);
+        await expect(deck.getByTestId("hero-deck-card")).toHaveCount(3);
+        await expect(deck.locator("a, img")).toHaveCount(0);
         const box = await deck.boundingBox();
         expect(box!.x).toBeGreaterThan(560);
     });
