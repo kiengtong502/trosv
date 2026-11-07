@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { ART_ASSETS } from "@/constants/assets";
-import { getListings, getCities, getSchools } from "@/api/listingApi";
-import type { Listing, City, School } from "@/types/api";
+import { getListings } from "@/api/listingApi";
+import { useCities, useSchools } from "@/hooks/useReferenceData";
+import type { City, Listing, School } from "@/types/api";
 import { PlateBand } from "@/ui/plate-band";
 import { ErrorState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
@@ -126,8 +127,8 @@ export default function Home() {
   const [newest, setNewest] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [cities, setCities] = useState<City[]>([]);
-  const [schools, setSchools] = useState<School[]>([]);
+  const { data: cities } = useCities();
+  const { data: schools } = useSchools();
 
   useEffect(() => {
     getListings({ per_page: 8, sort: "newest" })
@@ -140,13 +141,6 @@ export default function Home() {
       .finally(() => {
         setLoading(false);
       });
-
-    getCities()
-      .then(setCities)
-      .catch(() => {});
-    getSchools()
-      .then(setSchools)
-      .catch(() => {});
   }, []);
 
   return (

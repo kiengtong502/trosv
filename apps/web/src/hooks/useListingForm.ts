@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import { createListing, updateListing, uploadImages, deleteImage } from "@/api/landlordApi";
-import { getListing, getWards, getAmenities, getCities } from "@/api/listingApi";
+import { getListing } from "@/api/listingApi";
+import { useAmenities, useCities, useWards } from "@/hooks/useReferenceData";
 import { aiDescription } from "@/api/aiApi";
 import { errMessage, errFieldErrors } from "@/api/axiosClient";
 import { ROUTES, route } from "@/constants/routes";
-import type { Amenity, City, ListingImage, ListingPayload, Ward } from "@/types/api";
+import type { ListingImage, ListingPayload } from "@/types/api";
 
 export interface ListingFormState {
   title: string;
@@ -54,9 +55,9 @@ export interface ToastLike {
 export function useListingForm(id: number | undefined, toast: ToastLike) {
   const isEdit = !!id;
 
-  const [wards, setWards] = useState<Ward[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
-  const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const { data: wards } = useWards();
+  const { data: cities } = useCities();
+  const { data: amenities } = useAmenities();
   const [form, setForm] = useState<ListingFormState>({ ...EMPTY_FORM });
   const [images, setImages] = useState<ListingImage[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
@@ -64,18 +65,6 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   const [busy, setBusy] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [notice, setNotice] = useState("");
-
-  useEffect(() => {
-    getCities()
-      .then(setCities)
-      .catch(() => {});
-    getWards()
-      .then(setWards)
-      .catch(() => {});
-    getAmenities()
-      .then(setAmenities)
-      .catch(() => {});
-  }, []);
 
   useEffect(() => {
     if (!isEdit) return;

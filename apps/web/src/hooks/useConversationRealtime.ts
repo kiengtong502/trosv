@@ -12,6 +12,7 @@ import type {
   MessageSentEvent,
   TypingWhisper,
 } from "@/types/api";
+import { ignoreError } from "@/lib/async";
 
 /**
  * Realtime layer for the /messages/:id thread over the private
@@ -59,7 +60,7 @@ export function useConversationRealtime(
       // Sidebar preview (Messenger): thread là nguồn sự thật khi đang
       // mở - phát event để Messages.tsx cập nhật item tương ứng.
       onPreviewEvent?.(msg);
-      if (msg.sender_id !== user?.id) markRead(id).catch(() => {});
+      if (msg.sender_id !== user?.id) markRead(id).catch(ignoreError("mark conversation read"));
     });
 
     // Typing qua client-event (whisper) - không qua backend. Debounce 2.5s.

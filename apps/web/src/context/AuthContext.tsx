@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import * as authApi from "@/api/authApi";
 import { clearSession, getToken } from "@/api/axiosClient";
 import type { RegisterPayload, User } from "@/types/api";
+import { ignoreError } from "@/lib/async";
 
 export interface AuthContextValue {
   user: User | null;
@@ -43,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(u);
         localStorage.setItem("user", JSON.stringify(u));
       })
-      .catch(() => {})
+      .catch(ignoreError("refresh current user"))
       .finally(() => {
         setLoading(false);
       });

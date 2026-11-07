@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getConversations } from "@/api/socialApi";
 import { getEcho } from "@/api/echo";
 import type { EchoReactive } from "@/api/echo";
+import { ignoreError } from "@/lib/async";
 
 /**
  * Total unread count for the messages rail badge. Loaded once per
@@ -22,7 +23,7 @@ export function useUnreadCount(): number {
         if (cancelled) return;
         setUnread(convs.reduce((sum, c) => sum + (c.unread_count ?? 0), 0));
       })
-      .catch(() => {});
+      .catch(ignoreError("unread count refresh"));
 
     /* Realtime badge sync on App.Models.User.{id}. Uses getEcho() which
        returns null while logged out. */

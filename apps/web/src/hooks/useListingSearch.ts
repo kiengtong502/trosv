@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getAmenities, getCities, getListings, getSchools, getWards } from "@/api/listingApi";
+import { getListings } from "@/api/listingApi";
+import { useAmenities, useCities, useSchools, useWards } from "@/hooks/useReferenceData";
 import { errMessage } from "@/api/axiosClient";
-import type { Amenity, City, Listing, PaginationMeta, School, Ward } from "@/types/api";
+import type { Listing, PaginationMeta } from "@/types/api";
 
 export interface ListingFilters {
   q: string;
@@ -40,10 +41,10 @@ const EMPTY_FILTERS: ListingFilters = {
 export function useListingSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [cities, setCities] = useState<City[]>([]);
-  const [wards, setWards] = useState<Ward[]>([]);
-  const [schools, setSchools] = useState<School[]>([]);
-  const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const { data: cities } = useCities();
+  const { data: wards } = useWards();
+  const { data: schools } = useSchools();
+  const { data: amenities } = useAmenities();
 
   const [filters, setFilters] = useState<ListingFilters>(() => ({
     ...EMPTY_FILTERS,
@@ -87,21 +88,6 @@ export function useListingSearch() {
       setPage(1);
     }
   }, [currentParamsString, searchParams]);
-
-  useEffect(() => {
-    getCities()
-      .then(setCities)
-      .catch(() => {});
-    getSchools()
-      .then(setSchools)
-      .catch(() => {});
-    getWards()
-      .then(setWards)
-      .catch(() => {});
-    getAmenities()
-      .then(setAmenities)
-      .catch(() => {});
-  }, []);
 
   // Build query from filters and fetch.
   const fetchListings = useCallback(

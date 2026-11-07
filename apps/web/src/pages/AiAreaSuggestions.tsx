@@ -1,12 +1,12 @@
 import { formatVnd } from "@/lib/format";
 import { PriceRange } from "@/ui/price-range";
 import { PageHeader } from "@/ui/page-header";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { aiAreaSuggestions } from "@/api/aiApi";
 import { errStatus } from "@/api/axiosClient";
-import { getSchools } from "@/api/listingApi";
-import type { AiAreaSuggestion, School } from "@/types/api";
+import { useSchools } from "@/hooks/useReferenceData";
+import type { AiAreaSuggestion } from "@/types/api";
 import { Button } from "@/ui/button";
 import { Field } from "@/ui/field";
 import { Chip } from "@/ui/badge";
@@ -26,7 +26,7 @@ const PRIORITIES = [
 export default function AiAreaSuggestions() {
   useDocumentTitle("Gợi ý khu vực · TROSV");
   const { user } = useAuth();
-  const [schools, setSchools] = useState<School[]>([]);
+  const { data: schools } = useSchools();
   const [schoolId, setSchoolId] = useState(user?.school_id != null ? String(user.school_id) : "");
   const [min, setMin] = useState(user?.budget_min != null ? String(user.budget_min) : "");
   const [max, setMax] = useState(user?.budget_max != null ? String(user.budget_max) : "");
@@ -35,12 +35,6 @@ export default function AiAreaSuggestions() {
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [errorState, setErrorState] = useState<"unavailable" | "input" | null>(null);
-
-  useEffect(() => {
-    getSchools()
-      .then(setSchools)
-      .catch(() => {});
-  }, []);
 
   async function suggest(): Promise<void> {
     setBusy(true);

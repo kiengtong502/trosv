@@ -110,6 +110,10 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 - **Navy band** (`PlateBand`) is reserved for three places: the Home hero, the
   Search filter strip, and the Login/Register art panel. Every other page uses
   `PageHeader`: a plain title on cream.
+- **Reference data** (cities, wards, schools, amenities) comes from `hooks/useReferenceData.ts`:
+  one shared fetch per kind, with `error` and `reload` instead of silently empty lists.
+  Fire-and-forget calls use `ignoreError("name")` from `lib/async.ts`, which logs; never
+  `.catch(() => {})`.
 - **Price ranges** are one bar with two dots (`ui/price-range.tsx`, two native range
   inputs on one track): 0–10.000.000đ in 100.000đ steps, dots stay a step apart,
   a dot at its end means no limit. Used by the Search filter, AI area
@@ -168,12 +172,13 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 
 - Frontend: `npm run typecheck`, `npm run lint` (typed `strictTypeChecked`,
   `--max-warnings 0`, covers `src` and `e2e`), `npm run format:check`
-  (Prettier, 2 spaces) and Playwright e2e (`npm run test:e2e`, needs the API on
+  (Prettier, 2 spaces), Vitest unit tests (`npm test`, jsdom, `*.test.ts(x)` next to
+  the code: pure logic and hooks) and Playwright e2e (`npm run test:e2e`, needs the API on
   `:8000` and the web app on `:5173`; no retries, a flaky test is a bug). Specs
   in `e2e/design/` mock the messaging API so they never write to the demo
   database; `e2e/design/helpers.ts` has `loginAs`.
 - Backend: Pint, PHPStan/Larastan at level `max` (`apps/api/phpstan.neon`; the
-  existing debt is frozen in `phpstan-baseline.neon`, so any NEW finding fails;
+  remaining debt (87 findings, down from 382) is frozen in `phpstan-baseline.neon`, so any NEW finding fails;
   shrink the baseline, never grow it), and PHPUnit configured to fail on
   warnings, notices, deprecations, risky tests and stray output.
 - Debt ratchets: `eslint.config.js` caps complexity (12) and function length (120)
@@ -185,7 +190,7 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 - CI is zero-tolerance and split by area. `ci.yml` only decides what runs (path
   filters on PRs; pushes and the merge queue run everything) and gates the
   result; the work lives in reusable workflows `_api.yml` (Pint, PHPStan max,
-  PHPUnit, composer audit), `_web.yml` (ESLint, Prettier, tsc, knip dead-code check, a build that
+  PHPUnit, composer audit), `_web.yml` (ESLint, Prettier, tsc, Vitest unit tests, knip dead-code check, a build that
   fails on warnings, `npm audit`), `_ai.yml` (Ruff, mypy, pytest, pip-audit),
   `_infra.yml` (actionlint, hadolint, shellcheck, `compose config`, image
   builds) and `_e2e.yml` (Playwright against the bundle `_web` built, shared as

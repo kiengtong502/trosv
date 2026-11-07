@@ -170,6 +170,15 @@ effectively self-review. Process debt, not code.
 
 ---
 
+## Progress
+
+- **Phase 0**: done (PR #77): dead code removed, knip and size/baseline ratchets in CI.
+- **Phase 1**: done on `chore/debt-phase-1`.
+  - PHPStan baseline 382 -> 87 (typed models, resources, controllers via `authUser()`, filter service, events, middleware).
+  - Frontend: shared `useReferenceData` (one fetch per kind, `error`/`reload`), `ignoreError()` for deliberate fire-and-forget; zero silent `.catch(() => {})` left (was 16).
+  - Vitest added with 144 unit tests (format, routes, hobbies, profile logic, envelopes, avatars, price range, reference-data hook) and wired into CI.
+  - Not done from the Phase 1 list: a general data-fetching library. The 29 other `useEffect` fetch sites still use the ad hoc pattern; they move to a shared hook as each page is split in Phase 2.
+
 ## Elimination plan
 
 Principle: make debt impossible to grow first (ratchets), then pay it down in order of
@@ -254,13 +263,13 @@ outdated majors. All are cheap to compute and already available from the tools a
 
 | Metric | Today | Phase 0 | Phase 1 | Phase 2 | Phase 3 |
 |---|---|---|---|---|---|
-| PHPStan baseline entries | 382 | 382 (frozen) | < 100 | < 50 | < 20 |
+| PHPStan findings in baseline | 382 | 382 (frozen) | **87 (done)** | < 50 | < 20 |
 | Frontend functions > 120 lines | 25 | 25 (frozen) | 22 | < 8 | 0 |
 | Functions over complexity 12 | 18 | frozen | 16 | < 6 | 0 |
 | knip findings | 51 | 0 | 0 | 0 | 0 |
-| Swallowed `.catch(() => {})` | 16 | 16 | 0 | 0 | 0 |
+| Swallowed `.catch(() => {})` | 16 | 16 | **0 (done)** | 0 | 0 |
 | `as unknown as` casts | 10 | 10 | 8 | 0 | 0 |
-| Frontend unit tests | 0 | 0 | 60+ | 100+ | 100+ |
+| Frontend unit tests | 0 | 0 | **144 (done)** | 200+ | 200+ |
 
 ## Not debt (checked, fine)
 

@@ -5,6 +5,7 @@ import { route, ROUTES } from "@/constants/routes";
 import { formatVnd } from "@/lib/format";
 import { HousePlaceholder } from "@/ui/icons";
 import type { Listing } from "@/types/api";
+import { ignoreError } from "@/lib/async";
 
 /** Other rooms in the same ward: 4:3 thumbnails, a swipeable row on phones. */
 export function SimilarRooms({ listing }: { listing: Listing }) {
@@ -18,9 +19,7 @@ export function SimilarRooms({ listing }: { listing: Listing }) {
       .then(({ data }) => {
         if (live) setRooms(data.filter((r) => r.id !== listing.id).slice(0, 4));
       })
-      .catch(() => {
-        /* a missing "similar" row is not worth an error state */
-      });
+      .catch(ignoreError("load similar rooms"));
     return () => {
       live = false;
     };
