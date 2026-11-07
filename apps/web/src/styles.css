@@ -32,6 +32,7 @@
     --color-plate-band-to: #123b86;
     --color-flyer: #ffd23f;
     --color-flyer-ink: #1c1915;
+    --color-bubble: #17479e;
     --color-moss: #4f6b35;
     --color-moss-tint: #e4ecd6;
     --color-danger: #c0392b;
@@ -61,6 +62,7 @@
     --color-plate-band-to: #0b2150;
     --color-flyer: #fbbf24;
     --color-flyer-ink: #1c1915;
+    --color-bubble: #2563eb;
     --color-moss: #9bbd74;
     --color-moss-tint: #26331a;
     --color-danger: #f87171;
@@ -90,6 +92,7 @@
     --color-plate-band-to: var(--color-plate-band-to);
     --color-flyer: var(--color-flyer);
     --color-flyer-ink: var(--color-flyer-ink);
+    --color-bubble: var(--color-bubble);
     --color-moss: var(--color-moss);
     --color-moss-tint: var(--color-moss-tint);
     --color-danger: var(--color-danger);

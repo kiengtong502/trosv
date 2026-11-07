@@ -1,3 +1,4 @@
+import { MessagesEmptyPane } from "@/pages/messages/MessagesEmptyPane";
 import { Suspense, lazy } from "react";
 import {
   createBrowserRouter,
@@ -63,16 +64,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: (
-              <div className="hidden h-full flex-col items-center justify-center p-8 text-center text-muted md:flex">
-                <div className="max-w-xs">
-                  <p className="font-semibold text-ink">Chưa chọn cuộc trò chuyện</p>
-                  <p className="mt-1 text-sm">
-                    Chọn một người trong danh sách bên trái để xem tin nhắn.
-                  </p>
-                </div>
-              </div>
-            ),
+            element: <MessagesEmptyPane />,
           },
           { path: ":id", element: <ConversationDetail /> },
         ],

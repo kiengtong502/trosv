@@ -20,6 +20,8 @@ import { useAuth } from "@/context/AuthContext";
 import { GateScreen, MessagesGateIllustration } from "@/components/gates";
 import { Footer } from "@/components/shell";
 import { MessageBubble } from "@/pages/messages/MessageBubble";
+import { ThreadRoomCard } from "@/pages/messages/ThreadRoomCard";
+import { QuickReplies } from "@/pages/messages/QuickReplies";
 import {
   Paperclip,
   ArrowDown,
@@ -111,6 +113,7 @@ function Thread({ id }: ThreadProps) {
   const [draft, setDraft] = useState("");
   const [atBottom, setAtBottom] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
 
@@ -187,6 +190,11 @@ function Thread({ id }: ThreadProps) {
   const otherUser = data.conversation.other_user;
   const other = otherUser?.name ?? "Người dùng";
   const otherRole = otherUser?.role === "student" ? "Sinh viên" : otherUser?.role === "landlord" ? "Chủ nhà" : null;
+  /* Suggested first questions: students talking to a landlord who has not replied yet. */
+  const showQuickReplies =
+    user?.role === "student" &&
+    otherUser?.role === "landlord" &&
+    !data.messages.some((m) => m.sender_id !== user.id);
 
   async function send(): Promise<void> {
     const text = draft.trim();
@@ -216,30 +224,41 @@ function Thread({ id }: ThreadProps) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col h-full max-h-full overflow-hidden bg-card">
-      {/* Listing context header */}
-      <div className="shrink-0 flex items-center gap-3 border-b border-line bg-paper/70 p-3 backdrop-blur-xs">
+      {/* Header: who you are talking to, and their role */}
+      <div
+        data-testid="thread-header"
+        className="flex h-[68px] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:px-4"
+      >
         <button
           type="button"
           onClick={() => { void navigate(ROUTES.MESSAGES); }}
-          className="rounded-lg p-2 text-ink-2 md:hidden hover:bg-tint"
+          className="-ml-1 flex size-10 items-center justify-center rounded-lg text-ink-2 hover:bg-tint md:hidden"
           aria-label="Về danh sách tin nhắn"
         >
-          <ChevronDown className="size-4 rotate-90" aria-hidden />
+          <ChevronDown className="size-5 rotate-90" aria-hidden />
         </button>
         {otherUser?.role === "student" ? (
           <Link
             to={route(ROUTES.STUDENT_PUBLIC, { id: otherUser.id })}
             className="flex items-center gap-2 hover:opacity-80"
           >
-            <Avatar name={other} size={40} />
+            <Avatar name={other} size={42} />
           </Link>
         ) : (
-          <Avatar name={other} size={40} />
+          <Avatar name={other} size={42} />
         )}
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold text-sm text-ink">{other}</p>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <p className="truncate font-display text-base font-bold text-ink">{other}</p>
           {otherRole ? (
-            <p className="truncate text-xs text-muted">{otherRole}</p>
+            <span
+              data-testid="role-chip"
+              className={cn(
+                "flex-none rounded-full px-2 py-0.5 text-[11.5px] font-semibold",
+                otherUser?.role === "landlord" ? "bg-moss-tint text-moss" : "bg-plate-tint text-plate"
+              )}
+            >
+              {otherRole}
+            </span>
           ) : null}
         </div>
       </div>
@@ -251,6 +270,7 @@ function Thread({ id }: ThreadProps) {
         className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-4 bg-paper/30"
         data-testid="thread"
       >
+        {data.conversation.listing ? <ThreadRoomCard listing={data.conversation.listing} /> : null}
         {grouped.map((m, i) => {
           const prev = grouped[i - 1];
           const next = grouped[i + 1];
@@ -342,7 +362,15 @@ function Thread({ id }: ThreadProps) {
       ) : null}
 
       {/* Composer: auto-growing textarea + attachment */}
-      <div className="shrink-0 border-t border-line bg-card/95 backdrop-blur-md p-3">
+      <div className="shrink-0 bg-paper px-3 pb-3 pt-2 sm:px-5">
+        {showQuickReplies ? (
+          <QuickReplies
+            onPick={(text) => {
+              setDraft(text);
+              textRef.current?.focus();
+            }}
+          />
+        ) : null}
         {attachment ? (
           <div
             className="mb-2 max-w-sm flex items-center gap-2 rounded-xl border border-line bg-paper/80 p-2 shadow-xs"
@@ -416,12 +444,13 @@ function Thread({ id }: ThreadProps) {
 
           <div
             className={
-              "relative flex min-h-[42px] max-h-36 flex-1 items-center rounded-2xl border " +
-              "border-line bg-paper/40 px-3.5 py-1 focus-within:border-plate focus-within:bg-card " +
-              "focus-within:ring-1 focus-within:ring-plate transition-all"
+              "relative flex min-h-[46px] max-h-36 flex-1 items-center rounded-2xl border " +
+              "border-line-strong bg-card px-3.5 py-1 shadow-card focus-within:border-plate " +
+              "focus-within:ring-2 focus-within:ring-plate-tint transition-all"
             }
           >
             <textarea
+              ref={textRef}
               value={draft}
               onChange={(e) => {
                 setDraft(e.target.value.slice(0, MESSAGE_MAX));
@@ -448,7 +477,7 @@ function Thread({ id }: ThreadProps) {
             variant="primary"
             loading={actions.sending}
             disabled={actions.sending || (!draft.trim() && !attachment)}
-            className="size-10 shrink-0 rounded-full p-0 flex items-center justify-center shadow-xs"
+            className="size-11 shrink-0 rounded-xl p-0 flex items-center justify-center shadow-xs"
             aria-label="Gửi tin nhắn"
           >
             <Send className="size-4" aria-hidden />

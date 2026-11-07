@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
-import { ROUTES, route } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes";
 import { getConversations } from "@/api/socialApi";
 import type { Conversation } from "@/types/api";
 import { CONV_PREVIEW_EVENT, type ConvPreviewDetail } from "@/constants/events";
-import { Avatar } from "@/ui/avatar";
 import { Skeleton } from "@/ui/badge";
 import { EmptyState } from "@/ui/empty-state";
-import { timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useAuth } from "@/context/AuthContext";
+import { Search } from "lucide-react";
+import { ConversationListItem } from "@/pages/messages/ConversationListItem";
 
 /*
   Two panes from 890px (sidebar + thread), single pane on mobile where
@@ -22,6 +23,8 @@ export default function MessagesList() {
   const { id } = useParams();
   const [convs, setConvs] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const { user } = useAuth();
 
   useDocumentTitle("Tin nhắn · TROSV");
 
@@ -69,87 +72,98 @@ export default function MessagesList() {
 
   const isThreadOpen = id != null;
 
+  const isLandlord = user?.role === "landlord";
+  const unreadTotal = convs.reduce((n, c) => n + (c.unread_count ?? 0), 0);
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return convs;
+    return convs.filter((c) =>
+      [c.other_user?.name, c.last_message?.body, c.listing?.title]
+        .filter((part): part is string => typeof part === "string")
+        .some((part) => part.toLowerCase().includes(q))
+    );
+  }, [convs, query]);
+
   const sidebar = useMemo(
     () => (
       <div
         className={cn(
-          "flex min-w-0 flex-1 flex-col md:max-w-[340px] md:flex-none border-r border-line bg-card h-full max-h-full overflow-hidden",
+          "flex min-w-0 flex-1 flex-col md:max-w-[372px] md:flex-none border-r border-line bg-card h-full max-h-full overflow-hidden",
           isThreadOpen && "hidden md:flex"
         )}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3.5 bg-paper/50">
-          <h2 className="font-semibold text-base text-ink">Tin nhắn</h2>
+        <div className="shrink-0 px-4 pb-3 pt-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-display text-[22px] font-extrabold tracking-tight text-ink">Tin nhắn</h2>
+            {convs.length > 0 ? (
+              <span
+                data-testid="unread-pill"
+                className={cn(
+                  "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                  unreadTotal > 0 ? "bg-plate-tint text-plate" : "bg-tint text-muted"
+                )}
+              >
+                {unreadTotal > 0 ? `${unreadTotal} chưa đọc` : "Đã đọc hết"}
+              </span>
+            ) : null}
+          </div>
           {convs.length > 0 ? (
-            <span className="rounded-full bg-tint px-2 py-0.5 text-xs font-medium text-ink-2">
-              {convs.length}
-            </span>
+            <label className="mt-3 flex h-11 items-center gap-2 rounded-[10px] border border-line-strong bg-paper px-3 text-muted transition-colors focus-within:border-plate focus-within:ring-2 focus-within:ring-plate-tint">
+              <Search className="size-[18px] flex-none" aria-hidden />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); }}
+                placeholder="Tìm cuộc trò chuyện"
+                aria-label="Tìm cuộc trò chuyện"
+                className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-muted focus:outline-none"
+              />
+            </label>
           ) : null}
         </div>
         {loading ? (
           <div className="flex flex-col gap-2 p-3">
-            <Skeleton className="h-16 rounded-xl" />
-            <Skeleton className="h-16 rounded-xl" />
-            <Skeleton className="h-16 rounded-xl" />
+            <Skeleton className="h-20 rounded-xl" />
+            <Skeleton className="h-20 rounded-xl" />
+            <Skeleton className="h-20 rounded-xl" />
           </div>
         ) : convs.length === 0 ? (
           <EmptyState
             title="Chưa có cuộc trò chuyện nào"
-            description="Mở một tin đăng và nhấn Nhắn tin cho chủ nhà để bắt đầu."
+            description={
+              isLandlord
+                ? "Khi sinh viên nhắn tin về tin đăng của bạn, cuộc trò chuyện sẽ hiện ở đây."
+                : "Mở một tin đăng và nhấn Nhắn tin cho chủ nhà để bắt đầu."
+            }
             action={
               <Link
-                to={ROUTES.ROOMS}
-                className="inline-flex h-9 items-center justify-center rounded-lg bg-plate px-4 text-sm font-semibold text-white shadow-xs hover:bg-plate-hover transition-colors"
+                to={isLandlord ? ROUTES.LANDLORD : ROUTES.ROOMS}
+                className="inline-flex h-10 items-center justify-center rounded-lg bg-plate px-5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-plate-hover"
               >
-                Tìm phòng
+                {isLandlord ? "Quản lý tin đăng" : "Tìm phòng ngay"}
               </Link>
             }
             className="py-10"
           />
+        ) : visible.length === 0 ? (
+          <p className="px-4 py-8 text-center text-sm text-muted">Không tìm thấy cuộc trò chuyện nào.</p>
         ) : (
-          <ul className="flex flex-1 min-h-0 flex-col overflow-y-auto divide-y divide-line">
-            {convs.map((c) => {
-              const other = c.other_user?.name ?? "Người dùng";
-              const isActive = isThreadOpen && c.id === Number(id);
-              return (
-                <li key={c.id}>
-                  <Link
-                    to={route(ROUTES.CONVERSATION, { id: c.id })}
-                    data-testid={`conversation-${c.id}`}
-                    className={cn(
-                      "flex items-center gap-3 p-3.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-plate",
-                      isActive
-                        ? "bg-plate-tint/70 border-l-4 border-plate"
-                        : "border-l-4 border-transparent hover:bg-tint"
-                    )}
-                  >
-                    <Avatar name={other} size={40} />
-                    <div className="min-w-0 flex-1">
-                      <p className={cn("truncate text-sm text-ink", isActive ? "font-semibold" : "font-medium")}>
-                        {other}
-                      </p>
-                      <p className="truncate text-xs text-muted mt-0.5">
-                        {c.last_message?.body ?? ""}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1.5 shrink-0">
-                      <span className="text-[11px] text-muted tabular-nums">
-                        {c.last_message?.created_at ? timeAgo(c.last_message.created_at) : ""}
-                      </span>
-                      {c.unread_count && c.unread_count > 0 ? (
-                        <span className="flex size-5 items-center justify-center rounded-full bg-plate text-[10px] font-bold text-white">
-                          {c.unread_count}
-                        </span>
-                      ) : null}
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
+          <ul className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 pb-3">
+            {visible.map((c) => (
+              <li key={c.id}>
+                <ConversationListItem
+                  conversation={c}
+                  active={isThreadOpen && c.id === Number(id)}
+                  viewerId={user?.id}
+                />
+              </li>
+            ))}
           </ul>
         )}
       </div>
     ),
-    [convs, loading, id, isThreadOpen]
+    [convs, visible, loading, id, isThreadOpen, isLandlord, unreadTotal, query, user?.id]
   );
 
   return (

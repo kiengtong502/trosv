@@ -347,8 +347,8 @@ export function MessageBubble(props: MessageBubbleProps) {
                 getBubbleRadius(),
                 badgeTarget === "text" && reactions.length > 0 ? "mb-2.5" : "",
                 isMine
-                  ? "bg-plate text-white font-normal"
-                  : "bg-card text-ink border border-line-strong/30"
+                  ? "bg-bubble text-white font-normal"
+                  : "bg-card text-ink border border-line shadow-card"
               )}
             >
               {renderBodyWithLinks(cleanText)}
