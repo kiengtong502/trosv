@@ -31,7 +31,6 @@ const DEBT = {
   "src/pages/MessagesList.tsx": { complexity: 12, lines: 168 },
   "src/pages/Profile.tsx": { complexity: 32, lines: 260 },
   "src/pages/Register.tsx": { complexity: 12, lines: 154 },
-  "src/pages/RoomDetail.tsx": { complexity: 64, lines: 397 },
   "src/pages/Search.tsx": { complexity: 23, lines: 358 },
   "src/pages/messages/ConversationListItem.tsx": { complexity: 20, lines: 120 },
   "src/pages/messages/MessageBubble.tsx": { complexity: 47, lines: 305 },
