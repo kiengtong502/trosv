@@ -101,6 +101,7 @@ Merge vào `stable` khi xanh là tự động deploy.
 | [docs/contracts/API_CONTRACT.md](docs/contracts/API_CONTRACT.md) | Hợp đồng API: endpoint, shape JSON, mã lỗi | Làm backend/frontend - nguồn sự thật, đổi API phải sửa đây trước |
 | [docs/contracts/AI_CONTRACT.md](docs/contracts/AI_CONTRACT.md) | Hợp đồng giữa Backend và AI service | Làm AI service |
 | [docs/contracts/ERD.md](docs/contracts/ERD.md) | Cơ sở dữ liệu: bảng, quan hệ, dữ liệu seed | Làm backend, sửa migration |
+| [docs/OVERVIEW.md](docs/OVERVIEW.md) | Tổng quan frontend + backend (tài liệu sống, cập nhật cùng mỗi thay đổi) | Cần nắm nhanh hệ thống hiện tại |
 | [docs/ONBOARDING.md](docs/ONBOARDING.md) | Onboarding người mới | Ngày đầu vào nhóm |
 | [docs/runbooks/DEPLOY.md](docs/runbooks/DEPLOY.md) | Deploy lên máy chủ Debian | Triển khai production |
 | [docs/runbooks/DEMO.md](docs/runbooks/DEMO.md) | Chạy thử nghiệm nhanh (demo) | Demo nội bộ hoặc đánh giá tính năng |
