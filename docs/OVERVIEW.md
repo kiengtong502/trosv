@@ -178,15 +178,23 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   warnings, notices, deprecations, risky tests and stray output.
 - AI service: Ruff (lint + format), mypy `--strict`, pytest with every warning
   turned into an error, `pip-audit`.
-- CI is zero-tolerance (`.github/workflows/ci.yml`): `backend`, `frontend`
-  (lint, format, typecheck, a build that fails on any warning, `npm audit`),
-  `ai-service`, `secrets` (gitleaks), `infra` (actionlint, hadolint, shellcheck,
-  `docker compose config`), `docker-build` (all three images), then `e2e`
-  against the very bundle the `frontend` job built (shared as an artifact) on `:4173` with a freshly seeded database. `ci-ok`
-  is the single job to require in branch protection. Also: `codeql.yml` (SAST,
-  weekly too) and `dependency-review.yml` (PRs; enforced once the dependency graph is on and the repo variable `DEPENDENCY_GRAPH=true` is set). Workflows run with read-only
-  permissions, pinned action SHAs, job timeouts and cancel-on-new-push (never on
-  `stable`).
+- CI is zero-tolerance and split by area. `ci.yml` only decides what runs (path
+  filters on PRs; pushes and the merge queue run everything) and gates the
+  result; the work lives in reusable workflows `_api.yml` (Pint, PHPStan max,
+  PHPUnit, composer audit), `_web.yml` (ESLint, Prettier, tsc, a build that
+  fails on warnings, `npm audit`), `_ai.yml` (Ruff, mypy, pytest, pip-audit),
+  `_infra.yml` (actionlint, hadolint, shellcheck, `compose config`, image
+  builds) and `_e2e.yml` (Playwright against the bundle `_web` built, shared as
+  an artifact). Setup is shared through local composite actions in
+  `.github/actions/` (PHP, Node, Python; Composer, npm, pip and Playwright
+  caches). `ci-ok` is the one check to require in branch protection (skipped
+  areas are fine, failed or cancelled ones are not). Also `secrets` (gitleaks),
+  `codeql.yml` (SAST, weekly too) and `dependency-review.yml` (PRs; enforced once
+  the dependency graph is on and the repo variable `DEPENDENCY_GRAPH=true` is
+  set). Workflows run with read-only permissions, pinned action SHAs, job
+  timeouts and cancel-on-new-push (never on `stable`). `deploy.yml` deploys only
+  a CI-green tip of `stable`, smoke-tests it, and rolls back to the previous
+  commit if the smoke test fails.
 - Known gotchas: seed photos are served from the Docker web container on `:5174`
   (`e2e/listings/images.spec.ts` fails without it).
 

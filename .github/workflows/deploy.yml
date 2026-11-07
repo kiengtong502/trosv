@@ -76,6 +76,8 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             git fetch origin stable --tags
             git checkout stable
+            # Remember what is live now, so a failed smoke test can roll back to it.
+            git rev-parse HEAD > .deploy-previous-sha
             git reset --hard ${{ github.event.workflow_run.head_sha }}
             # Single production-tier compose: TLS mode = profile "tls" + DOMAIN
             # trong .env.
@@ -108,3 +110,23 @@ jobs:
             CODE_API="$(curl -s -o /dev/null -w '%{http_code}' $R https://$DOMAIN/api/cities)"
             echo "frontend: $CODE_FE - cities: $CODE_API"
             [ "$CODE_FE" = "200" ] && [ "$CODE_API" = "200" ]
+
+      # If the new version did not come up healthy, put the previous one back and
+      # keep the job red so the failure is not missed.
+      - name: Roll back to the previous version
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
+        if: failure() && steps.gate.outputs.match == 'true' && steps.secrets.outputs.configured == 'true'
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            cd ${{ secrets.DEPLOY_PATH }}
+            [ -s .deploy-previous-sha ] || { echo "no previous version recorded - cannot roll back"; exit 1; }
+            PREV="$(cat .deploy-previous-sha)"
+            echo "rolling back to $PREV"
+            git reset --hard "$PREV"
+            docker compose --profile tls up -d --build
+            docker compose ps

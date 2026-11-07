@@ -1,0 +1,19 @@
+name: Set up Node and install the web app
+description: Node 22 with the npm cache, then npm ci.
+inputs:
+  working-directory:
+    description: Directory holding package.json
+    default: apps/web
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: "22"
+        cache: npm
+        cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+    - name: npm ci
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci

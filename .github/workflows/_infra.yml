@@ -1,0 +1,63 @@
+name: Infra (reusable)
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  infra:
+    name: infra
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: actionlint (workflows and composite actions)
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
+            rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 \
+            -color
+
+      # DL3008 (pin apt versions) is ignored on purpose: base images are Debian
+      # point releases and pinned apt versions vanish from the mirrors.
+      - name: hadolint (Dockerfiles)
+        run: |
+          for f in apps/api/Dockerfile apps/web/Dockerfile apps/ai-service/Dockerfile; do
+            docker run --rm -i \
+              hadolint/hadolint@sha256:32dac94127fd60b7b7e3fbfc65e1383b9b5e25c9bfd7b8536de7a539fe68a12d \
+              hadolint --failure-threshold warning --ignore DL3008 - < "$f"
+          done
+
+      - name: shellcheck (scripts)
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
+            koalaman/shellcheck-alpine@sha256:7366322e994f1b364289c7f7d4b792846fbc9337ae29c89a489fb57ba8f4a8dc \
+            shellcheck --severity=warning scripts/*.sh infra/backup/backup.sh infra/deploy/deploy.sh
+
+      # Dummy values only: this validates the compose file, nothing is started.
+      - name: docker compose config
+        env:
+          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          REVERB_APP_ID: ci
+          REVERB_APP_KEY: ci
+          REVERB_APP_SECRET: ci
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+          docker compose --profile tls --profile test config --quiet
+
+  # Every image must still build; this catches Dockerfile and lockfile drift
+  # before the deploy does.
+  images:
+    name: docker-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api, web, ai-service]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - run: docker build --pull apps/${{ matrix.app }}

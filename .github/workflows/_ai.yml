@@ -1,0 +1,32 @@
+name: AI service (reusable)
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  ai:
+    name: ai-service
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/ai-service
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - uses: ./.github/actions/setup-python
+
+      - run: ruff check --output-format=github .
+      - run: ruff format --check .
+      - run: mypy app
+
+      # pyproject.toml turns every warning into an error.
+      - name: Contract tests
+        run: pytest
+        env:
+          FAKE_MODE: "true"
+
+      - run: pip-audit -r requirements.txt

@@ -1,0 +1,30 @@
+name: Set up PHP and Composer
+description: PHP 8.3 with the extensions the API needs, plus a Composer cache keyed on composer.lock.
+inputs:
+  working-directory:
+    description: Directory holding composer.json
+    default: apps/api
+runs:
+  using: composite
+  steps:
+    - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+      with:
+        php-version: "8.3"
+        extensions: pdo_pgsql, pgsql, bcmath, intl, zip, gd, pcntl
+        coverage: none
+        tools: composer:v2
+
+    - id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: composer-${{ runner.os }}-${{ hashFiles(format('{0}/composer.lock', inputs.working-directory)) }}
+        restore-keys: composer-${{ runner.os }}-
+
+    - name: composer install
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: composer install --no-interaction --prefer-dist --no-progress
