@@ -5,23 +5,15 @@ import { Button } from "@/ui/button";
 import { toast } from "@/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
-import { Heart, Share2, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import type { Listing } from "@/types/api";
 import { formatPriceShort } from "@/lib/format";
 
 export interface RoomContactCardProps {
   listing: Listing;
-  onFavToggle: () => void;
-  isFav: boolean;
-  onShare: () => void;
 }
 
-export function RoomContactCard({
-  listing,
-  onFavToggle,
-  isFav,
-  onShare,
-}: RoomContactCardProps) {
+export function RoomContactCard({ listing }: RoomContactCardProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const phone = listing.landlord?.phone ?? null;
@@ -39,80 +31,61 @@ export function RoomContactCard({
     }
   }
 
+  const initial = (listing.landlord?.name ?? "?").trim().charAt(0).toUpperCase();
+  const available = listing.status === "available";
+
   return (
     <aside
       data-testid="contact-card"
-      className={cn(
-        "sticky top-[calc(var(--nav-h)+16px)] flex flex-col gap-3 rounded-xl",
-        "border border-line-strong bg-card p-6 shadow-pop lg:bottom-6"
-      )}
+      className="flex flex-col gap-4 rounded-xl border border-line bg-card p-5 shadow-card"
     >
-      <div className="flex items-baseline justify-between gap-2 border-b border-line pb-4">
-        <div>
-          <span className="text-xs uppercase tracking-wider text-muted font-medium">Giá thuê</span>
-          <p className="text-3xl font-extrabold tabular-nums text-plate">
-            {formatPriceShort(listing.price)}
-            <small className="ml-1 text-sm font-normal text-muted">/tháng</small>
-          </p>
-        </div>
-        {listing.area_m2 != null ? (
-          <span className="rounded bg-tint px-2 py-1 text-xs font-semibold text-ink-2">
-            {listing.area_m2} m²
-          </span>
-        ) : null}
-      </div>
-
-      <div className="py-1">
-        <p className="text-sm font-medium text-ink">
-          Chủ nhà: <span className="font-semibold">{listing.landlord?.name ?? "Chưa rõ"}</span>
+      <div>
+        <p className="text-3xl font-extrabold tabular-nums text-plate">
+          {formatPriceShort(listing.price)}
+          <small className="ml-1 text-sm font-normal text-muted">/tháng</small>
         </p>
-        {user?.role !== "student" && phone == null ? (
-          <p className="mt-1 text-xs text-muted">Đăng nhập bằng tài khoản sinh viên để xem số điện thoại</p>
-        ) : phone ? (
-          <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-ink-2">
-            <Phone className="size-4 text-plate" aria-hidden />
-            {phone}
-          </p>
-        ) : null}
+        <p
+          className={cn(
+            "mt-1 inline-flex items-center gap-1.5 text-sm font-semibold",
+            available ? "text-moss" : "text-muted"
+          )}
+        >
+          <span className={cn("size-2 rounded-full", available ? "bg-moss" : "bg-line-strong")} aria-hidden />
+          {available ? "Còn trống" : listing.status === "rented" ? "Đã thuê" : "Đang ẩn"}
+        </p>
       </div>
 
-      <Button variant="primary" className="w-full text-base" onClick={() => void contactLandlord()}>
-        Nhắn tin cho chủ nhà
-      </Button>
-
-      <Button
-        variant="outline"
-        className={cn(
-          "w-full transition-colors",
-          isFav && "border-danger/30 text-danger hover:bg-danger-tint hover:text-danger"
-        )}
-        onClick={() => {
-          if (!user) {
-            toast("Vui lòng đăng nhập bằng tài khoản sinh viên để lưu phòng.");
-            void navigate(ROUTES.LOGIN);
-            return;
-          }
-          if (user.role !== "student") {
-            toast("Chức năng lưu phòng chỉ dành cho tài khoản sinh viên.");
-            return;
-          }
-          onFavToggle();
-        }}
-      >
-        <Heart
-          className={cn(
-            "size-4 transition-colors",
-            isFav ? "fill-danger stroke-danger text-danger" : "stroke-ink"
-          )}
+      <div className="flex items-center gap-3 rounded-lg bg-tint p-3">
+        <span
           aria-hidden
-        />
-        {isFav ? "Bỏ lưu phòng này" : "Lưu phòng này"}
-      </Button>
+          className="grid size-11 flex-none place-items-center rounded-full bg-plate-tint text-base font-extrabold text-plate"
+        >
+          {initial}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-bold text-ink">{listing.landlord?.name ?? "Chưa rõ"}</p>
+          <p className="text-xs text-muted">Chủ nhà</p>
+        </div>
+      </div>
 
-      <Button variant="ghost" size="sm" className="w-full text-muted hover:text-ink" onClick={onShare}>
-        <Share2 className="size-4" aria-hidden />
-        Chia sẻ liên kết
-      </Button>
+      <div className="mt-auto flex flex-col gap-2">
+        {user?.role !== "student" && phone == null ? (
+          <p className="text-xs text-muted">Đăng nhập bằng tài khoản sinh viên để xem số điện thoại</p>
+        ) : null}
+        <div className="flex gap-2">
+          <Button variant="primary" className="motion-press flex-1 text-base" onClick={() => void contactLandlord()}>
+            <MessageCircle className="size-4" aria-hidden />
+            Nhắn tin cho chủ nhà
+          </Button>
+          {phone ? (
+            <Button variant="outline" size="icon" asChild>
+              <a href={`tel:${phone}`} aria-label={`Gọi ${phone}`} title={phone}>
+                <Phone className="size-4" aria-hidden />
+              </a>
+            </Button>
+          ) : null}
+        </div>
+      </div>
     </aside>
   );
 }

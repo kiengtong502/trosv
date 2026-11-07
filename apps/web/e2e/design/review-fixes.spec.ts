@@ -43,7 +43,7 @@ test.describe("review fixes", () => {
     test("room lightbox covers the site header", async ({ page }) => {
         await page.setViewportSize({ width: 1360, height: 900 });
         await page.goto("/rooms/48");
-        await page.getByRole("button", { name: "Xem ảnh 1" }).click();
+        await page.getByRole("button", { name: "Xem ảnh lớn" }).click();
         const dialog = page.getByRole("dialog");
         await expect(dialog).toBeVisible();
         const covered = await page.evaluate(() => {

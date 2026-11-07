@@ -27,6 +27,8 @@ export interface ListingMapProps {
   onHover?: (id: number | null) => void;
   ariaLabel?: string;
   hasLocationFilter?: boolean;
+  /** Wheel zoom hijacks page scroll; embedded maps turn it off. */
+  scrollWheelZoom?: boolean;
 }
 
 /* Cluster icon: ink circle with paper number. */
@@ -74,6 +76,7 @@ export function ListingMap({
   onHover,
   ariaLabel = "Bản đồ phòng trọ",
   hasLocationFilter = false,
+  scrollWheelZoom = true,
 }: ListingMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const clusterGroup = useRef<L.MarkerClusterGroup | L.FeatureGroup | null>(null);
@@ -134,7 +137,7 @@ export function ListingMap({
     const el = containerRef.current;
     if (!el || leafletMap.current) return;
 
-    const map = L.map(el, { scrollWheelZoom: true });
+    const map = L.map(el, { scrollWheelZoom });
     if (!hasLocationFilter) {
       map.fitBounds(VIETNAM_BOUNDS, { padding: [20, 20], maxZoom: 6 });
     } else {

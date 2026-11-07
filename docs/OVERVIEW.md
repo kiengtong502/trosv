@@ -130,6 +130,12 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 - **Profile**: one column of collapsible sections (basic, study and budget,
   roommate matching). Hobbies open in a dialog. The save bar appears only when
   something changed.
+- **Room page** (`/rooms/:id`): a bento grid. Row 1 is the gallery (big photo,
+  arrows, thumbnails) beside the contact card and the AI price tile; then
+  colored quick-fact tiles (only facts the API has: area, distance, type, age),
+  description + amenities, a map + reviews pair, and "Phòng tương tự gần đó"
+  (same ward, 4:3 thumbnails, a swipeable row on phones, from `GET /listings?ward_id=`).
+  The contact card scrolls with the page; it must never paint over the header.
 - **Scroll**: the shell resets scroll on new pages and restores it on Back/Forward.
 
 ## 6. Testing and CI

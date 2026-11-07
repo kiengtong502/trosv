@@ -2,15 +2,13 @@ import { expect, test } from "@playwright/test";
 
 /**
  * Regression guard: the landlord contact card (`[data-testid="contact-card"]`)
- * must always stay BELOW the sticky header while scrolling.
+ * must never paint over the sticky header while scrolling.
  *
  * Bug (old markup): both elements were Bootstrap `.sticky-top` (z-index
- * 1020); the card slid over the 57px navbar. The redesign keeps the same
- * invariant: the card is `position: sticky` below the fixed-height header,
- * so its top edge must never overlap the header's bottom edge.
- *
- * The invariant is checked in REAL rendered geometry: the card's top edge
- * must always be >= the header's bottom edge, at every scroll depth.
+ * 1020); the card slid over the 57px navbar. The card is now a bento tile
+ * that scrolls with the page, so it may slide under the header but must
+ * never paint over it. Checked by hit-testing the header's centre at every
+ * scroll depth.
  */
 test.describe("room detail sticky contact card", () => {
     test("card stays below the header at every scroll depth", async ({ page }) => {
@@ -23,26 +21,22 @@ test.describe("room detail sticky contact card", () => {
         await expect(header).toBeVisible();
 
         // Multiple depths: top, several middle positions, page bottom.
+        // The card scrolls with the page (bento tile), so it may slide under the
+        // header; what must never happen is the card painting OVER the header.
         for (const y of [0, 400, 1200, 3000, 99999]) {
             await page.evaluate((v) => window.scrollTo(0, v), y);
-            // Sticky offset resolves within the same frame; a rAF wait keeps
-            // the measurement deterministic.
             await page.evaluate(() => requestAnimationFrame(() => undefined));
 
             const nav = await header.boundingBox();
-            const box = await card.boundingBox();
-            if (!nav || !box) {
-                // The card scrolls out of the viewport at extreme depths on
-                // short pages - only fail if it should still be pinned.
-                if (y < 3000) {
-                    throw new Error(`header/card off-viewport at scrollY=${y}`);
-                }
-                continue;
-            }
-            const navBottom = nav.y + nav.height;
-            expect(box.y, `card must not overlap header at scrollY=${y}`).toBeGreaterThanOrEqual(
-                navBottom - 1, // 1px tolerance for subpixel rounding
+            if (!nav) throw new Error(`header missing at scrollY=${y}`);
+            const coveredByCard = await page.evaluate(
+                ([x, yy]) => {
+                    const hit = document.elementFromPoint(x as number, yy as number);
+                    return !!hit?.closest('[data-testid="contact-card"]');
+                },
+                [nav.x + nav.width / 2, nav.y + nav.height / 2],
             );
+            expect(coveredByCard, `card must not paint over the header at scrollY=${y}`).toBe(false);
         }
     });
 });
