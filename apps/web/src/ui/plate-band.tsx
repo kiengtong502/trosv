@@ -25,6 +25,8 @@ export interface PlateBandProps {
   className?: string;
   /** Overrides the inner column width/padding so the band lines up with the page below. */
   contentClassName?: string;
+  /** Extra classes for the hero heading (e.g. a smaller size when art sits beside it). */
+  headingClassName?: string;
 }
 
 const MARK = "rounded-md bg-flyer px-2 text-flyer-ink";
@@ -38,6 +40,7 @@ export function PlateBand({
   children,
   className,
   contentClassName,
+  headingClassName,
 }: PlateBandProps) {
   const heading =
     title != null || highlight ? (
@@ -46,7 +49,8 @@ export function PlateBand({
           "font-display font-extrabold tracking-tight text-white",
           size === "hero"
             ? "max-w-2xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-            : "text-2xl sm:text-3xl"
+            : "text-2xl sm:text-3xl",
+          headingClassName
         )}
       >
         {title}
@@ -100,7 +104,12 @@ export function PlateBand({
       )}
     >
       {backdrop}
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 md:px-8 md:py-12">
+      <div
+        className={cn(
+          "relative mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 md:px-8 md:py-12",
+          contentClassName
+        )}
+      >
         {heading}
         {intro}
         {children}

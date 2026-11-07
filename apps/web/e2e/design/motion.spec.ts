@@ -100,11 +100,12 @@ test.describe("route fade, image fade-in, scroll reveal", () => {
         expect(box!.height).toBeGreaterThan(200);
     });
 
-    test("home sections reveal on scroll", async ({ page }) => {
+    test("home sections below the fold reveal on scroll", async ({ page }) => {
+        // The clothesline right under the hero is never held back; the quick strip below it reveals.
         await page.goto("/");
-        const section = page.locator("section", { has: page.getByRole("heading", { name: "Mới đăng" }) });
-        await section.scrollIntoViewIfNeeded();
-        await expect(section).toHaveAttribute("data-reveal", "done");
+        const reveal = page.getByTestId("quick-strip").locator("xpath=..");
+        await reveal.scrollIntoViewIfNeeded();
+        await expect(reveal).toHaveAttribute("data-reveal", "done");
     });
 
     test("sections still appear if IntersectionObserver never fires", async ({ page }) => {

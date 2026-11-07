@@ -4,14 +4,15 @@ import { ROUTES } from "@/constants/routes";
 import { ART_ASSETS } from "@/constants/assets";
 import { getListings, getCities, getSchools } from "@/api/listingApi";
 import type { Listing, City, School } from "@/types/api";
-import { Button } from "@/ui/button";
-import { ListingCardSkeleton } from "@/components/ListingCardSkeleton";
 import { PlateBand } from "@/ui/plate-band";
 import { ErrorState } from "@/ui/empty-state";
 import { SearchEmptyIllustration } from "@/ui/icons";
-import { ListingCard } from "@/components/ListingCard";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useReveal } from "@/hooks/useReveal";
+import { HeroDeck } from "./home/HeroDeck";
+import { HomeQuickStrip } from "./home/HomeQuickStrip";
+import { RoomClothesline } from "./home/RoomClothesline";
+import { TypedWord } from "./home/TypedWord";
 import { Search as SearchIcon, GraduationCap, MapPin } from "lucide-react";
 
 function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) {
@@ -103,10 +104,16 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
   );
 }
 
+const QUICK_FILTERS = [
+  { label: "Phòng trọ", params: { type: "room" } },
+  { label: "Căn hộ", params: { type: "apartment" } },
+  { label: "Nhà nguyên căn", params: { type: "house" } },
+  { label: "Dưới 2 triệu", params: { price_max: "2000000" } },
+];
+
 export default function Home() {
   useDocumentTitle("Trang chủ · TROSV");
-  const revealNewest = useReveal();
-  const revealLists = useReveal();
+  const revealStrip = useReveal();
   const revealCta = useReveal();
   const [newest, setNewest] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,62 +133,54 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero: navy plate band with the hand-drawn bento art anchored right */}
+      {/* Hero: navy band, a quiet doodle pattern, the typed keyword and the newest rooms floating at the right */}
       <PlateBand
         size="hero"
-        title="Phòng trọ. Căn hộ."
-        highlight="Gần trường."
+        className="md:min-h-0"
+        contentClassName="py-8 md:py-10 lg:pr-[44%]"
+        headingClassName="max-w-xl lg:text-5xl"
+        title={
+          <>
+            Phòng trọ. Căn hộ.
+            <br />
+            <TypedWord />
+          </>
+        }
         backdrop={
-          <img
-            src={ART_ASSETS.HERO_DESKTOP}
-            alt=""
-            width={2100}
-            height={623}
-            loading="eager"
-            className="hidden min-[1300px]:block absolute inset-0 h-full w-full object-cover object-right pointer-events-none select-none"
-            onError={(e) => {
-              (e.currentTarget).style.display = "none";
-            }}
-          />
+          <>
+            <div
+              data-testid="hero-doodles"
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[length:260px_260px,auto,auto]"
+              style={{
+                backgroundImage: `url(${ART_ASSETS.HERO_DOODLES}), radial-gradient(ellipse 60% 80% at 88% 8%, rgb(255 255 255 / 0.13), transparent 60%), radial-gradient(ellipse 50% 70% at 0% 100%, rgb(0 0 0 / 0.18), transparent 65%)`,
+              }}
+            />
+            <HeroDeck listings={newest} />
+          </>
         }
       >
+        <p className="-mt-2 max-w-xl text-base text-white/85 sm:text-lg">
+          Tìm phòng theo trường, nhắn thẳng chủ nhà, để AI gợi ý giá hợp lý.
+        </p>
         <HeroSearch cities={cities} schools={schools} />
-
-        {/* Mobile-dedicated hero illustration: perfectly proportioned and complete on any phone */}
-        <div className="mt-1 w-full max-w-xl min-[1300px]:hidden">
-          <img
-            src={ART_ASSETS.HERO_MOBILE}
-            alt="Minh họa phòng trọ sinh viên"
-            width={680}
-            height={280}
-            loading="eager"
-            className="w-full h-auto rounded-2xl border border-line/60 bg-card shadow-2xs"
-          />
-        </div>
-      </PlateBand>
-
-      <div className="mx-auto w-full max-w-6xl px-5">
-        {/* Quick filter pills */}
-        <div className="flex flex-wrap gap-2 py-8">
-          {[
-            { label: "Phòng trọ", params: { type: "room" } },
-            { label: "Căn hộ", params: { type: "apartment" } },
-            { label: "Nhà nguyên căn", params: { type: "house" } },
-            { label: "Dưới 2 triệu", params: { price_max: "2000000" } },
-          ].map(({ label, params }) => (
+        <div className="flex flex-wrap gap-2">
+          {QUICK_FILTERS.map(({ label, params }) => (
             <Link
               key={label}
               to={`${ROUTES.ROOMS}?${new URLSearchParams(params).toString()}`}
-              className="inline-flex h-9 items-center rounded-full border border-line-strong bg-card px-4 text-sm font-medium text-ink transition-colors hover:border-plate hover:text-plate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+              className="inline-flex h-9 items-center rounded-full border border-white/25 bg-white/15 px-4 text-sm font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               {label}
             </Link>
           ))}
         </div>
+      </PlateBand>
 
-        {/* Mới đăng */}
-        <section ref={revealNewest} className="pb-12">
-          <div className="mb-4 flex items-center justify-between">
+      <div className="mx-auto w-full max-w-6xl px-5">
+        {/* Mới đăng: recent rooms on a clothesline, right under the hero */}
+        <section className="pb-6 pt-8">
+          <div className="mb-1 flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight text-ink">Mới đăng</h2>
             <Link
               to={ROUTES.ROOMS}
@@ -191,98 +190,36 @@ export default function Home() {
             </Link>
           </div>
 
-          {loading ? (
-            <div className="flex gap-4 overflow-hidden">
-              <ListingCardSkeleton className="w-72 flex-none" />
-              <ListingCardSkeleton className="w-72 flex-none" />
-              <ListingCardSkeleton className="w-72 flex-none" />
-              <ListingCardSkeleton className="w-72 flex-none" />
-            </div>
-          ) : error ? (
+          {error ? (
             <ErrorState message="Không tải được phòng mới đăng. Bạn thử lại sau ít phút nhé." />
-          ) : newest.length === 0 ? (
+          ) : !loading && newest.length === 0 ? (
             <SearchEmptyIllustration className="max-w-xs self-center" />
           ) : (
-            <div className="motion-stagger -mx-5 flex snap-x scroll-pl-5 gap-4 overflow-x-auto px-5 pb-4">
-              {newest.map((l) => (
-                <ListingCard
-                  key={l.id}
-                  listing={l}
-                  className="w-72 flex-none snap-start"
-                />
-              ))}
-            </div>
+            <RoomClothesline listings={newest} loading={loading} />
           )}
         </section>
 
-        {/* School + city link lists */}
-        {schools.length > 0 || cities.length > 0 ? (
-          <section ref={revealLists} className="grid gap-8 pb-16 md:grid-cols-2">
-            {schools.length > 0 ? (
-              <div className="rounded-xl border border-line bg-card p-5">
-                <h2 className="mb-3 text-lg font-bold text-ink flex items-center gap-2">
-                  <GraduationCap className="size-5 text-plate" aria-hidden />
-                  Tìm theo trường
-                </h2>
-                <ul className="flex flex-col divide-y divide-line">
-                  {schools.slice(0, 5).map((s) => (
-                    <li key={s.id}>
-                      <Link
-                        to={`${ROUTES.ROOMS}?school_id=${s.id}`}
-                        className={
-                          "flex items-center justify-between py-2.5 text-sm font-medium text-ink " +
-                          "transition-colors hover:text-plate focus-visible:outline-none " +
-                          "focus-visible:ring-2 focus-visible:ring-plate"
-                        }
-                      >
-                        <span>{s.name}</span>
-                        <span className="text-xs text-muted">&rarr;</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {cities.length > 0 ? (
-              <div className="rounded-xl border border-line bg-card p-5">
-                <h2 className="mb-3 text-lg font-bold text-ink flex items-center gap-2">
-                  <MapPin className="size-5 text-plate" aria-hidden />
-                  Tìm theo thành phố
-                </h2>
-                <ul className="flex flex-col divide-y divide-line">
-                  {cities.slice(0, 5).map((c) => (
-                    <li key={c.id}>
-                      <Link
-                        to={`${ROUTES.ROOMS}?city_id=${c.id}`}
-                        className={
-                          "flex items-center justify-between py-2.5 text-sm font-medium text-ink " +
-                          "transition-colors hover:text-plate focus-visible:outline-none " +
-                          "focus-visible:ring-2 focus-visible:ring-plate"
-                        }
-                      >
-                        <span>{c.name}</span>
-                        <span className="text-xs text-muted">&rarr;</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </section>
-        ) : null}
+        <div ref={revealStrip} className="pb-10">
+          <HomeQuickStrip schools={schools} />
+        </div>
 
         {/* Landlord banner */}
-        <section ref={revealCta} className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-card p-8">
+        <section
+          ref={revealCta}
+          className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-flyer p-7 text-flyer-ink"
+        >
           <div>
-            <h2 className="text-2xl font-bold text-ink">Bạn có phòng cho thuê?</h2>
-            <p className="mt-1 text-muted">
+            <h2 className="text-2xl font-extrabold">Bạn có phòng cho thuê?</h2>
+            <p className="mt-1 opacity-80">
               Đăng tin miễn phí và nhận tin nhắn trực tiếp từ sinh viên.
             </p>
           </div>
-          <Button asChild variant="primary">
-            <Link to={ROUTES.REGISTER}>Đăng tin ngay</Link>
-          </Button>
+          <Link
+            to={ROUTES.REGISTER}
+            className="motion-press inline-flex h-10 items-center rounded-lg bg-flyer-ink px-5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            Đăng tin ngay
+          </Link>
         </section>
       </div>
     </div>

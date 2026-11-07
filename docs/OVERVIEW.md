@@ -130,6 +130,17 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 - **Profile**: one column of collapsible sections (basic, study and budget,
   roommate matching). Hobbies open in a dialog. The save bar appears only when
   something changed.
+- **Home** (`/`): a short navy hero with a quiet doodle pattern
+  (`public/art/hero-doodles.svg`), the headline "Phòng trọ. Căn hộ." and a
+  typed keyword that cycles "Gần trường." → "Giá rẻ." → "Tiện lợi." with a caret
+  (`pages/home/TypedWord.tsx`; screen readers get the list once, reduced motion
+  shows the first phrase). The three newest rooms float at the right on wide
+  screens (`HeroDeck`). Right under the hero, "Mới đăng" is one swipeable
+  clothesline: each of the 8 newest rooms hangs from a rope with a peg
+  (`RoomClothesline`, `Peg`); desktop arrows hide at either end. Below it, one
+  slim card (`HomeQuickStrip`) holds school chips and four shortcuts, then the
+  landlord banner. Rooms must stay reachable without scrolling past tiles, so
+  keep new Home sections below the clothesline.
 - **Room page** (`/rooms/:id`): a bento grid. Row 1 is the gallery (big photo,
   arrows, thumbnails) beside the contact card and the AI price tile; then
   colored quick-fact tiles (only facts the API has: area, distance, type, age),

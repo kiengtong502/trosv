@@ -333,6 +333,41 @@
     }
 }
 
+/* Home: typed hero keyword and the clothesline. */
+.typed-caret {
+    display: inline-block;
+    width: 0.07em;
+    height: 0.86em;
+    margin-left: 0.06em;
+    vertical-align: -0.07em;
+    border-radius: 1px;
+    background: currentColor;
+}
+.typed-caret-idle {
+    animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink {
+    50% {
+        opacity: 0;
+    }
+}
+.hang-sway {
+    transform-origin: 50% 0;
+    animation: hang-sway 6s ease-in-out infinite;
+}
+.hang-sway:hover {
+    animation-play-state: paused;
+}
+@keyframes hang-sway {
+    0%,
+    100% {
+        transform: rotate(-0.9deg);
+    }
+    50% {
+        transform: rotate(0.9deg);
+    }
+}
+
 /* Scroll-reveal (useReveal) and image fade-in. Only held back when motion is allowed. */
 @media (prefers-reduced-motion: no-preference) {
     [data-reveal] {

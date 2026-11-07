@@ -53,23 +53,6 @@ test.describe("review fixes", () => {
         expect(covered).toBe(true);
     });
 
-    for (const width of [820, 1024, 1280]) {
-        test(`home hero text never sits on the art at ${width}px`, async ({ page }) => {
-            await page.setViewportSize({ width, height: 900 });
-            await page.goto("/");
-            const desktopArt = page.locator('img[src*="hero-art.svg"]');
-            expect(await desktopArt.evaluate((el) => getComputedStyle(el).display)).toBe("none");
-            await expect(page.locator('img[src*="hero-art-mobile.svg"]')).toBeVisible();
-        });
-    }
-
-    test("home keeps the full-width art on wide screens", async ({ page }) => {
-        await page.setViewportSize({ width: 1360, height: 900 });
-        await page.goto("/");
-        await expect(page.locator('img[src*="hero-art.svg"]')).toBeVisible();
-        await expect(page.locator('img[src*="hero-art-mobile.svg"]')).toBeHidden();
-    });
-
     test("focus is visible on navy surfaces (contrast of at least 3:1)", async ({ page }) => {
         await page.setViewportSize({ width: 1360, height: 900 });
         const check = async (target: ReturnType<Page["locator"]>, label: string) => {
