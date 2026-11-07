@@ -51,6 +51,7 @@ class ConversationResource extends JsonResource
                 'role' => $other->role, // student => link tới hồ sơ công khai
             ] : null,
             'last_message' => $last ? [
+                'sender_id' => $last->sender_id,
                 'body' => $last->isUnsent() ? 'Tin nhắn đã được thu hồi' : $last->body,
                 'created_at' => $last->created_at->toISOString(),
             ] : null,

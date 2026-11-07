@@ -73,9 +73,10 @@ Các trường chỉ dành cho sinh viên sẽ là `null` với chủ nhà. `cle
 ```json
 { "id": 33, "listing": { "id": 101, "title": "Phòng trọ gần ĐHQG", "cover_image": null },
   "other_user": { "id": 5, "name": "Trần Thị B", "role": "student" },
-  "last_message": { "body": "Phòng còn trống không ạ?", "created_at": "2026-09-20T08:30:00Z" },
+  "last_message": { "sender_id": 5, "body": "Phòng còn trống không ạ?", "created_at": "2026-09-20T08:30:00Z" },
   "unread_count": 2 }
 ```
+`last_message.sender_id` cho biết ai gửi tin cuối, để giao diện hiển thị tiền tố "Bạn:" khi đó là tin của chính người xem.
 
 **Message (tin nhắn)**
 ```json

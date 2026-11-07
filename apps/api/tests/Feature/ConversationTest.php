@@ -219,7 +219,9 @@ class ConversationTest extends TestCase
             // Unread from the LANDLORD's perspective: the student's message.
             ->assertJsonPath('data.0.unread_count', 1)
             ->assertJsonPath('data.0.other_user.id', $this->student->id)
-            ->assertJsonPath('data.0.last_message.body', 'Cho mình hỏi chút');
+            ->assertJsonPath('data.0.last_message.body', 'Cho mình hỏi chút')
+            // The list needs to know who wrote it, to prefix "Bạn:" on your own.
+            ->assertJsonPath('data.0.last_message.sender_id', $this->student->id);
     }
 
     public function test_list_orders_by_latest_activity(): void
