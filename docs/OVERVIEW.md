@@ -182,9 +182,9 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   (lint, format, typecheck, a build that fails on any warning, `npm audit`),
   `ai-service`, `secrets` (gitleaks), `infra` (actionlint, hadolint, shellcheck,
   `docker compose config`), `docker-build` (all three images), then `e2e`
-  against a production build on `:4173` with a freshly seeded database. `ci-ok`
+  against the very bundle the `frontend` job built (shared as an artifact) on `:4173` with a freshly seeded database. `ci-ok`
   is the single job to require in branch protection. Also: `codeql.yml` (SAST,
-  weekly too) and `dependency-review.yml` (PRs). Workflows run with read-only
+  weekly too) and `dependency-review.yml` (PRs; enforced once the dependency graph is on and the repo variable `DEPENDENCY_GRAPH=true` is set). Workflows run with read-only
   permissions, pinned action SHAs, job timeouts and cancel-on-new-push (never on
   `stable`).
 - Known gotchas: seed photos are served from the Docker web container on `:5174`
