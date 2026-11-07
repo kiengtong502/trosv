@@ -19,7 +19,10 @@ export interface Paged<T> {
 }
 
 /** Typing lives at the boundary; see envelope.ts. */
-function toPaged<T>(res: { data: T[]; meta: { current_page?: number; last_page?: number; per_page?: number; total?: number } }): Paged<T> {
+function toPaged<T>(res: {
+  data: T[];
+  meta: { current_page?: number; last_page?: number; per_page?: number; total?: number };
+}): Paged<T> {
   return { data: res.data, meta: res.meta };
 }
 
@@ -38,10 +41,7 @@ export function getListingReviews(id: number, page = 1): Promise<Paged<Review>> 
 }
 
 // API_CONTRACT §4 - "Đánh giá (sinh viên)"
-export const createReview = (
-  listingId: number,
-  payload: ReviewPayload
-): Promise<Review> =>
+export const createReview = (listingId: number, payload: ReviewPayload): Promise<Review> =>
   api.post(`/listings/${listingId}/reviews`, payload).then((r) => envelope<Review>(r).data);
 
 // API_CONTRACT §4 - "Dữ liệu tham chiếu"

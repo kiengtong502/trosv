@@ -30,7 +30,16 @@ type SectionKey = "basic" | "academic" | "match";
 /** Which section holds a field that the server rejected, so it can be opened. */
 function sectionOfField(field: string): SectionKey {
   if (field === "school_id" || field.startsWith("budget_")) return "academic";
-  if (["interests", "sleep_schedule", "personality", "cleanliness", "smoking", "looking_for_roommate"].includes(field)) {
+  if (
+    [
+      "interests",
+      "sleep_schedule",
+      "personality",
+      "cleanliness",
+      "smoking",
+      "looking_for_roommate",
+    ].includes(field)
+  ) {
     return "match";
   }
   return "basic";
@@ -56,11 +65,13 @@ export default function Profile() {
 
   const isDirty = useMemo(
     () => isFormDirty(form, initialForm, isStudent),
-    [form, initialForm, isStudent]
+    [form, initialForm, isStudent],
   );
 
   useEffect(() => {
-    getSchools().then(setSchools).catch(() => {});
+    getSchools()
+      .then(setSchools)
+      .catch(() => {});
   }, []);
 
   const formValue = form;
@@ -129,10 +140,10 @@ export default function Profile() {
     minText && maxText
       ? `${minText} – ${maxText} / tháng`
       : minText
-      ? `Từ ${minText} / tháng`
-      : maxText
-      ? `Đến ${maxText} / tháng`
-      : "";
+        ? `Từ ${minText} / tháng`
+        : maxText
+          ? `Đến ${maxText} / tháng`
+          : "";
 
   const err = (field: string): string | undefined => fieldErrors[field]?.[0];
 
@@ -143,10 +154,10 @@ export default function Profile() {
     min > 0 && max > 0
       ? `${formatVnd(min)}–${formatVnd(max)}`
       : min > 0
-      ? `từ ${formatVnd(min)}`
-      : max > 0
-      ? `đến ${formatVnd(max)}`
-      : "chưa đặt ngân sách";
+        ? `từ ${formatVnd(min)}`
+        : max > 0
+          ? `đến ${formatVnd(max)}`
+          : "chưa đặt ngân sách";
   const schoolName = schools.find((s) => String(s.id) === formValue.school_id)?.name;
   const basicSummary = `${formValue.name} · ${formValue.phone || "chưa có số điện thoại"}`;
   const academicSummary = `${schoolName ?? "Chưa chọn trường"} · ${budgetSummary}`;
@@ -202,9 +213,17 @@ export default function Profile() {
           </div>
         </div>
 
-        <form onSubmit={(e) => { void save(e); }} className="space-y-3">
+        <form
+          onSubmit={(e) => {
+            void save(e);
+          }}
+          className="space-y-3"
+        >
           {formError ? (
-            <p role="alert" className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger">
+            <p
+              role="alert"
+              className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger"
+            >
               {formError}
             </p>
           ) : null}
@@ -214,7 +233,9 @@ export default function Profile() {
             title="Thông tin cơ bản"
             summary={basicSummary}
             open={openSection === "basic"}
-            onToggle={() => { toggleSection("basic"); }}
+            onToggle={() => {
+              toggleSection("basic");
+            }}
           >
             <ProfileBasicInfoCard
               name={formValue.name}
@@ -238,7 +259,9 @@ export default function Profile() {
                 title="Học tập & ngân sách"
                 summary={academicSummary}
                 open={openSection === "academic"}
-                onToggle={() => { toggleSection("academic"); }}
+                onToggle={() => {
+                  toggleSection("academic");
+                }}
               >
                 <ProfileAcademicCard
                   schools={schools}
@@ -260,7 +283,9 @@ export default function Profile() {
                 title="Ghép bạn cùng phòng"
                 summary={matchSummary}
                 open={openSection === "match"}
-                onToggle={() => { toggleSection("match"); }}
+                onToggle={() => {
+                  toggleSection("match");
+                }}
               >
                 <ProfileHabitsCard
                   lookingForRoommate={formValue.looking_for_roommate}

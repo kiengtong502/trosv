@@ -10,18 +10,19 @@ import { defineConfig, devices } from "@playwright/test";
 const baseURL = process.env.E2E_BASE_URL || "http://localhost:5173";
 
 export default defineConfig({
-    testDir: "./e2e",
-    timeout: 30_000,
-    expect: { timeout: 10_000 },
-    // One shared dev stack - parallel workers would fight over the same data.
-    fullyParallel: false,
-    workers: 1,
-    retries: process.env.CI ? 1 : 0,
-    reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
-    use: {
-        baseURL,
-        trace: "retain-on-failure",
-        locale: "vi-VN",
-    },
-    projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  testDir: "./e2e",
+  timeout: 30_000,
+  expect: { timeout: 10_000 },
+  // One shared dev stack - parallel workers would fight over the same data.
+  fullyParallel: false,
+  workers: 1,
+  retries: 0, // a flaky test is a bug: fix it, do not retry it
+  forbidOnly: !!process.env.CI,
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  use: {
+    baseURL,
+    trace: "retain-on-failure",
+    locale: "vi-VN",
+  },
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

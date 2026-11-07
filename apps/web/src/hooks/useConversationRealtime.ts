@@ -29,7 +29,7 @@ export function useConversationRealtime(
   id: string | number,
   setMessages: Dispatch<SetStateAction<Message[]>>,
   lastIdRef: { current: number },
-  onPreviewEvent?: (msg: Message) => void
+  onPreviewEvent?: (msg: Message) => void,
 ): { otherTyping: boolean; setOtherTyping: Dispatch<SetStateAction<boolean>> } {
   const { user } = useAuth();
   const [otherTyping, setOtherTyping] = useState(false);
@@ -68,14 +68,16 @@ export function useConversationRealtime(
       if (w.user_id === user?.id) return;
       setOtherTyping(true);
       if (typingTimer.current) clearTimeout(typingTimer.current);
-      typingTimer.current = setTimeout(() => { setOtherTyping(false); }, 2500);
+      typingTimer.current = setTimeout(() => {
+        setOtherTyping(false);
+      }, 2500);
     });
 
     // Reaction: merge lại map reactions mới (đặt/đổi/bỏ của bất kỳ ai).
     privateChan.listen(".message.reacted", (e: unknown) => {
       const ev = e as MessageReactedEvent;
       setMessages((prev) =>
-        prev.map((m) => (m.id === ev.message_id ? { ...m, reactions: ev.reactions } : m))
+        prev.map((m) => (m.id === ev.message_id ? { ...m, reactions: ev.reactions } : m)),
       );
     });
 
@@ -84,7 +86,7 @@ export function useConversationRealtime(
       const ev = e as MessageSeenEvent;
       if (ev.reader_id === user?.id) return;
       setMessages((prev) =>
-        prev.map((m) => (m.is_mine && !m.seen_at ? { ...m, seen_at: ev.seen_at } : m))
+        prev.map((m) => (m.is_mine && !m.seen_at ? { ...m, seen_at: ev.seen_at } : m)),
       );
     });
 
@@ -102,9 +104,9 @@ export function useConversationRealtime(
           ? prev.map((m) =>
               m.id === ev.message_id
                 ? { ...m, is_unsent: true, body: null, attachment_url: null, attachment_name: null }
-                : m
+                : m,
             )
-          : prev.filter((m) => m.id !== ev.message_id)
+          : prev.filter((m) => m.id !== ev.message_id),
       );
     });
 

@@ -17,18 +17,22 @@ export interface DistanceBadgeProps {
 }
 
 export function DistanceBadge({ distanceKm, className }: DistanceBadgeProps) {
-  const kmFormatted = new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(distanceKm);
+  const kmFormatted = new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(
+    distanceKm,
+  );
   const minutes = Math.max(1, Math.round(distanceKm * 3));
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded bg-plate px-1.5 py-0.5 text-xs font-medium text-white",
-        className
+        className,
       )}
       title={`${kmFormatted} km tới trường (~${minutes} phút xe máy)`}
     >
       <Navigation className="size-3" aria-hidden />
-      <span>{kmFormatted} km · ~{minutes}p xe</span>
+      <span>
+        {kmFormatted} km · ~{minutes}p xe
+      </span>
     </span>
   );
 }
@@ -105,11 +109,15 @@ export function ListingCard({
   return (
     <div
       data-testid={`listing-card-${listing.id}`}
-      onMouseEnter={() => { onHover?.(listing.id); }}
-      onMouseLeave={() => { onHover?.(null); }}
+      onMouseEnter={() => {
+        onHover?.(listing.id);
+      }}
+      onMouseLeave={() => {
+        onHover?.(null);
+      }}
       className={cn(
         "group relative flex flex-col rounded-xl border border-line bg-card shadow-card motion-card hover:border-line-strong hover:shadow-card-hover",
-        className
+        className,
       )}
     >
       <div className="relative aspect-3/2 w-full overflow-hidden rounded-t-xl bg-sunken">
@@ -129,8 +137,12 @@ export function ListingCard({
               ref={(el) => {
                 if (el?.complete) el.dataset["loaded"] = "1";
               }}
-              onLoad={(e) => { e.currentTarget.dataset["loaded"] = "1"; }}
-              onError={(e) => { e.currentTarget.dataset["loaded"] = "1"; }}
+              onLoad={(e) => {
+                e.currentTarget.dataset["loaded"] = "1";
+              }}
+              onError={(e) => {
+                e.currentTarget.dataset["loaded"] = "1";
+              }}
               width={640}
               height={427}
               className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.05]"
@@ -157,17 +169,21 @@ export function ListingCard({
           }}
           className={cn(
             "absolute right-2.5 top-2.5 z-10 flex size-8 items-center justify-center rounded-full bg-card/90 shadow-xs backdrop-blur-xs transition hover:scale-110",
-            effectiveFav ? "text-danger" : "text-ink hover:text-danger"
+            effectiveFav ? "text-danger" : "text-ink hover:text-danger",
           )}
         >
           <Heart
             className={cn(
               "size-4 transition-colors",
               pop && "motion-heart-pop",
-              effectiveFav ? "fill-danger stroke-danger text-danger" : "stroke-ink hover:stroke-danger"
+              effectiveFav
+                ? "fill-danger stroke-danger text-danger"
+                : "stroke-ink hover:stroke-danger",
             )}
             aria-hidden
-            onAnimationEnd={() => { setPop(false); }}
+            onAnimationEnd={() => {
+              setPop(false);
+            }}
           />
         </button>
 
@@ -177,9 +193,7 @@ export function ListingCard({
             {formatVnd(listing.price)}
             <span className="ml-0.5 text-xs font-normal opacity-75">/th</span>
           </span>
-          {listing.distance_km != null ? (
-            <DistanceBadge distanceKm={listing.distance_km} />
-          ) : null}
+          {listing.distance_km != null ? <DistanceBadge distanceKm={listing.distance_km} /> : null}
         </div>
       </div>
 
@@ -214,9 +228,7 @@ export function ListingCard({
         </div>
 
         {actionSlot ? (
-          <div className="relative z-10 mt-3 pt-2.5 border-t border-line">
-            {actionSlot}
-          </div>
+          <div className="relative z-10 mt-3 pt-2.5 border-t border-line">{actionSlot}</div>
         ) : null}
       </div>
     </div>

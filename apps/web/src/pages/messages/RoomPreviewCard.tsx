@@ -62,7 +62,7 @@ export function RoomPreviewCard({
         <div
           className={cn(
             "flex w-full max-w-[320px] items-center gap-3 rounded-xl border p-2.5",
-            isMine ? "border-white/20 bg-white/10" : "border-line bg-tint/40"
+            isMine ? "border-white/20 bg-white/10" : "border-line bg-tint/40",
           )}
         >
           <div className="size-16 animate-pulse rounded-lg bg-black/10" />
@@ -71,9 +71,7 @@ export function RoomPreviewCard({
             <div className="h-3 w-1/2 animate-pulse rounded bg-black/10" />
           </div>
         </div>
-        {reactions.length > 0 ? (
-          <ReactionBadge reactions={reactions} isMine={isMine} />
-        ) : null}
+        {reactions.length > 0 ? <ReactionBadge reactions={reactions} isMine={isMine} /> : null}
       </div>
     );
   }
@@ -85,15 +83,13 @@ export function RoomPreviewCard({
           to={`/rooms/${roomId}`}
           className={cn(
             "inline-flex items-center gap-1.5 text-xs font-medium underline hover:opacity-80 transition-opacity",
-            isMine ? "text-white" : "text-plate"
+            isMine ? "text-white" : "text-plate",
           )}
         >
           <span>Xem thông tin phòng #{roomId}</span>
           <ExternalLink className="size-3" />
         </Link>
-        {reactions.length > 0 ? (
-          <ReactionBadge reactions={reactions} isMine={isMine} />
-        ) : null}
+        {reactions.length > 0 ? <ReactionBadge reactions={reactions} isMine={isMine} /> : null}
       </div>
     );
   }
@@ -111,7 +107,7 @@ export function RoomPreviewCard({
         to={`/rooms/${roomId}`}
         className={cn(
           "flex w-full items-center gap-3 rounded-xl border border-line-strong/30 bg-card p-2.5",
-          "shadow-xs transition hover:border-plate/50 hover:shadow-md text-left"
+          "shadow-xs transition hover:border-plate/50 hover:shadow-md text-left",
         )}
       >
         {/* Square Thumbnail */}
@@ -163,7 +159,7 @@ export function RoomPreviewCard({
                           "focus-visible:outline-none",
                           myReaction
                             ? "text-plate border-plate/30 bg-tint/80 ring-1 ring-plate/20"
-                            : "opacity-80 sm:opacity-0 group-hover/card:opacity-100"
+                            : "opacity-80 sm:opacity-0 group-hover/card:opacity-100",
                         )}
                       >
                         {myReaction ? (
@@ -196,7 +192,7 @@ export function RoomPreviewCard({
                               "flex size-7 shrink-0 items-center justify-center rounded-full text-base",
                               "transition-transform hover:scale-125 hover:bg-tint",
                               "active:scale-110 focus-visible:outline-none",
-                              myReaction === e ? "bg-plate/15 ring-2 ring-plate/40" : ""
+                              myReaction === e ? "bg-plate/15 ring-2 ring-plate/40" : "",
                             )}
                             onClick={(ev) => {
                               ev.preventDefault();
@@ -228,9 +224,7 @@ export function RoomPreviewCard({
             <span className="text-xs font-bold text-plate tabular-nums">
               {formatVnd(room.price)}/tháng
             </span>
-            <span
-              className="text-[10px] text-muted group-hover:text-plate flex items-center gap-0.5 font-medium shrink-0"
-            >
+            <span className="text-[10px] text-muted group-hover:text-plate flex items-center gap-0.5 font-medium shrink-0">
               Xem chi tiết
               <ExternalLink className="size-2.5" />
             </span>

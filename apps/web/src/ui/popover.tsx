@@ -21,7 +21,7 @@ const PopoverContent = React.forwardRef<
         "z-50 w-72 rounded-xl border border-line bg-card text-ink p-4 shadow-pop",
         "data-[state=open]:animate-pop-in data-[state=closed]:animate-pop-out",
         "focus:outline-none",
-        className
+        className,
       )}
       {...props}
     />
@@ -51,7 +51,7 @@ const TooltipContent = React.forwardRef<
       className={cn(
         "z-50 rounded-md bg-ink px-2.5 py-1.5 text-xs font-medium text-white",
         "data-[state=delayed-open]:animate-fade-in data-[state=closed]:animate-fade-out",
-        className
+        className,
       )}
       {...props}
     />

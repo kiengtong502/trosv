@@ -27,12 +27,14 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
   }
 
   const queryLower = q.trim().toLowerCase();
-  const matchedSchools = queryLower.length > 1
-    ? schools.filter((s) => s.name.toLowerCase().includes(queryLower)).slice(0, 4)
-    : [];
-  const matchedCities = queryLower.length > 1
-    ? cities.filter((c) => c.name.toLowerCase().includes(queryLower)).slice(0, 3)
-    : [];
+  const matchedSchools =
+    queryLower.length > 1
+      ? schools.filter((s) => s.name.toLowerCase().includes(queryLower)).slice(0, 4)
+      : [];
+  const matchedCities =
+    queryLower.length > 1
+      ? cities.filter((c) => c.name.toLowerCase().includes(queryLower)).slice(0, 3)
+      : [];
 
   const hasSuggestions = matchedSchools.length > 0 || matchedCities.length > 0;
 
@@ -46,7 +48,9 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
             placeholder="Nhập trường, phường hoặc tên đường..."
             aria-label="Tìm phòng"
             value={q}
-            onChange={(e) => { setQ(e.target.value); }}
+            onChange={(e) => {
+              setQ(e.target.value);
+            }}
             className="h-full min-w-0 flex-1 border-0 bg-transparent text-base text-ink placeholder:text-muted focus:outline-none"
           />
           <button
@@ -70,7 +74,9 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
                     key={s.id}
                     to={`${ROUTES.ROOMS}?school_id=${s.id}`}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                    onClick={() => { setQ(""); }}
+                    onClick={() => {
+                      setQ("");
+                    }}
                   >
                     <GraduationCap className="size-4 text-plate" aria-hidden />
                     <span>{s.name}</span>
@@ -89,7 +95,9 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
                     key={c.id}
                     to={`${ROUTES.ROOMS}?city_id=${c.id}`}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                    onClick={() => { setQ(""); }}
+                    onClick={() => {
+                      setQ("");
+                    }}
                   >
                     <MapPin className="size-4 text-muted" aria-hidden />
                     <span>{c.name}</span>
@@ -123,12 +131,22 @@ export default function Home() {
 
   useEffect(() => {
     getListings({ per_page: 8, sort: "newest" })
-      .then((res) => { setNewest(res.data); })
-      .catch((err: unknown) => { setError(String(err)); })
-      .finally(() => { setLoading(false); });
+      .then((res) => {
+        setNewest(res.data);
+      })
+      .catch((err: unknown) => {
+        setError(String(err));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
-    getCities().then(setCities).catch(() => {});
-    getSchools().then(setSchools).catch(() => {});
+    getCities()
+      .then(setCities)
+      .catch(() => {});
+    getSchools()
+      .then(setSchools)
+      .catch(() => {});
   }, []);
 
   return (

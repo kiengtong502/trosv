@@ -18,7 +18,17 @@ import { RoomLightbox } from "./room/RoomLightbox";
 import { RoomContactCard } from "./room/RoomContactCard";
 import { RoomGallery } from "./room/RoomGallery";
 import { SimilarRooms } from "./room/SimilarRooms";
-import { Sparkles, MapPin, ArrowLeft, Heart, Share2, Ruler, GraduationCap, Home, Clock } from "lucide-react";
+import {
+  Sparkles,
+  MapPin,
+  ArrowLeft,
+  Heart,
+  Share2,
+  Ruler,
+  GraduationCap,
+  Home,
+  Clock,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function RoomDetail() {
@@ -33,9 +43,7 @@ export default function RoomDetail() {
   const [adviceBusy, setAdviceBusy] = useState(false);
   const [adviceError, setAdviceError] = useState("");
 
-  useDocumentTitle(
-    detail.listing ? `${detail.listing.title} · TROSV` : "Chi tiết phòng · TROSV"
-  );
+  useDocumentTitle(detail.listing ? `${detail.listing.title} · TROSV` : "Chi tiết phòng · TROSV");
 
   const images = detail.listing?.images ?? [];
   const cover = detail.listing?.cover_image ?? images[0]?.url ?? null;
@@ -125,7 +133,12 @@ export default function RoomDetail() {
   const km = listing.distance_km;
   const tiles: { icon: typeof Ruler; value: string; label: string; tone: string }[] = [];
   if (listing.area_m2 != null) {
-    tiles.push({ icon: Ruler, value: `${listing.area_m2} m²`, label: "Diện tích", tone: "bg-flyer/25" });
+    tiles.push({
+      icon: Ruler,
+      value: `${listing.area_m2} m²`,
+      label: "Diện tích",
+      tone: "bg-flyer/25",
+    });
   }
   if (km != null) {
     tiles.push({
@@ -151,7 +164,8 @@ export default function RoomDetail() {
   }
 
   const tile = "rounded-xl border border-line bg-card p-5 shadow-card";
-  const rated = listing.ratings?.listing_avg ?? listing.average_rating ?? listing.avg_rating ?? null;
+  const rated =
+    listing.ratings?.listing_avg ?? listing.average_rating ?? listing.avg_rating ?? null;
   const ratingRows: [string, number | null | undefined][] = [
     ["Phòng", listing.ratings?.listing_avg],
     ["Chủ nhà", listing.ratings?.landlord_avg],
@@ -177,18 +191,24 @@ export default function RoomDetail() {
               <Tag className="bg-moss-tint text-moss">Còn trống</Tag>
             ) : null}
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">{listing.title}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">
+            {listing.title}
+          </h1>
           <p className="mt-2 flex items-center gap-1.5 text-sm text-muted">
             <MapPin className="size-4 text-plate" aria-hidden />
             <span>
               {listing.address}
-              {listing.ward && !listing.address.includes(listing.ward.name) ? `, ${listing.ward.name}` : ""}
+              {listing.ward && !listing.address.includes(listing.ward.name)
+                ? `, ${listing.ward.name}`
+                : ""}
             </span>
           </p>
           {rated != null ? (
             <p className="mt-1.5 text-sm text-ink-2">
               <Rating value={rated} />
-              <span className="ml-1 text-muted">· {listing.reviews_count ?? detail.reviews.length} đánh giá</span>
+              <span className="ml-1 text-muted">
+                · {listing.reviews_count ?? detail.reviews.length} đánh giá
+              </span>
             </p>
           ) : null}
         </div>
@@ -198,7 +218,9 @@ export default function RoomDetail() {
             size="sm"
             onClick={() => void toggleFav()}
             aria-pressed={isFav}
-            className={cn(isFav && "border-danger/30 text-danger hover:bg-danger-tint hover:text-danger")}
+            className={cn(
+              isFav && "border-danger/30 text-danger hover:bg-danger-tint hover:text-danger",
+            )}
           >
             <Heart className={cn("size-4", isFav && "fill-danger")} aria-hidden />
             {isFav ? "Đã lưu" : "Lưu"}
@@ -212,7 +234,10 @@ export default function RoomDetail() {
 
       {/* Bento: hero row */}
       <div className="motion-stagger mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <RoomGallery images={images.length > 0 ? images : cover ? [{ id: 0, url: cover }] : []} onOpen={setLightboxAt} />
+        <RoomGallery
+          images={images.length > 0 ? images : cover ? [{ id: 0, url: cover }] : []}
+          onOpen={setLightboxAt}
+        />
         <div className="flex flex-col gap-4">
           <RoomContactCard listing={listing} />
           <section className="rounded-xl border border-moss/25 bg-moss-tint p-5 shadow-card">
@@ -227,17 +252,27 @@ export default function RoomDetail() {
             ) : advice ? (
               <div data-testid="ai-price">
                 <p className="font-bold text-ink">
-                  Khoảng giá hợp lý: {formatVnd(advice.fair_min ?? 0)} – {formatVnd(advice.fair_max ?? 0)}/tháng
+                  Khoảng giá hợp lý: {formatVnd(advice.fair_min ?? 0)} –{" "}
+                  {formatVnd(advice.fair_max ?? 0)}/tháng
                 </p>
                 <p className="mt-1 text-sm text-ink-2">
-                  {advice.tips?.[0] ?? advice.message ?? "Giá phòng phù hợp với mặt bằng chung khu vực."}
+                  {advice.tips?.[0] ??
+                    advice.message ??
+                    "Giá phòng phù hợp với mặt bằng chung khu vực."}
                 </p>
-                <p className="mt-2 text-xs text-muted">* Tham khảo, dựa trên phòng trọ cùng phường/quận.</p>
+                <p className="mt-2 text-xs text-muted">
+                  * Tham khảo, dựa trên phòng trọ cùng phường/quận.
+                </p>
               </div>
             ) : (
               <div className="flex flex-col items-start gap-2">
                 {adviceError ? <p className="text-sm text-danger">{adviceError}</p> : null}
-                <Button variant="outline" size="sm" loading={adviceBusy} onClick={() => void askAi()}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  loading={adviceBusy}
+                  onClick={() => void askAi()}
+                >
                   <Sparkles className="size-4 text-plate" aria-hidden />
                   Hỏi giá phòng này
                 </Button>
@@ -253,7 +288,11 @@ export default function RoomDetail() {
         style={{ "--n": tiles.length } as React.CSSProperties}
       >
         {tiles.map((t) => (
-          <div key={t.label} data-testid="fact-tile" className={cn("rounded-xl border border-line p-4 shadow-card", t.tone)}>
+          <div
+            key={t.label}
+            data-testid="fact-tile"
+            className={cn("rounded-xl border border-line p-4 shadow-card", t.tone)}
+          >
             <t.icon className="mb-3 size-5 text-ink-2" aria-hidden />
             <p className="text-xl font-extrabold tabular-nums text-ink">{t.value}</p>
             <p className="mt-0.5 text-xs text-muted">{t.label}</p>
@@ -267,12 +306,16 @@ export default function RoomDetail() {
           {listing.description ? (
             <section className={tile}>
               <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted">Mô tả</h2>
-              <p className="whitespace-pre-line text-base leading-relaxed text-ink-2">{listing.description}</p>
+              <p className="whitespace-pre-line text-base leading-relaxed text-ink-2">
+                {listing.description}
+              </p>
             </section>
           ) : null}
           {listing.amenities && listing.amenities.length > 0 ? (
             <section className={tile}>
-              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted">Tiện ích</h2>
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted">
+                Tiện ích
+              </h2>
               <div className="grid grid-cols-2 gap-2">
                 {listing.amenities.map((a) => (
                   <span
@@ -320,7 +363,10 @@ export default function RoomDetail() {
                 <div key={label} className="flex items-center gap-3">
                   <dt className="w-16 text-muted">{label}</dt>
                   <dd className="h-2 flex-1 overflow-hidden rounded-full bg-sunken">
-                    <span className="block h-full rounded-full bg-flyer" style={{ width: `${((v ?? 0) / 5) * 100}%` }} />
+                    <span
+                      className="block h-full rounded-full bg-flyer"
+                      style={{ width: `${((v ?? 0) / 5) * 100}%` }}
+                    />
                   </dd>
                   <dd className="w-8 text-right font-semibold tabular-nums text-ink">
                     {v != null ? v.toFixed(1) : "–"}
@@ -331,7 +377,8 @@ export default function RoomDetail() {
           ) : null}
           {detail.reviews.length === 0 ? (
             <p className="rounded-lg border border-dashed border-line-strong p-4 text-sm text-muted">
-              Chưa có đánh giá nào cho phòng này. Bạn từng ở đây? Hãy là người đầu tiên chia sẻ trải nghiệm.
+              Chưa có đánh giá nào cho phòng này. Bạn từng ở đây? Hãy là người đầu tiên chia sẻ trải
+              nghiệm.
             </p>
           ) : (
             <div className="divide-y divide-line">
@@ -339,12 +386,20 @@ export default function RoomDetail() {
                 <div key={r.id} className="py-4 first:pt-0 last:pb-0">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2.5">
-                      <Avatar name={r.student?.name ?? r.user_name ?? "Sinh viên"} avatar={r.student?.avatar} size={32} />
-                      <p className="truncate font-semibold text-ink">{r.student?.name ?? r.user_name ?? "Sinh viên"}</p>
+                      <Avatar
+                        name={r.student?.name ?? r.user_name ?? "Sinh viên"}
+                        avatar={r.student?.avatar}
+                        size={32}
+                      />
+                      <p className="truncate font-semibold text-ink">
+                        {r.student?.name ?? r.user_name ?? "Sinh viên"}
+                      </p>
                     </div>
                     <Rating value={r.listing_rating ?? r.rating} />
                   </div>
-                  {r.comment ? <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{r.comment}</p> : null}
+                  {r.comment ? (
+                    <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{r.comment}</p>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -370,7 +425,9 @@ export default function RoomDetail() {
         <Button
           variant="primary"
           onClick={() => {
-            const el = document.querySelector<HTMLButtonElement>('[data-testid="contact-card"] button');
+            const el = document.querySelector<HTMLButtonElement>(
+              '[data-testid="contact-card"] button',
+            );
             el?.click();
           }}
         >

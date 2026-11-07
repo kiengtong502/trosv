@@ -11,7 +11,12 @@ import type { ReactNode } from "react";
 */
 
 const INK = "#1b2a4a";
-const STROKE = { stroke: INK, strokeWidth: 2.5, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+const STROKE = {
+  stroke: INK,
+  strokeWidth: 2.5,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+} as const;
 
 function Bedroom() {
   return (

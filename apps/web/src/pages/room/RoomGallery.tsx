@@ -88,7 +88,7 @@ export function RoomGallery({ images, onOpen }: RoomGalleryProps) {
               aria-current={i === at}
               className={cn(
                 "aspect-3/2 overflow-hidden rounded-lg bg-sunken transition-[box-shadow,opacity] duration-150",
-                i === at ? "ring-2 ring-plate" : "opacity-80 hover:opacity-100"
+                i === at ? "ring-2 ring-plate" : "opacity-80 hover:opacity-100",
               )}
             >
               <img src={img.url} alt="" loading="lazy" className="h-full w-full object-cover" />

@@ -25,10 +25,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
-      className={cn(
-        "flex flex-col items-center justify-center gap-4 py-16 text-center",
-        className
-      )}
+      className={cn("flex flex-col items-center justify-center gap-4 py-16 text-center", className)}
     >
       {illustration ? (
         <div aria-hidden className="w-full max-w-64">
@@ -36,11 +33,7 @@ export function EmptyState({
         </div>
       ) : null}
       <h2 className="text-xl font-semibold text-ink">{title}</h2>
-      {description ? (
-        <p className="max-w-md text-lg text-ink-2">
-          {description}
-        </p>
-      ) : null}
+      {description ? <p className="max-w-md text-lg text-ink-2">{description}</p> : null}
       {action ? <div className="mt-2">{action}</div> : null}
     </div>
   );
@@ -66,10 +59,7 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className={cn(
-        "flex flex-col items-center justify-center gap-3 py-16 text-center",
-        className
-      )}
+      className={cn("flex flex-col items-center justify-center gap-3 py-16 text-center", className)}
     >
       <h2 className="text-xl font-semibold text-ink">{title}</h2>
       <p className="max-w-md text-base text-muted">{message}</p>

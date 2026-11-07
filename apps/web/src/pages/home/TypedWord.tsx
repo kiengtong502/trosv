@@ -12,7 +12,9 @@ interface Phase {
 const START: Phase = { word: 0, len: 0, deleting: false };
 
 function prefersReducedMotion(): boolean {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 /**
@@ -55,7 +57,9 @@ export function TypedWord() {
 
   const word = HERO_WORDS[phase.word] ?? HERO_WORDS[0];
   const shown = reduced ? HERO_WORDS[0] : word.slice(0, phase.len);
-  const idle = !reduced && ((!phase.deleting && phase.len === word.length) || (phase.deleting && phase.len === 0));
+  const idle =
+    !reduced &&
+    ((!phase.deleting && phase.len === word.length) || (phase.deleting && phase.len === 0));
 
   return (
     <>

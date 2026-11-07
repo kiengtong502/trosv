@@ -116,7 +116,11 @@ export interface Listing {
   /** Khoang cach den truong (km) khi loc theo truong. */
   distance_km?: number | null;
   /** RoomDetail block diem theo 3 chieu. */
-  ratings?: { listing_avg?: number | null; landlord_avg?: number | null; area_avg?: number | null } | null;
+  ratings?: {
+    listing_avg?: number | null;
+    landlord_avg?: number | null;
+    area_avg?: number | null;
+  } | null;
   /** ID hoi thoai cua chinh toi voi tin nay (neu co). */
   my_conversation_id?: number | null;
   can_review?: boolean;

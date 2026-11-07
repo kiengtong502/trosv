@@ -1,16 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('reaction badge and preview card reaction', async ({ page }) => {
+test("reaction badge and preview card reaction", async ({ page }) => {
   // 1. Go to login
-  await page.goto('/login');
-  await page.fill('input[type="email"]', 'student1@example.com');
-  await page.fill('input[type="password"]', 'password');
+  await page.goto("/login");
+  await page.fill('input[type="email"]', "student1@example.com");
+  await page.fill('input[type="password"]', "password");
   await page.click('button[type="submit"]');
 
   await page.waitForURL(/\/($|\?)/);
 
   // 2. Go to conversation 1
-  await page.goto('/messages/1');
+  await page.goto("/messages/1");
   await page.waitForSelector('[data-testid="thread"]');
   await page.waitForTimeout(1000);
 
@@ -46,7 +46,7 @@ test('reaction badge and preview card reaction', async ({ page }) => {
   try {
     await expect(thread.getByText(msg1Text)).toBeVisible({ timeout: 5_000 });
   } catch {
-    await textarea.press('Enter');
+    await textarea.press("Enter");
     await expect(thread.getByText(msg1Text)).toBeVisible({ timeout: 10_000 });
   }
 
@@ -56,7 +56,7 @@ test('reaction badge and preview card reaction', async ({ page }) => {
   try {
     await expect(thread.getByText(msg2Text)).toBeVisible({ timeout: 5_000 });
   } catch {
-    await textarea.press('Enter');
+    await textarea.press("Enter");
     await expect(thread.getByText(msg2Text)).toBeVisible({ timeout: 10_000 });
   }
 

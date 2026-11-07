@@ -14,7 +14,7 @@ import type { Message } from "@/types/api";
 export function useConversationMessages(
   id: string | number,
   setMessages: Dispatch<SetStateAction<Message[]>>,
-  lastIdRef: { current: number }
+  lastIdRef: { current: number },
 ): {
   send: (text: string, file: File | null) => Promise<Message | null>;
   remove: (m: Message | number, scope: "unsent" | "self") => Promise<boolean>;
@@ -53,9 +53,9 @@ export function useConversationMessages(
           ? prev.map((x) =>
               x.id === mid
                 ? { ...x, is_unsent: true, body: null, attachment_url: null, attachment_name: null }
-                : x
+                : x,
             )
-          : prev.filter((x) => x.id !== mid)
+          : prev.filter((x) => x.id !== mid),
       );
       return true;
     } catch (err) {
@@ -83,7 +83,9 @@ export function useConversationMessages(
       if (serverMap == null) {
         setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, reactions: null } : x)));
       } else {
-        setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, reactions: serverMap } : x)));
+        setMessages((prev) =>
+          prev.map((x) => (x.id === m.id ? { ...x, reactions: serverMap } : x)),
+        );
       }
       return true;
     } catch (err) {

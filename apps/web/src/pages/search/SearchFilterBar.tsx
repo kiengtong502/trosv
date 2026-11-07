@@ -28,12 +28,7 @@ export interface FilterPillProps {
   children: React.ReactNode;
 }
 
-export function FilterPill({
-  label,
-  active,
-  onClear,
-  children,
-}: FilterPillProps) {
+export function FilterPill({ label, active, onClear, children }: FilterPillProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,7 +40,7 @@ export function FilterPill({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
             active
               ? "border-flyer bg-flyer font-semibold text-flyer-ink"
-              : "border-white/30 bg-white/10 text-white hover:bg-white/20"
+              : "border-white/30 bg-white/10 text-white hover:bg-white/20",
           )}
         >
           {label}
@@ -77,20 +72,21 @@ interface LocationSelectsProps {
   cityAllLabel?: string;
 }
 
-function LocationSelects({
-  idPrefix,
-  search,
-  cityAllLabel = "Tất cả",
-}: LocationSelectsProps) {
+function LocationSelects({ idPrefix, search, cityAllLabel = "Tất cả" }: LocationSelectsProps) {
   return (
     <>
       <div>
-        <label htmlFor={`${idPrefix}-city`} className="flex flex-col gap-1 text-xs font-medium text-ink-2">
+        <label
+          htmlFor={`${idPrefix}-city`}
+          className="flex flex-col gap-1 text-xs font-medium text-ink-2"
+        >
           Tỉnh / Thành phố
           <select
             id={`${idPrefix}-city`}
             value={search.filters.city_id}
-            onChange={(e) => { search.setCity(e.target.value); }}
+            onChange={(e) => {
+              search.setCity(e.target.value);
+            }}
             className={SELECT_FIELD_CLASS}
           >
             <option value="">{cityAllLabel}</option>
@@ -104,12 +100,17 @@ function LocationSelects({
       </div>
 
       <div>
-        <label htmlFor={`${idPrefix}-ward`} className="flex flex-col gap-1 text-xs font-medium text-ink-2">
+        <label
+          htmlFor={`${idPrefix}-ward`}
+          className="flex flex-col gap-1 text-xs font-medium text-ink-2"
+        >
           Phường / Xã
           <select
             id={`${idPrefix}-ward`}
             value={search.filters.ward_id}
-            onChange={(e) => { search.setWard(e.target.value); }}
+            onChange={(e) => {
+              search.setWard(e.target.value);
+            }}
             disabled={search.filters.city_id === ""}
             className={SELECT_FIELD_CLASS}
           >
@@ -120,7 +121,7 @@ function LocationSelects({
               .filter(
                 (w) =>
                   search.filters.city_id === "" ||
-                  String(w.city?.id ?? w.city_id ?? "") === search.filters.city_id
+                  String(w.city?.id ?? w.city_id ?? "") === search.filters.city_id,
               )
               .map((w) => (
                 <option key={w.id} value={w.id}>
@@ -155,7 +156,9 @@ export function SearchFilterBar({
     >
       <Input
         value={search.filters.q}
-        onChange={(e) => { search.setFilter("q", e.target.value); }}
+        onChange={(e) => {
+          search.setFilter("q", e.target.value);
+        }}
         placeholder="Khu vực, trường hoặc đường..."
         aria-label="Tìm theo khu vực"
         className="h-10 min-w-52 max-w-80"
@@ -164,7 +167,9 @@ export function SearchFilterBar({
       <FilterPill
         label="Bộ lọc"
         active={search.filters.city_id !== "" || search.filters.ward_id !== ""}
-        onClear={() => { search.setCity(""); }}
+        onClear={() => {
+          search.setCity("");
+        }}
       >
         <div className="flex flex-col gap-3 min-w-[240px]">
           <LocationSelects idPrefix="filter" search={search} cityAllLabel="Tất cả" />
@@ -188,15 +193,24 @@ export function SearchFilterBar({
         }}
       >
         <div className="flex flex-col gap-3 min-w-[250px]">
-          <LocationSelects idPrefix="near-school" search={search} cityAllLabel="Tất cả tỉnh thành" />
+          <LocationSelects
+            idPrefix="near-school"
+            search={search}
+            cityAllLabel="Tất cả tỉnh thành"
+          />
 
           <div>
-            <label htmlFor="filter-school" className="flex flex-col gap-1 text-xs font-medium text-ink-2">
+            <label
+              htmlFor="filter-school"
+              className="flex flex-col gap-1 text-xs font-medium text-ink-2"
+            >
               Trường đại học
               <select
                 id="filter-school"
                 value={search.filters.school_id}
-                onChange={(e) => { search.setFilter("school_id", e.target.value); }}
+                onChange={(e) => {
+                  search.setFilter("school_id", e.target.value);
+                }}
                 disabled={search.filters.ward_id === ""}
                 className={SELECT_FIELD_CLASS}
               >
@@ -204,15 +218,15 @@ export function SearchFilterBar({
                   {search.filters.city_id === ""
                     ? "Chọn Tỉnh/TP trước"
                     : search.filters.ward_id === ""
-                    ? "Chọn Phường trước"
-                    : "Chọn trường trong phường này"}
+                      ? "Chọn Phường trước"
+                      : "Chọn trường trong phường này"}
                 </option>
                 {search.schools
                   .filter((s) =>
                     search.filters.ward_id !== ""
                       ? String(s.ward?.id) === search.filters.ward_id
                       : search.filters.city_id === "" ||
-                        String(s.city?.id ?? s.city_id ?? "") === search.filters.city_id
+                        String(s.city?.id ?? s.city_id ?? "") === search.filters.city_id,
                   )
                   .map((s) => (
                     <option key={s.id} value={s.id}>
@@ -224,12 +238,17 @@ export function SearchFilterBar({
           </div>
 
           {search.filters.school_id !== "" ? (
-            <label htmlFor="filter-radius" className="flex flex-col gap-1 text-xs font-medium text-ink-2">
+            <label
+              htmlFor="filter-radius"
+              className="flex flex-col gap-1 text-xs font-medium text-ink-2"
+            >
               Bán kính
               <select
                 id="filter-radius"
                 value={search.filters.max_km}
-                onChange={(e) => { search.setFilter("max_km", e.target.value); }}
+                onChange={(e) => {
+                  search.setFilter("max_km", e.target.value);
+                }}
                 className={SELECT_FIELD_CLASS}
               >
                 <option value="">Mọi khoảng cách</option>
@@ -268,19 +287,23 @@ export function SearchFilterBar({
       <FilterPill
         label="Loại tin"
         active={search.filters.type !== ""}
-        onClear={() => { search.setFilter("type", ""); }}
+        onClear={() => {
+          search.setFilter("type", "");
+        }}
       >
         <div className="flex flex-col gap-1" role="group" aria-label="Loại tin">
           {[{ value: "", label: "Tất cả" }, ...TYPE_OPTIONS].map((o) => (
             <button
               key={o.value || "all"}
               type="button"
-              onClick={() => { search.setFilter("type", o.value); }}
+              onClick={() => {
+                search.setFilter("type", o.value);
+              }}
               aria-pressed={search.filters.type === o.value}
               className={cn(
                 "rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-tint",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
-                search.filters.type === o.value && "bg-tint font-semibold text-plate"
+                search.filters.type === o.value && "bg-tint font-semibold text-plate",
               )}
             >
               {o.label}
@@ -301,7 +324,9 @@ export function SearchFilterBar({
             <Chip
               key={a.id}
               on={search.filters.amenity_ids.includes(a.id)}
-              onClick={() => { search.toggleAmenity(a.id); }}
+              onClick={() => {
+                search.toggleAmenity(a.id);
+              }}
               className="h-8 px-3 text-xs"
             >
               {a.name ?? `Tiện ích ${a.id}`}

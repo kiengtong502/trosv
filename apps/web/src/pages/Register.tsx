@@ -58,12 +58,13 @@ export default function Register() {
   const err = (field: string): string | undefined => fieldErrors[field]?.[0];
 
   return (
-    <AuthSplit
-      artSrc={ART_ASSETS.AUTH_LANDLORD}
-      title="Tạo tài khoản"
-      artTestId="register-art"
-    >
-      <form onSubmit={(e) => { void form.handleSubmit(e); }} className="flex flex-col gap-4">
+    <AuthSplit artSrc={ART_ASSETS.AUTH_LANDLORD} title="Tạo tài khoản" artTestId="register-art">
+      <form
+        onSubmit={(e) => {
+          void form.handleSubmit(e);
+        }}
+        className="flex flex-col gap-4"
+      >
         {formError ? (
           <p role="alert" className="rounded-xl bg-plate-tint p-3 text-sm text-ink">
             {formError}
@@ -84,7 +85,7 @@ export default function Register() {
                   "flex cursor-pointer items-center justify-center gap-2 rounded-xl border p-3 text-sm transition-all text-center select-none focus-within:ring-2 focus-within:ring-plate",
                   isSelected
                     ? "border-plate bg-plate font-bold text-white shadow-xs"
-                    : "border-line-strong bg-card text-ink hover:border-plate hover:bg-tint font-medium"
+                    : "border-line-strong bg-card text-ink hover:border-plate hover:bg-tint font-medium",
                 )}
               >
                 <input
@@ -92,13 +93,15 @@ export default function Register() {
                   name="role"
                   value={r.value}
                   checked={isSelected}
-                  onChange={() => { setPickedRole(r.value); }}
+                  onChange={() => {
+                    setPickedRole(r.value);
+                  }}
                   className="sr-only"
                 />
                 <span
                   className={cn(
                     "size-2 rounded-full transition-colors",
-                    isSelected ? "bg-white" : "bg-muted/40"
+                    isSelected ? "bg-white" : "bg-muted/40",
                   )}
                   aria-hidden
                 />
@@ -112,7 +115,9 @@ export default function Register() {
             id="name"
             autoComplete="name"
             value={name}
-            onChange={(e) => { setName(e.target.value); }}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
             invalid={!!err("name")}
           />
         </Field>
@@ -122,31 +127,37 @@ export default function Register() {
             type="email"
             autoComplete="email"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             invalid={!!err("email")}
           />
         </Field>
-        <Field
-          id="password"
-          label="Mật khẩu"
-          error={err("password")}
-          required
-        >
+        <Field id="password" label="Mật khẩu" error={err("password")} required>
           <PasswordInput
             id="password"
             autoComplete="new-password"
             value={password}
-            onChange={(e) => { setPassword(e.target.value); }}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             invalid={!!err("password")}
           />
         </Field>
         <PasswordChecklist password={password} confirmation={passwordConfirmation} />
-        <Field id="password_confirmation" label="Nhập lại mật khẩu" error={err("password_confirmation")} required>
+        <Field
+          id="password_confirmation"
+          label="Nhập lại mật khẩu"
+          error={err("password_confirmation")}
+          required
+        >
           <PasswordInput
             id="password_confirmation"
             autoComplete="new-password"
             value={passwordConfirmation}
-            onChange={(e) => { setPasswordConfirmation(e.target.value); }}
+            onChange={(e) => {
+              setPasswordConfirmation(e.target.value);
+            }}
             invalid={!!err("password_confirmation")}
           />
         </Field>
@@ -166,13 +177,7 @@ export default function Register() {
 
 /* Live password checklist (Zillow lists "Your password must contain:").
    Purely client-side guidance; the server still validates on submit. */
-function PasswordChecklist({
-  password,
-  confirmation,
-}: {
-  password: string;
-  confirmation: string;
-}) {
+function PasswordChecklist({ password, confirmation }: { password: string; confirmation: string }) {
   const checks = [
     { ok: password.length >= 8, label: "Tối thiểu 8 ký tự" },
     {
@@ -187,13 +192,13 @@ function PasswordChecklist({
           key={c.label}
           className={cn(
             "flex items-center gap-2 text-xs",
-            c.ok ? "font-medium text-ink" : "text-muted"
+            c.ok ? "font-medium text-ink" : "text-muted",
           )}
         >
           <span
             className={cn(
               "flex size-4 items-center justify-center rounded-full border",
-              c.ok ? "border-moss bg-moss text-white" : "border-line-strong text-transparent"
+              c.ok ? "border-moss bg-moss text-white" : "border-line-strong text-transparent",
             )}
             aria-hidden
           >

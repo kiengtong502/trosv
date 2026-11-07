@@ -33,25 +33,31 @@ export function ConversationListItem({
       className={cn(
         "relative flex gap-3 rounded-xl p-3 transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
-        active ? "bg-tint" : "hover:bg-tint/70"
+        active ? "bg-tint" : "hover:bg-tint/70",
       )}
     >
       {active ? (
-        <span aria-hidden className="absolute -left-2.5 bottom-3 top-3 w-[3px] rounded-r bg-plate" />
+        <span
+          aria-hidden
+          className="absolute -left-2.5 bottom-3 top-3 w-[3px] rounded-r bg-plate"
+        />
       ) : null}
       <Avatar name={other} avatar={c.other_user?.avatar} size={46} className="flex-none" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <p
             data-testid="conversation-name"
-            className={cn("truncate text-[15px] text-ink", unread > 0 ? "font-extrabold" : "font-semibold")}
+            className={cn(
+              "truncate text-[15px] text-ink",
+              unread > 0 ? "font-extrabold" : "font-semibold",
+            )}
           >
             {other}
           </p>
           <span
             className={cn(
               "flex-none text-xs tabular-nums",
-              unread > 0 ? "font-bold text-plate" : "text-muted"
+              unread > 0 ? "font-bold text-plate" : "text-muted",
             )}
           >
             {c.last_message?.created_at ? timeAgo(c.last_message.created_at) : ""}
@@ -61,7 +67,7 @@ export function ConversationListItem({
           <p
             className={cn(
               "min-w-0 flex-1 truncate text-sm",
-              unread > 0 ? "font-semibold text-ink" : "text-muted"
+              unread > 0 ? "font-semibold text-ink" : "text-muted",
             )}
           >
             {mine ? "Bạn: " : ""}

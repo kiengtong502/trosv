@@ -22,7 +22,7 @@ export function useStickToBottom(
   threadRef: RefObject<HTMLDivElement>,
   messages: unknown,
   loaded: boolean,
-  conversationId?: string | number  
+  conversationId?: string | number,
 ): {
   handleScroll: () => boolean;
   scrollToBottom: (smooth?: boolean) => void;
@@ -34,15 +34,18 @@ export function useStickToBottom(
   /** Was the reader at the bottom as of the last scroll? True until they scroll up. */
   const atBottomRef = useRef(true);
 
-  const scrollToBottom = useCallback((smooth = false) => {
-    const el = threadRef.current;
-    if (!el) return;
-    if (smooth) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    } else {
-      el.scrollTop = el.scrollHeight;
-    }
-  }, [threadRef]);
+  const scrollToBottom = useCallback(
+    (smooth = false) => {
+      const el = threadRef.current;
+      if (!el) return;
+      if (smooth) {
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      } else {
+        el.scrollTop = el.scrollHeight;
+      }
+    },
+    [threadRef],
+  );
 
   /* Content growth changes the children's size, not the scroll box's own size. */
   const observeChildren = useCallback((el: HTMLElement) => {
@@ -51,34 +54,40 @@ export function useStickToBottom(
     for (const child of Array.from(el.children)) ro.observe(child);
   }, []);
 
-  const attachObserver = useCallback((el: HTMLDivElement) => {
-    if (typeof ResizeObserver === "undefined") return;
-    if (roRef.current) {
-      roRef.current.disconnect();
-    }
-    const ro = new ResizeObserver(() => {
-      // Keep pinned if the first scroll has not settled, or the reader was at the bottom
-      // before this growth (room preview cards and images load after the first paint).
-      if (!initialScrollDoneRef.current || atBottomRef.current) {
-        el.scrollTop = el.scrollHeight;
+  const attachObserver = useCallback(
+    (el: HTMLDivElement) => {
+      if (typeof ResizeObserver === "undefined") return;
+      if (roRef.current) {
+        roRef.current.disconnect();
       }
-    });
-    ro.observe(el);
-    roRef.current = ro;
-    observeChildren(el);
-  }, [observeChildren]);
-
-  const notifyMounted = useCallback((el: HTMLDivElement) => {
-    attachObserver(el);
-
-    if (!initialScrollDoneRef.current) {
-      el.scrollTop = el.scrollHeight;
-      requestAnimationFrame(() => {
-        el.scrollTop = el.scrollHeight;
-        initialScrollDoneRef.current = true;
+      const ro = new ResizeObserver(() => {
+        // Keep pinned if the first scroll has not settled, or the reader was at the bottom
+        // before this growth (room preview cards and images load after the first paint).
+        if (!initialScrollDoneRef.current || atBottomRef.current) {
+          el.scrollTop = el.scrollHeight;
+        }
       });
-    }
-  }, [attachObserver]);
+      ro.observe(el);
+      roRef.current = ro;
+      observeChildren(el);
+    },
+    [observeChildren],
+  );
+
+  const notifyMounted = useCallback(
+    (el: HTMLDivElement) => {
+      attachObserver(el);
+
+      if (!initialScrollDoneRef.current) {
+        el.scrollTop = el.scrollHeight;
+        requestAnimationFrame(() => {
+          el.scrollTop = el.scrollHeight;
+          initialScrollDoneRef.current = true;
+        });
+      }
+    },
+    [attachObserver],
+  );
 
   // When conversation ID switches, reset initial scroll flag
   useEffect(() => {

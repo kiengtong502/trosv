@@ -93,9 +93,7 @@ export default function StudentPublic() {
         <Avatar name={profile.name} avatar={profile.avatar} size={96} />
         <h1 className="text-3xl font-bold tracking-tight text-ink">{profile.name}</h1>
         <p className="text-sm font-medium text-muted">{profile.school ?? "Chưa rõ trường"}</p>
-        {profile.bio ? (
-          <p className="text-base text-ink-2 leading-relaxed">{profile.bio}</p>
-        ) : null}
+        {profile.bio ? <p className="text-base text-ink-2 leading-relaxed">{profile.bio}</p> : null}
         {hobbies.length > 0 ? (
           <div className="mt-2 flex flex-wrap justify-center gap-1.5">
             {hobbies.map((h) => (

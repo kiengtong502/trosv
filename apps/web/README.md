@@ -22,32 +22,32 @@ http://localhost:5174 và API same-origin `/api`.
 
 ## Trang
 
-| Đường dẫn | Chức năng |
-|---|---|
-| `/` | Trang chủ: hero responsive (SVG artwork), tin mới nhất, loại tin, tính năng AI |
-| `/rooms` | Duyệt + lọc tin (từ khóa, loại, tỉnh/TP → phường, trường, giá, tiện ích), phân trang |
-| `/rooms/:id` | Chi tiết: lightbox ảnh, tiện ích, đánh giá, yêu thích, nhắn tin, tư vấn giá AI |
-| `/map` | Bản đồ Leaflet: điểm tin đăng + trường, lọc bán kính km |
-| `/login`, `/register` | Đăng nhập / đăng ký theo vai trò |
-| `/favorites` | Phòng yêu thích (sinh viên) |
-| `/messages`, `/messages/:id` | Hộp thư, chat realtime (WebSocket Reverb), gửi tệp đính kèm |
-| `/profile` | Hồ sơ cá nhân (`PUT /profile`) |
-| `/students/:id` | Hồ sơ công khai của sinh viên |
-| `/ai/roommates` | AI gợi ý bạn cùng phòng (sinh viên) |
-| `/ai/area-suggestions` | AI gợi ý khu vực (sinh viên) |
-| `/ai/chat` | Trợ lý AI, hỗ trợ ngữ cảnh tin đăng qua `?listing_id=` |
-| `/landlord` | Quản lý tin đăng (chủ nhà) |
-| `/landlord/new`, `/landlord/edit/:id` | Đăng/sửa tin: chọn vị trí trên bản đồ, ảnh, tiện ích, "Viết mô tả giúp tôi" (AI) |
+| Đường dẫn                             | Chức năng                                                                            |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| `/`                                   | Trang chủ: hero responsive (SVG artwork), tin mới nhất, loại tin, tính năng AI       |
+| `/rooms`                              | Duyệt + lọc tin (từ khóa, loại, tỉnh/TP → phường, trường, giá, tiện ích), phân trang |
+| `/rooms/:id`                          | Chi tiết: lightbox ảnh, tiện ích, đánh giá, yêu thích, nhắn tin, tư vấn giá AI       |
+| `/map`                                | Bản đồ Leaflet: điểm tin đăng + trường, lọc bán kính km                              |
+| `/login`, `/register`                 | Đăng nhập / đăng ký theo vai trò                                                     |
+| `/favorites`                          | Phòng yêu thích (sinh viên)                                                          |
+| `/messages`, `/messages/:id`          | Hộp thư, chat realtime (WebSocket Reverb), gửi tệp đính kèm                          |
+| `/profile`                            | Hồ sơ cá nhân (`PUT /profile`)                                                       |
+| `/students/:id`                       | Hồ sơ công khai của sinh viên                                                        |
+| `/ai/roommates`                       | AI gợi ý bạn cùng phòng (sinh viên)                                                  |
+| `/ai/area-suggestions`                | AI gợi ý khu vực (sinh viên)                                                         |
+| `/ai/chat`                            | Trợ lý AI, hỗ trợ ngữ cảnh tin đăng qua `?listing_id=`                               |
+| `/landlord`                           | Quản lý tin đăng (chủ nhà)                                                           |
+| `/landlord/new`, `/landlord/edit/:id` | Đăng/sửa tin: chọn vị trí trên bản đồ, ảnh, tiện ích, "Viết mô tả giúp tôi" (AI)     |
 
 ## Kiểm thử
 
-| Lệnh | Phạm vi |
-|---|---|
-| `npm run lint` | ESLint (TypeScript parser, quy tắc a11y và hooks) |
-| `npm run build` | `tsc --noEmit && vite build` - biên dịch TypeScript và đóng gói Vite |
-| `npx playwright test` | 11+ spec E2E trình duyệt thật; cần API :8000 đã seed + web :4173 (`E2E_BASE_URL`) |
-| `bash ../../scripts/e2e-smoke.sh` | Smoke mọi API theo luồng người dùng, AI tắt vẫn xanh |
-| `npm run test:e2e` | Hành trình người dùng đầy đủ (Python + Chromium hệ thống) |
+| Lệnh                              | Phạm vi                                                                           |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run lint`                    | ESLint (TypeScript parser, quy tắc a11y và hooks)                                 |
+| `npm run build`                   | `tsc --noEmit && vite build` - biên dịch TypeScript và đóng gói Vite              |
+| `npx playwright test`             | 11+ spec E2E trình duyệt thật; cần API :8000 đã seed + web :4173 (`E2E_BASE_URL`) |
+| `bash ../../scripts/e2e-smoke.sh` | Smoke mọi API theo luồng người dùng, AI tắt vẫn xanh                              |
+| `npm run test:e2e`                | Hành trình người dùng đầy đủ (Python + Chromium hệ thống)                         |
 
 ```bash
 # Playwright với Docker stack local:

@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
-import {
-  useConversationData,
-} from "@/hooks/useConversationData";
+import { useConversationData } from "@/hooks/useConversationData";
 import { useConversationRealtime } from "@/hooks/useConversationRealtime";
 import { useConversationMessages } from "@/hooks/useConversationMessages";
 import { useStickToBottom } from "@/hooks/useStickToBottom";
@@ -23,14 +21,7 @@ import { MessageBubble } from "@/pages/messages/MessageBubble";
 import { ThreadRoomCard } from "@/pages/messages/ThreadRoomCard";
 import { QuickReplies } from "@/pages/messages/QuickReplies";
 import { TypingDots } from "@/pages/messages/TypingDots";
-import {
-  Paperclip,
-  ArrowDown,
-  ChevronDown,
-  X,
-  FileText,
-  Send,
-} from "lucide-react";
+import { Paperclip, ArrowDown, ChevronDown, X, FileText, Send } from "lucide-react";
 
 const MESSAGE_MAX = 1000;
 /** On opening a thread, only the last few messages ease in (one after another). */
@@ -84,22 +75,17 @@ function Thread({ id }: ThreadProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const data = useConversationData(id);
-  const realtime = useConversationRealtime(
-    id,
-    data.setMessages,
-    data.lastIdRef,
-    (msg) => {
-      window.dispatchEvent(
-        new CustomEvent<ConvPreviewDetail>(CONV_PREVIEW_EVENT, {
-          detail: {
-            conversationId: Number(id),
-            lastMessage: msg.body ?? msg.attachment_name ?? "",
-            lastMessageAt: msg.created_at,
-          },
-        })
-      );
-    }
-  );
+  const realtime = useConversationRealtime(id, data.setMessages, data.lastIdRef, (msg) => {
+    window.dispatchEvent(
+      new CustomEvent<ConvPreviewDetail>(CONV_PREVIEW_EVENT, {
+        detail: {
+          conversationId: Number(id),
+          lastMessage: msg.body ?? msg.attachment_name ?? "",
+          lastMessageAt: msg.created_at,
+        },
+      }),
+    );
+  });
   const actions = useConversationMessages(id, data.setMessages, data.lastIdRef);
   /* The thread element's ref is owned here (not by a hook) so attaching
      it and passing it down never touches a hook-returned ref in render. */
@@ -114,7 +100,7 @@ function Thread({ id }: ThreadProps) {
         stick.notifyMounted(node);
       }
     },
-    [stick]
+    [stick],
   );
 
   const [draft, setDraft] = useState("");
@@ -144,7 +130,7 @@ function Thread({ id }: ThreadProps) {
   useDocumentTitle(
     data.conversation
       ? `${data.conversation.other_user?.name ?? "Tin nhắn"} · TROSV`
-      : "Tin nhắn · TROSV"
+      : "Tin nhắn · TROSV",
   );
 
   /* Whisper typing while the composer has text. */
@@ -152,7 +138,7 @@ function Thread({ id }: ThreadProps) {
     const e = getEcho();
     const chan = e?.private(`conversation.${id}`);
     if (!chan) return;
-     
+
     const ch = chan as unknown as { whisper: (ev: string, data: unknown) => void };
     ch.whisper("typing", { user_id: -1 });
   }, [draft, id]);
@@ -160,7 +146,11 @@ function Thread({ id }: ThreadProps) {
   const grouped = useMemo(() => data.messages, [data.messages]);
 
   /* Messages present when the thread first loaded never animate; only later ones do. */
-  const [baseline, setBaseline] = useState<{ convId: string; maxId: number; tail: number[] } | null>(null);
+  const [baseline, setBaseline] = useState<{
+    convId: string;
+    maxId: number;
+    tail: number[];
+  } | null>(null);
   if (isReady && (baseline === null || baseline.convId !== id)) {
     setBaseline({
       convId: id,
@@ -197,7 +187,8 @@ function Thread({ id }: ThreadProps) {
 
   const otherUser = data.conversation.other_user;
   const other = otherUser?.name ?? "Người dùng";
-  const otherRole = otherUser?.role === "student" ? "Sinh viên" : otherUser?.role === "landlord" ? "Chủ nhà" : null;
+  const otherRole =
+    otherUser?.role === "student" ? "Sinh viên" : otherUser?.role === "landlord" ? "Chủ nhà" : null;
   /* Suggested first questions: students talking to a landlord who has not replied yet. */
   const showQuickReplies =
     user?.role === "student" &&
@@ -225,7 +216,7 @@ function Thread({ id }: ThreadProps) {
             lastMessageAt: msg.created_at,
             unreadDelta: 0,
           },
-        })
+        }),
       );
     }
   }
@@ -239,7 +230,9 @@ function Thread({ id }: ThreadProps) {
       >
         <button
           type="button"
-          onClick={() => { void navigate(ROUTES.MESSAGES); }}
+          onClick={() => {
+            void navigate(ROUTES.MESSAGES);
+          }}
           className="-ml-1 flex size-10 items-center justify-center rounded-lg text-ink-2 hover:bg-tint md:hidden"
           aria-label="Về danh sách tin nhắn"
         >
@@ -262,7 +255,9 @@ function Thread({ id }: ThreadProps) {
               data-testid="role-chip"
               className={cn(
                 "flex-none rounded-full px-2 py-0.5 text-[11.5px] font-semibold",
-                otherUser?.role === "landlord" ? "bg-moss-tint text-moss" : "bg-plate-tint text-plate"
+                otherUser?.role === "landlord"
+                  ? "bg-moss-tint text-moss"
+                  : "bg-plate-tint text-plate",
               )}
             >
               {otherRole}
@@ -274,7 +269,9 @@ function Thread({ id }: ThreadProps) {
       {/* Messages: day separators + grouped bubbles */}
       <div
         ref={setThreadNode}
-        onScroll={() => { setAtBottom(stick.handleScroll()); }}
+        onScroll={() => {
+          setAtBottom(stick.handleScroll());
+        }}
         className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-4 bg-paper/30"
         data-testid="thread"
       >
@@ -292,13 +289,12 @@ function Thread({ id }: ThreadProps) {
           const showTimeGapHeader = !newDay && timeSincePrev >= 20 * 60 * 1000;
 
           const isGroupedWithPrev =
-            !newDay &&
-            !showTimeGapHeader &&
-            prev.is_mine === m.is_mine &&
-            timeSincePrev < 180000;
+            !newDay && !showTimeGapHeader && prev.is_mine === m.is_mine && timeSincePrev < 180000;
 
           const nextNewDay = next ? dayKey(next.created_at) !== dayKey(m.created_at) : false;
-          const timeToNext = next ? new Date(next.created_at).getTime() - new Date(m.created_at).getTime() : 0;
+          const timeToNext = next
+            ? new Date(next.created_at).getTime() - new Date(m.created_at).getTime()
+            : 0;
           const nextTimeGap = timeToNext >= 20 * 60 * 1000;
 
           const isGroupedWithNext =
@@ -312,20 +308,29 @@ function Thread({ id }: ThreadProps) {
             !isGroupedWithPrev && isGroupedWithNext
               ? "first"
               : isGroupedWithPrev && isGroupedWithNext
-              ? "middle"
-              : isGroupedWithPrev && !isGroupedWithNext
-              ? "last"
-              : "single";
+                ? "middle"
+                : isGroupedWithPrev && !isGroupedWithNext
+                  ? "last"
+                  : "single";
 
           const isLastInCluster = !isGroupedWithNext;
-          const prevHasReactions = Boolean(prev && prev.reactions && Object.keys(prev.reactions).length > 0);
+          const prevHasReactions = Boolean(
+            prev && prev.reactions && Object.keys(prev.reactions).length > 0,
+          );
 
           return (
             <div
               key={m.id}
               data-testid="message-row"
-              className={cn("flex flex-col w-full", (isNewMessage(m.id) || tailIndex >= 0) && "motion-enter")}
-              style={tailIndex >= 0 ? { animationDelay: `${tailIndex * OPEN_STAGGER_STEP_MS}ms` } : undefined}
+              className={cn(
+                "flex flex-col w-full",
+                (isNewMessage(m.id) || tailIndex >= 0) && "motion-enter",
+              )}
+              style={
+                tailIndex >= 0
+                  ? { animationDelay: `${tailIndex * OPEN_STAGGER_STEP_MS}ms` }
+                  : undefined
+              }
             >
               {newDay ? <DaySeparator label={formatDayLabel(m.created_at)} /> : null}
               {showTimeGapHeader ? <TimeSeparator date={m.created_at} /> : null}
@@ -333,7 +338,7 @@ function Thread({ id }: ThreadProps) {
                 className={cn(
                   "flex w-full",
                   m.is_mine ? "justify-end" : "justify-start",
-                  prevHasReactions ? "mt-3.5" : isGroupedWithPrev ? "mt-0.5" : "mt-2"
+                  prevHasReactions ? "mt-3.5" : isGroupedWithPrev ? "mt-0.5" : "mt-2",
                 )}
               >
                 <MessageBubble
@@ -343,9 +348,15 @@ function Thread({ id }: ThreadProps) {
                   shape={bubbleShape}
                   showTimestamp={isLastInCluster}
                   currentUserId={user?.id}
-                  onReact={(mm, e) => { void actions.react(mm, e, user?.id ?? m.sender_id); }}
-                  onUnsend={(mm) => { void actions.remove(mm, "unsent"); }}
-                  onDeleteSelf={(mm) => { void actions.remove(mm, "self"); }}
+                  onReact={(mm, e) => {
+                    void actions.react(mm, e, user?.id ?? m.sender_id);
+                  }}
+                  onUnsend={(mm) => {
+                    void actions.remove(mm, "unsent");
+                  }}
+                  onDeleteSelf={(mm) => {
+                    void actions.remove(mm, "self");
+                  }}
                 />
               </div>
             </div>
@@ -383,9 +394,7 @@ function Thread({ id }: ThreadProps) {
           />
         ) : null}
         {attachment ? (
-          <div
-            className="mb-2 max-w-sm flex items-center gap-2 rounded-xl border border-line bg-paper/80 p-2 shadow-xs"
-          >
+          <div className="mb-2 max-w-sm flex items-center gap-2 rounded-xl border border-line bg-paper/80 p-2 shadow-xs">
             {attachmentPreview ? (
               <img
                 src={attachmentPreview}

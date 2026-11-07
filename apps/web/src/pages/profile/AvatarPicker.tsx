@@ -93,7 +93,13 @@ export function AvatarPicker({ name, avatar, onSaved }: AvatarPickerProps) {
         </DialogHeader>
 
         <div className="flex justify-center py-1">
-          <Avatar name={name} avatar={selected} size={96} className="motion-enter" key={selected ?? "none"} />
+          <Avatar
+            name={name}
+            avatar={selected}
+            size={96}
+            className="motion-enter"
+            key={selected ?? "none"}
+          />
         </div>
 
         <div role="radiogroup" aria-label="Ảnh đại diện" className="grid grid-cols-4 gap-2">
@@ -111,7 +117,7 @@ export function AvatarPicker({ name, avatar, onSaved }: AvatarPickerProps) {
                 }}
                 className={cn(
                   "motion-press flex flex-col items-center gap-1 rounded-lg border p-2 transition-colors",
-                  on ? "border-plate bg-plate-tint" : "border-line bg-card hover:bg-tint"
+                  on ? "border-plate bg-plate-tint" : "border-line bg-card hover:bg-tint",
                 )}
               >
                 <Avatar name={AVATAR_NAMES[key]} avatar={key} size={52} />

@@ -41,7 +41,7 @@ export function SchoolCombobox({
   // Extract cities
   const cities = useMemo(() => {
     const list = Array.from(
-      new Set(schools.map((s) => s.city?.name).filter((name): name is string => Boolean(name)))
+      new Set(schools.map((s) => s.city?.name).filter((name): name is string => Boolean(name))),
     );
     return list;
   }, [schools]);
@@ -142,7 +142,7 @@ export function SchoolCombobox({
           className={cn(
             "flex h-11 w-full items-center justify-between rounded-lg border bg-card px-3 text-sm transition",
             "text-left cursor-pointer",
-            error ? "border-danger ring-1 ring-danger" : "border-line-strong hover:border-plate"
+            error ? "border-danger ring-1 ring-danger" : "border-line-strong hover:border-plate",
           )}
         >
           <div className="flex items-center gap-2 text-ink-2 min-w-0 flex-1">
@@ -157,7 +157,7 @@ export function SchoolCombobox({
         <div
           className={cn(
             "flex h-11 w-full items-center justify-between rounded-lg border bg-card px-3 text-sm transition",
-            "border-plate ring-2 ring-plate/20"
+            "border-plate ring-2 ring-plate/20",
           )}
         >
           <div className="flex items-center gap-2 text-ink-2 min-w-0 flex-1">
@@ -166,7 +166,9 @@ export function SchoolCombobox({
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => { setQuery(e.target.value); }}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
               placeholder="Gõ tên trường hoặc viết tắt (VD: Bách Khoa, UET, UEH...)"
               className="w-full bg-transparent text-sm text-ink placeholder:text-muted focus:outline-none"
             />
@@ -202,12 +204,14 @@ export function SchoolCombobox({
             <div className="flex items-center gap-1 border-b border-line bg-paper/60 p-2 overflow-x-auto">
               <button
                 type="button"
-                onClick={() => { setSelectedCity("all"); }}
+                onClick={() => {
+                  setSelectedCity("all");
+                }}
                 className={cn(
                   "rounded-md px-2.5 py-1 text-xs font-medium transition-colors shrink-0",
                   selectedCity === "all"
                     ? "bg-plate text-white shadow-xs font-semibold"
-                    : "bg-card text-muted hover:text-ink hover:bg-tint border border-line"
+                    : "bg-card text-muted hover:text-ink hover:bg-tint border border-line",
                 )}
               >
                 Tất cả ({schools.length})
@@ -218,12 +222,14 @@ export function SchoolCombobox({
                   <button
                     key={c}
                     type="button"
-                    onClick={() => { setSelectedCity(c); }}
+                    onClick={() => {
+                      setSelectedCity(c);
+                    }}
                     className={cn(
                       "rounded-md px-2.5 py-1 text-xs font-medium transition-colors shrink-0",
                       selectedCity === c
                         ? "bg-plate text-white shadow-xs font-semibold"
-                        : "bg-card text-muted hover:text-ink hover:bg-tint border border-line"
+                        : "bg-card text-muted hover:text-ink hover:bg-tint border border-line",
                     )}
                   >
                     {c} ({count})
@@ -242,13 +248,15 @@ export function SchoolCombobox({
                   <button
                     key={s.id}
                     type="button"
-                    onClick={() => { handleSelect(s.id); }}
+                    onClick={() => {
+                      handleSelect(s.id);
+                    }}
                     className={cn(
                       "flex w-full items-center justify-between rounded-lg px-3 py-2.5",
                       "text-left text-sm transition-colors",
                       isSelected
                         ? "bg-plate-tint/70 text-plate font-semibold"
-                        : "text-ink hover:bg-tint"
+                        : "text-ink hover:bg-tint",
                     )}
                   >
                     <div className="min-w-0 pr-3">
@@ -258,7 +266,9 @@ export function SchoolCombobox({
                         {s.ward?.name ? ` · ${s.ward.name}` : ""}
                       </p>
                     </div>
-                    {isSelected ? <Check className="size-4 text-plate shrink-0" aria-hidden /> : null}
+                    {isSelected ? (
+                      <Check className="size-4 text-plate shrink-0" aria-hidden />
+                    ) : null}
                   </button>
                 );
               })
@@ -295,7 +305,9 @@ export function SchoolCombobox({
             <span>Hiển thị {filteredSchools.length} trường</span>
             <button
               type="button"
-              onClick={() => { setOpen(false); }}
+              onClick={() => {
+                setOpen(false);
+              }}
               className="text-plate hover:underline font-medium"
             >
               Đóng

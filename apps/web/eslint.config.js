@@ -7,7 +7,9 @@ import prettier from "eslint-config-prettier";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules", "e2e", "playwright.config.ts", "playwright.config.js"] },
+  {
+    ignores: ["dist", "node_modules", "playwright-report", "test-results", "playwright.config.ts"],
+  },
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -41,14 +43,26 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-argument": "error",
       "@typescript-eslint/no-unsafe-return": "error",
       /* Numbers in template literals are intentional (prices, ids). */
-      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true, allowBoolean: true }],
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        { allowNumber: true, allowBoolean: true },
+      ],
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "no-console": ["error", { allow: ["warn", "error"] }],
     },
   },
   {
+    /* Specs: a null from boundingBox()/getAttribute() should fail the test loudly,
+       so `!` is the idiomatic assertion there. Everything else stays strict. */
+    files: ["e2e/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "no-console": "off",
+    },
+  },
+  {
     ignores: ["eslint.config.js", "vite.config.ts"],
   },
-  prettier
+  prettier,
 );

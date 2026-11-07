@@ -19,8 +19,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          "border-plate bg-plate text-white hover:border-plate-hover hover:bg-plate-hover",
+        primary: "border-plate bg-plate text-white hover:border-plate-hover hover:bg-plate-hover",
         ink: "border-ink bg-ink text-white hover:bg-ink-2",
         outline: "border-line-strong bg-card text-ink hover:bg-tint",
         ghost: "border-transparent bg-transparent text-ink hover:bg-tint",
@@ -37,12 +36,11 @@ const buttonVariants = cva(
       variant: "primary",
       size: "md",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   /** Keeps width stable while swapping the label for a spinner. */
   loading?: boolean;
@@ -51,7 +49,7 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, variant, size, asChild = false, loading = false, children, disabled, ...props },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "button";
     return (
@@ -72,7 +70,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </Comp>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
