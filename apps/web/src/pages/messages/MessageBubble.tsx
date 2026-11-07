@@ -8,7 +8,9 @@ import { BubbleAttachment } from "./bubble/BubbleAttachment";
 import { BubbleMenu } from "./bubble/BubbleMenu";
 import { describeMessage, isImageAttachment } from "./bubble/messageContent";
 
-export type BubbleShape = "single" | "first" | "middle" | "last";
+import type { BubbleShape } from "./thread/threadLayout";
+
+export type { BubbleShape };
 
 export interface MessageBubbleProps {
   msg: Message;

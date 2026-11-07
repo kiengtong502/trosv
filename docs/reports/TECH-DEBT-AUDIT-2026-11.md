@@ -179,6 +179,12 @@ effectively self-review. Process debt, not code.
   - Vitest added with 144 unit tests (format, routes, hobbies, profile logic, envelopes, avatars, price range, reference-data hook) and wired into CI.
   - Not done from the Phase 1 list: a general data-fetching library. The 29 other `useEffect` fetch sites still use the ad hoc pattern; they move to a shared hook as each page is split in Phase 2.
 
+- **Phase 2** (in progress, `chore/debt-phase-2`): god components split with no behaviour change.
+  - `RoomDetail` 397 lines / complexity 64 -> a ~100 line orchestrator plus 12 files in `pages/room/`.
+  - `MessageBubble` 305 / 47 -> 120 / 14 (menu, attachment, text bubble, pure `messageContent.ts`).
+  - `ConversationDetail` `Thread` 410 / 35 -> 155 / 19 (header, composer, attachment hook, message row, pure `threadLayout.ts`).
+  - Pure rules extracted and unit-tested (now 222 unit tests). Remaining: `Profile`, `Search`/`SearchFilterBar`, `LandlordForm`, `SchoolCombobox`, `HobbySelector`, `RoomPreviewCard`, `ConversationListItem`.
+
 ## Elimination plan
 
 Principle: make debt impossible to grow first (ratchets), then pay it down in order of
@@ -264,7 +270,7 @@ outdated majors. All are cheap to compute and already available from the tools a
 | Metric | Today | Phase 0 | Phase 1 | Phase 2 | Phase 3 |
 |---|---|---|---|---|---|
 | PHPStan findings in baseline | 382 | 382 (frozen) | **87 (done)** | < 50 | < 20 |
-| Frontend functions > 120 lines | 25 | 25 (frozen) | 22 | < 8 | 0 |
+| Frontend functions > 120 lines | 25 | 25 (frozen) | 22 | 21 (3 big ones done, rest in progress) | 0 |
 | Functions over complexity 12 | 18 | frozen | 16 | < 6 | 0 |
 | knip findings | 51 | 0 | 0 | 0 | 0 |
 | Swallowed `.catch(() => {})` | 16 | 16 | **0 (done)** | 0 | 0 |
