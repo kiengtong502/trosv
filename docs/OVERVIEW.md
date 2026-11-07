@@ -135,7 +135,8 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   typed keyword that cycles "Gần trường." → "Giá rẻ." → "Tiện lợi." with a caret
   (`pages/home/TypedWord.tsx`; screen readers get the list once, reduced motion
   shows the first phrase). The three newest rooms float at the right on wide
-  screens (`HeroDeck`). Right under the hero, "Mới đăng" is one swipeable
+  screens (`HeroDeck`): a fixed-size cluster inside the same `max-w-6xl` column as
+  the page below, so it looks the same at every resolution and never clips text. Right under the hero, "Mới đăng" is one swipeable
   clothesline: each of the 8 newest rooms hangs from a rope with a peg
   (`RoomClothesline`, `Peg`); desktop arrows hide at either end. Below it, one
   slim card (`HomeQuickStrip`) holds school chips and four shortcuts, then the

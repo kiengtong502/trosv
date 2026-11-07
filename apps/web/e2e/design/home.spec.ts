@@ -57,7 +57,7 @@ test.describe("home hero", () => {
         await expect(deck).toBeVisible();
         await expect(deck.locator("a")).toHaveCount(3);
         const box = await deck.boundingBox();
-        expect(box!.x).toBeGreaterThan(680);
+        expect(box!.x).toBeGreaterThan(560);
     });
 });
 

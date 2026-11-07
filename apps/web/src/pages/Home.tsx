@@ -137,7 +137,7 @@ export default function Home() {
       <PlateBand
         size="hero"
         className="md:min-h-0"
-        contentClassName="py-8 md:py-10 lg:pr-[44%]"
+        contentClassName="px-5 py-8 sm:px-5 md:px-5 md:py-10 min-[1180px]:pr-[508px]"
         headingClassName="max-w-xl lg:text-5xl"
         title={
           <>
@@ -156,7 +156,6 @@ export default function Home() {
                 backgroundImage: `url(${ART_ASSETS.HERO_DOODLES}), radial-gradient(ellipse 60% 80% at 88% 8%, rgb(255 255 255 / 0.13), transparent 60%), radial-gradient(ellipse 50% 70% at 0% 100%, rgb(0 0 0 / 0.18), transparent 65%)`,
               }}
             />
-            <HeroDeck listings={newest} />
           </>
         }
       >
@@ -175,6 +174,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        <HeroDeck listings={newest} />
       </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">
