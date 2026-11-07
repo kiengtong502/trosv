@@ -139,7 +139,7 @@ function Header() {
                 aria-haspopup="menu"
                 aria-label="Menu tài khoản"
               >
-                <Avatar name={user.name} size={32} />
+                <Avatar name={user.name} avatar={user.avatar} size={32} />
                 <ChevronDown className="size-4 text-ink-2" aria-hidden />
               </button>
             </DropdownMenuPrimitive.Trigger>

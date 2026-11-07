@@ -39,7 +39,7 @@ export function ConversationListItem({
       {active ? (
         <span aria-hidden className="absolute -left-2.5 bottom-3 top-3 w-[3px] rounded-r bg-plate" />
       ) : null}
-      <Avatar name={other} size={46} className="flex-none" />
+      <Avatar name={other} avatar={c.other_user?.avatar} size={46} className="flex-none" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <p

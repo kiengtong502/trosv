@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/constants/routes";
 import { startConversation } from "@/api/socialApi";
 import { Button } from "@/ui/button";
+import { Avatar } from "@/ui/avatar";
 import { toast } from "@/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
@@ -31,7 +32,6 @@ export function RoomContactCard({ listing }: RoomContactCardProps) {
     }
   }
 
-  const initial = (listing.landlord?.name ?? "?").trim().charAt(0).toUpperCase();
   const available = listing.status === "available";
 
   return (
@@ -56,12 +56,7 @@ export function RoomContactCard({ listing }: RoomContactCardProps) {
       </div>
 
       <div className="flex items-center gap-3 rounded-lg bg-tint p-3">
-        <span
-          aria-hidden
-          className="grid size-11 flex-none place-items-center rounded-full bg-plate-tint text-base font-extrabold text-plate"
-        >
-          {initial}
-        </span>
+        <Avatar name={listing.landlord?.name ?? "Chủ nhà"} avatar={listing.landlord?.avatar} size={44} className="flex-none" />
         <div className="min-w-0">
           <p className="truncate text-sm font-bold text-ink">{listing.landlord?.name ?? "Chưa rõ"}</p>
           <p className="text-xs text-muted">Chủ nhà</p>

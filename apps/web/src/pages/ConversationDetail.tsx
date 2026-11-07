@@ -250,10 +250,10 @@ function Thread({ id }: ThreadProps) {
             to={route(ROUTES.STUDENT_PUBLIC, { id: otherUser.id })}
             className="flex items-center gap-2 hover:opacity-80"
           >
-            <Avatar name={other} size={42} />
+            <Avatar name={other} avatar={otherUser.avatar} size={42} />
           </Link>
         ) : (
-          <Avatar name={other} size={42} />
+          <Avatar name={other} avatar={otherUser?.avatar} size={42} />
         )}
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <p className="truncate font-display text-base font-bold text-ink">{other}</p>

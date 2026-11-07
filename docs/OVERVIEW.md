@@ -136,6 +136,16 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   description + amenities, a map + reviews pair, and "Phòng tương tự gần đó"
   (same ward, 4:3 thumbnails, a swipeable row on phones, from `GET /listings?ward_id=`).
   The contact card scrolls with the page; it must never paint over the header.
+- **Avatars**: 12 hand-drawn critters (`cat`, `plant`, `house`, `book`, `coffee`,
+  `moon`, `robot`, `cloud`, `sun`, `backpack`, `headphones`, `mushroom`). The key
+  lives in `users.avatar`; registration picks one at random, `PUT /profile`
+  changes it, and older accounts get a stable fallback from their id
+  (`User::avatarKey()`), so the API always sends one. The key is returned on
+  `/me`, public profiles, `other_user`, review `student` and listing `landlord`.
+  The art is in `src/ui/avatar-art.ts`; `Avatar` falls back to initials when no
+  key is given (the AI roommate list has none). The profile header avatar opens
+  a picker dialog with a "Ngẫu nhiên" button. To add one, add the key to
+  `User::AVATARS` and `AVATAR_KEYS`, and draw it in `avatar-art.ts`.
 - **Scroll**: the shell resets scroll on new pages and restores it on Back/Forward.
 
 ## 6. Testing and CI

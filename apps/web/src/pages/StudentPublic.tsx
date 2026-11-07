@@ -90,7 +90,7 @@ export default function StudentPublic() {
   return (
     <div className="mx-auto max-w-lg p-5 pb-16">
       <div className="flex flex-col items-center gap-4 rounded-xl border border-line bg-card p-8 text-center">
-        <Avatar name={profile.name} size={96} />
+        <Avatar name={profile.name} avatar={profile.avatar} size={96} />
         <h1 className="text-3xl font-bold tracking-tight text-ink">{profile.name}</h1>
         <p className="text-sm font-medium text-muted">{profile.school ?? "Chưa rõ trường"}</p>
         {profile.bio ? (

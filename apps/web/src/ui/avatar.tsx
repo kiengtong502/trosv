@@ -1,10 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { AVATAR_NAMES, AVATAR_SVG, isAvatarKey } from "./avatar-art";
 
 /*
-  Avatars: no images — initials on deterministic tints drawn from the
-  palette. The tint index is derived from the name so a person always
-  gets the same colour across screens.
+  Avatars: a hand-drawn critter picked by the user (see avatar-art.ts). When
+  no key is known yet (older payloads), it falls back to initials on a tint
+  derived from the name, so a person always looks the same across screens.
 */
 
 const TINTS = [
@@ -32,10 +33,28 @@ function tintFor(name: string): string {
 
 export interface AvatarProps extends React.ComponentProps<"span"> {
   name: string;
+  /** Avatar key from the API (one of AVATAR_KEYS). */
+  avatar?: string | null | undefined;
   size?: number;
 }
 
-export function Avatar({ name, size = 40, className, ...props }: AvatarProps) {
+export function Avatar({ name, avatar, size = 40, className, ...props }: AvatarProps) {
+  if (isAvatarKey(avatar)) {
+    return (
+      <span
+        className={cn("inline-flex select-none overflow-hidden rounded-full [&>svg]:size-full", className)}
+        style={{ width: size, height: size }}
+        role="img"
+        aria-label={name}
+        title={name}
+        data-avatar={avatar}
+        data-avatar-name={AVATAR_NAMES[avatar]}
+        // Static, trusted markup from avatar-art.ts (no user input).
+        dangerouslySetInnerHTML={{ __html: AVATAR_SVG[avatar] }}
+        {...props}
+      />
+    );
+  }
   return (
     <span
       className={cn(

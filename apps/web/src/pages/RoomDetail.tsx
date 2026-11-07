@@ -6,6 +6,7 @@ import { aiPriceAdvice } from "@/api/aiApi";
 import type { AiPriceAdvice } from "@/types/api";
 import { addFavorite, removeFavorite } from "@/api/socialApi";
 import { Button } from "@/ui/button";
+import { Avatar } from "@/ui/avatar";
 import { Skeleton, Tag, Rating } from "@/ui/badge";
 import { ListingMap } from "@/components/ListingMap";
 import { ErrorState } from "@/ui/empty-state";
@@ -336,8 +337,11 @@ export default function RoomDetail() {
             <div className="divide-y divide-line">
               {detail.reviews.map((r) => (
                 <div key={r.id} className="py-4 first:pt-0 last:pb-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-ink">{r.student?.name ?? r.user_name ?? "Sinh viên"}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <Avatar name={r.student?.name ?? r.user_name ?? "Sinh viên"} avatar={r.student?.avatar} size={32} />
+                      <p className="truncate font-semibold text-ink">{r.student?.name ?? r.user_name ?? "Sinh viên"}</p>
+                    </div>
                     <Rating value={r.listing_rating ?? r.rating} />
                   </div>
                   {r.comment ? <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{r.comment}</p> : null}

@@ -6,7 +6,6 @@ import { updateProfile } from "@/api/authApi";
 import { getSchools } from "@/api/listingApi";
 import type { School } from "@/types/api";
 import { Button } from "@/ui/button";
-import { Avatar } from "@/ui/avatar";
 import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
@@ -24,6 +23,7 @@ import { ProfileSection } from "./profile/ProfileSection";
 import { ProfileBasicInfoCard } from "./profile/ProfileBasicInfoCard";
 import { ProfileAcademicCard } from "./profile/ProfileAcademicCard";
 import { ProfileHabitsCard } from "./profile/ProfileHabitsCard";
+import { AvatarPicker } from "./profile/AvatarPicker";
 
 type SectionKey = "basic" | "academic" | "match";
 
@@ -159,7 +159,7 @@ export default function Profile() {
     <>
       <PageHeader
         className="max-w-2xl"
-        leading={<Avatar name={user.name} size={56} />}
+        leading={<AvatarPicker name={user.name} avatar={user.avatar} onSaved={refreshUser} />}
         title={user.name}
         description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}
         actions={

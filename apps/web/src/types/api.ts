@@ -13,6 +13,8 @@ export interface User {
   phone?: string;
   gender?: string;
   dob?: string;
+  /** Key of the hand-drawn avatar (AVATAR_KEYS); the API always sends one. */
+  avatar?: string;
   avatar_url?: string | null;
   school?: string | null;
   hobby?: string[] | null;
@@ -45,7 +47,7 @@ export interface Review {
   comment?: string;
   created_at?: string;
   /** Review 2 chieu cua RoomDetail. */
-  student?: { id: number; name: string } | null;
+  student?: { id: number; name: string; avatar?: string } | null;
   listing_rating?: number;
   landlord_rating?: number;
 }
@@ -118,7 +120,7 @@ export interface Listing {
   /** ID hoi thoai cua chinh toi voi tin nay (neu co). */
   my_conversation_id?: number | null;
   can_review?: boolean;
-  landlord?: { id?: number; name?: string; phone?: string | null } | null;
+  landlord?: { id?: number; name?: string; avatar?: string; phone?: string | null } | null;
   reviews?: Review[] | null;
   created_at?: string;
   /** 2026-09: AI price advice fields (RoomDetail). */
@@ -154,7 +156,7 @@ export interface Conversation {
   last_message_at?: string | null;
   unread_count?: number;
   /** Thread header (ConversationDetail). */
-  other_user?: (Pick<User, "id" | "name"> & { role?: string }) | null;
+  other_user?: (Pick<User, "id" | "name" | "avatar"> & { role?: string }) | null;
   listing?: { id: number; title: string; cover_image?: string | null } | null;
   last_message?: {
     sender_id?: number;
