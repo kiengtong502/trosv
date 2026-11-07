@@ -2,13 +2,23 @@
 
 namespace App\Models;
 
+use Database\Factories\SchoolFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $latitude
+ * @property string $longitude
+ * @property int|null $city_id
+ * @property int|null $ward_id
+ */
 class School extends Model
 {
+    /** @use HasFactory<SchoolFactory> */
     use HasFactory;
 
     public $timestamps = false;
@@ -23,17 +33,23 @@ class School extends Model
         ];
     }
 
+    /** @return HasMany<User, $this> */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
+    /** @return BelongsTo<City, $this> */
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
     }
 
-    /** Phuong/xa chua truong (nullable - chi TP.HCM dang gan day du). */
+    /**
+     * Phuong/xa chua truong (nullable - chi TP.HCM dang gan day du).
+     *
+     * @return BelongsTo<Ward, $this>
+     */
     public function ward(): BelongsTo
     {
         return $this->belongsTo(Ward::class);

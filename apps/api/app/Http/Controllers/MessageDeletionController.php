@@ -24,7 +24,7 @@ class MessageDeletionController extends Controller
     {
         $this->authorizeParticipant($request, $message);
 
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $scope = $request->string('scope', 'self')->toString();
 

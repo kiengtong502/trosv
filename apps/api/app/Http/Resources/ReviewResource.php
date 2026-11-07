@@ -2,15 +2,19 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Review object per API_CONTRACT §3: student {id, name}, both ratings,
  * comment and created_at.
+ *
+ * @mixin Review
  */
 class ReviewResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         return [

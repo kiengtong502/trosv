@@ -36,7 +36,7 @@ class ConversationController extends Controller
         $validated = $request->validated();
 
         /** @var User $student */
-        $student = $request->user();
+        $student = $this->authUser($request);
         $listing = Listing::findOrFail($validated['listing_id']);
 
         // A student cannot start a conversation about their own listing
@@ -63,7 +63,7 @@ class ConversationController extends Controller
     public function storeDirect(DirectMessageRequest $request, User $user): JsonResponse
     {
         [$conversation, $wasCreated] = $this->conversationService->findOrCreateConversation(
-            $request->user()->id,
+            $this->authUser($request)->id,
             $user->id,
             null
         );
@@ -79,7 +79,7 @@ class ConversationController extends Controller
     public function index(Request $request): JsonResponse
     {
         /** @var User $user */
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $conversations = Conversation::query()
             ->whereIn('id', $user->studentConversations()->select('id')
@@ -114,7 +114,7 @@ class ConversationController extends Controller
             // text (Postgres) - the ids are stored as ["4",...] or [4,...].
             ->where(fn ($q) => $q
                 ->whereNull('deleted_for_user_ids')
-                ->orWhereJsonDoesntContain('deleted_for_user_ids', $request->user()->id))
+                ->orWhereJsonDoesntContain('deleted_for_user_ids', $this->authUser($request)->id))
             ->orderBy('id')
             ->limit(500);
 
@@ -139,7 +139,7 @@ class ConversationController extends Controller
 
         $message = $this->conversationService->sendMessage(
             $conversation,
-            $request->user(),
+            $this->authUser($request),
             $request->validated(),
             $request->file('file')
         );
@@ -157,7 +157,7 @@ class ConversationController extends Controller
     {
         $this->authorizeParticipant($request, $conversation);
 
-        $this->conversationService->markRead($conversation, $request->user());
+        $this->conversationService->markRead($conversation, $this->authUser($request));
 
         return response()->json(['data' => null]);
     }

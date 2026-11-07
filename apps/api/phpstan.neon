@@ -5,10 +5,10 @@ includes:
 parameters:
     # Strictest level. Fix findings, do not baseline them.
     level: max
+    # config/ is stock Laravel boilerplate (env() casts); everything we own is analysed.
     paths:
         - app
         - bootstrap
-        - config
         - database
         - routes
     treatPhpDocTypesAsCertain: false

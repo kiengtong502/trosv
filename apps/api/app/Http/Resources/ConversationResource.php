@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Conversation object per API_CONTRACT §3: listing summary (id, title,
  * cover_image), other_user, last_message and unread_count for the viewer.
+ *
+ * @mixin Conversation
  */
 class ConversationResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var Conversation $conversation */
@@ -54,7 +57,7 @@ class ConversationResource extends JsonResource
             'last_message' => $last ? [
                 'sender_id' => $last->sender_id,
                 'body' => $last->isUnsent() ? 'Tin nhắn đã được thu hồi' : $last->body,
-                'created_at' => $last->created_at->toISOString(),
+                'created_at' => $last->created_at?->toISOString(),
             ] : null,
             'unread_count' => (int) ($conversation->unread_count ?? 0),
         ];

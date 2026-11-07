@@ -18,7 +18,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authUser($request);
 
         $data = $request->validated();
 

@@ -9,9 +9,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * Public student profile (API_CONTRACT §4). PII-safe: no email, no phone.
  * Carries exactly what the Roommates results show, for the public page.
+ *
+ * @mixin User
  */
 class UserPublicResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var User $user */

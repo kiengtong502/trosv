@@ -10,9 +10,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * User object per API_CONTRACT.md §3: "Các trường chỉ dành cho sinh viên
  * sẽ là null với chủ nhà." Student-only fields are forced to null for
  * landlords no matter what is stored in the database.
+ *
+ * @mixin User
  */
 class UserResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         /** @var User $user */

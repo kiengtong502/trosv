@@ -28,7 +28,7 @@ class MessageSent implements ShouldBroadcastNow
     {
         // Conversation channel: the open thread. Per-user channels: the
         // sidebar list + unread badge (Navbar) re-render without polling.
-        $conversation = $this->message->conversation;
+        $conversation = $this->message->conversation ?? throw new \LogicException('Message without a conversation.');
 
         return [
             new PrivateChannel('conversation.'.$this->message->conversation_id),
@@ -52,6 +52,7 @@ class MessageSent implements ShouldBroadcastNow
      *    mine/not-mine is derived on the client from sender_id.
      * `seen_at` is always null on delivery - `.message.seen` flips it later.
      */
+    /** @return array<string, mixed> */
     public function broadcastWith(): array
     {
         $m = $this->message;
@@ -68,7 +69,7 @@ class MessageSent implements ShouldBroadcastNow
                     'sender_id' => $m->sender_id,
                     'body' => $m->body,
                     'attachment_name' => $m->attachment_name,
-                    'created_at' => $m->created_at->toISOString(),
+                    'created_at' => $m->created_at?->toISOString(),
                 ],
             ],
             'message' => [
@@ -88,7 +89,7 @@ class MessageSent implements ShouldBroadcastNow
                         ['message' => $m->id],
                     )
                     : null,
-                'created_at' => $m->created_at->toISOString(),
+                'created_at' => $m->created_at?->toISOString(),
             ],
         ];
     }

@@ -21,6 +21,7 @@ class ApiThrottle
 
     public function __construct(protected RateLimiter $limiter) {}
 
+    /** @param  Closure(Request): Response  $next */
     public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decaySeconds = 60): Response
     {
         $user = $request->user();

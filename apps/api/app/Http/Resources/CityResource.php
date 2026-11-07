@@ -2,15 +2,19 @@
 
 namespace App\Http\Resources;
 
+use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * City object (đơn vị hành chính cấp tỉnh) per API_CONTRACT §4:
  * { id, name, type: "city"|"province", latitude, longitude }.
+ *
+ * @mixin City
  */
 class CityResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         return [

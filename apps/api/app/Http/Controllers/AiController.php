@@ -35,7 +35,7 @@ class AiController extends Controller
      */
     public function roommates(RoommatesRequest $request): JsonResponse
     {
-        return response()->json(['data' => $this->roommates->match($request->user())]);
+        return response()->json(['data' => $this->roommates->match($this->authUser($request))]);
     }
 
     /**
@@ -51,7 +51,7 @@ class AiController extends Controller
      */
     public function areaSuggestions(AreaSuggestionsRequest $request): JsonResponse
     {
-        return response()->json(['data' => $this->areaSuggestions->suggest($request->user(), $request->validated())]);
+        return response()->json(['data' => $this->areaSuggestions->suggest($this->authUser($request), $request->validated())]);
     }
 
     /**
