@@ -99,15 +99,14 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 | `src/ui` | small design-system pieces: `button`, `input`, `dialog`, `switch`, `avatar`, `page-header`, `plate-band`… |
 | `src/api` | axios client and typed calls; `envelope.ts` unwraps `{ data, meta }`; `echo.ts` is the websocket client |
 | `src/hooks` | data and behaviour hooks (search, room detail, conversation data and realtime, `useStickToBottom`, `useReveal`) |
-| `src/context` | `AuthContext`, `ThemeContext` |
-| `src/styles.css` | design tokens, dark mode, motion utilities |
+| `src/context` | `AuthContext` |
+| `src/styles.css` | design tokens, motion utilities |
 
 ### Design system
 
 - **Tokens** live in `src/styles.css`: a warm cream palette with plate blue
   (`--color-plate`) and flyer yellow (`--color-flyer`) as the accents, olive for
-  "good", `--color-bubble` for sent chat messages. Dark mode redefines the same
-  tokens under `.dark`. Use token classes (`bg-card`, `text-muted`), not raw hex.
+  "good", `--color-bubble` for sent chat messages. The site is light only (no dark mode; `color-scheme: light`). Use token classes (`bg-card`, `text-muted`), not raw hex.
 - **Navy band** (`PlateBand`) is reserved for three places: the Home hero, the
   Search filter strip, and the Login/Register art panel. Every other page uses
   `PageHeader`: a plain title on cream.

@@ -27,16 +27,6 @@ test('user dropdown panel only contains profile and logout', async ({ page }) =>
   await expect(menu.getByText('Chế độ')).toHaveCount(0);
   await expect(menu.getByText('Quản lý tin đăng')).toHaveCount(0);
 
-  // Toggle dark mode via the header ThemeToggle
-  await page.keyboard.press('Escape'); // close menu
-  const themeToggle = page.locator('header button[aria-label*="Chuyển sang chế độ"]').first();
-  await themeToggle.click();
-  await page.waitForTimeout(300);
-
-  // Re-open user menu in dark mode
-  await menuTrigger.click();
-  await expect(menu).toBeVisible();
-
   // Verify only 2 menu items exist in the menu
   const items = menu.locator('[role="menuitem"]');
   expect(await items.count()).toBe(2);

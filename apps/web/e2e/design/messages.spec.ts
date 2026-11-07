@@ -198,9 +198,8 @@ test.describe("conversation thread", () => {
         await expect(page.getByTestId("thread-room-card")).toHaveCount(0);
     });
 
-    test("their messages are cards and yours stay readable in dark mode", async ({ page }) => {
+    test("their messages are cards and yours stay readable", async ({ page }) => {
         const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
-        await page.addInitScript(() => localStorage.setItem("trosv-theme", "dark"));
         await mockMessaging(page, user.id, {
             threads: {
                 2: [

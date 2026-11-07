@@ -40,14 +40,6 @@ test.describe("design tokens", () => {
         }
     });
 
-    test("dark theme overrides the paper colour", async ({ page }) => {
-        await page.goto("/");
-        const light = await page.evaluate(readToken, "--color-paper");
-        await page.evaluate(() => document.documentElement.classList.add("dark"));
-        const dark = await page.evaluate(readToken, "--color-paper");
-        expect(dark).not.toBe(light);
-    });
-
     test("muted text keeps AA contrast on paper and card (light)", async ({ page }) => {
         await page.goto("/");
         const muted = await page.evaluate(readToken, "--color-muted");

@@ -4,7 +4,7 @@ import { Heart, MapPin, Navigation } from "lucide-react";
 import { ROUTES, route } from "@/constants/routes";
 import { useAuth } from "@/context/AuthContext";
 import type { Listing } from "@/types/api";
-import { formatPriceShort, TYPE_LABELS } from "@/lib/format";
+import { formatVnd, TYPE_LABELS } from "@/lib/format";
 import { Rating, Tag } from "@/ui/badge";
 import { HousePlaceholder } from "@/ui/icons";
 import { toast } from "@/ui/toast";
@@ -174,7 +174,7 @@ export function ListingCard({
         {/* Bottom banner on photo: Flyer price tab + Distance badge */}
         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between gap-1.5">
           <span className="inline-flex items-center rounded bg-flyer px-2 py-0.5 text-sm font-bold text-ink shadow-xs">
-            {formatPriceShort(listing.price)}
+            {formatVnd(listing.price)}
             <span className="ml-0.5 text-xs font-normal opacity-75">/th</span>
           </span>
           {listing.distance_km != null ? (

@@ -28,7 +28,6 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "@/ui/toast";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { AiChatWidget } from "@/components/AiChatWidget";
 
 /* ---------- Header ---------- */
@@ -123,9 +122,8 @@ function Header() {
         </Link>
       </div>
 
-      {/* Right: theme toggle + account (always right-aligned). */}
+      {/* Right: account (always right-aligned). */}
       <div className="flex items-center gap-2 justify-self-end">
-        <ThemeToggle />
         {user ? (
           <DropdownMenuPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuPrimitive.Trigger asChild>

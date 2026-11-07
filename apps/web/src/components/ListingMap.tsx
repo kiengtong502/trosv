@@ -1,3 +1,4 @@
+import { formatVnd } from "@/lib/format";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet.markercluster";
@@ -10,9 +11,6 @@ import "@/styles/leaflet-pins.css";
   numbers. Warm tiles via .leaflet-tile-pane filter (styles.css).
 */
 
-function formatPriceShort(vnd: number): string {
-  return `${new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(vnd / 1_000_000)}tr`;
-}
 
 const DEFAULT_CENTER: [number, number] = [16.0471, 107.5]; // Việt Nam trung tâm
 const VIETNAM_BOUNDS: [[number, number], [number, number]] = [
@@ -51,8 +49,8 @@ export function makePinIcon(
       class="trosv-pin${selected ? " trosv-pin--selected" : ""}"
       role="button"
       tabindex="0"
-      aria-label="${formatPriceShort(listing.price)} một tháng, ${listing.title.replace(/"/g, "&quot;")}"
-    >${formatPriceShort(listing.price)}</span>`,
+      aria-label="${formatVnd(listing.price)} một tháng, ${listing.title.replace(/"/g, "&quot;")}"
+    >${formatVnd(listing.price)}</span>`,
     className: "trosv-pin-wrap",
     iconSize: [40, 40],
     iconAnchor: [20, 22],
@@ -205,7 +203,7 @@ export function ListingMap({
       const marker = L.marker([item.latitude, item.longitude], {
         icon: makePinIcon(item, item.id === selectedId),
         keyboard: true,
-        alt: `${formatPriceShort(item.price)} - ${item.title}`,
+        alt: `${formatVnd(item.price)} - ${item.title}`,
       });
       marker.on("click", () => {
         onSelect(item.id);

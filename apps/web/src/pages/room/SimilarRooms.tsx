@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getListings } from "@/api/listingApi";
 import { route, ROUTES } from "@/constants/routes";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 import { HousePlaceholder } from "@/ui/icons";
 import type { Listing } from "@/types/api";
 
@@ -50,7 +50,7 @@ export function SimilarRooms({ listing }: { listing: Listing }) {
                   <HousePlaceholder />
                 )}
                 <span className="absolute bottom-2 left-2 rounded bg-flyer px-1.5 py-0.5 text-[13px] font-extrabold tabular-nums text-flyer-ink">
-                  {formatPriceShort(r.price)}/th
+                  {formatVnd(r.price)}/th
                 </span>
               </div>
               <div className="p-3">

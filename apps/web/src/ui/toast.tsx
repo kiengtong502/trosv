@@ -5,14 +5,10 @@ import { Toaster as Sonner } from "sonner";
   Sits above the mobile tab bar.
 */
 
-import { useTheme } from "@/context/ThemeContext";
-
 export function Toaster() {
-  const { resolvedTheme } = useTheme();
-
   return (
     <Sonner
-      theme={resolvedTheme}
+      theme="light"
       position="bottom-center"
       duration={4000}
       style={{ fontFamily: "var(--font-sans)" }}

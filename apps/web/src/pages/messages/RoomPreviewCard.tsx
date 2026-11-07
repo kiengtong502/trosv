@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getListing } from "@/api/listingApi";
 import type { Listing } from "@/types/api";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 import { ExternalLink, Home, SmilePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
@@ -226,7 +226,7 @@ export function RoomPreviewCard({
 
           <div className="mt-1 flex items-baseline justify-between gap-1">
             <span className="text-xs font-bold text-plate tabular-nums">
-              {formatPriceShort(room.price)}/tháng
+              {formatVnd(room.price)}/tháng
             </span>
             <span
               className="text-[10px] text-muted group-hover:text-plate flex items-center gap-0.5 font-medium shrink-0"

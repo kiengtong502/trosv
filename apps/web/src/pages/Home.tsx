@@ -108,7 +108,7 @@ const QUICK_FILTERS = [
   { label: "Phòng trọ", params: { type: "room" } },
   { label: "Căn hộ", params: { type: "apartment" } },
   { label: "Nhà nguyên căn", params: { type: "house" } },
-  { label: "Dưới 2 triệu", params: { price_max: "2000000" } },
+  { label: "Dưới 2.000.000đ", params: { price_max: "2000000" } },
 ];
 
 export default function Home() {

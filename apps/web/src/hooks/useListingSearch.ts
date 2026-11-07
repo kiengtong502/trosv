@@ -70,7 +70,6 @@ export function useListingSearch() {
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const firstRender = useRef(true);
   const prevParamsStringRef = useRef(searchParams.toString());
 
   // Sync state if searchParams change externally (e.g. navigation / back / direct link)
@@ -146,7 +145,7 @@ export function useListingSearch() {
   useEffect(() => {
     const t = setTimeout(() => {
       void fetchListings(page);
-      if (!firstRender.current) {
+      {
         const next: Record<string, string> = {};
         if (filters.q) next.q = filters.q;
         if (filters.type) next.type = filters.type;
@@ -157,10 +156,14 @@ export function useListingSearch() {
         if (filters.price_min) next.price_min = filters.price_min;
         if (filters.price_max) next.price_max = filters.price_max;
         if (filters.sort && filters.sort !== "newest") next.sort = filters.sort;
-        prevParamsStringRef.current = new URLSearchParams(next).toString();
-        setSearchParams(next, { replace: true });
+        const nextString = new URLSearchParams(next).toString();
+        // Only touch the URL when it actually differs (so first load never rewrites it,
+        // while a change made before the first debounce still lands).
+        if (nextString !== prevParamsStringRef.current) {
+          prevParamsStringRef.current = nextString;
+          setSearchParams(next, { replace: true });
+        }
       }
-      firstRender.current = false;
     }, 300);
     return () => { clearTimeout(t); };
     // eslint-disable-next-line react-hooks/exhaustive-deps

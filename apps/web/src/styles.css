@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
 @import "@fontsource-variable/inter/index.css";
 @import "@fontsource-variable/inter-tight/index.css";
 @import "leaflet/dist/leaflet.css";
@@ -15,6 +14,8 @@
   Everything else is quiet neutral paper and ink.
 */
 :root {
+    /* The site is light only: keep native controls and scrollbars light too. */
+    color-scheme: light;
     --color-paper: #fbf8f1;
     --color-card: #fffdf9;
     --color-tint: #f2ebdf;
@@ -42,36 +43,6 @@
     --shadow-card: 0 1px 2px rgb(60 40 10 / 0.06), 0 4px 14px -6px rgb(60 40 10 / 0.12);
     --shadow-card-hover: 0 2px 4px rgb(60 40 10 / 0.08), 0 14px 28px -10px rgb(60 40 10 / 0.25);
     --shadow-seam: 0 10px 24px -14px rgb(10 30 80 / 0.5);
-}
-
-.dark {
-    --color-paper: #0f0e0c;
-    --color-card: #181613;
-    --color-tint: #211e1a;
-    --color-sunken: #0b0a09;
-    --color-line: #2a2620;
-    --color-line-strong: #433d34;
-    --color-ink: #f6f1e8;
-    --color-ink-2: #d4cdbf;
-    --color-muted: #9a9183;
-
-    --color-plate: #3b82f6;
-    --color-plate-hover: #60a5fa;
-    --color-plate-tint: #162544;
-    --color-plate-band-from: #0f2a5c;
-    --color-plate-band-to: #0b2150;
-    --color-flyer: #fbbf24;
-    --color-flyer-ink: #1c1915;
-    --color-bubble: #2563eb;
-    --color-moss: #9bbd74;
-    --color-moss-tint: #26331a;
-    --color-danger: #f87171;
-    --color-danger-tint: #450a0a;
-
-    --shadow-pop: 0 12px 32px -8px rgb(0 0 0 / 0.65), 0 0 0 1px rgb(255 255 255 / 0.08);
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 4px 14px -6px rgb(0 0 0 / 0.5);
-    --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.4), 0 14px 28px -10px rgb(0 0 0 / 0.7);
-    --shadow-seam: 0 10px 24px -14px rgb(0 0 0 / 0.8);
 }
 
 @theme {
@@ -395,21 +366,6 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-}
-
-/*
-  Dark Mode adjustments for map tiles, logo, and surfaces
-*/
-.dark .trosv-logo {
-    filter: invert(1) hue-rotate(180deg);
-}
-
-.dark .leaflet-tile-pane {
-    filter: brightness(0.65) invert(1) contrast(2.2) hue-rotate(190deg) saturate(0.35) brightness(0.85);
-}
-
-.dark .leaflet-container {
-    background: #0b0f17 !important;
 }
 
 body, header, nav, footer {

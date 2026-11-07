@@ -13,7 +13,7 @@ import { ErrorState } from "@/ui/empty-state";
 import { toast } from "@/ui/toast";
 import { useAuth } from "@/context/AuthContext";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { formatPriceShort, TYPE_LABELS } from "@/lib/format";
+import { formatVnd, TYPE_LABELS } from "@/lib/format";
 import { RoomLightbox } from "./room/RoomLightbox";
 import { RoomContactCard } from "./room/RoomContactCard";
 import { RoomGallery } from "./room/RoomGallery";
@@ -227,7 +227,7 @@ export default function RoomDetail() {
             ) : advice ? (
               <div data-testid="ai-price">
                 <p className="font-bold text-ink">
-                  Khoảng giá hợp lý: {formatPriceShort(advice.fair_min ?? 0)} – {formatPriceShort(advice.fair_max ?? 0)}/tháng
+                  Khoảng giá hợp lý: {formatVnd(advice.fair_min ?? 0)} – {formatVnd(advice.fair_max ?? 0)}/tháng
                 </p>
                 <p className="mt-1 text-sm text-ink-2">
                   {advice.tips?.[0] ?? advice.message ?? "Giá phòng phù hợp với mặt bằng chung khu vực."}
@@ -363,7 +363,7 @@ export default function RoomDetail() {
         <div>
           <span className="text-xs text-muted">Giá thuê</span>
           <p className="text-xl font-bold tabular-nums text-plate">
-            {formatPriceShort(listing.price)}
+            {formatVnd(listing.price)}
             <small className="ml-1 text-xs font-normal text-muted">/th</small>
           </p>
         </div>

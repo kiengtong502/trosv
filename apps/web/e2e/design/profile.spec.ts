@@ -39,7 +39,7 @@ test.describe("profile page (student)", () => {
     test("closed sections summarise their content", async ({ page }) => {
         await openProfile(page);
         await expect(section(page, /Học tập & ngân sách/)).toContainText("ĐHQG");
-        await expect(section(page, /Học tập & ngân sách/)).toContainText(/1,3tr.*2,7tr/);
+        await expect(section(page, /Học tập & ngân sách/)).toContainText(/1\.300\.000đ.*2\.700\.000đ/);
         await expect(section(page, /Ghép bạn cùng phòng/)).toContainText("Bật");
         await expect(section(page, /Ghép bạn cùng phòng/)).toContainText(/\d+ sở thích/);
     });

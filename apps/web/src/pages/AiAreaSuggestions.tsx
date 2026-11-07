@@ -1,3 +1,4 @@
+import { formatVnd } from "@/lib/format";
 import { PriceRange } from "@/ui/price-range";
 import { PageHeader } from "@/ui/page-header";
 import { useEffect, useState } from "react";
@@ -67,9 +68,7 @@ export default function AiAreaSuggestions() {
   }
 
   const fmt = (vnd: number | undefined): string =>
-    vnd == null
-      ? ""
-      : new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(vnd / 1_000_000) + "tr";
+    vnd == null ? "" : formatVnd(vnd);
 
   return (
     <>

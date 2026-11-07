@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ROUTES, route } from "@/constants/routes";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { HousePlaceholder } from "@/ui/icons";
 import { Skeleton } from "@/ui/badge";
@@ -56,7 +56,7 @@ function Hang({ listing, index }: { listing: Listing; index: number }) {
               <HousePlaceholder />
             )}
             <span className="absolute bottom-2.5 left-2.5 rounded-md bg-flyer px-2 py-0.5 text-sm font-extrabold tabular-nums text-flyer-ink">
-              {formatPriceShort(listing.price)}/th
+              {formatVnd(listing.price)}/th
             </span>
           </div>
           <div className="px-3.5 pb-3.5 pt-3">

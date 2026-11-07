@@ -10,7 +10,7 @@ import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
 import { parseHobbies } from "@/constants/hobbies";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 import { PageHeader } from "@/ui/page-header";
 import {
   formatVndPreview,
@@ -141,11 +141,11 @@ export default function Profile() {
   const max = Number(formValue.budget_max);
   const budgetSummary =
     min > 0 && max > 0
-      ? `${formatPriceShort(min)}–${formatPriceShort(max)}`
+      ? `${formatVnd(min)}–${formatVnd(max)}`
       : min > 0
-      ? `từ ${formatPriceShort(min)}`
+      ? `từ ${formatVnd(min)}`
       : max > 0
-      ? `đến ${formatPriceShort(max)}`
+      ? `đến ${formatVnd(max)}`
       : "chưa đặt ngân sách";
   const schoolName = schools.find((s) => String(s.id) === formValue.school_id)?.name;
   const basicSummary = `${formValue.name} · ${formValue.phone || "chưa có số điện thoại"}`;

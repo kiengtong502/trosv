@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { MessageCircle, Phone } from "lucide-react";
 import type { Listing } from "@/types/api";
-import { formatPriceShort } from "@/lib/format";
+import { formatVnd } from "@/lib/format";
 
 export interface RoomContactCardProps {
   listing: Listing;
@@ -41,7 +41,7 @@ export function RoomContactCard({ listing }: RoomContactCardProps) {
     >
       <div>
         <p className="text-3xl font-extrabold tabular-nums text-plate">
-          {formatPriceShort(listing.price)}
+          {formatVnd(listing.price)}
           <small className="ml-1 text-sm font-normal text-muted">/tháng</small>
         </p>
         <p
