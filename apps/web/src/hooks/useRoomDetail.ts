@@ -39,10 +39,10 @@ export function useRoomDetail(id: number) {
           setReviewMeta(meta);
         })
         .catch(() => {
-        /* silent */
-      });
+          /* silent */
+        });
     },
-    [id]
+    [id],
   );
 
   useEffect(() => {
@@ -51,13 +51,14 @@ export function useRoomDetail(id: number) {
         setListing(data);
         loadReviews(1);
       })
-      .catch((err: unknown) => { setError(
-          errStatus(err) === 404
-            ? "Phòng trọ không tồn tại hoặc đã bị ẩn."
-            : errMessage(err)
-        ); }
-      )
-      .finally(() => { setLoading(false); });
+      .catch((err: unknown) => {
+        setError(
+          errStatus(err) === 404 ? "Phòng trọ không tồn tại hoặc đã bị ẩn." : errMessage(err),
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [id, loadReviews]);
 
   return {

@@ -15,12 +15,10 @@ const tagVariants = cva(
       },
     },
     defaultVariants: { variant: "paper" },
-  }
+  },
 );
 
-export interface TagProps
-  extends React.ComponentProps<"span">,
-    VariantProps<typeof tagVariants> {}
+export interface TagProps extends React.ComponentProps<"span">, VariantProps<typeof tagVariants> {}
 
 export function Tag({ className, variant, ...props }: TagProps) {
   return <span className={cn(tagVariants({ variant }), className)} {...props} />;
@@ -42,7 +40,7 @@ export function Chip({ className, on, ...props }: ChipProps) {
           ? "border-plate bg-plate text-white hover:bg-plate-hover"
           : "border-line-strong bg-card text-ink hover:bg-tint",
         "disabled:opacity-50",
-        className
+        className,
       )}
       aria-pressed={on}
       {...props}
@@ -51,17 +49,13 @@ export function Chip({ className, on, ...props }: ChipProps) {
 }
 
 /* Unread-count badge: plate fill, white text. */
-export function Badge({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"span">) {
+export function Badge({ className, children, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       className={cn(
         "inline-flex min-w-5 items-center justify-center rounded-full",
         "bg-plate px-1.5 text-xs font-bold leading-5 text-white",
-        className
+        className,
       )}
       {...props}
     >
@@ -71,19 +65,9 @@ export function Badge({
 }
 
 /* Skeleton: slow opacity pulse mirroring the real layout. */
-export function Skeleton({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      className={cn(
-        "animate-pulse rounded-xl bg-sunken",
-        className
-      )}
-      aria-hidden
-      {...props}
-    />
+    <div className={cn("animate-pulse rounded-xl bg-sunken", className)} aria-hidden {...props} />
   );
 }
 

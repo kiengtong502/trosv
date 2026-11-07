@@ -10,12 +10,11 @@ export function controlClass(invalid?: boolean): string {
   return cn(
     "w-full rounded-lg border bg-card text-base text-ink placeholder:text-muted",
     "transition-colors duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-50",
-    invalid ? "border-danger" : "border-line-strong hover:border-ink-2"
+    invalid ? "border-danger" : "border-line-strong hover:border-ink-2",
   );
 }
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
 }
 
@@ -28,12 +27,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       aria-invalid={invalid || undefined}
       {...props}
     />
-  )
+  ),
 );
 Input.displayName = "Input";
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   invalid?: boolean;
 }
 
@@ -45,7 +43,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       aria-invalid={invalid || undefined}
       {...props}
     />
-  )
+  ),
 );
 Textarea.displayName = "Textarea";
 

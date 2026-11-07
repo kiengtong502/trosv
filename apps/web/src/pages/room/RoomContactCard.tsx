@@ -47,28 +47,44 @@ export function RoomContactCard({ listing }: RoomContactCardProps) {
         <p
           className={cn(
             "mt-1 inline-flex items-center gap-1.5 text-sm font-semibold",
-            available ? "text-moss" : "text-muted"
+            available ? "text-moss" : "text-muted",
           )}
         >
-          <span className={cn("size-2 rounded-full", available ? "bg-moss" : "bg-line-strong")} aria-hidden />
+          <span
+            className={cn("size-2 rounded-full", available ? "bg-moss" : "bg-line-strong")}
+            aria-hidden
+          />
           {available ? "Còn trống" : listing.status === "rented" ? "Đã thuê" : "Đang ẩn"}
         </p>
       </div>
 
       <div className="flex items-center gap-3 rounded-lg bg-tint p-3">
-        <Avatar name={listing.landlord?.name ?? "Chủ nhà"} avatar={listing.landlord?.avatar} size={44} className="flex-none" />
+        <Avatar
+          name={listing.landlord?.name ?? "Chủ nhà"}
+          avatar={listing.landlord?.avatar}
+          size={44}
+          className="flex-none"
+        />
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-ink">{listing.landlord?.name ?? "Chưa rõ"}</p>
+          <p className="truncate text-sm font-bold text-ink">
+            {listing.landlord?.name ?? "Chưa rõ"}
+          </p>
           <p className="text-xs text-muted">Chủ nhà</p>
         </div>
       </div>
 
       <div className="mt-auto flex flex-col gap-2">
         {user?.role !== "student" && phone == null ? (
-          <p className="text-xs text-muted">Đăng nhập bằng tài khoản sinh viên để xem số điện thoại</p>
+          <p className="text-xs text-muted">
+            Đăng nhập bằng tài khoản sinh viên để xem số điện thoại
+          </p>
         ) : null}
         <div className="flex gap-2">
-          <Button variant="primary" className="motion-press flex-1 text-base" onClick={() => void contactLandlord()}>
+          <Button
+            variant="primary"
+            className="motion-press flex-1 text-base"
+            onClick={() => void contactLandlord()}
+          >
             <MessageCircle className="size-4" aria-hidden />
             Nhắn tin cho chủ nhà
           </Button>

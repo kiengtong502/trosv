@@ -20,7 +20,9 @@ export function QuickReplies({ onPick }: { onPick: (text: string) => void }) {
         <button
           key={text}
           type="button"
-          onClick={() => { onPick(text); }}
+          onClick={() => {
+            onPick(text);
+          }}
           className="min-h-10 flex-none snap-start whitespace-nowrap rounded-full border border-line-strong bg-card px-3.5 text-[13px] font-medium text-ink transition-colors hover:border-plate hover:bg-plate-tint hover:text-plate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
         >
           {text}

@@ -1,0 +1,66 @@
+name: API (reusable)
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: api
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/api
+    services:
+      postgres:
+        image: postgres:16-trixie
+        env:
+          POSTGRES_DB: rental_test
+          POSTGRES_USER: rental
+          POSTGRES_PASSWORD: rental
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rental"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      # Supply chain: actions are pinned to commit SHAs (a tag can be repointed,
+      # a commit cannot). The trailing comment keeps the version readable.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - run: composer validate --strict
+
+      - uses: ./.github/actions/setup-php
+
+      - name: Pint (style)
+        run: ./vendor/bin/pint --test
+
+      # Larastan at the strictest level. The baseline freezes only the debt that
+      # existed when it was introduced: any NEW finding fails the job.
+      - name: PHPStan / Larastan (level max)
+        run: ./vendor/bin/phpstan analyse --no-progress --memory-limit=1G --error-format=github
+
+      - name: Copy env for tests
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+
+      # phpunit.xml fails on warnings, notices, deprecations, risky tests and
+      # stray output, so green means zero warnings.
+      - name: Tests
+        run: php artisan test
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: rental_test
+          DB_USERNAME: rental
+          DB_PASSWORD: rental
+
+      - name: Composer audit
+        run: composer audit --locked --no-interaction

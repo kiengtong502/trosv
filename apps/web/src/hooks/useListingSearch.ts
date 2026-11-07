@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  getAmenities,
-  getCities,
-  getListings,
-  getSchools,
-  getWards,
-} from "@/api/listingApi";
+import { getAmenities, getCities, getListings, getSchools, getWards } from "@/api/listingApi";
 import { errMessage } from "@/api/axiosClient";
 import type { Amenity, City, Listing, PaginationMeta, School, Ward } from "@/types/api";
 
@@ -95,10 +89,18 @@ export function useListingSearch() {
   }, [currentParamsString, searchParams]);
 
   useEffect(() => {
-    getCities().then(setCities).catch(() => {});
-    getSchools().then(setSchools).catch(() => {});
-    getWards().then(setWards).catch(() => {});
-    getAmenities().then(setAmenities).catch(() => {});
+    getCities()
+      .then(setCities)
+      .catch(() => {});
+    getSchools()
+      .then(setSchools)
+      .catch(() => {});
+    getWards()
+      .then(setWards)
+      .catch(() => {});
+    getAmenities()
+      .then(setAmenities)
+      .catch(() => {});
   }, []);
 
   // Build query from filters and fetch.
@@ -123,10 +125,7 @@ export function useListingSearch() {
 
       try {
         const mapParams = { ...params, page: 1, per_page: 50 };
-        const [pagedRes, mapRes] = await Promise.all([
-          getListings(params),
-          getListings(mapParams),
-        ]);
+        const [pagedRes, mapRes] = await Promise.all([getListings(params), getListings(mapParams)]);
         setListings(pagedRes.data);
         setMeta(pagedRes.meta);
         setMapListings(mapRes.data);
@@ -138,7 +137,7 @@ export function useListingSearch() {
         setLoading(false);
       }
     },
-    [filters]
+    [filters],
   );
 
   // Refetch whenever filters change (debounced) or page changes.
@@ -165,7 +164,9 @@ export function useListingSearch() {
         }
       }
     }, 300);
-    return () => { clearTimeout(t); };
+    return () => {
+      clearTimeout(t);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, page]);
 

@@ -43,52 +43,63 @@ export default function Login() {
 
   const form = useAuthForm({
     submit,
-    onError: (err) => { setErrors({
+    onError: (err) => {
+      setErrors({
         form:
           errMessage(err, "Đăng nhập không thành công. Bạn kiểm tra lại email và mật khẩu nhé.") !==
           "Chưa điền đủ thông tin"
             ? errMessage(err, "Đăng nhập không thành công. Bạn kiểm tra lại email và mật khẩu nhé.")
             : "",
-      }); },
+      });
+    },
   });
 
   return (
     <AuthSplit artSrc={ART_ASSETS.AUTH_STUDENT} title="Đăng nhập" artTestId="login-art">
-          <form onSubmit={(e) => { void form.handleSubmit(e); }} className="flex flex-col gap-4">
-            {errors["form"] ? (
-              <p role="alert" className="rounded-xl bg-plate-tint p-3 text-sm text-ink">
-                {errors["form"]}
-              </p>
-            ) : null}
-            <Field id="login-email" label="Email" error={errors["email"]} required>
-              <Input
-                id="login-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); }}
-                invalid={!!errors["email"]}
-              />
-            </Field>
-            <Field id="login-password" label="Mật khẩu" error={errors["password"]} required>
-              <PasswordInput
-                id="login-password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); }}
-                invalid={!!errors["password"]}
-              />
-            </Field>
-            <Button type="submit" loading={form.busy} className="mt-2 w-full" variant="primary">
-              Đăng nhập
-            </Button>
-            <p className="text-center text-sm text-muted">
-              Chưa có tài khoản?{" "}
-              <Link to={ROUTES.REGISTER} className="font-medium text-ink underline">
-                Đăng ký
-              </Link>
-            </p>
-          </form>
+      <form
+        onSubmit={(e) => {
+          void form.handleSubmit(e);
+        }}
+        className="flex flex-col gap-4"
+      >
+        {errors["form"] ? (
+          <p role="alert" className="rounded-xl bg-plate-tint p-3 text-sm text-ink">
+            {errors["form"]}
+          </p>
+        ) : null}
+        <Field id="login-email" label="Email" error={errors["email"]} required>
+          <Input
+            id="login-email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            invalid={!!errors["email"]}
+          />
+        </Field>
+        <Field id="login-password" label="Mật khẩu" error={errors["password"]} required>
+          <PasswordInput
+            id="login-password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            invalid={!!errors["password"]}
+          />
+        </Field>
+        <Button type="submit" loading={form.busy} className="mt-2 w-full" variant="primary">
+          Đăng nhập
+        </Button>
+        <p className="text-center text-sm text-muted">
+          Chưa có tài khoản?{" "}
+          <Link to={ROUTES.REGISTER} className="font-medium text-ink underline">
+            Đăng ký
+          </Link>
+        </p>
+      </form>
 
       <p className="mt-6 rounded-xl border border-line bg-tint p-3 text-center text-xs text-muted">
         Tài khoản dùng thử: student1@example.com hoặc landlord1@example.com, mật khẩu password

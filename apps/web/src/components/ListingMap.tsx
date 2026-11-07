@@ -11,7 +11,6 @@ import "@/styles/leaflet-pins.css";
   numbers. Warm tiles via .leaflet-tile-pane filter (styles.css).
 */
 
-
 const DEFAULT_CENTER: [number, number] = [16.0471, 107.5]; // Việt Nam trung tâm
 const VIETNAM_BOUNDS: [[number, number], [number, number]] = [
   [8.5, 102.1], // Cà Mau / Nam Bộ
@@ -40,10 +39,7 @@ function makeClusterIcon(cluster: { getChildCount: () => number }): L.DivIcon {
   });
 }
 
-export function makePinIcon(
-  listing: Listing,
-  selected: boolean
-): L.DivIcon {
+export function makePinIcon(listing: Listing, selected: boolean): L.DivIcon {
   return L.divIcon({
     html: `<span
       class="trosv-pin${selected ? " trosv-pin--selected" : ""}"
@@ -89,14 +85,18 @@ export function ListingMap({
           typeof l.latitude === "number" &&
           typeof l.longitude === "number" &&
           !Number.isNaN(l.latitude) &&
-          !Number.isNaN(l.longitude)
+          !Number.isNaN(l.longitude),
       ),
-    [listings]
+    [listings],
   );
 
   const listingsKey = useMemo(
-    () => points.map((p) => p.id).sort().join(","),
-    [points]
+    () =>
+      points
+        .map((p) => p.id)
+        .sort()
+        .join(","),
+    [points],
   );
 
   const latestPointsRef = useRef(points);
@@ -180,9 +180,14 @@ export function ListingMap({
 
     // Resolve cluster factory from L or window.L
     const clusterFactory =
-      (L as unknown as { markerClusterGroup?: (opts: unknown) => L.MarkerClusterGroup }).markerClusterGroup ||
+      (L as unknown as { markerClusterGroup?: (opts: unknown) => L.MarkerClusterGroup })
+        .markerClusterGroup ||
       (typeof window !== "undefined" &&
-        (window as unknown as { L?: { markerClusterGroup?: (opts: unknown) => L.MarkerClusterGroup } }).L?.markerClusterGroup);
+        (
+          window as unknown as {
+            L?: { markerClusterGroup?: (opts: unknown) => L.MarkerClusterGroup };
+          }
+        ).L?.markerClusterGroup);
 
     if (!clusterGroup.current) {
       if (typeof clusterFactory === "function") {

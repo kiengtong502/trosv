@@ -55,8 +55,9 @@ function reverbConfig(): Record<string, unknown> {
             if (!res.ok) throw new Error(`auth ${res.status}`);
             callback(null, (await res.json()) as { auth: string });
           })
-          .catch((reason: unknown) => { callback(reason instanceof Error ? reason : new Error(String(reason)), null); }
-          );
+          .catch((reason: unknown) => {
+            callback(reason instanceof Error ? reason : new Error(String(reason)), null);
+          });
       },
     }),
   };

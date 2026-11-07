@@ -10,7 +10,10 @@ export function ListingCardSkeleton({ className }: { className?: string }) {
     <div
       data-testid="listing-skeleton"
       aria-hidden
-      className={cn("flex flex-col overflow-hidden rounded-xl border border-line bg-card", className)}
+      className={cn(
+        "flex flex-col overflow-hidden rounded-xl border border-line bg-card",
+        className,
+      )}
     >
       <Skeleton className="aspect-3/2 w-full rounded-none" />
       <div className="flex flex-col gap-2.5 p-3.5">

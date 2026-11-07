@@ -55,7 +55,7 @@ export function getInitialForm(user: User): ProfileFormState {
 export function isFormDirty(
   current: ProfileFormState | null,
   initial: ProfileFormState | null,
-  isStudent: boolean
+  isStudent: boolean,
 ): boolean {
   if (!current || !initial) return false;
 
@@ -84,7 +84,7 @@ export function isFormDirty(
  */
 export function getCompleteness(
   form: ProfileFormState,
-  isStudent: boolean
+  isStudent: boolean,
 ): { percent: number; missing: string[] } {
   const checks: [string, boolean][] = [
     ["Tên", form.name.trim() !== ""],
@@ -99,7 +99,7 @@ export function getCompleteness(
       ["Giờ giấc ngủ", form.sleep_schedule !== ""],
       ["Tính cách", form.personality !== ""],
       ["Độ sạch sẽ", form.cleanliness !== ""],
-      ["Ít nhất 3 sở thích", hobbyCount >= 3]
+      ["Ít nhất 3 sở thích", hobbyCount >= 3],
     );
   }
   const done = checks.filter(([, ok]) => ok).length;

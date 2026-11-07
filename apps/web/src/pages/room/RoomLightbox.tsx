@@ -10,12 +10,7 @@ export interface RoomLightboxProps {
   onNavigate: (next: number) => void;
 }
 
-export function RoomLightbox({
-  images,
-  index,
-  onClose,
-  onNavigate,
-}: RoomLightboxProps) {
+export function RoomLightbox({ images, index, onClose, onNavigate }: RoomLightboxProps) {
   const total = images.length;
 
   useEffect(() => {
@@ -25,7 +20,9 @@ export function RoomLightbox({
       if (e.key === "ArrowRight") onNavigate((index + 1) % total);
     };
     window.addEventListener("keydown", onKey);
-    return () => { window.removeEventListener("keydown", onKey); };
+    return () => {
+      window.removeEventListener("keydown", onKey);
+    };
   }, [index, total, onClose, onNavigate]);
 
   const ref = useCallback((node: HTMLDivElement | null) => {
@@ -52,18 +49,20 @@ export function RoomLightbox({
         aria-label="Đóng"
         className={cn(
           "absolute right-4 top-4 rounded-full p-2 text-white hover:bg-ink-2",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
         )}
       >
         <X className="size-6" aria-hidden />
       </button>
       <button
         type="button"
-        onClick={() => { onNavigate((index - 1 + total) % total); }}
+        onClick={() => {
+          onNavigate((index - 1 + total) % total);
+        }}
         aria-label="Ảnh trước"
         className={cn(
           "absolute left-4 rounded-full bg-card/90 p-2 text-ink hover:bg-card",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
         )}
       >
         <ChevronLeft className="size-6" aria-hidden />
@@ -77,11 +76,13 @@ export function RoomLightbox({
       />
       <button
         type="button"
-        onClick={() => { onNavigate((index + 1) % total); }}
+        onClick={() => {
+          onNavigate((index + 1) % total);
+        }}
         aria-label="Ảnh sau"
         className={cn(
           "absolute right-4 rounded-full bg-card/90 p-2 text-ink hover:bg-card",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
         )}
       >
         <ChevronRight className="size-6" aria-hidden />
@@ -90,6 +91,6 @@ export function RoomLightbox({
         {index + 1} / {total}
       </p>
     </div>,
-    document.body
+    document.body,
   );
 }

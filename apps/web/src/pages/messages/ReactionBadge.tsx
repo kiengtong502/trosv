@@ -10,12 +10,7 @@ export interface ReactionBadgeProps {
   className?: string;
 }
 
-export function ReactionBadge({
-  reactions,
-  isMine,
-  onClick,
-  className,
-}: ReactionBadgeProps) {
+export function ReactionBadge({ reactions, isMine, onClick, className }: ReactionBadgeProps) {
   if (reactions.length === 0) return null;
 
   // Aggregate count by emoji while preserving order of appearance
@@ -35,7 +30,7 @@ export function ReactionBadge({
         "bg-card px-2 py-0.5 text-xs shadow-sm transition-all hover:scale-105 active:scale-95",
         "cursor-pointer select-none",
         isMine ? "right-2" : "left-2",
-        className
+        className,
       )}
     >
       <span className="flex items-center -space-x-0.5">

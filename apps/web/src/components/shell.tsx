@@ -1,18 +1,18 @@
 import * as React from "react";
-import { Link, NavLink, NavigationType, Outlet, useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import {
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
+  Link,
+  NavLink,
+  NavigationType,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useNavigationType,
+} from "react-router-dom";
+import { LogOut, ChevronDown } from "lucide-react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { ROUTES, route } from "@/constants/routes";
-import {
-  RailSearchIcon,
-  RailHeartIcon,
-  RailMessageIcon,
-  RailBuildingIcon,
-} from "@/ui/icons";
+import { RailSearchIcon, RailHeartIcon, RailMessageIcon, RailBuildingIcon } from "@/ui/icons";
 import { Badge } from "@/ui/badge";
 import { Avatar } from "@/ui/avatar";
 import { Button } from "@/ui/button";
@@ -44,7 +44,7 @@ function Header() {
     <header
       className={cn(
         "sticky top-0 z-30 grid h-14 grid-cols-2 items-center gap-4 border-b border-line bg-card px-5",
-        "min-[890px]:h-[72px] lg:grid-cols-[1fr_auto_1fr]"
+        "min-[890px]:h-[72px] lg:grid-cols-[1fr_auto_1fr]",
       )}
     >
       {/* Left: product nav (desktop, like Zillow's left group). */}
@@ -54,7 +54,7 @@ function Header() {
           className={({ isActive }) =>
             cn(
               "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-              isActive && "bg-line"
+              isActive && "bg-line",
             )
           }
         >
@@ -68,7 +68,7 @@ function Header() {
                 type="button"
                 className={cn(
                   "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium",
-                  "text-ink transition-colors hover:bg-line"
+                  "text-ink transition-colors hover:bg-line",
                 )}
                 aria-expanded={aiOpen}
                 aria-haspopup="menu"
@@ -81,14 +81,18 @@ function Header() {
               <Link
                 to={ROUTES.AI_ROOMMATES}
                 className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => { setAiOpen(false); }}
+                onClick={() => {
+                  setAiOpen(false);
+                }}
               >
                 Bạn cùng phòng
               </Link>
               <Link
                 to={ROUTES.AI_AREA_SUGGESTIONS}
                 className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => { setAiOpen(false); }}
+                onClick={() => {
+                  setAiOpen(false);
+                }}
               >
                 Khu vực phù hợp
               </Link>
@@ -102,7 +106,7 @@ function Header() {
             className={({ isActive }) =>
               cn(
                 "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-                isActive && "bg-line"
+                isActive && "bg-line",
               )
             }
           >
@@ -113,11 +117,7 @@ function Header() {
 
       {/* Center: wordmark (Zillow puts the logo mid-header on desktop). */}
       <div className="flex items-center gap-3 justify-self-start lg:justify-self-center">
-        <Link
-          to={ROUTES.HOME}
-          className="flex items-center"
-          aria-label="TROSV trang chủ"
-        >
+        <Link to={ROUTES.HOME} className="flex items-center" aria-label="TROSV trang chủ">
           <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-6 w-auto" />
         </Link>
       </div>
@@ -131,7 +131,7 @@ function Header() {
                 type="button"
                 className={cn(
                   "flex items-center gap-2 rounded-full p-1 pr-2 transition-colors hover:bg-line",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
                 )}
                 aria-expanded={menuOpen}
                 aria-haspopup="menu"
@@ -152,7 +152,7 @@ function Header() {
                     to={ROUTES.PROFILE}
                     className={cn(
                       "block cursor-pointer rounded-lg px-3 py-2 text-sm text-ink outline-none",
-                      "data-[highlighted]:bg-tint"
+                      "data-[highlighted]:bg-tint",
                     )}
                   >
                     Hồ sơ
@@ -170,7 +170,7 @@ function Header() {
                   }}
                   className={cn(
                     "cursor-pointer rounded-lg px-3 py-2 text-sm text-ink outline-none",
-                    "data-[highlighted]:bg-tint flex items-center"
+                    "data-[highlighted]:bg-tint flex items-center",
                   )}
                 >
                   <LogOut className="mr-2 inline size-4" aria-hidden />
@@ -244,7 +244,7 @@ function Rail() {
           "h-14 fixed bottom-0 left-0 right-0",
           "lg:sticky lg:top-[72px] lg:h-[calc(100vh-72px)] lg:w-16 lg:flex-col",
           "lg:items-center lg:justify-start lg:gap-4 lg:p-2",
-          isConversationThread && "hidden lg:flex"
+          isConversationThread && "hidden lg:flex",
         )}
       >
         {items.map((item) => (
@@ -261,17 +261,13 @@ function Rail() {
                 className={cn(
                   "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors",
                   "text-ink-2 hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
-                  item.active &&
-                    "bg-plate-tint text-plate font-medium"
+                  item.active && "bg-plate-tint text-plate font-medium",
                 )}
               >
                 <item.icon className="size-5" />
                 {item.badge != null && item.badge > 0 ? (
                   <Badge
-                    className={cn(
-                      "absolute -right-1 -top-1",
-                      item.active && "bg-plate text-white"
-                    )}
+                    className={cn("absolute -right-1 -top-1", item.active && "bg-plate text-white")}
                   >
                     {item.badge > 99 ? "99+" : item.badge}
                   </Badge>
@@ -291,8 +287,7 @@ function Rail() {
 /* ---------- Footer ---------- */
 
 export function Footer() {
-  const { VITE_SOCIAL_FACEBOOK, VITE_SOCIAL_INSTAGRAM, VITE_SOCIAL_YOUTUBE } =
-    useEnv();
+  const { VITE_SOCIAL_FACEBOOK, VITE_SOCIAL_INSTAGRAM, VITE_SOCIAL_YOUTUBE } = useEnv();
   const socials = [
     { label: "Facebook", url: VITE_SOCIAL_FACEBOOK },
     { label: "Instagram", url: VITE_SOCIAL_INSTAGRAM },
@@ -323,7 +318,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className={cn(
                   "flex size-10 items-center justify-center rounded-full text-ink-2",
-                  "transition-colors hover:bg-tint hover:text-ink"
+                  "transition-colors hover:bg-tint hover:text-ink",
                 )}
               >
                 <SocialIcon />
@@ -345,13 +340,7 @@ function useEnv() {
   };
 }
 
-function FooterLink({
-  to,
-  children,
-}: {
-  to: string;
-  children: React.ReactNode;
-}) {
+function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
@@ -366,7 +355,11 @@ function SocialIcon() {
   /* Simple inline glyph for footer socials; real logos come from the
      env-var-driven URLs. Keeps icons inside our tokens, no brand SVGs.
      The wrapping <a> already carries aria-label={label}. */
-  return <span className="text-sm" aria-hidden>•</span>;
+  return (
+    <span className="text-sm" aria-hidden>
+      •
+    </span>
+  );
 }
 
 /* ---------- Shell ---------- */
@@ -402,7 +395,9 @@ export function AppShell({
     window.history.scrollRestoration = "manual";
     /* Save at the moment of leaving (click or Back/Forward), before the next
        page renders and clamps scrollY. Scroll events would race with that. */
-    const save = () => { scrollPositions.set(location.key, window.scrollY); };
+    const save = () => {
+      scrollPositions.set(location.key, window.scrollY);
+    };
     document.addEventListener("click", save, true);
     window.addEventListener("popstate", save, true);
 
@@ -414,7 +409,10 @@ export function AppShell({
       const started = performance.now();
       const restore = () => {
         window.scrollTo(0, target);
-        if (Math.abs(window.scrollY - target) > 2 && performance.now() - started < RESTORE_WINDOW_MS) {
+        if (
+          Math.abs(window.scrollY - target) > 2 &&
+          performance.now() - started < RESTORE_WINDOW_MS
+        ) {
           raf = requestAnimationFrame(restore);
         }
       };
@@ -443,7 +441,7 @@ export function AppShell({
     <div
       className={cn(
         "flex min-h-screen flex-col bg-paper",
-        isMessagesChat && "h-dvh max-h-dvh overflow-hidden"
+        isMessagesChat && "h-dvh max-h-dvh overflow-hidden",
       )}
     >
       {/* Skip-to-content link for keyboard users */}
@@ -451,7 +449,7 @@ export function AppShell({
         href="#main"
         className={cn(
           "sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50",
-          "focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+          "focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-paper",
         )}
       >
         Bỏ qua điều hướng
@@ -460,7 +458,7 @@ export function AppShell({
       <div
         className={cn(
           "flex flex-1 flex-col lg:flex-row min-h-0",
-          isMessagesChat && "overflow-hidden"
+          isMessagesChat && "overflow-hidden",
         )}
       >
         <Rail />
@@ -468,7 +466,7 @@ export function AppShell({
           className={cn(
             "flex min-w-0 flex-1 flex-col min-h-0 pb-14 lg:pb-0",
             (isConversationThread || isMessagesChat) && "pb-0",
-            isMessagesChat && "overflow-hidden"
+            isMessagesChat && "overflow-hidden",
           )}
         >
           <main
@@ -476,7 +474,7 @@ export function AppShell({
             className={cn(
               "min-w-0 flex-1 flex flex-col min-h-0",
               isMessagesChat && "overflow-hidden",
-              className
+              className,
             )}
           >
             <div

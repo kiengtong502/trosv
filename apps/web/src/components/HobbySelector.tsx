@@ -49,7 +49,7 @@ const ICONS: Record<string, LucideIcon> = {
   movies: Clapperboard,
   travel: Plane,
   badminton: Feather,
-  "cafés": Coffee,
+  cafés: Coffee,
   coding: Code,
   art: Palette,
   pets: PawPrint,
@@ -111,7 +111,7 @@ export function HobbySelector({
     const lower = typed.toLowerCase();
     // Typing an existing hobby's name selects that hobby instead of duplicating it.
     const standard = HOBBY_LIST.find(
-      (h) => h.key.toLowerCase() === lower || h.label.toLowerCase() === lower
+      (h) => h.key.toLowerCase() === lower || h.label.toLowerCase() === lower,
     );
     if (standard) {
       if (!selectedKeys.has(standard.key.toLowerCase())) update([...keys(), standard.key]);
@@ -146,13 +146,16 @@ export function HobbySelector({
             <div
               className={cn(
                 "h-full rounded-full transition-[width,background-color] duration-300",
-                enough ? "bg-moss" : "bg-plate"
+                enough ? "bg-moss" : "bg-plate",
               )}
               style={{ width: `${pct}%` }}
             />
           </div>
           <p className="flex-none text-xs text-muted">
-            Đã chọn: <strong data-testid="hobby-count" className="font-semibold text-ink">{count}</strong>
+            Đã chọn:{" "}
+            <strong data-testid="hobby-count" className="font-semibold text-ink">
+              {count}
+            </strong>
           </p>
         </div>
         <div className="mt-1.5 flex items-center justify-between gap-3">
@@ -167,7 +170,9 @@ export function HobbySelector({
           {count > 0 && !disabled ? (
             <button
               type="button"
-              onClick={() => { onChange(""); }}
+              onClick={() => {
+                onChange("");
+              }}
               className="text-xs text-muted underline-offset-2 transition-colors hover:text-danger hover:underline"
             >
               Bỏ chọn tất cả
@@ -193,14 +198,16 @@ export function HobbySelector({
                   type="button"
                   disabled={disabled}
                   aria-pressed={on}
-                  onClick={() => { toggle(key); }}
+                  onClick={() => {
+                    toggle(key);
+                  }}
                   className={cn(
                     "motion-press inline-flex min-h-11 items-center gap-2 rounded-lg border px-3.5 text-sm font-medium transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate focus-visible:ring-offset-2 focus-visible:ring-offset-card",
                     "disabled:cursor-not-allowed disabled:opacity-60",
                     on
                       ? "border-plate bg-plate text-white"
-                      : "border-line bg-card text-ink-2 hover:border-line-strong hover:bg-tint"
+                      : "border-line bg-card text-ink-2 hover:border-line-strong hover:bg-tint",
                   )}
                 >
                   <Icon className="size-4 flex-none" aria-hidden />
@@ -228,7 +235,9 @@ export function HobbySelector({
                 {!disabled ? (
                   <button
                     type="button"
-                    onClick={() => { remove(hobby.key); }}
+                    onClick={() => {
+                      remove(hobby.key);
+                    }}
                     aria-label={`Xóa ${hobby.label}`}
                     className="-mr-1.5 flex size-7 items-center justify-center rounded-md text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
@@ -249,7 +258,9 @@ export function HobbySelector({
               type="text"
               value={customInput}
               maxLength={CUSTOM_MAX_LENGTH}
-              onChange={(e) => { setCustomInput(e.target.value); }}
+              onChange={(e) => {
+                setCustomInput(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -284,10 +295,12 @@ export function HobbySelector({
           <button
             type="button"
             aria-label="Thêm sở thích khác"
-            onClick={() => { setAdding(true); }}
+            onClick={() => {
+              setAdding(true);
+            }}
             className={cn(
               "motion-press inline-flex min-h-11 items-center gap-2 rounded-lg border border-dashed border-line-strong px-3.5 text-sm font-medium text-ink-2 transition-colors",
-              "hover:border-plate hover:text-plate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+              "hover:border-plate hover:text-plate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
             )}
           >
             <Plus className="size-4" aria-hidden />

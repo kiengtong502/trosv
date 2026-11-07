@@ -15,10 +15,29 @@ export function HousePlaceholder({ className }: { className?: string }) {
     >
       <defs>
         <filter id="hpRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="4" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="4"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
-        <g id="hpSprout" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          id="hpSprout"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M0,0 V-20 M0,-10 q-14,-3 -14,-17 q13,1 14,17 M0,-12 q14,-3 14,-17 q-13,1 -14,17" />
         </g>
       </defs>
@@ -35,22 +54,67 @@ export function HousePlaceholder({ className }: { className?: string }) {
         <path d="M0,175 H300" stroke="#17171C" strokeWidth="4.5" fill="none" />
 
         {/* Chimney */}
-        <rect x="145" y="58" width="14" height="30" fill="#FAF8F5" stroke="#17171C" strokeWidth="3.5" />
+        <rect
+          x="145"
+          y="58"
+          width="14"
+          height="30"
+          fill="#FAF8F5"
+          stroke="#17171C"
+          strokeWidth="3.5"
+        />
 
         {/* Cottage body */}
-        <rect x="75" y="98" width="95" height="75" fill="#FAF8F5" stroke="#17171C" strokeWidth="4" />
+        <rect
+          x="75"
+          y="98"
+          width="95"
+          height="75"
+          fill="#FAF8F5"
+          stroke="#17171C"
+          strokeWidth="4"
+        />
         {/* Terracotta roof */}
         <polygon points="60,102 122,58 185,102" fill="#DC7856" stroke="#17171C" strokeWidth="4" />
 
         {/* Windows in periwinkle */}
-        <rect x="85" y="112" width="22" height="22" fill="#8B8BE0" stroke="#17171C" strokeWidth="3" />
-        <rect x="138" y="112" width="22" height="22" fill="#8B8BE0" stroke="#17171C" strokeWidth="3" />
+        <rect
+          x="85"
+          y="112"
+          width="22"
+          height="22"
+          fill="#8B8BE0"
+          stroke="#17171C"
+          strokeWidth="3"
+        />
+        <rect
+          x="138"
+          y="112"
+          width="22"
+          height="22"
+          fill="#8B8BE0"
+          stroke="#17171C"
+          strokeWidth="3"
+        />
 
         {/* Door in sage green */}
-        <path d="M112,173 V144 a11,11 0 0 1 22,0 V173 Z" fill="#7A9160" stroke="#17171C" strokeWidth="3.5" />
+        <path
+          d="M112,173 V144 a11,11 0 0 1 22,0 V173 Z"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="3.5"
+        />
 
         {/* Garden tree beside cottage */}
-        <rect x="195" y="135" width="8" height="38" fill="#D4A27F" stroke="#17171C" strokeWidth="3" />
+        <rect
+          x="195"
+          y="135"
+          width="8"
+          height="38"
+          fill="#D4A27F"
+          stroke="#17171C"
+          strokeWidth="3"
+        />
         <circle cx="199" cy="125" r="28" fill="#7A9160" stroke="#17171C" strokeWidth="4" />
         <circle cx="188" cy="132" r="6" fill="#DC7856" stroke="#17171C" strokeWidth="2" />
         <circle cx="210" cy="118" r="6" fill="#DC7856" stroke="#17171C" strokeWidth="2" />
@@ -78,8 +142,20 @@ export function FavoriteEmptyIllustration({ className }: { className?: string })
     >
       <defs>
         <filter id="feRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="5"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <clipPath id="feCardClip">
           <rect width="160" height="200" rx="16" />
@@ -87,7 +163,10 @@ export function FavoriteEmptyIllustration({ className }: { className?: string })
         <clipPath id="feImgClip">
           <rect width="160" height="130" />
         </clipPath>
-        <path id="feHeart" d="M0 5 C-10 -2 -8 -9 -3 -9 C-1 -9 0 -7.5 0 -6 C0 -7.5 1 -9 3 -9 C8 -9 10 -2 0 5Z" />
+        <path
+          id="feHeart"
+          d="M0 5 C-10 -2 -8 -9 -3 -9 C-1 -9 0 -7.5 0 -6 C0 -7.5 1 -9 3 -9 C8 -9 10 -2 0 5Z"
+        />
         <g id="feBurst" fill="none" strokeWidth="3" strokeLinecap="round">
           <path d="M-12,0 H12" />
           <path d="M-12,0 H12" transform="rotate(30)" />
@@ -96,7 +175,14 @@ export function FavoriteEmptyIllustration({ className }: { className?: string })
           <path d="M-12,0 H12" transform="rotate(120)" />
           <path d="M-12,0 H12" transform="rotate(150)" />
         </g>
-        <g id="feSprout" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          id="feSprout"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M0,0 V-18 M0,-9 q-12,-3 -12,-15 q11,1 12,15 M0,-10 q12,-3 12,-15 q-11,1 -12,15" />
         </g>
       </defs>
@@ -125,11 +211,45 @@ export function FavoriteEmptyIllustration({ className }: { className?: string })
               {/* Sun */}
               <circle cx="125" cy="35" r="14" fill="#FFD23F" stroke="#17171C" strokeWidth="2.5" />
               {/* Cottage */}
-              <rect x="40" y="68" width="70" height="52" fill="#FAF8F5" stroke="#17171C" strokeWidth="3.5" />
-              <polygon points="30,72 75,38 120,72" fill="#DC7856" stroke="#17171C" strokeWidth="3.5" />
-              <rect x="48" y="80" width="15" height="15" fill="#8B8BE0" stroke="#17171C" strokeWidth="2.5" />
-              <rect x="88" y="80" width="15" height="15" fill="#8B8BE0" stroke="#17171C" strokeWidth="2.5" />
-              <path d="M67 120 V98 a8 8 0 0 1 16 0 V120 Z" fill="#7A9160" stroke="#17171C" strokeWidth="3" />
+              <rect
+                x="40"
+                y="68"
+                width="70"
+                height="52"
+                fill="#FAF8F5"
+                stroke="#17171C"
+                strokeWidth="3.5"
+              />
+              <polygon
+                points="30,72 75,38 120,72"
+                fill="#DC7856"
+                stroke="#17171C"
+                strokeWidth="3.5"
+              />
+              <rect
+                x="48"
+                y="80"
+                width="15"
+                height="15"
+                fill="#8B8BE0"
+                stroke="#17171C"
+                strokeWidth="2.5"
+              />
+              <rect
+                x="88"
+                y="80"
+                width="15"
+                height="15"
+                fill="#8B8BE0"
+                stroke="#17171C"
+                strokeWidth="2.5"
+              />
+              <path
+                d="M67 120 V98 a8 8 0 0 1 16 0 V120 Z"
+                fill="#7A9160"
+                stroke="#17171C"
+                strokeWidth="3"
+              />
               {/* Tree */}
               <circle cx="128" cy="95" r="18" fill="#7A9160" stroke="#17171C" strokeWidth="3" />
               <circle cx="122" cy="102" r="4" fill="#DC7856" stroke="#17171C" strokeWidth="1.8" />
@@ -172,8 +292,20 @@ export function SearchEmptyIllustration({ className }: { className?: string }) {
     >
       <defs>
         <filter id="seRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="6" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="6"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <g id="seBurst" fill="none" strokeWidth="3" strokeLinecap="round">
           <path d="M-12,0 H12" />
@@ -183,7 +315,14 @@ export function SearchEmptyIllustration({ className }: { className?: string }) {
           <path d="M-12,0 H12" transform="rotate(120)" />
           <path d="M-12,0 H12" transform="rotate(150)" />
         </g>
-        <g id="seSprout" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          id="seSprout"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M0,0 V-18 M0,-9 q-12,-3 -12,-15 q11,1 12,15 M0,-10 q12,-3 12,-15 q-11,1 -12,15" />
         </g>
       </defs>
@@ -203,18 +342,50 @@ export function SearchEmptyIllustration({ className }: { className?: string }) {
             opacity="0.12"
           />
           {/* Map Body Panels */}
-          <polygon points="0,20 60,0 60,140 0,160" fill="#FAF8F5" stroke="#17171C" strokeWidth="4" />
-          <polygon points="60,0 130,20 130,160 60,140" fill="#E8DABB" stroke="#17171C" strokeWidth="4" />
-          <polygon points="130,20 190,0 190,140 130,160" fill="#FAF8F5" stroke="#17171C" strokeWidth="4" />
+          <polygon
+            points="0,20 60,0 60,140 0,160"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="4"
+          />
+          <polygon
+            points="60,0 130,20 130,160 60,140"
+            fill="#E8DABB"
+            stroke="#17171C"
+            strokeWidth="4"
+          />
+          <polygon
+            points="130,20 190,0 190,140 130,160"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="4"
+          />
 
           {/* Road markings */}
-          <path d="M15,100 Q40,80 50,50" stroke="#DC7856" strokeWidth="5" strokeDasharray="6 6" fill="none" />
+          <path
+            d="M15,100 Q40,80 50,50"
+            stroke="#DC7856"
+            strokeWidth="5"
+            strokeDasharray="6 6"
+            fill="none"
+          />
           <path d="M75,55 Q100,85 120,60" stroke="#8B8BE0" strokeWidth="5" fill="none" />
-          <path d="M140,80 Q165,110 180,70" stroke="#7A9160" strokeWidth="5" strokeDasharray="6 6" fill="none" />
+          <path
+            d="M140,80 Q165,110 180,70"
+            stroke="#7A9160"
+            strokeWidth="5"
+            strokeDasharray="6 6"
+            fill="none"
+          />
 
           {/* Small trees/houses on map */}
           <circle cx="35" cy="45" r="10" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" />
-          <polygon points="150,40 160,25 170,40" fill="#DC7856" stroke="#17171C" strokeWidth="2.5" />
+          <polygon
+            points="150,40 160,25 170,40"
+            fill="#DC7856"
+            stroke="#17171C"
+            strokeWidth="2.5"
+          />
         </g>
 
         {/* Hand-drawn Pin in flyer yellow */}
@@ -231,12 +402,44 @@ export function SearchEmptyIllustration({ className }: { className?: string }) {
         {/* Hand-drawn Magnifying Glass (Foreground) */}
         <g transform="translate(165, 110)">
           {/* Handle */}
-          <line x1="45" y1="45" x2="80" y2="80" stroke="#D4A27F" strokeWidth="12" strokeLinecap="round" />
-          <line x1="45" y1="45" x2="80" y2="80" stroke="#17171C" strokeWidth="12" strokeLinecap="round" />
-          <line x1="45" y1="45" x2="78" y2="78" stroke="#DC7856" strokeWidth="6" strokeLinecap="round" />
+          <line
+            x1="45"
+            y1="45"
+            x2="80"
+            y2="80"
+            stroke="#D4A27F"
+            strokeWidth="12"
+            strokeLinecap="round"
+          />
+          <line
+            x1="45"
+            y1="45"
+            x2="80"
+            y2="80"
+            stroke="#17171C"
+            strokeWidth="12"
+            strokeLinecap="round"
+          />
+          <line
+            x1="45"
+            y1="45"
+            x2="78"
+            y2="78"
+            stroke="#DC7856"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
 
           {/* Glass Rim & Lens */}
-          <circle cx="24" cy="24" r="28" fill="#8B8BE0" opacity="0.8" stroke="#17171C" strokeWidth="4.5" />
+          <circle
+            cx="24"
+            cy="24"
+            r="28"
+            fill="#8B8BE0"
+            opacity="0.8"
+            stroke="#17171C"
+            strokeWidth="4.5"
+          />
           <circle cx="24" cy="24" r="22" fill="#FAF8F5" opacity="0.6" />
           <path d="M10,14 Q20,8 32,10" stroke="#FAF8F5" strokeWidth="3" fill="none" />
         </g>
@@ -263,8 +466,20 @@ export function MessagesEmptyIllustration({ className }: { className?: string })
     >
       <defs>
         <filter id="meRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="7"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <g id="meBurst" fill="none" strokeWidth="3" strokeLinecap="round">
           <path d="M-12,0 H12" />
@@ -274,7 +489,14 @@ export function MessagesEmptyIllustration({ className }: { className?: string })
           <path d="M-12,0 H12" transform="rotate(120)" />
           <path d="M-12,0 H12" transform="rotate(150)" />
         </g>
-        <g id="meSprout" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          id="meSprout"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M0,0 V-18 M0,-9 q-12,-3 -12,-15 q11,1 12,15 M0,-10 q12,-3 12,-15 q-11,1 -12,15" />
         </g>
       </defs>
@@ -346,8 +568,20 @@ export function AiUnavailableIllustration({ className }: { className?: string })
     >
       <defs>
         <filter id="aiRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="8" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="8"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <g id="aiBurst" fill="none" strokeWidth="3" strokeLinecap="round">
           <path d="M-12,0 H12" />
@@ -368,14 +602,30 @@ export function AiUnavailableIllustration({ className }: { className?: string })
           {/* Shadow */}
           <rect x="6" y="8" width="120" height="135" rx="18" fill="#17171C" opacity="0.12" />
           {/* Body */}
-          <rect width="120" height="135" rx="18" fill="#8B8BE0" stroke="#17171C" strokeWidth="4.5" />
+          <rect
+            width="120"
+            height="135"
+            rx="18"
+            fill="#8B8BE0"
+            stroke="#17171C"
+            strokeWidth="4.5"
+          />
 
           {/* Antenna */}
           <line x1="60" y1="0" x2="60" y2="-22" stroke="#17171C" strokeWidth="4" />
           <circle cx="60" cy="-24" r="8" fill="#FFD23F" stroke="#17171C" strokeWidth="3" />
 
           {/* Face screen */}
-          <rect x="18" y="24" width="84" height="58" rx="12" fill="#FAF8F5" stroke="#17171C" strokeWidth="3.5" />
+          <rect
+            x="18"
+            y="24"
+            width="84"
+            height="58"
+            rx="12"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="3.5"
+          />
           {/* Friendly eyes */}
           <circle cx="42" cy="48" r="7" fill="#17171C" />
           <circle cx="78" cy="48" r="7" fill="#17171C" />
@@ -407,8 +657,20 @@ export function NotFoundIllustration({ className }: { className?: string }) {
     >
       <defs>
         <filter id="nfRough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="9" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.02"
+            numOctaves="2"
+            seed="9"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <g id="nfBurst" fill="none" strokeWidth="3" strokeLinecap="round">
           <path d="M-12,0 H12" />
@@ -418,7 +680,14 @@ export function NotFoundIllustration({ className }: { className?: string }) {
           <path d="M-12,0 H12" transform="rotate(120)" />
           <path d="M-12,0 H12" transform="rotate(150)" />
         </g>
-        <g id="nfSprout" fill="#7A9160" stroke="#17171C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          id="nfSprout"
+          fill="#7A9160"
+          stroke="#17171C"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M0,0 V-18 M0,-9 q-12,-3 -12,-15 q11,1 12,15 M0,-10 q12,-3 12,-15 q-11,1 -12,15" />
         </g>
       </defs>
@@ -432,12 +701,46 @@ export function NotFoundIllustration({ className }: { className?: string }) {
           {/* Shadow */}
           <rect x="6" y="8" width="100" height="170" rx="14" fill="#17171C" opacity="0.12" />
           {/* Door Frame */}
-          <rect width="100" height="170" rx="14" fill="#FAF8F5" stroke="#17171C" strokeWidth="4.5" />
+          <rect
+            width="100"
+            height="170"
+            rx="14"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="4.5"
+          />
           {/* Door Panel in Periwinkle */}
-          <rect x="12" y="14" width="76" height="142" rx="8" fill="#8B8BE0" stroke="#17171C" strokeWidth="3.5" />
+          <rect
+            x="12"
+            y="14"
+            width="76"
+            height="142"
+            rx="8"
+            fill="#8B8BE0"
+            stroke="#17171C"
+            strokeWidth="3.5"
+          />
           {/* Door Panels */}
-          <rect x="24" y="28" width="52" height="48" rx="4" fill="#FAF8F5" stroke="#17171C" strokeWidth="2.5" />
-          <rect x="24" y="88" width="52" height="54" rx="4" fill="#FAF8F5" stroke="#17171C" strokeWidth="2.5" />
+          <rect
+            x="24"
+            y="28"
+            width="52"
+            height="48"
+            rx="4"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="2.5"
+          />
+          <rect
+            x="24"
+            y="88"
+            width="52"
+            height="54"
+            rx="4"
+            fill="#FAF8F5"
+            stroke="#17171C"
+            strokeWidth="2.5"
+          />
           {/* Doorknob in yellow */}
           <circle cx="32" cy="80" r="5" fill="#FFD23F" stroke="#17171C" strokeWidth="2.5" />
         </g>

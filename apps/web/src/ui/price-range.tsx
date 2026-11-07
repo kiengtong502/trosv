@@ -59,7 +59,11 @@ export function PriceRange({ min, max, onChange, id = "price-range", className }
 
   return (
     <div data-testid={id} className={cn("w-full", className)}>
-      <p data-testid={`${id}-readout`} className="mb-3 text-sm font-bold tabular-nums text-ink" aria-live="polite">
+      <p
+        data-testid={`${id}-readout`}
+        className="mb-3 text-sm font-bold tabular-nums text-ink"
+        aria-live="polite"
+      >
         {describe(min, max)}
       </p>
       <div className="price-range relative h-6">

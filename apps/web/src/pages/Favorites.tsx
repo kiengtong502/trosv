@@ -141,28 +141,28 @@ export default function Favorites() {
 
   return (
     <>
-    {band}
-    <div className="mx-auto w-full max-w-6xl flex-1 p-5 pb-16">
-      <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {listings.map((l) => (
-          <ListingCard
-            key={l.id}
-            listing={l}
-            onFavToggle={() => void remove(l.id)}
-            actionSlot={
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full text-danger hover:bg-danger-tint hover:text-danger"
-                onClick={() => void remove(l.id)}
-              >
-                Bỏ lưu
-              </Button>
-            }
-          />
-        ))}
+      {band}
+      <div className="mx-auto w-full max-w-6xl flex-1 p-5 pb-16">
+        <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {listings.map((l) => (
+            <ListingCard
+              key={l.id}
+              listing={l}
+              onFavToggle={() => void remove(l.id)}
+              actionSlot={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-danger hover:bg-danger-tint hover:text-danger"
+                  onClick={() => void remove(l.id)}
+                >
+                  Bỏ lưu
+                </Button>
+              }
+            />
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 }

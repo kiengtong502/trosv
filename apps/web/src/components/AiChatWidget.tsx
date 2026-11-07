@@ -32,7 +32,9 @@ export function AiChatWidget() {
       setOpen(true);
     }
     window.addEventListener(AI_CHAT_OPEN_EVENT, openChat);
-    return () => { window.removeEventListener(AI_CHAT_OPEN_EVENT, openChat); };
+    return () => {
+      window.removeEventListener(AI_CHAT_OPEN_EVENT, openChat);
+    };
   }, []);
 
   useEffect(() => {
@@ -48,7 +50,10 @@ export function AiChatWidget() {
     setTurns(next);
     setBusy(true);
     try {
-      const { reply } = await aiChat(text, next.filter((t) => t !== WELCOME));
+      const { reply } = await aiChat(
+        text,
+        next.filter((t) => t !== WELCOME),
+      );
       setTurns((cur) => [...cur, { role: "assistant", content: reply ?? "" }]);
     } catch {
       setTurns((cur) => [
@@ -65,7 +70,8 @@ export function AiChatWidget() {
 
   /* Hidden on messages (avoids blocking chat input/send), auth, and landlord screens */
   const isMessagesPage = location.pathname.startsWith("/messages");
-  const isAuthPage = location.pathname.startsWith("/login") || location.pathname.startsWith("/register");
+  const isAuthPage =
+    location.pathname.startsWith("/login") || location.pathname.startsWith("/register");
   const isLandlordPage = location.pathname.startsWith("/landlord");
   if (isMessagesPage || isAuthPage || isLandlordPage) return null;
 
@@ -87,12 +93,16 @@ export function AiChatWidget() {
               </div>
               <div>
                 <p className="font-semibold text-sm leading-tight">Trợ lý AI TROSV</p>
-                <p className="text-[11px] text-white/80 leading-tight">Hỏi về giá phòng & khu vực</p>
+                <p className="text-[11px] text-white/80 leading-tight">
+                  Hỏi về giá phòng & khu vực
+                </p>
               </div>
             </div>
             <button
               type="button"
-              onClick={() => { setOpen(false); }}
+              onClick={() => {
+                setOpen(false);
+              }}
               aria-label="Đóng trò chuyện"
               className="rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
@@ -101,7 +111,10 @@ export function AiChatWidget() {
           </div>
 
           {/* Conversation history */}
-          <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto bg-paper/40 p-3.5">
+          <div
+            ref={scrollRef}
+            className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto bg-paper/40 p-3.5"
+          >
             {turns.map((t, i) => (
               <div
                 key={i}
@@ -109,14 +122,17 @@ export function AiChatWidget() {
                   "max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
                   t.role === "user"
                     ? "self-end rounded-2xl rounded-br-xs bg-plate text-white shadow-xs"
-                    : "self-start rounded-2xl rounded-bl-xs bg-card text-ink border border-line shadow-xs"
+                    : "self-start rounded-2xl rounded-bl-xs bg-card text-ink border border-line shadow-xs",
                 )}
               >
                 {t.content}
               </div>
             ))}
             {busy ? (
-              <div className="self-start rounded-2xl rounded-bl-xs bg-card px-3.5 py-2 text-xs text-muted border border-line" aria-live="polite">
+              <div
+                className="self-start rounded-2xl rounded-bl-xs bg-card px-3.5 py-2 text-xs text-muted border border-line"
+                aria-live="polite"
+              >
                 Trợ lý AI đang tìm câu trả lời…
               </div>
             ) : null}
@@ -132,7 +148,9 @@ export function AiChatWidget() {
           >
             <input
               value={draft}
-              onChange={(e) => { setDraft(e.target.value.slice(0, 1000)); }}
+              onChange={(e) => {
+                setDraft(e.target.value.slice(0, 1000));
+              }}
               aria-label="Hỏi trợ lý AI"
               placeholder="Nhập câu hỏi..."
               className="h-10 flex-1 rounded-xl border border-line-strong bg-card text-ink px-3.5 text-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
@@ -152,7 +170,9 @@ export function AiChatWidget() {
       ) : (
         <button
           type="button"
-          onClick={() => { setOpen(true); }}
+          onClick={() => {
+            setOpen(true);
+          }}
           aria-label="Mở trợ lý AI"
           className="group relative flex size-13 items-center justify-center rounded-full bg-plate text-white shadow-lg transition-all hover:bg-plate-hover hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate focus-visible:ring-offset-2"
         >

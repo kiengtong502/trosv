@@ -18,8 +18,8 @@ const TINTS = [
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
-  const first = parts[0] !== undefined ? parts[0][0] ?? "" : "";
-  const last = parts.length > 1 ? (parts[parts.length - 1] ?? "")[0] ?? "" : "";
+  const first = parts[0] !== undefined ? (parts[0][0] ?? "") : "";
+  const last = parts.length > 1 ? ((parts[parts.length - 1] ?? "")[0] ?? "") : "";
   return (first + last).toUpperCase();
 }
 
@@ -42,7 +42,10 @@ export function Avatar({ name, avatar, size = 40, className, ...props }: AvatarP
   if (isAvatarKey(avatar)) {
     return (
       <span
-        className={cn("inline-flex select-none overflow-hidden rounded-full [&>svg]:size-full", className)}
+        className={cn(
+          "inline-flex select-none overflow-hidden rounded-full [&>svg]:size-full",
+          className,
+        )}
         style={{ width: size, height: size }}
         role="img"
         aria-label={name}
@@ -60,7 +63,7 @@ export function Avatar({ name, avatar, size = 40, className, ...props }: AvatarP
       className={cn(
         "inline-flex select-none items-center justify-center overflow-hidden rounded-full font-medium",
         tintFor(name),
-        className
+        className,
       )}
       style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
       role="img"

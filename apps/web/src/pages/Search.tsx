@@ -40,13 +40,21 @@ export default function Search() {
       chips.push({
         key: "q",
         label: `"${search.filters.q}"`,
-        onRemove: () => { search.setFilter("q", ""); },
+        onRemove: () => {
+          search.setFilter("q", "");
+        },
       });
     }
     if (search.filters.type) {
       const t = TYPE_OPTIONS.find((o) => o.value === search.filters.type);
       if (t) {
-        chips.push({ key: "type", label: t.label, onRemove: () => { search.setFilter("type", ""); } });
+        chips.push({
+          key: "type",
+          label: t.label,
+          onRemove: () => {
+            search.setFilter("type", "");
+          },
+        });
       }
     }
     if (search.filters.city_id) {
@@ -55,7 +63,9 @@ export default function Search() {
         chips.push({
           key: "city_id",
           label: c.name,
-          onRemove: () => { search.setCity(""); },
+          onRemove: () => {
+            search.setCity("");
+          },
         });
       }
     }
@@ -65,7 +75,9 @@ export default function Search() {
         chips.push({
           key: "ward_id",
           label: w.name,
-          onRemove: () => { search.setWard(""); },
+          onRemove: () => {
+            search.setWard("");
+          },
         });
       }
     }
@@ -76,8 +88,8 @@ export default function Search() {
         search.filters.price_min && search.filters.price_max
           ? `${min} – ${max}`
           : search.filters.price_min
-          ? `Từ ${min}`
-          : `Dưới ${max}`;
+            ? `Từ ${min}`
+            : `Dưới ${max}`;
       chips.push({
         key: "price",
         label: priceLabel,
@@ -90,7 +102,13 @@ export default function Search() {
     if (search.filters.school_id) {
       const s = search.schools.find((x) => String(x.id) === search.filters.school_id);
       if (s) {
-        chips.push({ key: "school_id", label: s.name, onRemove: () => { search.setFilter("school_id", ""); } });
+        chips.push({
+          key: "school_id",
+          label: s.name,
+          onRemove: () => {
+            search.setFilter("school_id", "");
+          },
+        });
       }
     }
     return chips;
@@ -108,9 +126,7 @@ export default function Search() {
     }
     const wasFav = listing.is_favorited === true;
     search.setListings((rows) =>
-      rows.map((r) =>
-        r.id === listing.id ? { ...r, is_favorited: !wasFav } : r
-      )
+      rows.map((r) => (r.id === listing.id ? { ...r, is_favorited: !wasFav } : r)),
     );
     try {
       if (wasFav) {
@@ -122,15 +138,15 @@ export default function Search() {
       }
     } catch {
       search.setListings((rows) =>
-        rows.map((r) =>
-          r.id === listing.id ? { ...r, is_favorited: wasFav } : r
-        )
+        rows.map((r) => (r.id === listing.id ? { ...r, is_favorited: wasFav } : r)),
       );
       toast("Không cập nhật được yêu thích. Bạn thử lại nhé.");
     }
   }
 
-  const onHover = useCallback((id: number | null) => { setHoveredListing(id); }, []);
+  const onHover = useCallback((id: number | null) => {
+    setHoveredListing(id);
+  }, []);
   const totalCount = search.meta?.total ?? search.listings.length;
 
   const areaName = (() => {
@@ -152,8 +168,12 @@ export default function Search() {
       <SearchFilterBar
         search={search}
         showMap={mobileTab === "map"}
-        onToggleMap={() => { setMobileTab((t) => (t === "list" ? "map" : "list")); }}
-        onSaveSearch={() => { toast("Đã lưu tiêu chí tìm kiếm vào bộ nhớ trình duyệt."); }}
+        onToggleMap={() => {
+          setMobileTab((t) => (t === "list" ? "map" : "list"));
+        }}
+        onSaveSearch={() => {
+          toast("Đã lưu tiêu chí tìm kiếm vào bộ nhớ trình duyệt.");
+        }}
       />
 
       {/* Result metadata + Active filter chips */}
@@ -165,9 +185,7 @@ export default function Search() {
             ) : (
               <>
                 <span className="tabular-nums">{totalCount}</span> phòng trọ
-                {areaName ? (
-                  <span className="font-normal text-muted"> tại {areaName}</span>
-                ) : null}
+                {areaName ? <span className="font-normal text-muted"> tại {areaName}</span> : null}
               </>
             )}
           </p>
@@ -194,12 +212,14 @@ export default function Search() {
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => { search.setFilter("sort", opt.value); }}
+                    onClick={() => {
+                      search.setFilter("sort", opt.value);
+                    }}
                     className={cn(
                       "w-full rounded px-2.5 py-1.5 text-left text-xs transition-colors",
                       search.filters.sort === opt.value
                         ? "bg-plate-tint font-bold text-plate"
-                        : "text-ink hover:bg-tint"
+                        : "text-ink hover:bg-tint",
                     )}
                   >
                     {opt.label}
@@ -247,7 +267,7 @@ export default function Search() {
           data-testid="list-pane"
           className={cn(
             "animate-fade-in px-4 pb-20 lg:order-2 lg:animate-none lg:px-6 lg:pb-16",
-            mobileTab === "map" ? "hidden lg:block" : "block"
+            mobileTab === "map" ? "hidden lg:block" : "block",
           )}
         >
           {search.loading ? (
@@ -281,7 +301,9 @@ export default function Search() {
                   key={l.id}
                   listing={l}
                   onHover={onHover}
-                  onFavToggle={(l) => { void toggleFavorite(l); }}
+                  onFavToggle={(l) => {
+                    void toggleFavorite(l);
+                  }}
                 />
               ))}
             </div>
@@ -296,14 +318,16 @@ export default function Search() {
                   <button
                     key={p}
                     type="button"
-                    onClick={() => { search.setPage(p); }}
+                    onClick={() => {
+                      search.setPage(p);
+                    }}
                     aria-current={p === search.page ? "page" : undefined}
                     className={cn(
                       "motion-press size-9 rounded-lg text-sm font-semibold tabular-nums transition-colors",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
                       p === search.page
                         ? "bg-plate text-white"
-                        : "border border-line-strong bg-card text-ink hover:bg-tint"
+                        : "border border-line-strong bg-card text-ink hover:bg-tint",
                     )}
                   >
                     {p}
@@ -318,7 +342,9 @@ export default function Search() {
           data-testid="map-pane"
           className={cn(
             "animate-fade-in lg:animate-none lg:order-1 lg:block",
-            mobileTab === "map" ? "block h-[calc(100dvh-var(--nav-h)-115px)] w-full" : "hidden lg:block"
+            mobileTab === "map"
+              ? "block h-[calc(100dvh-var(--nav-h)-115px)] w-full"
+              : "hidden lg:block",
           )}
         >
           <div
@@ -334,7 +360,9 @@ export default function Search() {
                 void navigate(route(ROUTES.ROOM_DETAIL, { id }));
               }}
               onHover={onHover}
-              hasLocationFilter={Boolean(search.filters.city_id || search.filters.ward_id || search.filters.school_id)}
+              hasLocationFilter={Boolean(
+                search.filters.city_id || search.filters.ward_id || search.filters.school_id,
+              )}
               ariaLabel="Bản đồ phòng trọ"
             />
           </div>
@@ -345,7 +373,9 @@ export default function Search() {
       <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden">
         <button
           type="button"
-          onClick={() => { setMobileTab((tab) => (tab === "list" ? "map" : "list")); }}
+          onClick={() => {
+            setMobileTab((tab) => (tab === "list" ? "map" : "list"));
+          }}
           className={
             "flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-xs font-semibold " +
             "text-white shadow-pop transition hover:scale-105 active:scale-95"

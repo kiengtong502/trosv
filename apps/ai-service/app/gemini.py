@@ -18,7 +18,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, cast
 
 from google import genai
 from google.genai import types
@@ -42,7 +42,7 @@ if KNOWLEDGE_FILE.exists():
         logger.warning(f"Failed to read knowledge.md: {exc}")
 
 
-def get_api_key() -> Optional[str]:
+def get_api_key() -> str | None:
     """Retrieve Gemini API key from environment."""
     return os.getenv("GEMINI_API_KEY") or os.getenv("LLM_API_KEY") or None
 
@@ -54,7 +54,7 @@ def is_gemini_enabled() -> bool:
     return bool(api_key) and not fake_mode
 
 
-def _get_client() -> Optional[genai.Client]:
+def _get_client() -> genai.Client | None:
     """Initialize Google GenAI client if API key is present."""
     api_key = get_api_key()
     if not api_key:
@@ -68,7 +68,7 @@ def _get_client() -> Optional[genai.Client]:
 
 def _generate_with_fallback(
     client: genai.Client, contents: Any, config: types.GenerateContentConfig
-) -> Optional[str]:
+) -> str | None:
     """Execute Gemini generation with model fallback on demand spikes or deprecation."""
     configured_model = os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
     candidate_models = [configured_model, "gemini-3.5-flash-lite", "gemini-3.5-flash"]
@@ -80,7 +80,7 @@ def _generate_with_fallback(
             seen.add(m)
             models.append(m)
 
-    last_error: Optional[Exception] = None
+    last_error: Exception | None = None
     for model_name in models:
         try:
             response = client.models.generate_content(
@@ -109,7 +109,7 @@ class DescriptionResponseSchema(BaseModel):
     )
 
 
-def generate_description_with_gemini(data: dict[str, Any]) -> Optional[dict[str, str]]:
+def generate_description_with_gemini(data: dict[str, Any]) -> dict[str, str] | None:
     """Generate listing description using Gemini."""
     client = _get_client()
     if not client:
@@ -169,7 +169,7 @@ class PriceAdviceResponseSchema(BaseModel):
 
 def generate_price_advice_with_gemini(
     listing: dict[str, Any], stats: dict[str, Any]
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any] | None:
     """Evaluate rental price against area statistics using Gemini."""
     client = _get_client()
     if not client:
@@ -211,8 +211,8 @@ def generate_price_advice_with_gemini(
         if not raw_text:
             return None
         res_dict = json.loads(raw_text)
-        if res_dict.get("verdict") in ("high", "fair", "low"):
-            return res_dict
+        if isinstance(res_dict, dict) and res_dict.get("verdict") in ("high", "fair", "low"):
+            return cast("dict[str, Any]", res_dict)
     except Exception as exc:
         logger.warning(f"Gemini generate_price_advice failed: {exc}")
     return None
@@ -228,14 +228,12 @@ class RoommateItem(BaseModel):
 
 
 class RoommatesResponseSchema(BaseModel):
-    results: list[RoommateItem] = Field(
-        ..., description="Danh sách xếp hạng bạn cùng phòng"
-    )
+    results: list[RoommateItem] = Field(..., description="Danh sách xếp hạng bạn cùng phòng")
 
 
 def rank_roommates_with_gemini(
     requester: dict[str, Any], candidates: list[dict[str, Any]], limit: int = 5
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any] | None:
     """Rank roommate candidates and generate personalized reasoning using Gemini."""
     client = _get_client()
     if not client or not candidates:
@@ -286,9 +284,7 @@ def rank_roommates_with_gemini(
             return None
         res_dict = json.loads(raw_text)
         cand_ids = {c["id"] for c in candidates}
-        valid_results = [
-            r for r in res_dict.get("results", []) if r.get("id") in cand_ids
-        ]
+        valid_results = [r for r in res_dict.get("results", []) if r.get("id") in cand_ids]
         if valid_results:
             return {"results": valid_results[:limit]}
     except Exception as exc:
@@ -310,7 +306,7 @@ class AreasResponseSchema(BaseModel):
 
 def recommend_areas_with_gemini(
     preferences: dict[str, Any], areas: list[dict[str, Any]], limit: int = 3
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any] | None:
     """Rank and recommend rental areas using Gemini."""
     client = _get_client()
     if not client or not areas:
@@ -365,9 +361,7 @@ def recommend_areas_with_gemini(
             return None
         res_dict = json.loads(raw_text)
         area_ids = {a["ward_id"] for a in areas}
-        valid_results = [
-            r for r in res_dict.get("results", []) if r.get("ward_id") in area_ids
-        ]
+        valid_results = [r for r in res_dict.get("results", []) if r.get("ward_id") in area_ids]
         if valid_results:
             return {"results": valid_results[:limit]}
     except Exception as exc:
@@ -385,8 +379,8 @@ class ChatResponseSchema(BaseModel):
 def chat_with_gemini(
     message: str,
     history: list[dict[str, Any]],
-    listing: Optional[dict[str, Any]] = None,
-) -> Optional[dict[str, str]]:
+    listing: dict[str, Any] | None = None,
+) -> dict[str, str] | None:
     """Answer rental questions using Gemini with domain knowledge injection."""
     client = _get_client()
     if not client:
@@ -397,9 +391,7 @@ def chat_with_gemini(
     # Construct context from knowledge base and listing
     context_sections = []
     if KNOWLEDGE_BASE:
-        context_sections.append(
-            f"=== KIẾN THỨC NỀN TẢNG THUÊ TRỌ ===\n{KNOWLEDGE_BASE}"
-        )
+        context_sections.append(f"=== KIẾN THỨC NỀN TẢNG THUÊ TRỌ ===\n{KNOWLEDGE_BASE}")
     if listing:
         context_sections.append(
             f"=== THÔNG TIN PHÒNG TRỌ ĐANG XEM ===\n"

@@ -35,7 +35,9 @@ export function ThreadRoomCard({
       )}
       <div className="min-w-0 flex-1">
         <p className="text-[11px] font-bold uppercase tracking-wide text-muted">Phòng gần nhất</p>
-        <p className="mt-0.5 line-clamp-2 text-sm font-bold leading-snug text-ink">{listing.title}</p>
+        <p className="mt-0.5 line-clamp-2 text-sm font-bold leading-snug text-ink">
+          {listing.title}
+        </p>
       </div>
       <Link
         to={route(ROUTES.ROOM_DETAIL, { id: listing.id })}

@@ -8,15 +8,12 @@ import { cn } from "@/lib/utils";
   always rendered with min-height).
 */
 
-export function Label({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+export function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
   return (
     <LabelPrimitive.Root
       className={cn(
         "text-sm font-medium leading-none text-ink peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-        className
+        className,
       )}
       {...props}
     />
@@ -35,15 +32,7 @@ export interface FieldProps {
   className?: string;
 }
 
-export function Field({
-  id,
-  label,
-  hint,
-  error,
-  required,
-  children,
-  className,
-}: FieldProps) {
+export function Field({ id, label, hint, error, required, children, className }: FieldProps) {
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
   return (
@@ -58,11 +47,7 @@ export function Field({
       </Label>
       {children}
       {error ? (
-        <p
-          id={errorId}
-          role="alert"
-          className="text-xs font-normal text-danger"
-        >
+        <p id={errorId} role="alert" className="text-xs font-normal text-danger">
           {error}
         </p>
       ) : (

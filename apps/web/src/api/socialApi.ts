@@ -5,12 +5,10 @@ import type { Paged } from "./listingApi";
 
 // API_CONTRACT §4 - "Yêu thích (sinh viên)"
 export const getFavorites = (page = 1): Promise<Paged<Listing>> =>
-  api
-    .get("/favorites", { params: { page } })
-    .then((r) => {
-      const body = pagedEnvelope<Listing>(r);
-      return { data: body.data, meta: body.meta };
-    });
+  api.get("/favorites", { params: { page } }).then((r) => {
+    const body = pagedEnvelope<Listing>(r);
+    return { data: body.data, meta: body.meta };
+  });
 
 export const addFavorite = (listingId: number): Promise<unknown> =>
   api.put(`/favorites/${listingId}`).then((r) => envelope<unknown>(r).data);
@@ -26,17 +24,13 @@ export const getConversations = (): Promise<Conversation[]> =>
 // "self" (Xóa chỉ ở phía mình). Server returns 204-style null data.
 export type DeleteScope = "unsent" | "self";
 
-export const deleteMessage = (
-  messageId: number,
-  scope: DeleteScope
-): Promise<unknown> =>
-  api.delete(`/messages/${messageId}`, { params: { scope } }).then((r) => envelope<unknown>(r).data);
+export const deleteMessage = (messageId: number, scope: DeleteScope): Promise<unknown> =>
+  api
+    .delete(`/messages/${messageId}`, { params: { scope } })
+    .then((r) => envelope<unknown>(r).data);
 
 // Messenger reactions: PUT dat/doi emoji (cung emoji lan nua = bo/toggle).
-export const reactToMessage = (
-  messageId: number,
-  emoji: string
-): Promise<Message["reactions"]> =>
+export const reactToMessage = (messageId: number, emoji: string): Promise<Message["reactions"]> =>
   api
     .put(`/messages/${messageId}/reactions`, { emoji })
     .then((r) => envelope<{ reactions: Message["reactions"] }>(r).data.reactions);
@@ -50,7 +44,7 @@ export const startDirectConversation = (userId: number): Promise<Conversation> =
 
 export const getMessages = (
   conversationId: number | string,
-  afterId: number | null = null
+  afterId: number | null = null,
 ): Promise<Message[]> =>
   api
     .get(`/conversations/${conversationId}/messages`, {
@@ -64,7 +58,7 @@ export interface SendMessagePayload extends MessagePayload {
 
 export const sendMessage = (
   conversationId: number | string,
-  { body, file }: SendMessagePayload
+  { body, file }: SendMessagePayload,
 ): Promise<Message> => {
   if (file) {
     const form = new FormData();

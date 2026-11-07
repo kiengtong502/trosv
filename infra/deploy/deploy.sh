@@ -41,7 +41,7 @@ port_open() { (echo > "/dev/tcp/127.0.0.1/$1") 2>/dev/null; }
 
 stop_all() {
     echo ">> Dung cac service demo..."
-    if command -v docker >/dev/null 2>&1 && docker compose ps -q 2>/dev/null | grep -q .; then
+    if command -v docker >/dev/null 2>&1 && [ -n "$(docker compose ps -q 2>/dev/null)" ]; then
         docker compose down
         ok "Docker stack da dung"
     fi

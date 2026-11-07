@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
-import {
-  createListing,
-  updateListing,
-  uploadImages,
-  deleteImage,
-} from "@/api/landlordApi";
+import { createListing, updateListing, uploadImages, deleteImage } from "@/api/landlordApi";
 import { getListing, getWards, getAmenities, getCities } from "@/api/listingApi";
 import { aiDescription } from "@/api/aiApi";
 import { errMessage, errFieldErrors } from "@/api/axiosClient";
@@ -71,10 +66,15 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
-    getCities().then(setCities).catch(() => {
-    });
-    getWards().then(setWards).catch(() => {});
-    getAmenities().then(setAmenities).catch(() => {});
+    getCities()
+      .then(setCities)
+      .catch(() => {});
+    getWards()
+      .then(setWards)
+      .catch(() => {});
+    getAmenities()
+      .then(setAmenities)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -123,15 +123,11 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     }
     if (current === street) return;
 
-    const wardName =
-      wards.find((x) => String(x.id) === String(form.ward_id))?.name || "";
-    const withWard =
-      wardName && !street.includes(wardName) ? `${street}, ${wardName}` : street;
+    const wardName = wards.find((x) => String(x.id) === String(form.ward_id))?.name || "";
+    const withWard = wardName && !street.includes(wardName) ? `${street}, ${wardName}` : street;
 
     if (
-      window.confirm(
-        `Địa chỉ trên bản đồ: "${withWard}".\nDùng địa chỉ này thay cho "${current}"?`
-      )
+      window.confirm(`Địa chỉ trên bản đồ: "${withWard}".\nDùng địa chỉ này thay cho "${current}"?`)
     ) {
       setForm((f) => ({ ...f, address: withWard }));
     }

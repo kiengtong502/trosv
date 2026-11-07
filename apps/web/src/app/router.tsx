@@ -1,10 +1,6 @@
 import { MessagesEmptyPane } from "@/pages/messages/MessagesEmptyPane";
 import { Suspense, lazy } from "react";
-import {
-  createBrowserRouter,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { AppShell } from "@/components/shell";
 import { PageFallback } from "@/app/PageFallback";
@@ -34,13 +30,26 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
    the shell (see components/shell.tsx <Outlet/> wrapper). */
 function ShellWithoutFooter() {
   return (
-    <AppShell hideFooter screenSuspense={<Suspense fallback={<PageFallback />}><Outlet /></Suspense>} />
+    <AppShell
+      hideFooter
+      screenSuspense={
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
+      }
+    />
   );
 }
 
 function ShellWithFooter() {
   return (
-    <AppShell screenSuspense={<Suspense fallback={<PageFallback />}><Outlet /></Suspense>} />
+    <AppShell
+      screenSuspense={
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
+      }
+    />
   );
 }
 

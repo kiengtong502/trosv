@@ -36,12 +36,9 @@ export type RoutePattern = string;
  * Fill các segment ":param" của một pattern. Vi du:
  * route(ROUTES.ROOM_DETAIL, { id: 42 }) === "/rooms/42"
  */
-export function route(
-  pattern: RoutePattern,
-  params: Record<string, string | number> = {}
-): string {
+export function route(pattern: RoutePattern, params: Record<string, string | number> = {}): string {
   return Object.entries(params).reduce(
     (path, [key, value]) => path.replace(`:${key}`, encodeURIComponent(value)),
-    pattern
+    pattern,
   );
 }

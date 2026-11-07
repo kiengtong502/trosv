@@ -60,7 +60,7 @@ axiosClient.interceptors.response.use(
       }
     }
     return Promise.reject(error instanceof Error ? error : new Error(String(error)));
-  }
+  },
 );
 
 /** Thong bao loi gon nhat cho UI: message backend > loi validate dau tien > fallback. */

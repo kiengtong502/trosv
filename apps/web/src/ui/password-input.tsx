@@ -4,8 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { controlClass } from "@/ui/input";
 
-export interface PasswordInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
+export interface PasswordInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   invalid?: boolean;
 }
 
@@ -23,18 +22,24 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         />
         <button
           type="button"
-          onClick={() => { setVisible((v) => !v); }}
+          onClick={() => {
+            setVisible((v) => !v);
+          }}
           aria-label={visible ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
           aria-pressed={visible}
           className={cn(
             "absolute right-2 top-1/2 flex size-8 -translate-y-1/2",
-            "items-center justify-center rounded-md text-ink-2 hover:bg-tint"
+            "items-center justify-center rounded-md text-ink-2 hover:bg-tint",
           )}
         >
-          {visible ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
+          {visible ? (
+            <EyeOff className="size-4" aria-hidden />
+          ) : (
+            <Eye className="size-4" aria-hidden />
+          )}
         </button>
       </div>
     );
-  }
+  },
 );
 PasswordInput.displayName = "PasswordInput";

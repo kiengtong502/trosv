@@ -6,13 +6,16 @@ def get_app_and_module():
     """Import FastAPI app and module across flat layout and package layout."""
     try:
         import main as m
+
         return m.app, m
     except ImportError:
         try:
             import app.main as m
+
             return m.app, m
         except ImportError:
             import app as m
+
             return m.app, m
 
 
@@ -42,6 +45,7 @@ def set_fake_mode(monkeypatch, enabled: bool):
 # 1. GET /health
 # ----------------------------------------------------------------------
 
+
 def test_health_endpoint(client):
     response = client.get("/health")
     assert response.status_code == 200
@@ -58,6 +62,7 @@ def test_health_returns_200_even_when_fake_mode_disabled(client, monkeypatch):
 # ----------------------------------------------------------------------
 # 2. POST /roommates
 # ----------------------------------------------------------------------
+
 
 def test_roommates_contract_shape(client):
     payload = {
@@ -124,6 +129,7 @@ def test_roommates_empty_candidates(client):
 # 3. POST /price-advice
 # ----------------------------------------------------------------------
 
+
 def test_price_advice_contract_shape(client):
     payload = {
         "listing": {
@@ -158,6 +164,7 @@ def test_price_advice_contract_shape(client):
 # ----------------------------------------------------------------------
 # 4. POST /areas
 # ----------------------------------------------------------------------
+
 
 def test_areas_contract_shape(client):
     payload = {
@@ -195,6 +202,7 @@ def test_areas_contract_shape(client):
 # 5. POST /chat
 # ----------------------------------------------------------------------
 
+
 def test_chat_contract_general_reply(client):
     payload = {"message": "Khu vực này có thuận tiện đi xe buýt không?"}
     response = client.post("/chat", json=payload)
@@ -210,7 +218,10 @@ def test_chat_deposit_includes_legal_tail(client):
     response = client.post("/chat", json=payload)
     assert response.status_code == 200
     reply = response.json()["reply"]
-    assert "khong thay the tu van phap ly" in reply.lower() or "không thay thế tư vấn pháp lý" in reply.lower()
+    assert (
+        "khong thay the tu van phap ly" in reply.lower()
+        or "không thay thế tư vấn pháp lý" in reply.lower()
+    )
 
 
 def test_chat_with_listing_context(client):
@@ -237,6 +248,7 @@ def test_chat_with_listing_context(client):
 # 6. POST /description
 # ----------------------------------------------------------------------
 
+
 def test_description_contract_shape(client):
     payload = {
         "title": "Phòng trọ gần ĐHQG",
@@ -259,74 +271,82 @@ def test_description_contract_shape(client):
 # 7. 503 behavior when FAKE_MODE=false and no LLM API key configured
 # ----------------------------------------------------------------------
 
-@pytest.mark.parametrize("endpoint,payload", [
-    (
-        "/roommates",
-        {
-            "requester": {
-                "id": 1,
-                "budget_min": 1500000,
-                "budget_max": 3000000,
-                "sleep_schedule": "normal",
-                "cleanliness": 4,
-                "smoking": False,
-                "personality": "introvert",
-                "interests": ["music"],
-            },
-            "candidates": [
-                {
-                    "id": 45,
-                    "budget_min": 2000000,
-                    "budget_max": 3500000,
-                    "sleep_schedule": "late",
-                    "cleanliness": 3,
+
+@pytest.mark.parametrize(
+    ("endpoint", "payload"),
+    [
+        (
+            "/roommates",
+            {
+                "requester": {
+                    "id": 1,
+                    "budget_min": 1500000,
+                    "budget_max": 3000000,
+                    "sleep_schedule": "normal",
+                    "cleanliness": 4,
                     "smoking": False,
-                    "personality": "ambivert",
+                    "personality": "introvert",
                     "interests": ["music"],
-                }
-            ],
-            "limit": 5,
-        },
-    ),
-    (
-        "/price-advice",
-        {
-            "listing": {
-                "type": "room",
-                "price": 2500000,
-                "area_m2": 22.5,
-                "ward": "Thủ Đức",
-                "amenities": ["Wi-Fi"],
+                },
+                "candidates": [
+                    {
+                        "id": 45,
+                        "budget_min": 2000000,
+                        "budget_max": 3500000,
+                        "sleep_schedule": "late",
+                        "cleanliness": 3,
+                        "smoking": False,
+                        "personality": "ambivert",
+                        "interests": ["music"],
+                    }
+                ],
+                "limit": 5,
             },
-            "stats": {"count": 12, "min": 1800000, "median": 2300000, "max": 3200000},
-        },
-    ),
-    (
-        "/areas",
-        {
-            "preferences": {"budget_min": 1500000, "budget_max": 3000000, "priorities": ["cheap"]},
-            "areas": [
-                {
-                    "ward_id": 1,
-                    "name": "Thủ Đức",
-                    "listings_count": 41,
-                    "avg_price": 2300000,
-                    "avg_rating": 4.2,
-                    "distance_to_school_km": 1.2,
-                }
-            ],
-            "limit": 3,
-        },
-    ),
-    (
-        "/chat",
-        {"message": "Tiền cọc thường là bao nhiêu?"},
-    ),
-    (
-        "/description",
-        {"title": "Phòng trọ gần ĐHQG", "type": "room", "price": 2500000, "area_m2": 22.5},
-    ),
-])
+        ),
+        (
+            "/price-advice",
+            {
+                "listing": {
+                    "type": "room",
+                    "price": 2500000,
+                    "area_m2": 22.5,
+                    "ward": "Thủ Đức",
+                    "amenities": ["Wi-Fi"],
+                },
+                "stats": {"count": 12, "min": 1800000, "median": 2300000, "max": 3200000},
+            },
+        ),
+        (
+            "/areas",
+            {
+                "preferences": {
+                    "budget_min": 1500000,
+                    "budget_max": 3000000,
+                    "priorities": ["cheap"],
+                },
+                "areas": [
+                    {
+                        "ward_id": 1,
+                        "name": "Thủ Đức",
+                        "listings_count": 41,
+                        "avg_price": 2300000,
+                        "avg_rating": 4.2,
+                        "distance_to_school_km": 1.2,
+                    }
+                ],
+                "limit": 3,
+            },
+        ),
+        (
+            "/chat",
+            {"message": "Tiền cọc thường là bao nhiêu?"},
+        ),
+        (
+            "/description",
+            {"title": "Phòng trọ gần ĐHQG", "type": "room", "price": 2500000, "area_m2": 22.5},
+        ),
+    ],
+)
 def test_endpoints_return_503_when_fake_mode_disabled(client, monkeypatch, endpoint, payload):
     set_fake_mode(monkeypatch, False)
     response = client.post(endpoint, json=payload)

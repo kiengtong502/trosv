@@ -22,7 +22,7 @@ export const HOBBY_LIST: HobbyItem[] = [
   { key: "pets", label: "Thú cưng" },
 ];
 export const HOBBY_MAP: Record<string, HobbyItem> = Object.fromEntries(
-  HOBBY_LIST.map((h) => [h.key, h])
+  HOBBY_LIST.map((h) => [h.key, h]),
 );
 
 /**
@@ -45,13 +45,9 @@ export function formatHobby(key: string): HobbyItem {
 /**
  * Phân tích chuỗi CSV hoặc mảng thành mảng HobbyItem { key, label, icon }
  */
-export function parseHobbies(
-  interests: string | string[] | null | undefined
-): HobbyItem[] {
+export function parseHobbies(interests: string | string[] | null | undefined): HobbyItem[] {
   if (!interests) return [];
-  const rawList = Array.isArray(interests)
-    ? interests
-    : interests.split(",").map((s) => s.trim());
+  const rawList = Array.isArray(interests) ? interests : interests.split(",").map((s) => s.trim());
 
   return rawList
     .map((s) => s.trim())

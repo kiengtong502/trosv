@@ -49,7 +49,7 @@ export function resolveAttachmentUrl(url: string | null | undefined): string | n
 export function isImageAttachment(
   name?: string | null,
   url?: string | null,
-  type?: string | null
+  type?: string | null,
 ): boolean {
   if (type && type.startsWith("image/")) return true;
   const imageRegex = /\.(jpg|jpeg|png|webp|gif|bmp|svg|avif)($|\?)/i;
@@ -110,7 +110,7 @@ export function MessageBubble(props: MessageBubbleProps) {
         <p
           className={cn(
             "rounded-xl border border-dashed border-line bg-tint/50 px-3.5 py-2 text-xs italic text-muted",
-            isMine ? "text-right" : "text-left"
+            isMine ? "text-right" : "text-left",
           )}
         >
           Tin nhắn đã được thu hồi
@@ -154,7 +154,13 @@ export function MessageBubble(props: MessageBubbleProps) {
   const hasAttachment = Boolean(resolvedUrl);
 
   // Bottom-most element gets the reactions badge attached to it
-  const badgeTarget = hasRoomPreview ? "room" : hasText ? "text" : hasAttachment ? "attachment" : null;
+  const badgeTarget = hasRoomPreview
+    ? "room"
+    : hasText
+      ? "text"
+      : hasAttachment
+        ? "attachment"
+        : null;
 
   const renderPopoverMenu = (align: "start" | "end") => (
     <Popover open={open} onOpenChange={setOpen}>
@@ -167,7 +173,7 @@ export function MessageBubble(props: MessageBubbleProps) {
             "bg-card/95 text-muted shadow-xs transition-all hover:bg-tint hover:text-ink focus-visible:opacity-100",
             open
               ? "opacity-100 bg-tint text-ink border-plate/30 ring-2 ring-plate/20"
-              : "opacity-0 group-hover/msg:opacity-100"
+              : "opacity-0 group-hover/msg:opacity-100",
           )}
         >
           <MoreVertical className="size-3.5" aria-hidden />
@@ -196,7 +202,7 @@ export function MessageBubble(props: MessageBubbleProps) {
               className={cn(
                 "flex size-7 shrink-0 items-center justify-center rounded-full text-base",
                 "transition-transform hover:scale-125 hover:bg-tint active:scale-110 focus-visible:outline-none",
-                myReaction === e ? "bg-plate/15 ring-2 ring-plate/40" : ""
+                myReaction === e ? "bg-plate/15 ring-2 ring-plate/40" : "",
               )}
               onClick={() => {
                 onReact(msg, e);
@@ -269,13 +275,13 @@ export function MessageBubble(props: MessageBubbleProps) {
     <div
       className={cn(
         "flex flex-col w-full max-w-[82%] sm:max-w-[72%]",
-        isMine ? "items-end ml-auto" : "items-start mr-auto"
+        isMine ? "items-end ml-auto" : "items-start mr-auto",
       )}
     >
       <div
         className={cn(
           "group/msg flex items-center gap-1.5 w-full",
-          isMine ? "justify-end" : "justify-start"
+          isMine ? "justify-end" : "justify-start",
         )}
       >
         {/* For sender: three-dots trigger on the left of bubble, panel opens rightward over bubble */}
@@ -288,7 +294,7 @@ export function MessageBubble(props: MessageBubbleProps) {
           title={fullTimeStr}
           className={cn(
             "flex flex-col max-w-full cursor-pointer select-text",
-            isMine ? "items-end" : "items-start"
+            isMine ? "items-end" : "items-start",
           )}
         >
           {/* Attachment */}
@@ -296,7 +302,7 @@ export function MessageBubble(props: MessageBubbleProps) {
             <div
               className={cn(
                 "relative max-w-full",
-                badgeTarget === "attachment" && reactions.length > 0 ? "mb-2.5" : ""
+                badgeTarget === "attachment" && reactions.length > 0 ? "mb-2.5" : "",
               )}
             >
               <a
@@ -332,7 +338,9 @@ export function MessageBubble(props: MessageBubbleProps) {
                 <ReactionBadge
                   reactions={reactions}
                   isMine={isMine}
-                  onClick={() => { setOpen(true); }}
+                  onClick={() => {
+                    setOpen(true);
+                  }}
                 />
               ) : null}
             </div>
@@ -348,7 +356,7 @@ export function MessageBubble(props: MessageBubbleProps) {
                 badgeTarget === "text" && reactions.length > 0 ? "mb-2.5" : "",
                 isMine
                   ? "bg-bubble text-white font-normal"
-                  : "bg-card text-ink border border-line shadow-card"
+                  : "bg-card text-ink border border-line shadow-card",
               )}
             >
               {renderBodyWithLinks(cleanText)}
@@ -357,7 +365,9 @@ export function MessageBubble(props: MessageBubbleProps) {
                 <ReactionBadge
                   reactions={reactions}
                   isMine={isMine}
-                  onClick={() => { setOpen(true); }}
+                  onClick={() => {
+                    setOpen(true);
+                  }}
                 />
               ) : null}
             </div>
@@ -365,18 +375,15 @@ export function MessageBubble(props: MessageBubbleProps) {
 
           {/* Room preview card (standalone, or after text) */}
           {roomId ? (
-            <div
-              className={cn(
-                "w-full max-w-[340px]",
-                cleanText ? "mt-1.5" : ""
-              )}
-            >
+            <div className={cn("w-full max-w-[340px]", cleanText ? "mt-1.5" : "")}>
               <RoomPreviewCard
                 roomId={roomId}
                 isMine={isMine}
                 reactions={badgeTarget === "room" ? reactions : []}
                 myReaction={myReaction}
-                onReact={(emoji) => { onReact(msg, emoji); }}
+                onReact={(emoji) => {
+                  onReact(msg, emoji);
+                }}
               />
             </div>
           ) : null}
@@ -393,13 +400,11 @@ export function MessageBubble(props: MessageBubbleProps) {
             "mt-1 flex items-center gap-1.5 px-1 text-[11px] text-muted",
             "transition-opacity duration-150 animate-fade-in",
             reactions.length > 0 ? "mt-2 pt-0.5" : "",
-            isMine ? "justify-end" : "justify-start"
+            isMine ? "justify-end" : "justify-start",
           )}
         >
           <span>{timeStr}</span>
-          {isMine && msg.seen_at ? (
-            <span className="font-medium text-plate">· Đã xem</span>
-          ) : null}
+          {isMine && msg.seen_at ? <span className="font-medium text-plate">· Đã xem</span> : null}
         </div>
       ) : null}
     </div>

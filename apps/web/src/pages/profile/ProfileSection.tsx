@@ -33,7 +33,7 @@ export function ProfileSection({
           onClick={onToggle}
           className={cn(
             "flex min-h-16 w-full items-center justify-between gap-4 rounded-xl px-5 py-4 text-left transition-colors",
-            "hover:bg-tint/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+            "hover:bg-tint/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
           )}
         >
           <span className="min-w-0">
@@ -46,7 +46,10 @@ export function ProfileSection({
           </span>
           <ChevronDown
             aria-hidden
-            className={cn("size-5 flex-none text-muted transition-transform duration-200", open && "rotate-180")}
+            className={cn(
+              "size-5 flex-none text-muted transition-transform duration-200",
+              open && "rotate-180",
+            )}
           />
         </button>
       </h2>

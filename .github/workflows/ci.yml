@@ -1,234 +1,104 @@
 name: CI
 
+# The pipeline is split by area into reusable workflows (_api, _web, _ai, _infra,
+# _e2e) and local composite actions (.github/actions/*). This file only decides
+# WHAT runs (path filters) and gates the result (ci-ok).
 on:
   push:
     branches: [unstable, stable]
   pull_request:
-    branches: [unstable, refactor/pro-layout]
+    branches: [unstable, stable]
+  merge_group:
+  workflow_dispatch:
+
+# Least privilege: jobs only read the repo. Anything that needs more says so itself.
+permissions:
+  contents: read
+
+# A newer push to the same branch/PR replaces the running CI. `stable` is never
+# cancelled: the Deploy workflow keys off its CI result.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/stable' }}
+
+env:
+  CI: "true"
+  COMPOSER_NO_INTERACTION: "1"
+  NPM_CONFIG_FUND: "false"
+  NPM_CONFIG_UPDATE_NOTIFIER: "false"
 
 jobs:
-  backend:
+  # Which parts of the repo did this change touch? Pushes, merge queues and manual
+  # runs always run everything; pull requests only run what they can affect.
+  changes:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/api
-    services:
-      postgres:
-        image: postgres:16-trixie
-        env:
-          POSTGRES_DB: rental_test
-          POSTGRES_USER: rental
-          POSTGRES_PASSWORD: rental
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U rental"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
+    timeout-minutes: 5
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      web: ${{ steps.filter.outputs.web }}
+      ai: ${{ steps.filter.outputs.ai }}
+      infra: ${{ steps.filter.outputs.infra }}
+      e2e: ${{ steps.filter.outputs.e2e }}
     steps:
-      # Supply chain (audit run 3): actions pinned to commit SHAs - a mutable tag
-      # can be repointed, a commit SHA cannot. Comment keeps the version readable.
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
-          php-version: '8.3'
-          coverage: none
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Pint (style)
-        run: ./vendor/bin/pint --test
-
-      - name: Copy env for tests
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-          cp .env.example .env
-          php artisan key:generate --force
+          set -euo pipefail
+          emit() { echo "$1=$2" >> "$GITHUB_OUTPUT"; echo "$1=$2"; }
+          if [ "$EVENT" != "pull_request" ]; then
+            for k in api web ai infra e2e; do emit "$k" true; done
+            exit 0
+          fi
+          files="$(git diff --name-only "$BASE...$HEAD")"
+          hit() { printf '%s\n' "$files" | grep -Eq "$1" && echo true || echo false; }
+          # Shared inputs (CI itself, compose, Makefile) can affect every area.
+          shared='^(\.github/|docker-compose\.yml$|Makefile$|\.env\.example$)'
+          api="$(hit "^apps/api/|$shared")"
+          web="$(hit "^apps/web/|$shared")"
+          ai="$(hit "^apps/ai-service/|$shared")"
+          infra="$(hit "^(apps/[^/]+/Dockerfile|infra/|scripts/)|$shared")"
+          # The browser tests exercise API + web together, and need the web bundle.
+          e2e=false
+          if [ "$api" = true ] || [ "$web" = true ]; then e2e=true; web=true; fi
+          emit api "$api"; emit web "$web"; emit ai "$ai"; emit infra "$infra"; emit e2e "$e2e"
 
-      - name: Tests
-        run: php artisan test
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: rental_test
-          DB_USERNAME: rental
-          DB_PASSWORD: rental
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    uses: ./.github/workflows/_api.yml
 
-      - name: Composer audit
-        run: composer audit --no-interaction
-
-  frontend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/web
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: apps/web/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
-      # Non-blocking until dependencies are reviewed: report only.
-      - name: npm audit (report)
-        run: npm audit --omit=dev || true
+  web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    uses: ./.github/workflows/_web.yml
 
   ai-service:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/ai-service
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    needs: changes
+    if: needs.changes.outputs.ai == 'true'
+    uses: ./.github/workflows/_ai.yml
 
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-          cache-dependency-path: |
-            apps/ai-service/requirements.txt
-            apps/ai-service/requirements-dev.txt
+  infra:
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    uses: ./.github/workflows/_infra.yml
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt -r requirements-dev.txt
-
-      - name: Contract tests
-        run: pytest
-        env:
-          FAKE_MODE: "true"
-
-  # E2E: real browser against a real seeded API + the production bundle.
-  # Runs after the cheap gates; also gates the Deploy workflow (it fires on
-  # CI success on stable), so a red e2e blocks the deploy - intended.
+  # Real browser against a real seeded API + the production bundle. Also gates the
+  # Deploy workflow (it fires on CI success on stable), so a red e2e blocks deploys.
   e2e:
-    runs-on: ubuntu-latest
-    needs: [backend, frontend, ai-service]
-    services:
-      postgres:
-        image: postgres:16-trixie
-        env:
-          POSTGRES_DB: rental_e2e
-          POSTGRES_USER: rental
-          POSTGRES_PASSWORD: rental
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U rental"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      DB_CONNECTION: pgsql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_DATABASE: rental_e2e
-      DB_USERNAME: rental
-      DB_PASSWORD: rental
-      BROADCAST_CONNECTION: 'null'
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
-        with:
-          php-version: '8.3'
-          coverage: none
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: apps/web/package-lock.json
-
-      # ---- API: deps, schema, seed data, then serve on :8000 ----
-      - name: Backend dependencies
-        working-directory: apps/api
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Backend env + key
-        working-directory: apps/api
-        run: |
-          cp .env.example .env
-          php artisan key:generate --force
-          # public/storage la symlink gitignored - khong co no thi /storage/*
-          # rot vao index.php cua Laravel (403/404) thay vi tra anh that.
-          php artisan storage:link
-
-      - name: Migrate + seed demo data
-        working-directory: apps/api
-        run: php artisan migrate:fresh --seed --force
-
-      - name: Serve API on :8000
-        working-directory: apps/api
-        run: |
-          # CORS must accept the preview origin the browser will use.
-          PHP_CLI_SERVER_WORKERS=4 FRONTEND_URL=http://localhost:4173 nohup php artisan serve \
-            --host=127.0.0.1 --port=8000 --no-reload > /tmp/api.log 2>&1 &
-          for i in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8000/api/cities > /dev/null && break
-            [ "$i" = 30 ] && { cat /tmp/api.log; exit 1; }
-            sleep 1
-          done
-          echo "API ready"
-
-      # ---- Web: production build (incl. check:css + tsc) on :4173 ----
-      - name: Frontend dependencies
-        working-directory: apps/web
-        run: npm ci
-
-      - name: Build production bundle
-        working-directory: apps/web
-        run: npm run build
-
-      - name: Install Playwright chromium
-        working-directory: apps/web
-        run: npx playwright install --with-deps chromium
-
-      - name: Serve bundle on :4173
-        working-directory: apps/web
-        run: |
-          nohup npx vite preview --host 127.0.0.1 --port 4173 > /tmp/web.log 2>&1 &
-          for i in $(seq 1 30); do
-            curl -sf http://127.0.0.1:4173/ > /dev/null && break
-            [ "$i" = 30 ] && { cat /tmp/web.log; exit 1; }
-            sleep 1
-          done
-          echo "web ready"
-
-      # The bundle bakes VITE_API_URL (defaults to http://localhost:8000/api)
-      # at build time; FRONTEND_URL=4173 on the serve step allows that origin.
-      - name: Playwright tests
-        working-directory: apps/web
-        run: npx playwright test
-        env:
-          E2E_BASE_URL: http://localhost:4173
-
-      - name: Dump server logs on failure
-        if: failure()
-        run: |
-          echo "=== /tmp/api.log ==="
-          cat /tmp/api.log || true
-          echo "=== /tmp/web.log ==="
-          cat /tmp/web.log || true
-          echo "=== apps/api/storage/logs/laravel.log ==="
-          cat apps/api/storage/logs/laravel.log || true
+    needs: [changes, api, web, ai-service]
+    if: needs.changes.outputs.e2e == 'true' && !cancelled() && !failure()
+    uses: ./.github/workflows/_e2e.yml
 
   secrets:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -245,3 +115,27 @@ jobs:
           docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
             zricethezav/gitleaks:v8.30.1@sha256:b109bc5f8f76a38196a3e413704fc5b9e3c32360bce4e4b603bd6f45b3721dbb \
             detect --source /repo --redact -v
+
+  # The single check to require in branch protection. Areas skipped by the path
+  # filter are fine; a failed or cancelled job is not.
+  ci-ok:
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [changes, api, web, ai-service, infra, e2e, secrets]
+    steps:
+      - name: Every job succeeded or was legitimately skipped
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          {
+            echo "### CI result"
+            echo "| job | result |"
+            echo "|---|---|"
+            echo "$NEEDS" | jq -r 'to_entries[] | "| \(.key) | \(.value.result) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
+          bad="$(echo "$NEEDS" | jq -r 'to_entries[] | select(.value.result != "success" and .value.result != "skipped") | .key')"
+          if [ -n "$bad" ]; then
+            echo "::error::failed or cancelled: $(echo "$bad" | tr '\n' ' ')"
+            exit 1
+          fi

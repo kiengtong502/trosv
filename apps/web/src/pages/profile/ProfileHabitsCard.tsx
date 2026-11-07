@@ -36,10 +36,10 @@ interface ProfileHabitsCardProps {
       | "personality"
       | "cleanliness"
       | "smoking"
-      | "interests"
+      | "interests",
   >(
     key: K,
-    value: ProfileFormState[K]
+    value: ProfileFormState[K],
   ) => void;
   errors: { interests?: string | undefined };
 }
@@ -70,11 +70,15 @@ export function ProfileHabitsCard({
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-ink">Tìm bạn ở cùng phòng</p>
-          <p className="text-sm text-muted">Hiển thị hồ sơ của bạn cho trợ lý ghép bạn cùng phòng AI</p>
+          <p className="text-sm text-muted">
+            Hiển thị hồ sơ của bạn cho trợ lý ghép bạn cùng phòng AI
+          </p>
         </div>
         <Switch
           checked={lookingForRoommate}
-          onChange={(next) => { onChange("looking_for_roommate", next); }}
+          onChange={(next) => {
+            onChange("looking_for_roommate", next);
+          }}
           label="Tìm bạn ở cùng phòng"
         />
       </div>
@@ -86,7 +90,9 @@ export function ProfileHabitsCard({
               <select
                 id="p-sleep"
                 value={sleepSchedule}
-                onChange={(e) => { onChange("sleep_schedule", e.target.value); }}
+                onChange={(e) => {
+                  onChange("sleep_schedule", e.target.value);
+                }}
                 className={SELECT_CLASS}
               >
                 <option value="">Chưa chọn</option>
@@ -101,7 +107,9 @@ export function ProfileHabitsCard({
               <select
                 id="p-personality"
                 value={personality}
-                onChange={(e) => { onChange("personality", e.target.value); }}
+                onChange={(e) => {
+                  onChange("personality", e.target.value);
+                }}
                 className={SELECT_CLASS}
               >
                 <option value="">Chưa chọn</option>
@@ -129,7 +137,9 @@ export function ProfileHabitsCard({
               step={1}
               value={cleanliness || "3"}
               aria-valuetext={level ? level.label : "Chưa chọn"}
-              onChange={(e) => { onChange("cleanliness", e.target.value); }}
+              onChange={(e) => {
+                onChange("cleanliness", e.target.value);
+              }}
               className="mt-2 h-8 w-full cursor-pointer accent-plate"
             />
             <div className="flex justify-between text-xs text-muted" aria-hidden>
@@ -145,7 +155,9 @@ export function ProfileHabitsCard({
             </div>
             <Switch
               checked={smoking}
-              onChange={(next) => { onChange("smoking", next); }}
+              onChange={(next) => {
+                onChange("smoking", next);
+              }}
               label="Hút thuốc"
             />
           </div>
@@ -171,11 +183,15 @@ export function ProfileHabitsCard({
                   </DialogHeader>
                   <HobbySelector
                     value={interests}
-                    onChange={(val) => { onChange("interests", val); }}
+                    onChange={(val) => {
+                      onChange("interests", val);
+                    }}
                   />
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button type="button" variant="primary">Xong</Button>
+                      <Button type="button" variant="primary">
+                        Xong
+                      </Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
@@ -201,7 +217,9 @@ export function ProfileHabitsCard({
               <p className="mt-2 text-sm text-muted">Chưa chọn sở thích nào.</p>
             )}
             {errors.interests ? (
-              <p role="alert" className="mt-1.5 text-sm text-danger">{errors.interests}</p>
+              <p role="alert" className="mt-1.5 text-sm text-danger">
+                {errors.interests}
+              </p>
             ) : null}
           </div>
         </div>

@@ -18,7 +18,14 @@ function Rope() {
       aria-hidden="true"
       className="pointer-events-none absolute left-0 top-0 h-[22px] w-full overflow-visible"
     >
-      <path d="M0 7 Q134 11 268 7" fill="none" stroke="#7a5b3a" strokeWidth="3.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <path
+        d="M0 7 Q134 11 268 7"
+        fill="none"
+        stroke="#7a5b3a"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
       <path
         d="M0 7 Q134 11 268 7"
         fill="none"
@@ -42,7 +49,10 @@ function Hang({ listing, index }: { listing: Listing; index: number }) {
           data-testid="hang-peg"
           className="absolute left-1/2 top-[-25px] z-10 h-[62px] w-8 -translate-x-1/2 drop-shadow-[0_3px_2px_rgb(0_0_0/0.22)]"
         >
-          <Peg color={PEG_COLORS[index % PEG_COLORS.length] ?? PEG_COLORS[0]} className="size-full" />
+          <Peg
+            color={PEG_COLORS[index % PEG_COLORS.length] ?? PEG_COLORS[0]}
+            className="size-full"
+          />
         </span>
         <Link
           data-testid="hang-card"
@@ -51,7 +61,13 @@ function Hang({ listing, index }: { listing: Listing; index: number }) {
         >
           <div className="relative aspect-4/3 bg-sunken">
             {photo ? (
-              <img src={photo} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+              <img
+                src={photo}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="size-full object-cover"
+              />
             ) : (
               <HousePlaceholder />
             )}
@@ -60,7 +76,9 @@ function Hang({ listing, index }: { listing: Listing; index: number }) {
             </span>
           </div>
           <div className="px-3.5 pb-3.5 pt-3">
-            <p className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">{listing.title}</p>
+            <p className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
+              {listing.title}
+            </p>
             <p className="mt-1 truncate text-xs text-muted">{listing.address}</p>
           </div>
         </Link>
@@ -83,7 +101,7 @@ function Arrow({ dir, visible, onClick }: { dir: -1 | 1; visible: boolean; onCli
       className={cn(
         "motion-press absolute top-[42%] z-20 hidden size-10 -translate-y-1/2 place-items-center rounded-full border border-line-strong bg-card text-ink shadow-card transition-[opacity,transform] duration-200 md:grid",
         dir < 0 ? "-left-3" : "-right-3",
-        visible ? "opacity-100" : "pointer-events-none scale-90 opacity-0"
+        visible ? "opacity-100" : "pointer-events-none scale-90 opacity-0",
       )}
     >
       <Icon className="size-5" aria-hidden />
@@ -134,7 +152,13 @@ export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
 
   return (
     <div className="relative">
-      <Arrow dir={-1} visible={!edge.start} onClick={() => { scrollBy(-1); }} />
+      <Arrow
+        dir={-1}
+        visible={!edge.start}
+        onClick={() => {
+          scrollBy(-1);
+        }}
+      />
       <ul
         ref={rowRef}
         data-testid="hang-row"
@@ -145,7 +169,13 @@ export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
           <Hang key={l.id} listing={l} index={i} />
         ))}
       </ul>
-      <Arrow dir={1} visible={!edge.end} onClick={() => { scrollBy(1); }} />
+      <Arrow
+        dir={1}
+        visible={!edge.end}
+        onClick={() => {
+          scrollBy(1);
+        }}
+      />
     </div>
   );
 }

@@ -72,3 +72,4 @@ backups/
 # Test artifacts
 test-results/
 playwright-report/
+.deploy-previous-sha

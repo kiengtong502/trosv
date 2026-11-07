@@ -14,205 +14,205 @@
   Everything else is quiet neutral paper and ink.
 */
 :root {
-    /* The site is light only: keep native controls and scrollbars light too. */
-    color-scheme: light;
-    --color-paper: #fbf8f1;
-    --color-card: #fffdf9;
-    --color-tint: #f2ebdf;
-    --color-sunken: #ebe3d4;
-    --color-line: #e9e0d1;
-    --color-line-strong: #c9bca7;
-    --color-ink: #1c1915;
-    --color-ink-2: #3a352d;
-    --color-muted: #6a6254;
+  /* The site is light only: keep native controls and scrollbars light too. */
+  color-scheme: light;
+  --color-paper: #fbf8f1;
+  --color-card: #fffdf9;
+  --color-tint: #f2ebdf;
+  --color-sunken: #ebe3d4;
+  --color-line: #e9e0d1;
+  --color-line-strong: #c9bca7;
+  --color-ink: #1c1915;
+  --color-ink-2: #3a352d;
+  --color-muted: #6a6254;
 
-    --color-plate: #17479e;
-    --color-plate-hover: #113a85;
-    --color-plate-tint: #e7edf8;
-    --color-plate-band-from: #17479e;
-    --color-plate-band-to: #123b86;
-    --color-flyer: #ffd23f;
-    --color-flyer-ink: #1c1915;
-    --color-bubble: #17479e;
-    --color-moss: #4f6b35;
-    --color-moss-tint: #e4ecd6;
-    --color-danger: #c0392b;
-    --color-danger-tint: #fbe9e6;
+  --color-plate: #17479e;
+  --color-plate-hover: #113a85;
+  --color-plate-tint: #e7edf8;
+  --color-plate-band-from: #17479e;
+  --color-plate-band-to: #123b86;
+  --color-flyer: #ffd23f;
+  --color-flyer-ink: #1c1915;
+  --color-bubble: #17479e;
+  --color-moss: #4f6b35;
+  --color-moss-tint: #e4ecd6;
+  --color-danger: #c0392b;
+  --color-danger-tint: #fbe9e6;
 
-    --shadow-pop: 0 8px 24px -8px rgb(28 25 21 / 0.28), 0 0 0 1px rgb(28 25 21 / 0.04);
-    --shadow-card: 0 1px 2px rgb(60 40 10 / 0.06), 0 4px 14px -6px rgb(60 40 10 / 0.12);
-    --shadow-card-hover: 0 2px 4px rgb(60 40 10 / 0.08), 0 14px 28px -10px rgb(60 40 10 / 0.25);
-    --shadow-seam: 0 10px 24px -14px rgb(10 30 80 / 0.5);
+  --shadow-pop: 0 8px 24px -8px rgb(28 25 21 / 0.28), 0 0 0 1px rgb(28 25 21 / 0.04);
+  --shadow-card: 0 1px 2px rgb(60 40 10 / 0.06), 0 4px 14px -6px rgb(60 40 10 / 0.12);
+  --shadow-card-hover: 0 2px 4px rgb(60 40 10 / 0.08), 0 14px 28px -10px rgb(60 40 10 / 0.25);
+  --shadow-seam: 0 10px 24px -14px rgb(10 30 80 / 0.5);
 }
 
 @theme {
-    --color-paper: var(--color-paper);
-    --color-card: var(--color-card);
-    --color-tint: var(--color-tint);
-    --color-sunken: var(--color-sunken);
-    --color-line: var(--color-line);
-    --color-line-strong: var(--color-line-strong);
-    --color-ink: var(--color-ink);
-    --color-ink-2: var(--color-ink-2);
-    --color-muted: var(--color-muted);
+  --color-paper: var(--color-paper);
+  --color-card: var(--color-card);
+  --color-tint: var(--color-tint);
+  --color-sunken: var(--color-sunken);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-muted: var(--color-muted);
 
-    --color-plate: var(--color-plate);
-    --color-plate-hover: var(--color-plate-hover);
-    --color-plate-tint: var(--color-plate-tint);
-    --color-plate-band-from: var(--color-plate-band-from);
-    --color-plate-band-to: var(--color-plate-band-to);
-    --color-flyer: var(--color-flyer);
-    --color-flyer-ink: var(--color-flyer-ink);
-    --color-bubble: var(--color-bubble);
-    --color-moss: var(--color-moss);
-    --color-moss-tint: var(--color-moss-tint);
-    --color-danger: var(--color-danger);
-    --color-danger-tint: var(--color-danger-tint);
+  --color-plate: var(--color-plate);
+  --color-plate-hover: var(--color-plate-hover);
+  --color-plate-tint: var(--color-plate-tint);
+  --color-plate-band-from: var(--color-plate-band-from);
+  --color-plate-band-to: var(--color-plate-band-to);
+  --color-flyer: var(--color-flyer);
+  --color-flyer-ink: var(--color-flyer-ink);
+  --color-bubble: var(--color-bubble);
+  --color-moss: var(--color-moss);
+  --color-moss-tint: var(--color-moss-tint);
+  --color-danger: var(--color-danger);
+  --color-danger-tint: var(--color-danger-tint);
 
-    --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-display: "Inter Tight Variable", "Inter Variable", system-ui, sans-serif;
-    --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Inter Tight Variable", "Inter Variable", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
-    /* One radius scale: tags, controls, panels. Avatars and pills use full. */
-    --radius-*: initial;
-    --radius-xs: 2px;
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
-    --radius-xl: 12px;
-    --radius-full: 9999px;
+  /* One radius scale: tags, controls, panels. Avatars and pills use full. */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
 
-    /* Floating surfaces (menus, popovers) and the soft card shadows. */
-    --shadow-pop: var(--shadow-pop);
-    --shadow-card: var(--shadow-card);
-    --shadow-card-hover: var(--shadow-card-hover);
-    --shadow-seam: var(--shadow-seam);
+  /* Floating surfaces (menus, popovers) and the soft card shadows. */
+  --shadow-pop: var(--shadow-pop);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+  --shadow-seam: var(--shadow-seam);
 
-    --nav-h: 56px;
+  --nav-h: 56px;
 
-    --animate-fade-in: fade-in 140ms ease-out;
-    --animate-fade-out: fade-out 100ms ease-in;
-    --animate-pop-in: pop-in 140ms ease-out;
-    --animate-pop-out: pop-out 100ms ease-in;
-    --animate-fade-up: fade-up 200ms cubic-bezier(0.16, 1, 0.3, 1);
-    --animate-slide-in-right: slide-in-right 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 140ms ease-out;
+  --animate-fade-out: fade-out 100ms ease-in;
+  --animate-pop-in: pop-in 140ms ease-out;
+  --animate-pop-out: pop-out 100ms ease-in;
+  --animate-fade-up: fade-up 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-in-right: slide-in-right 240ms cubic-bezier(0.16, 1, 0.3, 1);
 
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-        }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
     }
-    @keyframes fade-out {
-        to {
-            opacity: 0;
-        }
+  }
+  @keyframes fade-out {
+    to {
+      opacity: 0;
     }
-    @keyframes pop-in {
-        from {
-            opacity: 0;
-            transform: scale(0.97);
-        }
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
     }
-    @keyframes pop-out {
-        to {
-            opacity: 0;
-            transform: scale(0.97);
-        }
+  }
+  @keyframes pop-out {
+    to {
+      opacity: 0;
+      transform: scale(0.97);
     }
-    @keyframes slide-in-right {
-        from {
-            opacity: 0;
-            transform: translateX(28px);
-        }
+  }
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(28px);
     }
-    @keyframes dot-bounce {
-        0%,
-        60%,
-        100% {
-            opacity: 0.35;
-            transform: none;
-        }
-        30% {
-            opacity: 1;
-            transform: translateY(-3px);
-        }
+  }
+  @keyframes dot-bounce {
+    0%,
+    60%,
+    100% {
+      opacity: 0.35;
+      transform: none;
     }
-    @keyframes float-y {
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-6px);
-        }
+    30% {
+      opacity: 1;
+      transform: translateY(-3px);
     }
-    @keyframes heart-pop {
-        0% {
-            transform: scale(1);
-        }
-        40% {
-            transform: scale(1.5);
-        }
-        100% {
-            transform: scale(1);
-        }
+  }
+  @keyframes float-y {
+    0%,
+    100% {
+      transform: translateY(0);
     }
-    @keyframes fade-up {
-        from {
-            opacity: 0;
-            transform: translateY(6px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    50% {
+      transform: translateY(-6px);
     }
+  }
+  @keyframes heart-pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @media (min-width: 890px) {
-    :root {
-        --nav-h: 72px;
-    }
+  :root {
+    --nav-h: 72px;
+  }
 }
 
 /* Base layer: utilities must be able to override these. */
 @layer base {
-    body {
-        background: var(--color-paper);
-        color: var(--color-ink);
-        font-family: var(--font-sans);
-        -webkit-font-smoothing: antialiased;
-    }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* Generous line-height keeps stacked Vietnamese diacritics clear. */
-    h1 {
-        font-family: var(--font-display);
-        font-weight: 800;
-        letter-spacing: -0.01em;
-        line-height: 1.15;
-        text-wrap: balance;
-    }
-    h2,
-    h3 {
-        font-family: var(--font-display);
-        font-weight: 700;
-        letter-spacing: -0.005em;
-        line-height: 1.25;
-        text-wrap: balance;
-    }
-    h4 {
-        font-weight: 600;
-        line-height: 1.3;
-        text-wrap: balance;
-    }
-    p {
-        text-wrap: pretty;
-    }
+  /* Generous line-height keeps stacked Vietnamese diacritics clear. */
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  h4 {
+    font-weight: 600;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 
-    :focus-visible {
-        outline: 2px solid var(--color-plate);
-        outline-offset: 2px;
-    }
+  :focus-visible {
+    outline: 2px solid var(--color-plate);
+    outline-offset: 2px;
+  }
 }
 
 /*
@@ -222,156 +222,188 @@
   =============================================================================
 */
 @layer utilities {
-    /* Focus on navy: the global plate-blue ring vanishes on the band, so use
+  /* Focus on navy: the global plate-blue ring vanishes on the band, so use
        flyer yellow. Specificity beats Tailwind's focus-visible:ring-* utilities. */
-    .bg-band :is(a, button, input, select, textarea, [tabindex]):focus-visible {
-        outline: 2px solid var(--color-flyer);
-        outline-offset: 2px;
-        --tw-ring-color: var(--color-flyer);
-        --tw-ring-shadow: 0 0 #0000;
-    }
+  .bg-band :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-flyer);
+    outline-offset: 2px;
+    --tw-ring-color: var(--color-flyer);
+    --tw-ring-shadow: 0 0 #0000;
+  }
 
-    /* Typing indicator: three dots bouncing in turn. */
-    .typing-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 9999px;
-        background: var(--color-muted);
-        animation: dot-bounce 1.2s infinite;
-    }
-    .typing-dot:nth-child(2) {
-        animation-delay: 150ms;
-    }
-    .typing-dot:nth-child(3) {
-        animation-delay: 300ms;
-    }
+  /* Typing indicator: three dots bouncing in turn. */
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--color-muted);
+    animation: dot-bounce 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) {
+    animation-delay: 150ms;
+  }
+  .typing-dot:nth-child(3) {
+    animation-delay: 300ms;
+  }
 
-    /* Gentle idle float for spot illustrations. */
-    .motion-float {
-        animation: float-y 6s ease-in-out infinite;
-    }
+  /* Gentle idle float for spot illustrations. */
+  .motion-float {
+    animation: float-y 6s ease-in-out infinite;
+  }
 
-    /* Springy heart pop when a room is saved. */
-    .motion-heart-pop {
-        animation: heart-pop 450ms cubic-bezier(0.34, 1.8, 0.5, 1);
-    }
+  /* Springy heart pop when a room is saved. */
+  .motion-heart-pop {
+    animation: heart-pop 450ms cubic-bezier(0.34, 1.8, 0.5, 1);
+  }
 
-    /* Entrance for things that appear after load (new chat messages).
+  /* Entrance for things that appear after load (new chat messages).
        `backwards` fill: no lingering transform once finished. */
-    .motion-enter {
-        animation: fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    }
+  .motion-enter {
+    animation: fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
 
-    /* Navy plate gradient used by PlateBand, auth panel and footer. */
-    .bg-band {
-        background-image: linear-gradient(180deg, var(--color-plate-band-from) 0%, var(--color-plate-band-to) 100%);
-    }
+  /* Navy plate gradient used by PlateBand, auth panel and footer. */
+  .bg-band {
+    background-image: linear-gradient(
+      180deg,
+      var(--color-plate-band-from) 0%,
+      var(--color-plate-band-to) 100%
+    );
+  }
 
-    /* Smooth card hover lift & shadow */
-    .motion-card {
-        transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms ease;
-    }
-    .motion-card:hover {
-        transform: translateY(-4px);
-    }
+  /* Smooth card hover lift & shadow */
+  .motion-card {
+    transition:
+      transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 150ms ease;
+  }
+  .motion-card:hover {
+    transform: translateY(-4px);
+  }
 
-    /* Tactile button press feedback */
-    .motion-press {
-        transition: transform 120ms ease;
-    }
-    .motion-press:active {
-        transform: scale(0.98);
-    }
+  /* Tactile button press feedback */
+  .motion-press {
+    transition: transform 120ms ease;
+  }
+  .motion-press:active {
+    transform: scale(0.98);
+  }
 
-    /* Staggered entry for card grids: first 8 children step 50ms, the rest share 400ms.
+  /* Staggered entry for card grids: first 8 children step 50ms, the rest share 400ms.
        `backwards` fill keeps hover transforms working once the animation ends. */
-    .motion-stagger > * {
-        animation: fade-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-        animation-delay: 400ms;
-    }
-    .motion-stagger > *:nth-child(1) { animation-delay: 0ms; }
-    .motion-stagger > *:nth-child(2) { animation-delay: 50ms; }
-    .motion-stagger > *:nth-child(3) { animation-delay: 100ms; }
-    .motion-stagger > *:nth-child(4) { animation-delay: 150ms; }
-    .motion-stagger > *:nth-child(5) { animation-delay: 200ms; }
-    .motion-stagger > *:nth-child(6) { animation-delay: 250ms; }
-    .motion-stagger > *:nth-child(7) { animation-delay: 300ms; }
-    .motion-stagger > *:nth-child(8) { animation-delay: 350ms; }
+  .motion-stagger > * {
+    animation: fade-up 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 400ms;
+  }
+  .motion-stagger > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .motion-stagger > *:nth-child(2) {
+    animation-delay: 50ms;
+  }
+  .motion-stagger > *:nth-child(3) {
+    animation-delay: 100ms;
+  }
+  .motion-stagger > *:nth-child(4) {
+    animation-delay: 150ms;
+  }
+  .motion-stagger > *:nth-child(5) {
+    animation-delay: 200ms;
+  }
+  .motion-stagger > *:nth-child(6) {
+    animation-delay: 250ms;
+  }
+  .motion-stagger > *:nth-child(7) {
+    animation-delay: 300ms;
+  }
+  .motion-stagger > *:nth-child(8) {
+    animation-delay: 350ms;
+  }
 
-    /* Subtle page/panel entrance fade-up */
-    .motion-fade-up {
-        animation: fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
+  /* Subtle page/panel entrance fade-up */
+  .motion-fade-up {
+    animation: fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 /* Home: typed hero keyword and the clothesline. */
 .typed-caret {
-    display: inline-block;
-    width: 0.07em;
-    height: 0.86em;
-    margin-left: 0.06em;
-    vertical-align: -0.07em;
-    border-radius: 1px;
-    background: currentColor;
+  display: inline-block;
+  width: 0.07em;
+  height: 0.86em;
+  margin-left: 0.06em;
+  vertical-align: -0.07em;
+  border-radius: 1px;
+  background: currentColor;
 }
 .typed-caret-idle {
-    animation: caret-blink 1s steps(1) infinite;
+  animation: caret-blink 1s steps(1) infinite;
 }
 @keyframes caret-blink {
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 }
 .hang-sway {
-    transform-origin: 50% 0;
-    animation: hang-sway 6s ease-in-out infinite;
+  transform-origin: 50% 0;
+  animation: hang-sway 6s ease-in-out infinite;
 }
 .hang-sway:hover {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 @keyframes hang-sway {
-    0%,
-    100% {
-        transform: rotate(-0.9deg);
-    }
-    50% {
-        transform: rotate(0.9deg);
-    }
+  0%,
+  100% {
+    transform: rotate(-0.9deg);
+  }
+  50% {
+    transform: rotate(0.9deg);
+  }
 }
 
 /* Scroll-reveal (useReveal) and image fade-in. Only held back when motion is allowed. */
 @media (prefers-reduced-motion: no-preference) {
-    [data-reveal] {
-        transition: opacity 420ms ease-out, transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    [data-reveal="pending"] {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    img[data-fade] {
-        transition: opacity 300ms ease-out, transform 200ms ease-out;
-    }
-    img[data-fade]:not([data-loaded]) {
-        opacity: 0;
-    }
+  [data-reveal] {
+    transition:
+      opacity 420ms ease-out,
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  img[data-fade] {
+    transition:
+      opacity 300ms ease-out,
+      transform 200ms ease-out;
+  }
+  img[data-fade]:not([data-loaded]) {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        animation-delay: 0s !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-body, header, nav, footer {
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+body,
+header,
+nav,
+footer {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
 }
-
 
 /* PriceRange: two range inputs stacked on one track; only the dots take the pointer. */
 .price-range-input {
@@ -429,6 +461,10 @@ body, header, nav, footer {
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .price-range-input::-webkit-slider-thumb { transition: none; }
+  .price-range-input::-webkit-slider-thumb {
+    transition: none;
+  }
 }
-.price-range-input:focus { outline: none; }
+.price-range-input:focus {
+  outline: none;
+}

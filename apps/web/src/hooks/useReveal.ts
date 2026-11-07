@@ -26,7 +26,7 @@ export function useReveal(): (el: HTMLElement | null) => void {
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) done();
       },
-      { rootMargin: "0px 0px -8% 0px" }
+      { rootMargin: "0px 0px -8% 0px" },
     );
     io.observe(el);
     const timer = window.setTimeout(done, FALLBACK_MS);

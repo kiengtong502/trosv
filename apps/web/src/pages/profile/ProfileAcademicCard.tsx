@@ -9,10 +9,7 @@ interface ProfileAcademicCardProps {
   budgetMin: string;
   budgetMax: string;
   budgetHint?: string;
-  onChange: (
-    key: "school_id" | "budget_min" | "budget_max",
-    value: string
-  ) => void;
+  onChange: (key: "school_id" | "budget_min" | "budget_max", value: string) => void;
   errors: {
     school_id?: string | undefined;
     budget_min?: string | undefined;
@@ -60,8 +57,7 @@ export function ProfileAcademicCard({
         />
         {budgetHint ? (
           <p className="mt-2 text-xs text-muted">
-            Khoảng dự kiến:{" "}
-            <span className="font-semibold text-ink">{budgetHint}</span>
+            Khoảng dự kiến: <span className="font-semibold text-ink">{budgetHint}</span>
           </p>
         ) : null}
       </div>

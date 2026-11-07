@@ -50,18 +50,18 @@ export function PlateBand({
           size === "hero"
             ? "max-w-2xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
             : "text-2xl sm:text-3xl",
-          headingClassName
+          headingClassName,
         )}
       >
         {title}
         {highlight ? (
           <>
-            {title != null ? (size === "hero" ? <br /> : " ") : null}
+            {title != null ? size === "hero" ? <br /> : " " : null}
             <mark
               className={cn(
                 MARK,
                 "box-decoration-clone",
-                size === "hero" ? "inline-block w-fit leading-[1.15]" : "inline-block"
+                size === "hero" ? "inline-block w-fit leading-[1.15]" : "inline-block",
               )}
             >
               {highlight}
@@ -85,7 +85,7 @@ export function PlateBand({
         <div
           className={cn(
             "flex min-h-16 w-full items-center gap-3 px-4 py-3 sm:px-6",
-            contentClassName
+            contentClassName,
           )}
         >
           {children}
@@ -100,14 +100,14 @@ export function PlateBand({
       data-size="hero"
       className={cn(
         "relative z-10 flex items-center overflow-hidden bg-band text-white shadow-seam md:min-h-[420px]",
-        className
+        className,
       )}
     >
       {backdrop}
       <div
         className={cn(
           "relative mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 md:px-8 md:py-12",
-          contentClassName
+          contentClassName,
         )}
       >
         {heading}

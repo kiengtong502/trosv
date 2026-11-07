@@ -62,7 +62,6 @@ export function RailMessageIcon({ className }: { className?: string }) {
   );
 }
 
-
 export function RailBuildingIcon({ className }: { className?: string }) {
   return (
     <RailIconBase className={className}>

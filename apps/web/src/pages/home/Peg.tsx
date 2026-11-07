@@ -1,7 +1,14 @@
 /** A clothes peg seen from the front: one flat leg, with only the spring's wire ends showing at the sides. */
 export function Peg({ color, className }: { color: string; className?: string }) {
   return (
-    <svg viewBox="0 0 32 62" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+    <svg
+      viewBox="0 0 32 62"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
       <path
         d="M18.5 5.5 Q24.5 5.5 24.5 10 V24 H18.5Z"
         fill="#00000030"
@@ -15,7 +22,12 @@ export function Peg({ color, className }: { color: string; className?: string })
         strokeWidth="1.9"
       />
       <path d="M12 9 V20 M12 36 V50" stroke="#fff" strokeWidth="1.5" opacity=".5" />
-      <path d="M12.5 11.5 H19.5 M12.5 15.5 H19.5" stroke="#17171C" strokeWidth="1.2" opacity=".35" />
+      <path
+        d="M12.5 11.5 H19.5 M12.5 15.5 H19.5"
+        stroke="#17171C"
+        strokeWidth="1.2"
+        opacity=".35"
+      />
       <path d="M8.5 25.5 H23.5" stroke="#17171C" strokeWidth="2.4" />
       <path d="M12.5 54 H19.5" stroke="#17171C" strokeWidth="1.4" opacity=".55" />
       <g stroke="#17171C" strokeWidth="3.4">

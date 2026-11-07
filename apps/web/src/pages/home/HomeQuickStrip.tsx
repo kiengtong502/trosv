@@ -5,10 +5,34 @@ import { cn } from "@/lib/utils";
 import type { School } from "@/types/api";
 
 const FEATURES = [
-  { to: ROUTES.MAP, icon: MapPin, title: "Bản đồ", hint: "Ghim giá trên bản đồ", tone: "bg-plate-tint text-plate" },
-  { to: ROUTES.AI_AREA_SUGGESTIONS, icon: Sparkles, title: "Gợi ý khu vực", hint: "AI chọn khu hợp túi tiền", tone: "bg-moss-tint text-moss" },
-  { to: ROUTES.AI_ROOMMATES, icon: Users, title: "Bạn cùng phòng", hint: "Ghép theo sở thích", tone: "bg-danger-tint text-danger" },
-  { to: ROUTES.ROOMS, icon: MessageCircle, title: "Nhắn chủ nhà", hint: "Trực tiếp, không môi giới", tone: "bg-flyer/30 text-ink" },
+  {
+    to: ROUTES.MAP,
+    icon: MapPin,
+    title: "Bản đồ",
+    hint: "Ghim giá trên bản đồ",
+    tone: "bg-plate-tint text-plate",
+  },
+  {
+    to: ROUTES.AI_AREA_SUGGESTIONS,
+    icon: Sparkles,
+    title: "Gợi ý khu vực",
+    hint: "AI chọn khu hợp túi tiền",
+    tone: "bg-moss-tint text-moss",
+  },
+  {
+    to: ROUTES.AI_ROOMMATES,
+    icon: Users,
+    title: "Bạn cùng phòng",
+    hint: "Ghép theo sở thích",
+    tone: "bg-danger-tint text-danger",
+  },
+  {
+    to: ROUTES.ROOMS,
+    icon: MessageCircle,
+    title: "Nhắn chủ nhà",
+    hint: "Trực tiếp, không môi giới",
+    tone: "bg-flyer/30 text-ink",
+  },
 ] as const;
 
 /** One slim card: schools as chips, then four shortcuts. Replaces a wall of tiles. */
@@ -42,7 +66,7 @@ export function HomeQuickStrip({ schools }: { schools: School[] }) {
               "flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-plate",
               i % 2 === 0 && "border-r border-line",
               i < 2 && "border-b border-line md:border-b-0",
-              i < 3 && "md:border-r"
+              i < 3 && "md:border-r",
             )}
           >
             <span className={cn("grid size-9 flex-none place-items-center rounded-xl", f.tone)}>
