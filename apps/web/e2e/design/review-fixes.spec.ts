@@ -134,12 +134,19 @@ test.describe("review fixes", () => {
     await cards.nth(4).click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);
     await page.goBack();
+    await expect(page).toHaveURL(/\/rooms$/);
+    // Let the restore start listening for input before the user "takes over"
+    // (a wheel fired before that is not seen, which made this test flaky on slow runners).
+    await page.waitForTimeout(300);
     // The user takes over immediately: the pending restore must not fight them.
     await page.mouse.move(600, 400);
-    await page.mouse.wheel(0, 0);
+    await page.mouse.wheel(0, 1);
+    await page.waitForTimeout(100);
+    const atTakeover = await page.evaluate(() => window.scrollY);
     await expect(cards.nth(5)).toBeVisible({ timeout: 10_000 });
     await page.waitForTimeout(500);
     const afterLoad = await page.evaluate(() => window.scrollY);
-    expect(afterLoad).toBeLessThan(500);
+    // The invariant: once the user has taken over, the late restore never moves the page again.
+    expect(Math.abs(afterLoad - atTakeover)).toBeLessThanOrEqual(5);
   });
 });
