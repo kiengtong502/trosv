@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 import type { User } from "@/types/api";
 import {
   type ProfileFormState,
+  budgetHint,
+  buildProfilePayload,
+  sectionOfField,
+  sectionSummaries,
   formatVndPreview,
   getCompleteness,
   getInitialForm,
@@ -163,5 +167,118 @@ describe("formatVndPreview", () => {
 
   it("ignores non-digits typed into the field", () => {
     expect(formatVndPreview("1.500.000 đ")).toBe(formatVndPreview("1500000"));
+  });
+});
+
+describe("sectionOfField", () => {
+  it.each([
+    ["school_id", "academic"],
+    ["budget_min", "academic"],
+    ["budget_max", "academic"],
+    ["interests", "match"],
+    ["sleep_schedule", "match"],
+    ["personality", "match"],
+    ["cleanliness", "match"],
+    ["smoking", "match"],
+    ["looking_for_roommate", "match"],
+    ["name", "basic"],
+    ["phone", "basic"],
+    ["bio", "basic"],
+    ["something_unknown", "basic"],
+  ])("opens the %s error in the %s section", (field, section) => {
+    expect(sectionOfField(field)).toBe(section);
+  });
+});
+
+describe("buildProfilePayload", () => {
+  it("sends only the basic fields for a landlord, trimmed, with empty values as null", () => {
+    expect(buildProfilePayload({ ...FULL, name: "  An ", phone: " ", bio: "" }, false)).toEqual({
+      name: "An",
+      phone: null,
+      bio: null,
+    });
+  });
+
+  it("sends the student fields too, with numbers as numbers", () => {
+    expect(buildProfilePayload(FULL, true)).toEqual({
+      name: "An",
+      phone: "0900000000",
+      bio: "Xin chào",
+      school_id: 3,
+      budget_min: 1_500_000,
+      budget_max: 3_000_000,
+      sleep_schedule: "early",
+      cleanliness: 4,
+      smoking: false,
+      personality: "introvert",
+      interests: "gym,music,coding",
+      looking_for_roommate: true,
+    });
+  });
+
+  it("clears unset student fields with null, and omits school_id when none is chosen", () => {
+    const payload = buildProfilePayload(EMPTY, true);
+    expect(payload).not.toHaveProperty("school_id");
+    expect(payload).toMatchObject({
+      budget_min: null,
+      budget_max: null,
+      sleep_schedule: null,
+      cleanliness: null,
+      personality: null,
+      interests: null,
+      smoking: false,
+      looking_for_roommate: false,
+    });
+  });
+
+  it("never leaks student fields for a landlord, even if the form holds values", () => {
+    expect(Object.keys(buildProfilePayload(FULL, false)).sort()).toEqual(["bio", "name", "phone"]);
+  });
+});
+
+describe("budgetHint", () => {
+  it("is empty without a budget", () => {
+    expect(budgetHint("", "")).toBe("");
+  });
+
+  it("describes a range, a minimum and a maximum", () => {
+    expect(budgetHint("1500000", "3000000")).toMatch(/1\.500\.000.*–.*3\.000\.000.* \/ tháng$/);
+    expect(budgetHint("1500000", "")).toMatch(/^Từ .*1\.500\.000.* \/ tháng$/);
+    expect(budgetHint("", "3000000")).toMatch(/^Đến .*3\.000\.000.* \/ tháng$/);
+  });
+});
+
+describe("sectionSummaries", () => {
+  const schools = [{ id: 3, name: "ĐH Bách Khoa" }] as Parameters<typeof sectionSummaries>[1];
+
+  it("summarises a full profile", () => {
+    expect(sectionSummaries(FULL, schools)).toEqual({
+      basic: "An · 0900000000",
+      academic: "ĐH Bách Khoa · 1.500.000đ–3.000.000đ",
+      match: "Bật · 3 sở thích",
+    });
+  });
+
+  it("explains what is missing on an empty profile", () => {
+    expect(sectionSummaries(EMPTY, schools)).toEqual({
+      basic: " · chưa có số điện thoại",
+      academic: "Chưa chọn trường · chưa đặt ngân sách",
+      match: "Tắt · 0 sở thích",
+    });
+  });
+
+  it("describes a one-sided budget", () => {
+    expect(sectionSummaries({ ...FULL, budget_max: "" }, schools).academic).toContain(
+      "từ 1.500.000đ",
+    );
+    expect(sectionSummaries({ ...FULL, budget_min: "" }, schools).academic).toContain(
+      "đến 3.000.000đ",
+    );
+  });
+
+  it("falls back when the chosen school is not in the list", () => {
+    expect(sectionSummaries({ ...FULL, school_id: "999" }, schools).academic).toMatch(
+      /^Chưa chọn trường/,
+    );
   });
 });

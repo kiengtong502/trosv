@@ -29,7 +29,7 @@ const DEBT = {
   "src/pages/LandlordDashboard.tsx": { complexity: 12, lines: 235 },
   "src/pages/LandlordForm.tsx": { complexity: 14, lines: 370 },
   "src/pages/MessagesList.tsx": { complexity: 12, lines: 168 },
-  "src/pages/Profile.tsx": { complexity: 32, lines: 255 },
+  "src/pages/Profile.tsx": { complexity: 12, lines: 121 },
   "src/pages/Register.tsx": { complexity: 12, lines: 154 },
   "src/pages/Search.tsx": { complexity: 23, lines: 358 },
   "src/pages/messages/ConversationListItem.tsx": { complexity: 20, lines: 120 },

@@ -1,169 +1,34 @@
-import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import { errFieldErrors, errMessage } from "@/api/axiosClient";
-import { updateProfile } from "@/api/authApi";
 import { useSchools } from "@/hooks/useReferenceData";
-import { Button } from "@/ui/button";
-import { toast } from "@/ui/toast";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { ROUTES, route } from "@/constants/routes";
-import { parseHobbies } from "@/constants/hobbies";
-import { formatVnd } from "@/lib/format";
 import { PageHeader } from "@/ui/page-header";
-import {
-  formatVndPreview,
-  getCompleteness,
-  getInitialForm,
-  isFormDirty,
-  type ProfileFormState,
-} from "./profile/profileTypes";
+import { budgetHint, getCompleteness, sectionSummaries } from "./profile/profileTypes";
 import { ProfileSection } from "./profile/ProfileSection";
 import { ProfileBasicInfoCard } from "./profile/ProfileBasicInfoCard";
 import { ProfileAcademicCard } from "./profile/ProfileAcademicCard";
 import { ProfileHabitsCard } from "./profile/ProfileHabitsCard";
+import { ProfileCompleteness } from "./profile/ProfileCompleteness";
+import { ProfileSaveBar } from "./profile/ProfileSaveBar";
 import { AvatarPicker } from "./profile/AvatarPicker";
-
-type SectionKey = "basic" | "academic" | "match";
-
-/** Which section holds a field that the server rejected, so it can be opened. */
-function sectionOfField(field: string): SectionKey {
-  if (field === "school_id" || field.startsWith("budget_")) return "academic";
-  if (
-    [
-      "interests",
-      "sleep_schedule",
-      "personality",
-      "cleanliness",
-      "smoking",
-      "looking_for_roommate",
-    ].includes(field)
-  ) {
-    return "match";
-  }
-  return "basic";
-}
+import { useProfileForm } from "./profile/useProfileForm";
 
 export default function Profile() {
   useDocumentTitle("Hồ sơ · TROSV");
-  const { user, refreshUser } = useAuth();
-  const isStudent = user?.role === "student";
-  const initialForm = useMemo(() => (user ? getInitialForm(user) : null), [user]);
-  const [form, setForm] = useState<ProfileFormState | null>(null);
   const { data: schools } = useSchools();
-  const [busy, setBusy] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
-  const [formError, setFormError] = useState("");
-  const [openSection, setOpenSection] = useState<SectionKey | null>("basic");
+  const p = useProfileForm();
+  const { user, form, isStudent } = p;
+  if (!user || !form) return null;
 
-  const [lastUserId, setLastUserId] = useState<number | null>(null);
-  if (user && (form === null || lastUserId !== user.id)) {
-    setLastUserId(user.id);
-    setForm(getInitialForm(user));
-  }
-
-  const isDirty = useMemo(
-    () => isFormDirty(form, initialForm, isStudent),
-    [form, initialForm, isStudent],
-  );
-
-  const formValue = form;
-
-  function set<K extends keyof ProfileFormState>(key: K, value: ProfileFormState[K]): void {
-    setForm((f) => (f ? { ...f, [key]: value } : f));
-  }
-
-  function toggleSection(key: SectionKey): void {
-    setOpenSection((current) => (current === key ? null : key));
-  }
-
-  function resetForm(): void {
-    if (!initialForm) return;
-    setForm({ ...initialForm });
-    setFieldErrors({});
-    setFormError("");
-    toast("Đã khôi phục thông tin ban đầu.");
-  }
-
-  async function save(e: React.FormEvent): Promise<void> {
-    e.preventDefault();
-    if (!formValue || !isDirty || busy) return;
-    setBusy(true);
-    setFieldErrors({});
-    setFormError("");
-
-    const payload: Record<string, unknown> = {
-      name: formValue.name.trim(),
-      phone: formValue.phone.trim() || null,
-      bio: formValue.bio.trim() || null,
-    };
-
-    if (isStudent) {
-      if (formValue.school_id) payload["school_id"] = Number(formValue.school_id);
-      payload["budget_min"] = formValue.budget_min ? Number(formValue.budget_min) : null;
-      payload["budget_max"] = formValue.budget_max ? Number(formValue.budget_max) : null;
-      payload["sleep_schedule"] = formValue.sleep_schedule || null;
-      payload["cleanliness"] = formValue.cleanliness ? Number(formValue.cleanliness) : null;
-      payload["smoking"] = formValue.smoking;
-      payload["personality"] = formValue.personality || null;
-      payload["interests"] = formValue.interests.trim() || null;
-      payload["looking_for_roommate"] = formValue.looking_for_roommate;
-    }
-
-    try {
-      await updateProfile(payload);
-      await refreshUser();
-      toast("Đã lưu hồ sơ.");
-    } catch (err) {
-      const fe = errFieldErrors(err);
-      setFieldErrors(fe);
-      const firstBad = Object.keys(fe)[0];
-      if (firstBad) setOpenSection(sectionOfField(firstBad));
-      setFormError(errMessage(err, "Không lưu được hồ sơ. Bạn thử lại nhé."));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (!user || !formValue) return null;
-
-  const minText = formValue.budget_min ? formatVndPreview(formValue.budget_min) : "";
-  const maxText = formValue.budget_max ? formatVndPreview(formValue.budget_max) : "";
-  const budgetHint =
-    minText && maxText
-      ? `${minText} – ${maxText} / tháng`
-      : minText
-        ? `Từ ${minText} / tháng`
-        : maxText
-          ? `Đến ${maxText} / tháng`
-          : "";
-
-  const err = (field: string): string | undefined => fieldErrors[field]?.[0];
-
-  // One-line summaries shown while a section is closed.
-  const min = Number(formValue.budget_min);
-  const max = Number(formValue.budget_max);
-  const budgetSummary =
-    min > 0 && max > 0
-      ? `${formatVnd(min)}–${formatVnd(max)}`
-      : min > 0
-        ? `từ ${formatVnd(min)}`
-        : max > 0
-          ? `đến ${formatVnd(max)}`
-          : "chưa đặt ngân sách";
-  const schoolName = schools.find((s) => String(s.id) === formValue.school_id)?.name;
-  const basicSummary = `${formValue.name} · ${formValue.phone || "chưa có số điện thoại"}`;
-  const academicSummary = `${schoolName ?? "Chưa chọn trường"} · ${budgetSummary}`;
-  const hobbyCount = parseHobbies(formValue.interests).length;
-  const matchSummary = `${formValue.looking_for_roommate ? "Bật" : "Tắt"} · ${hobbyCount} sở thích`;
-
-  const { percent, missing } = getCompleteness(formValue, isStudent);
+  const err = p.fieldError;
+  const summaries = sectionSummaries(form, schools);
+  const { percent, missing } = getCompleteness(form, isStudent);
 
   return (
     <>
       <PageHeader
         className="max-w-2xl"
-        leading={<AvatarPicker name={user.name} avatar={user.avatar} onSaved={refreshUser} />}
+        leading={<AvatarPicker name={user.name} avatar={user.avatar} onSaved={p.refreshUser} />}
         title={user.name}
         description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}
         actions={
@@ -179,62 +44,37 @@ export default function Profile() {
       />
 
       <div className="mx-auto w-full max-w-2xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
-        <div data-testid="profile-completeness" className="mb-5">
-          <div className="flex items-baseline justify-between gap-3 text-sm">
-            <span className="font-semibold text-ink">Hồ sơ {percent}%</span>
-            {missing.length > 0 ? (
-              <span className="truncate text-muted">
-                Còn thiếu: {missing.slice(0, 3).join(", ")}
-                {missing.length > 3 ? "…" : ""}
-              </span>
-            ) : (
-              <span className="text-moss">Đã đầy đủ</span>
-            )}
-          </div>
-          <div
-            role="progressbar"
-            aria-label="Mức hoàn thiện hồ sơ"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-            className="mt-2 h-1.5 overflow-hidden rounded-full bg-tint"
-          >
-            <div
-              className="h-full rounded-full bg-moss transition-[width] duration-300"
-              style={{ width: `${percent}%` }}
-            />
-          </div>
-        </div>
+        <ProfileCompleteness percent={percent} missing={missing} />
 
         <form
           onSubmit={(e) => {
-            void save(e);
+            void p.save(e);
           }}
           className="space-y-3"
         >
-          {formError ? (
+          {p.formError ? (
             <p
               role="alert"
               className="rounded-xl border border-danger/20 bg-danger-tint p-3 text-sm text-danger"
             >
-              {formError}
+              {p.formError}
             </p>
           ) : null}
 
           <ProfileSection
             id="profile-basic"
             title="Thông tin cơ bản"
-            summary={basicSummary}
-            open={openSection === "basic"}
+            summary={summaries.basic}
+            open={p.openSection === "basic"}
             onToggle={() => {
-              toggleSection("basic");
+              p.toggleSection("basic");
             }}
           >
             <ProfileBasicInfoCard
-              name={formValue.name}
-              phone={formValue.phone}
-              bio={formValue.bio}
-              onChange={set}
+              name={form.name}
+              phone={form.phone}
+              bio={form.bio}
+              onChange={p.set}
               errors={{ name: err("name"), phone: err("phone"), bio: err("bio") }}
               bioPlaceholder={
                 isStudent
@@ -250,19 +90,19 @@ export default function Profile() {
               <ProfileSection
                 id="profile-academic"
                 title="Học tập & ngân sách"
-                summary={academicSummary}
-                open={openSection === "academic"}
+                summary={summaries.academic}
+                open={p.openSection === "academic"}
                 onToggle={() => {
-                  toggleSection("academic");
+                  p.toggleSection("academic");
                 }}
               >
                 <ProfileAcademicCard
                   schools={schools}
-                  schoolId={formValue.school_id}
-                  budgetMin={formValue.budget_min}
-                  budgetMax={formValue.budget_max}
-                  budgetHint={budgetHint}
-                  onChange={set}
+                  schoolId={form.school_id}
+                  budgetMin={form.budget_min}
+                  budgetMax={form.budget_max}
+                  budgetHint={budgetHint(form.budget_min, form.budget_max)}
+                  onChange={p.set}
                   errors={{
                     school_id: err("school_id"),
                     budget_min: err("budget_min"),
@@ -274,48 +114,28 @@ export default function Profile() {
               <ProfileSection
                 id="profile-match"
                 title="Ghép bạn cùng phòng"
-                summary={matchSummary}
-                open={openSection === "match"}
+                summary={summaries.match}
+                open={p.openSection === "match"}
                 onToggle={() => {
-                  toggleSection("match");
+                  p.toggleSection("match");
                 }}
               >
                 <ProfileHabitsCard
-                  lookingForRoommate={formValue.looking_for_roommate}
-                  sleepSchedule={formValue.sleep_schedule}
-                  personality={formValue.personality}
-                  cleanliness={formValue.cleanliness}
-                  smoking={formValue.smoking}
-                  interests={formValue.interests}
-                  onChange={set}
+                  lookingForRoommate={form.looking_for_roommate}
+                  sleepSchedule={form.sleep_schedule}
+                  personality={form.personality}
+                  cleanliness={form.cleanliness}
+                  smoking={form.smoking}
+                  interests={form.interests}
+                  onChange={p.set}
                   errors={{ interests: err("interests") }}
                 />
               </ProfileSection>
             </>
           ) : null}
 
-          {isDirty || busy ? (
-            <div
-              data-testid="profile-save-bar"
-              className="sticky bottom-16 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-card/95 p-3 shadow-pop backdrop-blur-xs lg:bottom-4"
-            >
-              <p className="text-sm font-medium text-ink">Có thay đổi chưa lưu</p>
-              <div className="flex items-center gap-2">
-                <Button type="button" variant="ghost" size="sm" onClick={resetForm} disabled={busy}>
-                  Khôi phục
-                </Button>
-                <Button
-                  id="profile-submit-btn"
-                  type="submit"
-                  variant="primary"
-                  size="sm"
-                  loading={busy}
-                  disabled={!isDirty || busy}
-                >
-                  Lưu thay đổi
-                </Button>
-              </div>
-            </div>
+          {p.isDirty || p.busy ? (
+            <ProfileSaveBar busy={p.busy} dirty={p.isDirty} onReset={p.reset} />
           ) : null}
         </form>
       </div>

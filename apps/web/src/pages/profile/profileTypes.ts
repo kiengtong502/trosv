@@ -1,4 +1,6 @@
-import type { User } from "@/types/api";
+import { parseHobbies } from "@/constants/hobbies";
+import { formatVnd } from "@/lib/format";
+import type { School, User } from "@/types/api";
 
 export const SLEEP_OPTIONS = [
   { value: "early", label: "Ngủ sớm", sub: "Trước 23:00" },
@@ -118,4 +120,77 @@ export function formatVndPreview(val: string): string {
     currency: "VND",
     maximumFractionDigits: 0,
   }).format(n);
+}
+
+export type SectionKey = "basic" | "academic" | "match";
+
+const MATCH_FIELDS = [
+  "interests",
+  "sleep_schedule",
+  "personality",
+  "cleanliness",
+  "smoking",
+  "looking_for_roommate",
+];
+
+/** Which section holds a field that the server rejected, so it can be opened. */
+export function sectionOfField(field: string): SectionKey {
+  if (field === "school_id" || field.startsWith("budget_")) return "academic";
+  return MATCH_FIELDS.includes(field) ? "match" : "basic";
+}
+
+/** The body for PATCH /profile: trimmed text, empty values as null, student-only fields only for students. */
+export function buildProfilePayload(
+  form: ProfileFormState,
+  isStudent: boolean,
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    name: form.name.trim(),
+    phone: form.phone.trim() || null,
+    bio: form.bio.trim() || null,
+  };
+  if (!isStudent) return payload;
+
+  if (form.school_id) payload["school_id"] = Number(form.school_id);
+  payload["budget_min"] = form.budget_min ? Number(form.budget_min) : null;
+  payload["budget_max"] = form.budget_max ? Number(form.budget_max) : null;
+  payload["sleep_schedule"] = form.sleep_schedule || null;
+  payload["cleanliness"] = form.cleanliness ? Number(form.cleanliness) : null;
+  payload["smoking"] = form.smoking;
+  payload["personality"] = form.personality || null;
+  payload["interests"] = form.interests.trim() || null;
+  payload["looking_for_roommate"] = form.looking_for_roommate;
+  return payload;
+}
+
+/** "1.500.000đ – 3.000.000đ / tháng" for the budget field's hint; empty when no budget is set. */
+export function budgetHint(min: string, max: string): string {
+  const from = min ? formatVndPreview(min) : "";
+  const to = max ? formatVndPreview(max) : "";
+  if (from && to) return `${from} – ${to} / tháng`;
+  if (from) return `Từ ${from} / tháng`;
+  if (to) return `Đến ${to} / tháng`;
+  return "";
+}
+
+function budgetSummary(min: string, max: string): string {
+  const lo = Number(min);
+  const hi = Number(max);
+  if (lo > 0 && hi > 0) return `${formatVnd(lo)}–${formatVnd(hi)}`;
+  if (lo > 0) return `từ ${formatVnd(lo)}`;
+  if (hi > 0) return `đến ${formatVnd(hi)}`;
+  return "chưa đặt ngân sách";
+}
+
+/** The one-line summaries shown while a section is collapsed. */
+export function sectionSummaries(
+  form: ProfileFormState,
+  schools: readonly School[],
+): Record<SectionKey, string> {
+  const schoolName = schools.find((s) => String(s.id) === form.school_id)?.name;
+  return {
+    basic: `${form.name} · ${form.phone || "chưa có số điện thoại"}`,
+    academic: `${schoolName ?? "Chưa chọn trường"} · ${budgetSummary(form.budget_min, form.budget_max)}`,
+    match: `${form.looking_for_roommate ? "Bật" : "Tắt"} · ${String(parseHobbies(form.interests).length)} sở thích`,
+  };
 }
