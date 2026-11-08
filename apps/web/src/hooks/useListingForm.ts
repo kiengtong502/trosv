@@ -7,37 +7,17 @@ import { useAmenities, useCities, useWards } from "@/hooks/useReferenceData";
 import { aiDescription } from "@/api/aiApi";
 import { errMessage, errFieldErrors } from "@/api/axiosClient";
 import { ROUTES, route } from "@/constants/routes";
-import type { ListingImage, ListingPayload } from "@/types/api";
-
-export interface ListingFormState {
-  title: string;
-  type: string;
-  price: string | number;
-  area_m2: string | number;
-  address: string;
-  latitude: string | number;
-  longitude: string | number;
-  city_id: string | number;
-  ward_id: string | number;
-  description: string;
-  amenity_ids: number[];
-  status: string;
-}
-
-const EMPTY_FORM: ListingFormState = {
-  title: "",
-  type: "room",
-  price: "",
-  area_m2: "",
-  address: "",
-  latitude: "",
-  longitude: "",
-  city_id: "",
-  ward_id: "",
-  description: "",
-  amenity_ids: [],
-  status: "available",
-};
+import type { ListingImage } from "@/types/api";
+import {
+  EMPTY_FORM,
+  buildDescriptionRequest,
+  buildListingPayload,
+  decideAddressGuess,
+  formFromListing,
+  photoLimitError,
+  toggleId,
+  type ListingFormState,
+} from "./listingFormModel";
 
 /** Toast interface du can cua hook - khong toan bo toast context. */
 export interface ToastLike {
@@ -70,20 +50,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     if (!isEdit) return;
     getListing(id)
       .then((l) => {
-        setForm({
-          title: l.title || "",
-          type: l.type || "room",
-          price: l.price,
-          area_m2: l.area_m2 ?? "",
-          address: l.address || "",
-          latitude: l.latitude ?? "",
-          longitude: l.longitude ?? "",
-          city_id: l.ward?.city?.id || "",
-          ward_id: l.ward?.id || "",
-          description: l.description || "",
-          amenity_ids: l.amenities?.map((a) => a.id) || [],
-          status: l.status || "available",
-        });
+        setForm(formFromListing(l));
         setImages(l.images || []);
       })
       .catch((err: unknown) => {
@@ -105,20 +72,17 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
    * pure - StrictMode calls them twice, which would double the dialog.)
    */
   function applyAddressGuess(street: string): void {
-    const current = form.address.trim();
-    if (current === "") {
-      setForm((f) => ({ ...f, address: street }));
-      return;
-    }
-    if (current === street) return;
-
     const wardName = wards.find((x) => String(x.id) === String(form.ward_id))?.name || "";
-    const withWard = wardName && !street.includes(wardName) ? `${street}, ${wardName}` : street;
-
-    if (
-      window.confirm(`Địa chỉ trên bản đồ: "${withWard}".\nDùng địa chỉ này thay cho "${current}"?`)
+    const guess = decideAddressGuess(form.address, street, wardName);
+    if (guess.action === "fill") {
+      setForm((f) => ({ ...f, address: guess.address }));
+    } else if (
+      guess.action === "ask" &&
+      window.confirm(
+        `Địa chỉ trên bản đồ: "${guess.address}".\nDùng địa chỉ này thay cho "${guess.current}"?`,
+      )
     ) {
-      setForm((f) => ({ ...f, address: withWard }));
+      setForm((f) => ({ ...f, address: guess.address }));
     }
   }
 
@@ -132,12 +96,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   }, [wards, form.ward_id]);
 
   function toggleAmenity(amenityId: number): void {
-    setForm((f) => ({
-      ...f,
-      amenity_ids: f.amenity_ids.includes(amenityId)
-        ? f.amenity_ids.filter((x) => x !== amenityId)
-        : [...f.amenity_ids, amenityId],
-    }));
+    setForm((f) => ({ ...f, amenity_ids: toggleId(f.amenity_ids, amenityId) }));
   }
 
   /** "Viết mô tả giúp tôi" - POST /ai/description (Landlord). */
@@ -145,15 +104,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     setAiBusy(true);
     setNotice("");
     try {
-      const { description } = await aiDescription({
-        title: form.title || undefined,
-        type: form.type || undefined,
-        price: form.price === "" ? undefined : Number(form.price),
-        area_m2: form.area_m2 === "" ? undefined : Number(form.area_m2),
-        address: form.address || undefined,
-        ward_id: form.ward_id || undefined,
-        amenity_ids: form.amenity_ids.length ? form.amenity_ids : undefined,
-      });
+      const { description } = await aiDescription(buildDescriptionRequest(form));
       setForm((f) => ({ ...f, description: description || "" }));
     } catch (err) {
       setNotice(errMessage(err, "AI không tạo được mô tả lúc này."));
@@ -168,19 +119,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     setBusy(true);
     setNotice("");
 
-    const payload: ListingPayload & { status?: string } = {
-      title: form.title,
-      type: form.type,
-      price: Number(form.price),
-      area_m2: Number(form.area_m2),
-      address: form.address,
-      latitude: Number(form.latitude),
-      longitude: Number(form.longitude),
-      ward_id: Number(form.ward_id),
-      description: form.description || null,
-      amenity_ids: form.amenity_ids,
-    };
-    if (isEdit) payload.status = form.status;
+    const payload = buildListingPayload(form, isEdit);
 
     try {
       if (isEdit) {
@@ -219,13 +158,9 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
 
   function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
     const files = Array.from(e.target.files || []);
-    if (isEdit && images.length + files.length > 5) {
-      setNotice("Tin đăng chỉ có tối đa 5 ảnh.");
-      e.target.value = "";
-      return;
-    }
-    if (!isEdit && files.length > 5) {
-      setNotice("Tối đa 5 ảnh mỗi tin.");
+    const limitError = photoLimitError(isEdit, images.length, files.length);
+    if (limitError) {
+      setNotice(limitError);
       e.target.value = "";
       return;
     }

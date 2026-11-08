@@ -18,7 +18,7 @@ const DEBT = {
   "src/components/ListingCard.tsx": { complexity: 14, lines: 170 },
   "src/components/ListingMap.tsx": { complexity: 12, lines: 149 },
   "src/components/shell.tsx": { complexity: 12, lines: 153 },
-  "src/hooks/useListingForm.ts": { complexity: 17, lines: 179 },
+  "src/hooks/useListingForm.ts": { complexity: 12, lines: 136 },
   "src/hooks/useListingSearch.ts": { complexity: 12, lines: 162 },
   "src/pages/AiAreaSuggestions.tsx": { complexity: 13, lines: 180 },
   "src/pages/AiRoommates.tsx": { complexity: 12, lines: 143 },
