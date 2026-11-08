@@ -15,7 +15,6 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 const LIMITS = { complexity: 12, lines: 120 };
 const DEBT = {
   "src/components/AiChatWidget.tsx": { complexity: 12, lines: 158 },
-  "src/components/HobbySelector.tsx": { complexity: 12, lines: 230 },
   "src/components/ListingCard.tsx": { complexity: 14, lines: 170 },
   "src/components/ListingMap.tsx": { complexity: 12, lines: 149 },
   "src/components/shell.tsx": { complexity: 12, lines: 153 },
