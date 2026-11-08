@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { ListingFilters } from "@/hooks/useListingSearch";
+import type { ListingFilters } from "@/hooks/searchFilters";
 import {
   SORT_OPTIONS,
   areaName,

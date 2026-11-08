@@ -5,6 +5,7 @@ import { createListing, updateListing, uploadImages, deleteImage } from "@/api/l
 import { getListing } from "@/api/listingApi";
 import { useAmenities, useCities, useWards } from "@/hooks/useReferenceData";
 import { aiDescription } from "@/api/aiApi";
+import { toggleId } from "@/lib/list";
 import { errMessage, errFieldErrors } from "@/api/axiosClient";
 import { ROUTES, route } from "@/constants/routes";
 import type { ListingImage } from "@/types/api";
@@ -14,7 +15,6 @@ import {
   buildListingPayload,
   formFromListing,
   photoLimitError,
-  toggleId,
   type ListingFormState,
 } from "./listingFormModel";
 

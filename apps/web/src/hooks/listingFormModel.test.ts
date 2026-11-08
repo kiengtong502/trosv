@@ -7,7 +7,6 @@ import {
   buildListingPayload,
   formFromListing,
   photoLimitError,
-  toggleId,
 } from "./listingFormModel";
 
 const FILLED = {
@@ -127,14 +126,5 @@ describe("photoLimitError", () => {
   it("counts the photos already on the listing when editing", () => {
     expect(photoLimitError(true, 3, 2)).toBeNull();
     expect(photoLimitError(true, 3, 3)).toBe("Tin đăng chỉ có tối đa 5 ảnh.");
-  });
-});
-
-describe("toggleId", () => {
-  it("adds a missing id and removes a present one, without mutating", () => {
-    const ids = [1, 2];
-    expect(toggleId(ids, 3)).toEqual([1, 2, 3]);
-    expect(toggleId(ids, 1)).toEqual([2]);
-    expect(ids).toEqual([1, 2]);
   });
 });

@@ -99,8 +99,3 @@ export function photoLimitError(isEdit: boolean, existing: number, picked: numbe
   if (!isEdit && picked > MAX_PHOTOS) return "Tối đa 5 ảnh mỗi tin.";
   return null;
 }
-
-/** Add the id if missing, remove it if present. */
-export function toggleId(ids: readonly number[], id: number): number[] {
-  return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
-}
