@@ -8,8 +8,10 @@ import type { Attachment } from "./useAttachment";
 export const MESSAGE_MAX = 1000;
 
 function AttachmentChip({ attachment }: { attachment: Attachment }) {
-  const { file, preview, remove } = attachment;
+  const { file, remove } = attachment;
   if (!file) return null;
+  // The preview is always a blob: object url made by useAttachment; refuse anything else.
+  const preview = attachment.preview?.startsWith("blob:") ? attachment.preview : null;
   return (
     <div className="mb-2 max-w-sm flex items-center gap-2 rounded-xl border border-line bg-paper/80 p-2 shadow-xs">
       {preview ? (
