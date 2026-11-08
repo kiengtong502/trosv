@@ -185,7 +185,8 @@ effectively self-review. Process debt, not code.
   - `ConversationDetail` `Thread` 410 / 35 -> 155 / 19 (header, composer, attachment hook, message row, pure `threadLayout.ts`).
   - `Profile` 260 / 32 -> under the limits (`useProfileForm`, `ProfileCompleteness`, `ProfileSaveBar`, `ProfileHeader`, pure payload/summary helpers; `isFormDirty` is table driven).
   - `Search` 358 / 23 -> under the limits (`SortMenu`, `ActiveChips`, `ListingResults`, `Pagination`, `MobileViewToggle`, `useFavoriteToggle`, pure `filterChips.ts`).
-  - Pure rules extracted and unit-tested (now 270 unit tests). Remaining: `SearchFilterBar`, `LandlordForm`, `SchoolCombobox`, `HobbySelector`, `RoomPreviewCard`, `ConversationListItem`, `useListingForm`/`useListingSearch`.
+  - Pure rules extracted and unit-tested (now 270 unit tests).   - `SearchFilterBar` 217 -> one component per pill + pure `locationOptions.ts`; `SchoolCombobox` 285 / 15 -> trigger, card, input, dropdown + pure `schoolSearch.ts` (accent-insensitive matching); `HobbySelector` 230 -> meter, groups, custom list, add-custom + pure `hobbySelection.ts`. 316 unit tests now.
+  - Remaining: `LandlordForm`, `RoomPreviewCard`, `ConversationListItem`, `AiAreaSuggestions`, `useListingForm`/`useListingSearch` and the other files still listed in the ratchet.
 
 ## Elimination plan
 
