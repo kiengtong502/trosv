@@ -4,7 +4,7 @@
 */
 
 import { formatVnd } from "@/lib/format";
-import type { ListingFilters } from "@/hooks/useListingSearch";
+import type { ListingFilters } from "@/hooks/searchFilters";
 
 export const SORT_OPTIONS = [
   { value: "newest", label: "Mới nhất" },

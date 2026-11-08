@@ -76,25 +76,26 @@ test.describe("room page bento", () => {
     await page.setViewportSize({ width: 390, height: 800 });
     await openFirstRoom(page);
     await page.waitForLoadState("networkidle");
-    // The shell may scroll inside a container, so push every scrollable ancestor to its end.
-    await page.evaluate(() => {
-      window.scrollTo(0, document.documentElement.scrollHeight);
-      for (
-        let el = document.querySelector('[data-testid="room-end"]')?.parentElement;
-        el;
-        el = el.parentElement
-      ) {
-        if (el.scrollHeight > el.clientHeight) el.scrollTop = el.scrollHeight;
-      }
-    });
-    await page.waitForTimeout(300);
     const bar = await page.getByTestId("room-mobile-bar").boundingBox();
     expect(bar).not.toBeNull();
-    const lastBottom = await page.evaluate(() => {
-      const last = document.querySelector('[data-testid="room-end"]');
-      return last ? last.getBoundingClientRect().bottom : Infinity;
-    });
-    expect(lastBottom).toBeLessThanOrEqual(bar!.y + 1);
+
+    // Content below the fold (similar rooms, images) can still grow after load, so keep pushing
+    // every scrollable ancestor to its end until the last section settles above the bar.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const last = document.querySelector('[data-testid="room-end"]');
+            if (!last) return Infinity;
+            window.scrollTo(0, document.documentElement.scrollHeight);
+            for (let el = last.parentElement; el; el = el.parentElement) {
+              if (el.scrollHeight > el.clientHeight) el.scrollTop = el.scrollHeight;
+            }
+            return last.getBoundingClientRect().bottom;
+          }),
+        { timeout: 8000 },
+      )
+      .toBeLessThanOrEqual(bar!.y + 1);
   });
 
   test("phone: similar rooms scroll sideways", async ({ page }) => {

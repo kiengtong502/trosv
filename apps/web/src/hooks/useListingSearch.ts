@@ -3,33 +3,18 @@ import { useSearchParams } from "react-router-dom";
 import { getListings } from "@/api/listingApi";
 import { useAmenities, useCities, useSchools, useWards } from "@/hooks/useReferenceData";
 import { errMessage } from "@/api/axiosClient";
+import { toggleId } from "@/lib/list";
 import type { Listing, PaginationMeta } from "@/types/api";
-
-export interface ListingFilters {
-  q: string;
-  type: string;
-  city_id: string;
-  ward_id: string;
-  school_id: string;
-  max_km: string;
-  price_min: string;
-  price_max: string;
-  amenity_ids: number[];
-  sort: string;
-}
-
-const EMPTY_FILTERS: ListingFilters = {
-  q: "",
-  type: "",
-  city_id: "",
-  ward_id: "",
-  school_id: "",
-  max_km: "",
-  price_min: "",
-  price_max: "",
-  amenity_ids: [],
-  sort: "newest",
-};
+import {
+  EMPTY_FILTERS,
+  MAP_PAGE_SIZE,
+  filtersFromParams,
+  filtersToApiParams,
+  filtersToUrlParams,
+  withCity,
+  withWard,
+  type ListingFilters,
+} from "./searchFilters";
 
 /**
  * Listing search for the /rooms page: filter state, reference data
@@ -46,19 +31,7 @@ export function useListingSearch() {
   const { data: schools } = useSchools();
   const { data: amenities } = useAmenities();
 
-  const [filters, setFilters] = useState<ListingFilters>(() => ({
-    ...EMPTY_FILTERS,
-    q: searchParams.get("q") || "",
-    type: searchParams.get("type") || "",
-    city_id: searchParams.get("city_id") || "",
-    ward_id: searchParams.get("ward_id") || "",
-    school_id: searchParams.get("school_id") || "",
-    max_km: searchParams.get("max_km") || "",
-    price_min: searchParams.get("price_min") || "",
-    price_max: searchParams.get("price_max") || "",
-    sort: searchParams.get("sort") || "newest",
-    amenity_ids: searchParams.getAll("amenity_ids").map(Number).filter(Boolean),
-  }));
+  const [filters, setFilters] = useState<ListingFilters>(() => filtersFromParams(searchParams));
   const [page, setPage] = useState(1);
   const [listings, setListings] = useState<Listing[]>([]);
   const [mapListings, setMapListings] = useState<Listing[]>([]);
@@ -72,19 +45,7 @@ export function useListingSearch() {
   useEffect(() => {
     if (currentParamsString !== prevParamsStringRef.current) {
       prevParamsStringRef.current = currentParamsString;
-      setFilters({
-        ...EMPTY_FILTERS,
-        q: searchParams.get("q") || "",
-        type: searchParams.get("type") || "",
-        city_id: searchParams.get("city_id") || "",
-        ward_id: searchParams.get("ward_id") || "",
-        school_id: searchParams.get("school_id") || "",
-        max_km: searchParams.get("max_km") || "",
-        price_min: searchParams.get("price_min") || "",
-        price_max: searchParams.get("price_max") || "",
-        sort: searchParams.get("sort") || "newest",
-        amenity_ids: searchParams.getAll("amenity_ids").map(Number).filter(Boolean),
-      });
+      setFilters(filtersFromParams(searchParams));
       setPage(1);
     }
   }, [currentParamsString, searchParams]);
@@ -94,23 +55,10 @@ export function useListingSearch() {
     async (currentPage: number) => {
       setLoading(true);
       setError("");
-      const params: Record<string, string | number | number[]> = {
-        page: currentPage,
-        per_page: 12,
-        sort: filters.sort,
-      };
-      if (filters.q.trim()) params.q = filters.q.trim();
-      if (filters.type) params.type = filters.type;
-      if (filters.city_id) params.city_id = filters.city_id;
-      if (filters.ward_id) params.ward_id = filters.ward_id;
-      if (filters.school_id) params.school_id = filters.school_id;
-      if (filters.max_km) params.max_km = filters.max_km;
-      if (filters.price_min) params.price_min = filters.price_min;
-      if (filters.price_max) params.price_max = filters.price_max;
-      if (filters.amenity_ids.length) params["amenity_ids[]"] = filters.amenity_ids;
+      const params = filtersToApiParams(filters, currentPage);
 
       try {
-        const mapParams = { ...params, page: 1, per_page: 50 };
+        const mapParams = filtersToApiParams(filters, 1, MAP_PAGE_SIZE);
         const [pagedRes, mapRes] = await Promise.all([getListings(params), getListings(mapParams)]);
         setListings(pagedRes.data);
         setMeta(pagedRes.meta);
@@ -130,24 +78,13 @@ export function useListingSearch() {
   useEffect(() => {
     const t = setTimeout(() => {
       void fetchListings(page);
-      {
-        const next: Record<string, string> = {};
-        if (filters.q) next.q = filters.q;
-        if (filters.type) next.type = filters.type;
-        if (filters.city_id) next.city_id = filters.city_id;
-        if (filters.ward_id) next.ward_id = filters.ward_id;
-        if (filters.school_id) next.school_id = filters.school_id;
-        if (filters.max_km) next.max_km = filters.max_km;
-        if (filters.price_min) next.price_min = filters.price_min;
-        if (filters.price_max) next.price_max = filters.price_max;
-        if (filters.sort && filters.sort !== "newest") next.sort = filters.sort;
-        const nextString = new URLSearchParams(next).toString();
-        // Only touch the URL when it actually differs (so first load never rewrites it,
-        // while a change made before the first debounce still lands).
-        if (nextString !== prevParamsStringRef.current) {
-          prevParamsStringRef.current = nextString;
-          setSearchParams(next, { replace: true });
-        }
+      const next = filtersToUrlParams(filters);
+      const nextString = new URLSearchParams(next).toString();
+      // Only touch the URL when it actually differs (so first load never rewrites it,
+      // while a change made before the first debounce still lands).
+      if (nextString !== prevParamsStringRef.current) {
+        prevParamsStringRef.current = nextString;
+        setSearchParams(next, { replace: true });
       }
     }, 300);
     return () => {
@@ -161,38 +98,21 @@ export function useListingSearch() {
     setFilters((f) => ({ ...f, [key]: value }));
   };
 
-  // Đổi Tỉnh/TP: reset ward/school để cascade hợp lệ.
+  // Another city: ward, school and radius reset so the cascade stays valid.
   const setCity = (cityId: string): void => {
     setPage(1);
-    setFilters((f) => ({
-      ...f,
-      city_id: cityId,
-      ward_id: "",
-      school_id: "",
-      max_km: "",
-    }));
+    setFilters((f) => withCity(f, cityId));
   };
 
-  // Đổi phường: reset school/radius - danh sách trường chỉ hiện trường
-  // thuộc phường đã chọn (schools.ward_id), cascade ward -> school.
+  // Another ward: the school list is per ward, so school and radius reset.
   const setWard = (wardId: string): void => {
     setPage(1);
-    setFilters((f) => ({
-      ...f,
-      ward_id: wardId,
-      school_id: "",
-      max_km: "",
-    }));
+    setFilters((f) => withWard(f, wardId));
   };
 
   const toggleAmenity = (id: number): void => {
     setPage(1);
-    setFilters((f) => ({
-      ...f,
-      amenity_ids: f.amenity_ids.includes(id)
-        ? f.amenity_ids.filter((a) => a !== id)
-        : [...f.amenity_ids, id],
-    }));
+    setFilters((f) => ({ ...f, amenity_ids: toggleId(f.amenity_ids, id) }));
   };
 
   const resetFilters = (): void => {

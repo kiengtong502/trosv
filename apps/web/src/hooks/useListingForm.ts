@@ -1,43 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import { createListing, updateListing, uploadImages, deleteImage } from "@/api/landlordApi";
 import { getListing } from "@/api/listingApi";
 import { useAmenities, useCities, useWards } from "@/hooks/useReferenceData";
 import { aiDescription } from "@/api/aiApi";
+import { toggleId } from "@/lib/list";
 import { errMessage, errFieldErrors } from "@/api/axiosClient";
 import { ROUTES, route } from "@/constants/routes";
-import type { ListingImage, ListingPayload } from "@/types/api";
-
-export interface ListingFormState {
-  title: string;
-  type: string;
-  price: string | number;
-  area_m2: string | number;
-  address: string;
-  latitude: string | number;
-  longitude: string | number;
-  city_id: string | number;
-  ward_id: string | number;
-  description: string;
-  amenity_ids: number[];
-  status: string;
-}
-
-const EMPTY_FORM: ListingFormState = {
-  title: "",
-  type: "room",
-  price: "",
-  area_m2: "",
-  address: "",
-  latitude: "",
-  longitude: "",
-  city_id: "",
-  ward_id: "",
-  description: "",
-  amenity_ids: [],
-  status: "available",
-};
+import type { ListingImage } from "@/types/api";
+import {
+  EMPTY_FORM,
+  buildDescriptionRequest,
+  buildListingPayload,
+  formFromListing,
+  photoLimitError,
+  type ListingFormState,
+} from "./listingFormModel";
 
 /** Toast interface du can cua hook - khong toan bo toast context. */
 export interface ToastLike {
@@ -70,20 +49,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     if (!isEdit) return;
     getListing(id)
       .then((l) => {
-        setForm({
-          title: l.title || "",
-          type: l.type || "room",
-          price: l.price,
-          area_m2: l.area_m2 ?? "",
-          address: l.address || "",
-          latitude: l.latitude ?? "",
-          longitude: l.longitude ?? "",
-          city_id: l.ward?.city?.id || "",
-          ward_id: l.ward?.id || "",
-          description: l.description || "",
-          amenity_ids: l.amenities?.map((a) => a.id) || [],
-          status: l.status || "available",
-        });
+        setForm(formFromListing(l));
         setImages(l.images || []);
       })
       .catch((err: unknown) => {
@@ -91,53 +57,31 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
       });
   }, [id, isEdit]);
 
+  const setField = (key: keyof ListingFormState, value: string): void => {
+    setErrors({});
+    setForm((f) => ({ ...f, [key]: value }));
+  };
+
+  /** onChange handler for a text input, select or textarea bound to `key`. */
   const set =
     (key: keyof ListingFormState) =>
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setErrors({});
-      setForm((f) => ({ ...f, [key]: e.target.value }));
+      setField(key, e.target.value);
     };
 
-  /**
-   * Reverse-geocoded street guess from the map (Nominatim).
-   * Autofills the address when empty; asks before overwriting one.
-   * (No window.confirm inside the state updater: updaters must stay
-   * pure - StrictMode calls them twice, which would double the dialog.)
-   */
-  function applyAddressGuess(street: string): void {
-    const current = form.address.trim();
-    if (current === "") {
-      setForm((f) => ({ ...f, address: street }));
-      return;
-    }
-    if (current === street) return;
+  /** Choosing another city clears the ward, so the two never disagree. */
+  const changeCity = (cityId: string): void => {
+    setErrors({});
+    setForm((f) => ({ ...f, city_id: cityId, ward_id: "" }));
+  };
 
-    const wardName = wards.find((x) => String(x.id) === String(form.ward_id))?.name || "";
-    const withWard = wardName && !street.includes(wardName) ? `${street}, ${wardName}` : street;
-
-    if (
-      window.confirm(`Địa chỉ trên bản đồ: "${withWard}".\nDùng địa chỉ này thay cho "${current}"?`)
-    ) {
-      setForm((f) => ({ ...f, address: withWard }));
-    }
-  }
-
-  // Recentre the coordinate picker on the selected ward's centroid.
-  const wardCenter = useMemo<[number, number] | undefined>(() => {
-    const w = wards.find((x) => String(x.id) === String(form.ward_id));
-    const lat = w?.latitude;
-    const lng = w?.longitude;
-    if (lat == null || lng == null) return undefined;
-    return [lat, lng];
-  }, [wards, form.ward_id]);
+  /** Stable on purpose: the map effect depends on it and must not restart. */
+  const setCoordinates = useCallback((latitude: number, longitude: number): void => {
+    setForm((f) => ({ ...f, latitude, longitude }));
+  }, []);
 
   function toggleAmenity(amenityId: number): void {
-    setForm((f) => ({
-      ...f,
-      amenity_ids: f.amenity_ids.includes(amenityId)
-        ? f.amenity_ids.filter((x) => x !== amenityId)
-        : [...f.amenity_ids, amenityId],
-    }));
+    setForm((f) => ({ ...f, amenity_ids: toggleId(f.amenity_ids, amenityId) }));
   }
 
   /** "Viết mô tả giúp tôi" - POST /ai/description (Landlord). */
@@ -145,15 +89,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     setAiBusy(true);
     setNotice("");
     try {
-      const { description } = await aiDescription({
-        title: form.title || undefined,
-        type: form.type || undefined,
-        price: form.price === "" ? undefined : Number(form.price),
-        area_m2: form.area_m2 === "" ? undefined : Number(form.area_m2),
-        address: form.address || undefined,
-        ward_id: form.ward_id || undefined,
-        amenity_ids: form.amenity_ids.length ? form.amenity_ids : undefined,
-      });
+      const { description } = await aiDescription(buildDescriptionRequest(form));
       setForm((f) => ({ ...f, description: description || "" }));
     } catch (err) {
       setNotice(errMessage(err, "AI không tạo được mô tả lúc này."));
@@ -168,19 +104,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     setBusy(true);
     setNotice("");
 
-    const payload: ListingPayload & { status?: string } = {
-      title: form.title,
-      type: form.type,
-      price: Number(form.price),
-      area_m2: Number(form.area_m2),
-      address: form.address,
-      latitude: Number(form.latitude),
-      longitude: Number(form.longitude),
-      ward_id: Number(form.ward_id),
-      description: form.description || null,
-      amenity_ids: form.amenity_ids,
-    };
-    if (isEdit) payload.status = form.status;
+    const payload = buildListingPayload(form, isEdit);
 
     try {
       if (isEdit) {
@@ -217,20 +141,20 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     }
   }
 
-  function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
-    const files = Array.from(e.target.files || []);
-    if (isEdit && images.length + files.length > 5) {
-      setNotice("Tin đăng chỉ có tối đa 5 ảnh.");
-      e.target.value = "";
-      return;
-    }
-    if (!isEdit && files.length > 5) {
-      setNotice("Tối đa 5 ảnh mỗi tin.");
-      e.target.value = "";
-      return;
+  /** Accepts the picked photos, or explains why not. Returns whether they were accepted. */
+  function pickFiles(files: File[]): boolean {
+    const limitError = photoLimitError(isEdit, images.length, files.length);
+    if (limitError) {
+      setNotice(limitError);
+      return false;
     }
     setNotice("");
     setNewFiles(files);
+    return true;
+  }
+
+  function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
+    if (!pickFiles(Array.from(e.target.files || []))) e.target.value = "";
   }
 
   return {
@@ -240,15 +164,16 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     amenities,
     form,
     set,
-    setForm,
+    setField,
+    changeCity,
+    setCoordinates,
+    pickFiles,
     images,
     newFiles,
     errors,
     busy,
     aiBusy,
     notice,
-    wardCenter,
-    applyAddressGuess,
     toggleAmenity,
     generateDescription,
     handleSubmit,

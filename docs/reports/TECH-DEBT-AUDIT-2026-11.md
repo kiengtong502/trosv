@@ -186,7 +186,10 @@ effectively self-review. Process debt, not code.
   - `Profile` 260 / 32 -> under the limits (`useProfileForm`, `ProfileCompleteness`, `ProfileSaveBar`, `ProfileHeader`, pure payload/summary helpers; `isFormDirty` is table driven).
   - `Search` 358 / 23 -> under the limits (`SortMenu`, `ActiveChips`, `ListingResults`, `Pagination`, `MobileViewToggle`, `useFavoriteToggle`, pure `filterChips.ts`).
   - Pure rules extracted and unit-tested (now 270 unit tests).   - `SearchFilterBar` 217 -> one component per pill + pure `locationOptions.ts`; `SchoolCombobox` 285 / 15 -> trigger, card, input, dropdown + pure `schoolSearch.ts` (accent-insensitive matching); `HobbySelector` 230 -> meter, groups, custom list, add-custom + pure `hobbySelection.ts`. 316 unit tests now.
-  - Remaining: `LandlordForm`, `RoomPreviewCard`, `ConversationListItem`, `AiAreaSuggestions`, `useListingForm`/`useListingSearch` and the other files still listed in the ratchet.
+  - `RoomPreviewCard` 216 / 31 -> skeleton, link fallback, react button, `useRoomPreview` + pure `roomPreview.ts`; `ConversationListItem` cc 20 -> `describeConversation` + badge/chip components.
+  - `LandlordForm` 370 -> `landlord-form/` sections (basics, location, description, photos); `useListingForm` 190 -> 128 with a pure `listingFormModel.ts`; `useListingSearch` 176 -> pure `searchFilters.ts` (URL round trip, API params, city/ward cascade); `AiAreaSuggestions` 185 -> `ai-areas/` (form, results, card, hook).
+  - Bugs found by the refactor and fixed: the landlord form's map was recreated on every keystroke (the marker you placed vanished; now covered by e2e), and `useListingForm` returned two dead members (`applyAddressGuess`, `wardCenter`) which were removed.
+  - New e2e safety net for the landlord form (read-only). 366 unit tests. What is still in the ratchet is listed in `eslint.config.js` (16 files, mostly smaller or already-under-1.5x-limit components).
 
 ## Elimination plan
 

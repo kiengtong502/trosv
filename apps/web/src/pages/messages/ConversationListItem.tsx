@@ -5,6 +5,30 @@ import type { Conversation } from "@/types/api";
 import { Avatar } from "@/ui/avatar";
 import { timeAgo } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { describeConversation } from "./conversationRow";
+
+function UnreadBadge({ count }: { count: number }) {
+  return (
+    <span
+      data-testid="unread-badge"
+      className="flex h-5 min-w-5 flex-none animate-pop-in items-center justify-center rounded-full bg-plate px-1.5 text-[11.5px] font-bold text-white"
+    >
+      {count}
+    </span>
+  );
+}
+
+function RoomChip({ title }: { title: string }) {
+  return (
+    <span
+      data-testid="conversation-room"
+      className="mt-1.5 inline-flex max-w-full items-center gap-1.5 rounded-md border border-line bg-card px-2 py-0.5 text-[11.5px] text-ink-2"
+    >
+      <Home className="size-3 flex-none" aria-hidden />
+      <span className="truncate">{title}</span>
+    </span>
+  );
+}
 
 /*
   One row of the conversation list. Unread rows are bold with a count badge,
@@ -20,10 +44,8 @@ export function ConversationListItem({
   active: boolean;
   viewerId: number | undefined;
 }) {
-  const other = c.other_user?.name ?? "Người dùng";
-  const unread = c.unread_count ?? 0;
-  const mine = viewerId != null && c.last_message?.sender_id === viewerId;
-  const preview = c.last_message?.body ?? "";
+  const { name, unread, preview, lastAt } = describeConversation(c, viewerId);
+  const hasUnread = unread > 0;
 
   return (
     <Link
@@ -42,55 +64,39 @@ export function ConversationListItem({
           className="absolute -left-2.5 bottom-3 top-3 w-[3px] rounded-r bg-plate"
         />
       ) : null}
-      <Avatar name={other} avatar={c.other_user?.avatar} size={46} className="flex-none" />
+      <Avatar name={name} avatar={c.other_user?.avatar} size={46} className="flex-none" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <p
             data-testid="conversation-name"
             className={cn(
               "truncate text-[15px] text-ink",
-              unread > 0 ? "font-extrabold" : "font-semibold",
+              hasUnread ? "font-extrabold" : "font-semibold",
             )}
           >
-            {other}
+            {name}
           </p>
           <span
             className={cn(
               "flex-none text-xs tabular-nums",
-              unread > 0 ? "font-bold text-plate" : "text-muted",
+              hasUnread ? "font-bold text-plate" : "text-muted",
             )}
           >
-            {c.last_message?.created_at ? timeAgo(c.last_message.created_at) : ""}
+            {lastAt ? timeAgo(lastAt) : ""}
           </span>
         </div>
         <div className="mt-0.5 flex items-center gap-2">
           <p
             className={cn(
               "min-w-0 flex-1 truncate text-sm",
-              unread > 0 ? "font-semibold text-ink" : "text-muted",
+              hasUnread ? "font-semibold text-ink" : "text-muted",
             )}
           >
-            {mine ? "Bạn: " : ""}
             {preview}
           </p>
-          {unread > 0 ? (
-            <span
-              data-testid="unread-badge"
-              className="flex h-5 min-w-5 flex-none animate-pop-in items-center justify-center rounded-full bg-plate px-1.5 text-[11.5px] font-bold text-white"
-            >
-              {unread}
-            </span>
-          ) : null}
+          {hasUnread ? <UnreadBadge count={unread} /> : null}
         </div>
-        {c.listing ? (
-          <span
-            data-testid="conversation-room"
-            className="mt-1.5 inline-flex max-w-full items-center gap-1.5 rounded-md border border-line bg-card px-2 py-0.5 text-[11.5px] text-ink-2"
-          >
-            <Home className="size-3 flex-none" aria-hidden />
-            <span className="truncate">{c.listing.title}</span>
-          </span>
-        ) : null}
+        {c.listing ? <RoomChip title={c.listing.title} /> : null}
       </div>
     </Link>
   );
