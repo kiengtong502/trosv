@@ -2,7 +2,15 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { HousePlaceholder } from "@/ui/icons";
 import { cn } from "@/lib/utils";
-import type { ListingImage } from "@/types/api";
+import type { Listing, ListingImage } from "@/types/api";
+
+/** Photos to show: the listing's images, else its cover alone, else none. */
+export function galleryImagesFor(listing: Listing): ListingImage[] {
+  const images = listing.images ?? [];
+  if (images.length > 0) return images;
+  const cover = listing.cover_image;
+  return cover ? [{ id: 0, url: cover }] : [];
+}
 
 export interface RoomGalleryProps {
   images: ListingImage[];
