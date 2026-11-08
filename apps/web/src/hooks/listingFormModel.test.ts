@@ -5,7 +5,6 @@ import {
   MAX_PHOTOS,
   buildDescriptionRequest,
   buildListingPayload,
-  decideAddressGuess,
   formFromListing,
   photoLimitError,
   toggleId,
@@ -116,32 +115,6 @@ describe("buildDescriptionRequest", () => {
       ward_id: "10",
       amenity_ids: [1, 2],
     });
-  });
-});
-
-describe("decideAddressGuess", () => {
-  it("fills an empty (or whitespace) address without asking", () => {
-    expect(decideAddressGuess("", "12 A", "")).toEqual({ action: "fill", address: "12 A" });
-    expect(decideAddressGuess("   ", "12 A", "")).toEqual({ action: "fill", address: "12 A" });
-  });
-
-  it("keeps an address that already matches", () => {
-    expect(decideAddressGuess(" 12 A ", "12 A", "Hải Châu")).toEqual({ action: "keep" });
-  });
-
-  it("asks before replacing a different address, adding the ward when the street lacks it", () => {
-    expect(decideAddressGuess("99 Z", "12 A", "Hải Châu")).toEqual({
-      action: "ask",
-      address: "12 A, Hải Châu",
-      current: "99 Z",
-    });
-  });
-
-  it("does not repeat a ward the street already names, or add an unknown one", () => {
-    expect(decideAddressGuess("99 Z", "12 A, Hải Châu", "Hải Châu")).toMatchObject({
-      address: "12 A, Hải Châu",
-    });
-    expect(decideAddressGuess("99 Z", "12 A", "")).toMatchObject({ address: "12 A" });
   });
 });
 

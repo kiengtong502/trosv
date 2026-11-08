@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 import type { Conversation } from "@/types/api";
 import { describeConversation } from "./conversationRow";
 
-const conv = (over: Partial<Conversation> = {}): Conversation =>
-  ({ id: 1, student_id: 1, landlord_id: 2, ...over });
+const conv = (over: Partial<Conversation> = {}): Conversation => ({
+  id: 1,
+  student_id: 1,
+  landlord_id: 2,
+  ...over,
+});
 
 describe("describeConversation", () => {
   it("falls back to 'Người dùng', no unread and an empty preview", () => {

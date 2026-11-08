@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import { createListing, updateListing, uploadImages, deleteImage } from "@/api/landlordApi";
@@ -12,7 +12,6 @@ import {
   EMPTY_FORM,
   buildDescriptionRequest,
   buildListingPayload,
-  decideAddressGuess,
   formFromListing,
   photoLimitError,
   toggleId,
@@ -58,42 +57,28 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
       });
   }, [id, isEdit]);
 
+  const setField = (key: keyof ListingFormState, value: string): void => {
+    setErrors({});
+    setForm((f) => ({ ...f, [key]: value }));
+  };
+
+  /** onChange handler for a text input, select or textarea bound to `key`. */
   const set =
     (key: keyof ListingFormState) =>
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setErrors({});
-      setForm((f) => ({ ...f, [key]: e.target.value }));
+      setField(key, e.target.value);
     };
 
-  /**
-   * Reverse-geocoded street guess from the map (Nominatim).
-   * Autofills the address when empty; asks before overwriting one.
-   * (No window.confirm inside the state updater: updaters must stay
-   * pure - StrictMode calls them twice, which would double the dialog.)
-   */
-  function applyAddressGuess(street: string): void {
-    const wardName = wards.find((x) => String(x.id) === String(form.ward_id))?.name || "";
-    const guess = decideAddressGuess(form.address, street, wardName);
-    if (guess.action === "fill") {
-      setForm((f) => ({ ...f, address: guess.address }));
-    } else if (
-      guess.action === "ask" &&
-      window.confirm(
-        `Địa chỉ trên bản đồ: "${guess.address}".\nDùng địa chỉ này thay cho "${guess.current}"?`,
-      )
-    ) {
-      setForm((f) => ({ ...f, address: guess.address }));
-    }
-  }
+  /** Choosing another city clears the ward, so the two never disagree. */
+  const changeCity = (cityId: string): void => {
+    setErrors({});
+    setForm((f) => ({ ...f, city_id: cityId, ward_id: "" }));
+  };
 
-  // Recentre the coordinate picker on the selected ward's centroid.
-  const wardCenter = useMemo<[number, number] | undefined>(() => {
-    const w = wards.find((x) => String(x.id) === String(form.ward_id));
-    const lat = w?.latitude;
-    const lng = w?.longitude;
-    if (lat == null || lng == null) return undefined;
-    return [lat, lng];
-  }, [wards, form.ward_id]);
+  /** Stable on purpose: the map effect depends on it and must not restart. */
+  const setCoordinates = useCallback((latitude: number, longitude: number): void => {
+    setForm((f) => ({ ...f, latitude, longitude }));
+  }, []);
 
   function toggleAmenity(amenityId: number): void {
     setForm((f) => ({ ...f, amenity_ids: toggleId(f.amenity_ids, amenityId) }));
@@ -156,16 +141,20 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     }
   }
 
-  function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
-    const files = Array.from(e.target.files || []);
+  /** Accepts the picked photos, or explains why not. Returns whether they were accepted. */
+  function pickFiles(files: File[]): boolean {
     const limitError = photoLimitError(isEdit, images.length, files.length);
     if (limitError) {
       setNotice(limitError);
-      e.target.value = "";
-      return;
+      return false;
     }
     setNotice("");
     setNewFiles(files);
+    return true;
+  }
+
+  function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
+    if (!pickFiles(Array.from(e.target.files || []))) e.target.value = "";
   }
 
   return {
@@ -175,15 +164,16 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     amenities,
     form,
     set,
-    setForm,
+    setField,
+    changeCity,
+    setCoordinates,
+    pickFiles,
     images,
     newFiles,
     errors,
     busy,
     aiBusy,
     notice,
-    wardCenter,
-    applyAddressGuess,
     toggleAmenity,
     generateDescription,
     handleSubmit,

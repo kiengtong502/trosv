@@ -93,28 +93,6 @@ export function buildDescriptionRequest(form: ListingFormState) {
   };
 }
 
-export type AddressGuess =
-  | { action: "fill"; address: string }
-  | { action: "ask"; address: string; current: string }
-  | { action: "keep" };
-
-/**
- * What to do with a street guessed from the map: fill an empty address, keep
- * an identical one, otherwise ask before replacing (with the ward appended
- * when the street does not already name it).
- */
-export function decideAddressGuess(
-  current: string,
-  street: string,
-  wardName: string,
-): AddressGuess {
-  const trimmed = current.trim();
-  if (trimmed === "") return { action: "fill", address: street };
-  if (trimmed === street) return { action: "keep" };
-  const address = wardName && !street.includes(wardName) ? `${street}, ${wardName}` : street;
-  return { action: "ask", address, current: trimmed };
-}
-
 /** Message if picking `picked` more photos would break the limit, else null. */
 export function photoLimitError(isEdit: boolean, existing: number, picked: number): string | null {
   if (isEdit && existing + picked > MAX_PHOTOS) return "Tin đăng chỉ có tối đa 5 ảnh.";
