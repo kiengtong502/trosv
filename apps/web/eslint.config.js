@@ -18,7 +18,6 @@ const DEBT = {
   "src/components/HobbySelector.tsx": { complexity: 12, lines: 230 },
   "src/components/ListingCard.tsx": { complexity: 14, lines: 170 },
   "src/components/ListingMap.tsx": { complexity: 12, lines: 149 },
-  "src/components/SchoolCombobox.tsx": { complexity: 15, lines: 285 },
   "src/components/shell.tsx": { complexity: 12, lines: 153 },
   "src/hooks/useListingForm.ts": { complexity: 17, lines: 179 },
   "src/hooks/useListingSearch.ts": { complexity: 12, lines: 162 },
