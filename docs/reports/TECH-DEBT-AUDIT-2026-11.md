@@ -183,7 +183,9 @@ effectively self-review. Process debt, not code.
   - `RoomDetail` 397 lines / complexity 64 -> a ~100 line orchestrator plus 12 files in `pages/room/`.
   - `MessageBubble` 305 / 47 -> 120 / 14 (menu, attachment, text bubble, pure `messageContent.ts`).
   - `ConversationDetail` `Thread` 410 / 35 -> 155 / 19 (header, composer, attachment hook, message row, pure `threadLayout.ts`).
-  - Pure rules extracted and unit-tested (now 222 unit tests). Remaining: `Profile`, `Search`/`SearchFilterBar`, `LandlordForm`, `SchoolCombobox`, `HobbySelector`, `RoomPreviewCard`, `ConversationListItem`.
+  - `Profile` 260 / 32 -> under the limits (`useProfileForm`, `ProfileCompleteness`, `ProfileSaveBar`, `ProfileHeader`, pure payload/summary helpers; `isFormDirty` is table driven).
+  - `Search` 358 / 23 -> under the limits (`SortMenu`, `ActiveChips`, `ListingResults`, `Pagination`, `MobileViewToggle`, `useFavoriteToggle`, pure `filterChips.ts`).
+  - Pure rules extracted and unit-tested (now 270 unit tests). Remaining: `SearchFilterBar`, `LandlordForm`, `SchoolCombobox`, `HobbySelector`, `RoomPreviewCard`, `ConversationListItem`, `useListingForm`/`useListingSearch`.
 
 ## Elimination plan
 

@@ -7,12 +7,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/ui/popover";
 import { Map as MapIcon, List as ListIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { useListingSearch } from "@/hooks/useListingSearch";
-
-export const TYPE_OPTIONS = [
-  { value: "room", label: "Phòng trọ" },
-  { value: "apartment", label: "Căn hộ" },
-  { value: "house", label: "Nhà nguyên căn" },
-] as const;
+import { TYPE_OPTIONS } from "./filterChips";
 
 export const RADIUS_OPTIONS = [
   { value: "1", label: "Trong 1 km" },
