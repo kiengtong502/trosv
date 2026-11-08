@@ -1,0 +1,37 @@
+import {
+  BookOpen,
+  Camera,
+  ChefHat,
+  Clapperboard,
+  Code,
+  Coffee,
+  Dumbbell,
+  Feather,
+  Gamepad2,
+  Goal,
+  GraduationCap,
+  Music,
+  Palette,
+  PawPrint,
+  Plane,
+  type LucideIcon,
+} from "lucide-react";
+
+/** One icon per preset hobby key (a single consistent set). */
+export const HOBBY_ICONS: Record<string, LucideIcon> = {
+  music: Music,
+  gym: Dumbbell,
+  reading: BookOpen,
+  gaming: Gamepad2,
+  cooking: ChefHat,
+  photography: Camera,
+  football: Goal,
+  studying: GraduationCap,
+  movies: Clapperboard,
+  travel: Plane,
+  badminton: Feather,
+  cafés: Coffee,
+  coding: Code,
+  art: Palette,
+  pets: PawPrint,
+};

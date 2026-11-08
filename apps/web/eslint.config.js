@@ -15,10 +15,8 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 const LIMITS = { complexity: 12, lines: 120 };
 const DEBT = {
   "src/components/AiChatWidget.tsx": { complexity: 12, lines: 158 },
-  "src/components/HobbySelector.tsx": { complexity: 12, lines: 230 },
   "src/components/ListingCard.tsx": { complexity: 14, lines: 170 },
   "src/components/ListingMap.tsx": { complexity: 12, lines: 149 },
-  "src/components/SchoolCombobox.tsx": { complexity: 15, lines: 285 },
   "src/components/shell.tsx": { complexity: 12, lines: 153 },
   "src/hooks/useListingForm.ts": { complexity: 17, lines: 179 },
   "src/hooks/useListingSearch.ts": { complexity: 12, lines: 162 },
@@ -36,7 +34,6 @@ const DEBT = {
   "src/pages/messages/thread/threadLayout.ts": { complexity: 15, lines: 120 },
   "src/pages/profile/ProfileHabitsCard.tsx": { complexity: 12, lines: 170 },
   "src/pages/room/RoomContactCard.tsx": { complexity: 16, lines: 120 },
-  "src/pages/search/SearchFilterBar.tsx": { complexity: 12, lines: 217 },
   "src/ui/illustrations.tsx": { complexity: 12, lines: 161 },
 };
 
