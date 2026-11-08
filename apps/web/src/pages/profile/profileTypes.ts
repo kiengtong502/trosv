@@ -54,6 +54,19 @@ export function getInitialForm(user: User): ProfileFormState {
   };
 }
 
+const TEXT_FIELDS = ["name", "phone", "bio"] as const;
+const STUDENT_TEXT_FIELDS = ["interests"] as const;
+const STUDENT_EXACT_FIELDS = [
+  "school_id",
+  "budget_min",
+  "budget_max",
+  "sleep_schedule",
+  "cleanliness",
+  "smoking",
+  "personality",
+  "looking_for_roommate",
+] as const;
+
 export function isFormDirty(
   current: ProfileFormState | null,
   initial: ProfileFormState | null,
@@ -61,23 +74,10 @@ export function isFormDirty(
 ): boolean {
   if (!current || !initial) return false;
 
-  if (current.name.trim() !== initial.name.trim()) return true;
-  if (current.phone.trim() !== initial.phone.trim()) return true;
-  if (current.bio.trim() !== initial.bio.trim()) return true;
+  const textFields = isStudent ? [...TEXT_FIELDS, ...STUDENT_TEXT_FIELDS] : TEXT_FIELDS;
+  if (textFields.some((f) => current[f].trim() !== initial[f].trim())) return true;
 
-  if (isStudent) {
-    if (current.school_id !== initial.school_id) return true;
-    if (current.budget_min !== initial.budget_min) return true;
-    if (current.budget_max !== initial.budget_max) return true;
-    if (current.sleep_schedule !== initial.sleep_schedule) return true;
-    if (current.cleanliness !== initial.cleanliness) return true;
-    if (current.smoking !== initial.smoking) return true;
-    if (current.personality !== initial.personality) return true;
-    if (current.interests.trim() !== initial.interests.trim()) return true;
-    if (current.looking_for_roommate !== initial.looking_for_roommate) return true;
-  }
-
-  return false;
+  return isStudent && STUDENT_EXACT_FIELDS.some((f) => current[f] !== initial[f]);
 }
 
 /**

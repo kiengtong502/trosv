@@ -1,8 +1,5 @@
-import { Link } from "react-router-dom";
 import { useSchools } from "@/hooks/useReferenceData";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { ROUTES, route } from "@/constants/routes";
-import { PageHeader } from "@/ui/page-header";
 import { budgetHint, getCompleteness, sectionSummaries } from "./profile/profileTypes";
 import { ProfileSection } from "./profile/ProfileSection";
 import { ProfileBasicInfoCard } from "./profile/ProfileBasicInfoCard";
@@ -10,7 +7,7 @@ import { ProfileAcademicCard } from "./profile/ProfileAcademicCard";
 import { ProfileHabitsCard } from "./profile/ProfileHabitsCard";
 import { ProfileCompleteness } from "./profile/ProfileCompleteness";
 import { ProfileSaveBar } from "./profile/ProfileSaveBar";
-import { AvatarPicker } from "./profile/AvatarPicker";
+import { ProfileHeader } from "./profile/ProfileHeader";
 import { useProfileForm } from "./profile/useProfileForm";
 
 export default function Profile() {
@@ -26,22 +23,7 @@ export default function Profile() {
 
   return (
     <>
-      <PageHeader
-        className="max-w-2xl"
-        leading={<AvatarPicker name={user.name} avatar={user.avatar} onSaved={p.refreshUser} />}
-        title={user.name}
-        description={`${isStudent ? "Sinh viên" : "Chủ nhà"} · ${user.email}`}
-        actions={
-          isStudent ? (
-            <Link
-              to={route(ROUTES.STUDENT_PUBLIC, { id: user.id })}
-              className="text-sm font-medium text-plate hover:underline"
-            >
-              Xem trang công khai →
-            </Link>
-          ) : null
-        }
-      />
+      <ProfileHeader user={user} onAvatarSaved={p.refreshUser} />
 
       <div className="mx-auto w-full max-w-2xl px-4 pb-24 pt-6 sm:px-6 lg:px-8">
         <ProfileCompleteness percent={percent} missing={missing} />
