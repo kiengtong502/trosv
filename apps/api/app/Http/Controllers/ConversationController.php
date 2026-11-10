@@ -37,6 +37,7 @@ class ConversationController extends Controller
 
         /** @var User $student */
         $student = $this->authUser($request);
+        /** @var Listing $listing */
         $listing = Listing::findOrFail($validated['listing_id']);
 
         // A student cannot start a conversation about their own listing
@@ -44,13 +45,7 @@ class ConversationController extends Controller
             throw new AuthorizationException;
         }
 
-        [$conversation, $wasCreated] = $this->conversationService->findOrCreateConversation(
-            $student->id,
-            $listing->user_id,
-            $listing->id
-        );
-
-        $this->conversationService->sendRoomLinkIfNecessary($conversation, $student, $listing);
+        [$conversation, $wasCreated] = $this->conversationService->startListingConversation($student, $listing);
 
         return $this->respondWithConversation($request, $conversation, $wasCreated);
     }
@@ -62,10 +57,12 @@ class ConversationController extends Controller
      */
     public function storeDirect(DirectMessageRequest $request, User $user): JsonResponse
     {
-        [$conversation, $wasCreated] = $this->conversationService->findOrCreateConversation(
-            $this->authUser($request)->id,
-            $user->id,
-            null
+        /** @var User $student */
+        $student = $this->authUser($request);
+
+        [$conversation, $wasCreated] = $this->conversationService->startDirectConversation(
+            $student,
+            $user
         );
 
         return $this->respondWithConversation($request, $conversation, $wasCreated);
@@ -80,17 +77,7 @@ class ConversationController extends Controller
     {
         /** @var User $user */
         $user = $this->authUser($request);
-
-        $conversations = Conversation::query()
-            ->whereIn('id', $user->studentConversations()->select('id')
-                ->unionAll($user->landlordConversations()->select('id')))
-            ->with(['listing.coverImage', 'student', 'landlord', 'lastMessage'])
-            ->withCount(['messages as unread_count' => fn ($q) => $q
-                ->where('sender_id', '!=', $user->id)
-                ->whereNull('read_at'),
-            ])
-            ->orderByDesc('updated_at')
-            ->get();
+        $conversations = $this->conversationService->getUserConversations($user);
 
         return response()->json([
             'data' => ConversationResource::collection($conversations)->resolve($request),
@@ -106,23 +93,11 @@ class ConversationController extends Controller
         $this->authorizeParticipant($request, $conversation);
 
         $validated = $request->validated();
+        $afterId = isset($validated['after_id']) ? (int) $validated['after_id'] : null;
 
-        $query = $conversation->messages()
-            ->with('sender:id')
-            // Facebook "delete for me": hide rows the viewer removed.
-            // JSON array cast: check membership without a LIKE on the raw
-            // text (Postgres) - the ids are stored as ["4",...] or [4,...].
-            ->where(fn ($q) => $q
-                ->whereNull('deleted_for_user_ids')
-                ->orWhereJsonDoesntContain('deleted_for_user_ids', $this->authUser($request)->id))
-            ->orderBy('id')
-            ->limit(500);
-
-        if (isset($validated['after_id'])) {
-            $query->where('id', '>', (int) $validated['after_id']);
-        }
-
-        $messages = $query->get();
+        /** @var User $user */
+        $user = $this->authUser($request);
+        $messages = $this->conversationService->getConversationMessages($conversation, $user, $afterId);
 
         return response()->json([
             'data' => MessageResource::collection($messages)->resolve($request),
