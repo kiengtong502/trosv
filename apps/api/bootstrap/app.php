@@ -62,7 +62,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // (TLS profile) set TRUSTED_PROXIES="*": the ONLY route to the backend
         // is the compose-internal proxy, so request->ip() becomes the real
         // client IP (rate limiting, logging, signed-URL cookies).
-        $middleware->trustProxies(at: env('TRUSTED_PROXIES') ?: null);
+        $trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? $_ENV['TRUSTED_PROXIES'] ?? null;
+        if (is_string($trustedProxies) && $trustedProxies !== '') {
+            $middleware->trustProxies(at: $trustedProxies);
+        }
 
         $middleware->alias([
             'role' => EnsureRole::class,

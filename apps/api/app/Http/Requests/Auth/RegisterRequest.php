@@ -29,8 +29,8 @@ class RegisterRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                function (string $attribute, mixed $value, \Closure $fail) {
-                    if (User::where('email', strtolower((string) $value))->exists()) {
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (is_string($value) && User::where('email', strtolower($value))->exists()) {
                         $fail('Email đã được sử dụng.');
                     }
                 },

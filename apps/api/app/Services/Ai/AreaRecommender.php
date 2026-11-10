@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Ward;
 use App\Services\AiClient;
 use App\Support\Geo;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
 class AreaRecommender
@@ -33,9 +34,10 @@ class AreaRecommender
             ]);
         }
 
-        $budgetMin ??= 0;
-        $budgetMax ??= PHP_INT_MAX;
+        $budgetMin = is_numeric($budgetMin) ? (int) $budgetMin : 0;
+        $budgetMax = is_numeric($budgetMax) ? (int) $budgetMax : PHP_INT_MAX;
 
+        /** @var School|null $school */
         $school = $schoolId !== null ? School::find($schoolId) : null;
 
         $wards = Ward::query()
@@ -48,15 +50,15 @@ class AreaRecommender
 
         $areas = $wards->map(function (Ward $ward) use ($school) {
             $listings = $ward->listings;
-            $prices = $listings->pluck('price')->map(fn ($p) => (float) $p)->sort()->values();
-            $ratings = $listings->pluck('reviews_avg_listing_rating')->filter()->map(fn ($r) => (float) $r);
+            $prices = $listings->pluck('price')->map(fn (mixed $p): float => is_numeric($p) ? (float) $p : 0.0)->sort()->values();
+            $ratings = $listings->pluck('reviews_avg_listing_rating')->filter()->map(fn (mixed $r): float => is_numeric($r) ? (float) $r : 0.0);
 
             return [
                 'ward_id' => $ward->id,
                 'name' => $ward->name,
                 'listings_count' => $listings->count(),
-                'avg_price' => $prices->isEmpty() ? null : (int) round($prices->avg()),
-                'avg_rating' => $ratings->isEmpty() ? null : round($ratings->avg(), 1),
+                'avg_price' => $prices->isEmpty() ? null : (int) round((float) $prices->avg()),
+                'avg_rating' => $ratings->isEmpty() ? null : round((float) $ratings->avg(), 1),
                 'distance_to_school_km' => ($school !== null && $school->latitude !== null
                     && $school->longitude !== null && $ward->latitude !== null && $ward->longitude !== null)
                     ? Geo::haversineKm(
@@ -75,8 +77,8 @@ class AreaRecommender
 
         $response = $this->ai->post('/areas', [
             'preferences' => [
-                'budget_min' => (int) $budgetMin,
-                'budget_max' => (int) $budgetMax,
+                'budget_min' => $budgetMin,
+                'budget_max' => $budgetMax,
                 'priorities' => $data['priorities'] ?? [],
             ],
             // Names go through: ward names are not personal data and the
@@ -86,10 +88,15 @@ class AreaRecommender
         ], ['results']);
 
         // Re-attach name + stats for the wards the AI kept.
+        /** @var Collection<int, array{ward_id: int, name: string, listings_count: int, avg_price: int|null, avg_rating: float|null, distance_to_school_km: float|null}> $byId */
         $byId = collect($areas)->keyBy('ward_id');
         $results = [];
-        foreach ($response['results'] as $row) {
-            $area = $byId->get($row['ward_id'] ?? null);
+
+        /** @var list<array{ward_id: int, reason?: string}> $aiRows */
+        $aiRows = is_array($response['results'] ?? null) ? $response['results'] : [];
+        foreach ($aiRows as $row) {
+            $targetWardId = (int) ($row['ward_id'] ?? 0);
+            $area = $byId->get($targetWardId);
             if ($area === null || count($results) >= 3) {
                 continue;
             }

@@ -37,7 +37,7 @@ class MessageDeletionController extends Controller
             if ($message->isUnsent()) {
                 return response()->json(['data' => null]); // idempotent
             }
-            if ($message->created_at->lt(now()->subMinutes(self::UNSEND_WINDOW_MINUTES))) {
+            if ($message->created_at !== null && $message->created_at->lt(now()->subMinutes(self::UNSEND_WINDOW_MINUTES))) {
                 return response()->json([
                     'message' => 'Đã quá thời gian cho phép thu hồi tin nhắn.',
                 ], 422);
@@ -49,11 +49,12 @@ class MessageDeletionController extends Controller
             // re-checked on the FRESH row, so the loser sees isUnsent() and
             // short-circuits idempotently.
             $unsent = DB::transaction(function () use ($message): bool {
+                /** @var Message|null $fresh */
                 $fresh = Message::query()
                     ->whereKey($message->getKey())
                     ->lockForUpdate()
                     ->first();
-                if ($fresh->isUnsent()) {
+                if ($fresh === null || $fresh->isUnsent()) {
                     return false;
                 }
                 $fresh->deleted_at = now();
@@ -75,7 +76,8 @@ class MessageDeletionController extends Controller
         // scope=self: hidden only for this viewer; idempotent per user.
         // Re-read via fresh() so a concurrent delete-for-self from the same
         // user (double-tap) is not clobbered by a stale array.
-        $hidden = $message->fresh()->deleted_for_user_ids ?? [];
+        $fresh = $message->fresh() ?? $message;
+        $hidden = $fresh->deleted_for_user_ids ?? [];
         if (! in_array($user->id, $hidden, true)) {
             $hidden[] = $user->id;
             $message->deleted_for_user_ids = $hidden;

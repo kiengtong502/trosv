@@ -28,6 +28,7 @@ class PriceAdvisor
         $minArea = (float) $listing->area_m2 * 0.6;
         $maxArea = (float) $listing->area_m2 * 1.4;
 
+        /** @var list<int|float> $comparables */
         $comparables = Listing::query()
             ->visible()
             ->where('id', '!=', $listing->id)
@@ -35,6 +36,8 @@ class PriceAdvisor
             ->where('type', $listing->type)
             ->whereBetween('area_m2', [$minArea, $maxArea])
             ->pluck('price')
+            ->map(fn (mixed $p): int => is_numeric($p) ? (int) $p : 0)
+            ->values()
             ->all();
 
         if (count($comparables) < 3) {
@@ -63,13 +66,16 @@ class PriceAdvisor
             'stats' => $stats,
         ], ['verdict', 'fair_min', 'fair_max', 'tips', 'message']);
 
+        $fairMin = $response['fair_min'] ?? 0;
+        $fairMax = $response['fair_max'] ?? 0;
+
         return [
             'listing_price' => (int) $listing->price,
-            'verdict' => $response['verdict'],
-            'fair_min' => (int) $response['fair_min'],
-            'fair_max' => (int) $response['fair_max'],
+            'verdict' => is_string($response['verdict'] ?? null) ? $response['verdict'] : '',
+            'fair_min' => is_numeric($fairMin) ? (int) $fairMin : 0,
+            'fair_max' => is_numeric($fairMax) ? (int) $fairMax : 0,
             'tips' => array_values(array_filter((array) $response['tips'], 'is_string')),
-            'message' => $response['message'],
+            'message' => is_string($response['message'] ?? null) ? $response['message'] : '',
             'stats' => $stats,
         ];
     }

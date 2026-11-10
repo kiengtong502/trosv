@@ -19,9 +19,10 @@ class DescriptionGenerator
      */
     public function generate(array $data): array
     {
-        $ward = isset($data['ward_id'])
-            ? Ward::find($data['ward_id'])?->name
+        $wardModel = isset($data['ward_id'])
+            ? Ward::query()->find($data['ward_id'])
             : null;
+        $ward = $wardModel instanceof Ward ? $wardModel->name : null;
         $amenities = isset($data['amenity_ids'])
             ? Amenity::whereIn('id', $data['amenity_ids'])->pluck('name')->values()->all()
             : null;

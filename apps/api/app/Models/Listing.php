@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Support\Geo;
+use App\Support\GeoQuery;
 use Database\Factories\ListingFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
@@ -139,10 +138,10 @@ class Listing extends Model
      * flavor from ERD §4 (parameters must be CAST to float8; placeholder
      * order: point lat, point lng, point lat).
      */
-    public const DISTANCE_SQL =
-        Geo::EARTH_RADIUS_KM.' * ACOS(LEAST(1, COS(RADIANS(CAST(? AS float8))) * COS(RADIANS(latitude)) * '
-        .'COS(RADIANS(longitude) - RADIANS(CAST(? AS float8))) + '
-        .'SIN(RADIANS(CAST(? AS float8))) * SIN(RADIANS(latitude))))';
+    /**
+     * Distance SQL expression delegated to GeoQuery.
+     */
+    public const DISTANCE_SQL = GeoQuery::DISTANCE_SQL;
 
     /**
      * Scope: public listings only.
@@ -157,25 +156,13 @@ class Listing extends Model
 
     /**
      * Scope: add a `distance_km` select from the given point, optionally
-     * filtering to listings within $maxKm. Callers can `orderBy('distance_km')`
-     * afterwards. Bindings follow the placeholder order in DISTANCE_SQL;
-     * 'select' bindings are flattened BEFORE 'where' bindings by the query
-     * builder, matching the placeholder order in the SQL above.
+     * filtering to listings within $maxKm.
      *
      * @param  Builder<Listing>  $query
      * @return Builder<Listing>
      */
     public function scopeNearby(Builder $query, float $latitude, float $longitude, ?float $maxKm = null): Builder
     {
-        $bindings = [$latitude, $longitude, $latitude];
-
-        $query->addSelect(DB::raw(self::DISTANCE_SQL.' AS distance_km'));
-        $query->addBinding($bindings, 'select');
-
-        if ($maxKm !== null) {
-            $query->whereRaw(self::DISTANCE_SQL.' <= ?', array_merge($bindings, [$maxKm]));
-        }
-
-        return $query;
+        return GeoQuery::applyDistance($query, $latitude, $longitude, $maxKm);
     }
 }

@@ -42,7 +42,7 @@ class AiClient
             throw new AiUnavailableException("AI service returned HTTP {$response->status()}.");
         }
 
-        /** @var mixed $data */
+        /** @var array<string, mixed> $data */
         $data = $response->json();
 
         if (! is_array($data)) {

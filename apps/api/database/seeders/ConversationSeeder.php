@@ -30,7 +30,10 @@ class ConversationSeeder extends Seeder
         ];
 
         foreach ($students as $k => $student) {
-            $listing = $visibleListings[$k];
+            $listing = $visibleListings[$k] ?? null;
+            if ($listing === null) {
+                continue;
+            }
             $landlordId = $listing->user_id;
 
             $existing = Conversation::where(function ($q) use ($student, $landlordId) {

@@ -9,6 +9,8 @@ use App\Models\Listing;
 use App\Models\Message;
 use App\Models\User;
 use App\Support\StoragePath;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
@@ -46,6 +48,80 @@ class ConversationService
     }
 
     /**
+     * Start a conversation about a listing between a student and a landlord.
+     *
+     * @return array{0: Conversation, 1: bool}
+     */
+    public function startListingConversation(User $student, Listing $listing): array
+    {
+        [$conversation, $wasCreated] = $this->findOrCreateConversation(
+            $student->id,
+            $listing->user_id,
+            $listing->id
+        );
+
+        $this->sendRoomLinkIfNecessary($conversation, $student, $listing);
+
+        return [$conversation, $wasCreated];
+    }
+
+    /**
+     * Start a direct conversation between two users without a listing.
+     *
+     * @return array{0: Conversation, 1: bool}
+     */
+    public function startDirectConversation(User $student, User $targetUser): array
+    {
+        return $this->findOrCreateConversation($student->id, $targetUser->id, null);
+    }
+
+    /**
+     * Get user conversations with unread counts and eager loaded relationships.
+     *
+     * @return Collection<int, Conversation>
+     */
+    public function getUserConversations(User $user): Collection
+    {
+        $studentQuery = $user->studentConversations()->select('id')->getQuery();
+        $landlordQuery = $user->landlordConversations()->select('id')->getQuery();
+
+        /** @var Collection<int, Conversation> */
+        return Conversation::query()
+            ->whereIn('id', $studentQuery->unionAll($landlordQuery))
+            ->with(['listing.coverImage', 'student', 'landlord', 'lastMessage'])
+            ->withCount(['messages as unread_count' => function ($q) use ($user): void {
+                /** @var Builder<Message> $q */
+                $q->where('sender_id', '!=', $user->id)
+                    ->whereNull('read_at');
+            }])
+            ->orderByDesc('updated_at')
+            ->get();
+    }
+
+    /**
+     * Get messages for a conversation, filtering out messages deleted by the viewer.
+     *
+     * @return Collection<int, Message>
+     */
+    public function getConversationMessages(Conversation $conversation, User $viewer, ?int $afterId = null): Collection
+    {
+        $query = $conversation->messages()
+            ->with('sender:id')
+            ->where(fn ($q) => $q
+                ->whereNull('deleted_for_user_ids')
+                ->orWhereJsonDoesntContain('deleted_for_user_ids', $viewer->id))
+            ->orderBy('id')
+            ->limit(500);
+
+        if ($afterId !== null) {
+            $query->where('id', '>', $afterId);
+        }
+
+        /** @var Collection<int, Message> */
+        return $query->get();
+    }
+
+    /**
      * Send automatic room post link to landlord if not recently sent within 15 minutes.
      */
     public function sendRoomLinkIfNecessary(Conversation $conversation, User $student, Listing $listing): void
@@ -75,7 +151,7 @@ class ConversationService
     /**
      * Send a message with optional file attachment.
      *
-     * @param  array{body?: string|null}  $data
+     * @param  array<string, mixed>  $data
      */
     public function sendMessage(
         Conversation $conversation,
@@ -98,14 +174,14 @@ class ConversationService
             $message = $conversation->messages()->create([
                 'sender_id' => $sender->id,
                 'body' => $data['body'] ?? '',
-                'attachment_path' => $attachmentPath,
+                'attachment_path' => is_string($attachmentPath) ? $attachmentPath : null,
                 'attachment_name' => $attachmentName,
             ]);
         } catch (Throwable $e) {
             // No orphaned upload on disk if the INSERT fails after the file
             // was already stored (MessageSent broadcasts outside the try,
             // exactly once, only after a committed row).
-            if ($attachmentPath !== null) {
+            if (is_string($attachmentPath)) {
                 Storage::disk('local')->delete($attachmentPath);
             }
 
@@ -141,7 +217,7 @@ class ConversationService
 
         // Sender hiển thị "Đã xem" ngay khi receiver mở thread.
         rescue(
-            fn () => broadcast(new MessageSeen($conversation, $user, $now->toISOString())),
+            fn () => broadcast(new MessageSeen($conversation, $user, (string) $now->toISOString())),
             report: false
         );
     }

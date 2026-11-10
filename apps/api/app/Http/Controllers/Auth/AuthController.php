@@ -22,12 +22,15 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
+        $email = $data['email'] ?? '';
+        assert(is_string($email));
+
         // forceCreate: 'role' is deliberately NOT fillable (step 10 security -
         // no endpoint may change roles through mass assignment), but the
         // registration endpoint legitimately sets it at creation time.
         $user = User::forceCreate([
             'name' => $data['name'],
-            'email' => strtolower($data['email']),
+            'email' => strtolower($email),
             'password' => $data['password'], // hashed via the model cast
             'role' => $data['role'],
             'avatar' => Arr::random(User::AVATARS),

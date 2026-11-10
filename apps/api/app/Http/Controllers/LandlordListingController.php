@@ -61,7 +61,7 @@ class LandlordListingController extends Controller
         ]);
 
         if (array_key_exists('amenity_ids', $data)) {
-            $listing->amenities()->sync($data['amenity_ids']);
+            $listing->amenities()->sync((array) $data['amenity_ids']);
         }
 
         $listing->load(['ward', 'coverImage', 'images', 'amenities', 'landlord']);
@@ -83,7 +83,7 @@ class LandlordListingController extends Controller
         $listing->update(collect($data)->except('amenity_ids')->all());
 
         if (array_key_exists('amenity_ids', $data)) {
-            $listing->amenities()->sync($data['amenity_ids']);
+            $listing->amenities()->sync((array) $data['amenity_ids']);
         }
 
         $refreshed = $listing->fresh(['ward', 'coverImage', 'images', 'amenities', 'landlord']);

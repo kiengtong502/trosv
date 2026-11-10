@@ -19,6 +19,7 @@ class ChatAssistant
     {
         $listingPayload = null;
         if (! empty($data['listing_id'])) {
+            /** @var Listing|null $listing */
             $listing = Listing::query()
                 ->visible()
                 ->with(['amenities', 'ward'])
@@ -37,11 +38,15 @@ class ChatAssistant
             }
         }
 
+        /** @var list<array{role: string, content: string}> $rawHistory */
+        $rawHistory = is_array($data['history'] ?? null) ? array_values($data['history']) : [];
+
         $response = $this->ai->post('/chat', [
             'message' => $data['message'],
             'history' => array_map(
-                fn (array $turn) => ['role' => $turn['role'], 'content' => $turn['content']],
-                array_slice($data['history'] ?? [], -10),
+                /** @param array{role: string, content: string} $turn */
+                fn (array $turn): array => ['role' => (string) $turn['role'], 'content' => (string) $turn['content']],
+                array_slice($rawHistory, -10),
             ),
             'listing' => $listingPayload,
         ], ['reply']);
