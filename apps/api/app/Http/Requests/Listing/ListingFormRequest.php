@@ -71,7 +71,8 @@ abstract class ListingFormRequest extends FormRequest
     {
         foreach ($rules as $field => $constraints) {
             if (in_array('required', $constraints, true)) {
-                $rules[$field] = array_merge(['sometimes'], array_values(array_diff($constraints, ['required'])));
+                $filtered = array_filter($constraints, fn (mixed $c): bool => $c !== 'required');
+                $rules[$field] = array_merge(['sometimes'], array_values($filtered));
             }
         }
 

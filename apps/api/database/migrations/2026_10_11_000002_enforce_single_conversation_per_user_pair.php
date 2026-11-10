@@ -19,7 +19,13 @@ return new class extends Migration
 
         foreach ($duplicates as $dup) {
             // Parse array of ids (e.g. {1,8,9} from PostgreSQL)
-            $raw = trim($dup->ids, '{}');
+            $rawIds = is_object($dup) && isset($dup->ids) && is_string($dup->ids)
+                ? $dup->ids
+                : (is_array($dup) && isset($dup['ids']) && is_string($dup['ids']) ? $dup['ids'] : '');
+            $raw = trim($rawIds, '{}');
+            if ($raw === '') {
+                continue;
+            }
             $ids = array_map('intval', explode(',', $raw));
             if (count($ids) > 1) {
                 $primaryId = array_shift($ids);

@@ -27,9 +27,9 @@ class ListingBrowseRequest extends FormRequest
             'price_min' => ['nullable', 'integer', 'min:0'],
             // gte:price_min would fail when price_min is absent, so the
             // cross-field check only runs when both bounds are provided.
-            'price_max' => ['nullable', 'integer', 'min:0', function (string $attribute, mixed $value, \Closure $fail) {
+            'price_max' => ['nullable', 'integer', 'min:0', function (string $attribute, mixed $value, \Closure $fail): void {
                 $min = $this->input('price_min');
-                if ($min !== null && $min !== '' && (int) $value < (int) $min) {
+                if ($min !== null && $min !== '' && is_numeric($value) && is_numeric($min) && (int) $value < (int) $min) {
                     $fail('Giá tối đa phải lớn hơn hoặc bằng giá tối thiểu.');
                 }
             }],

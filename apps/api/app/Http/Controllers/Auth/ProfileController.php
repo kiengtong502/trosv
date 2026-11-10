@@ -40,7 +40,7 @@ class ProfileController extends Controller
         $min = $request->input('budget_min', $user->budget_min);
         $max = $request->input('budget_max', $user->budget_max);
 
-        if ($min !== null && $max !== null && (int) $max < (int) $min) {
+        if ($min !== null && $max !== null && is_numeric($min) && is_numeric($max) && (int) $max < (int) $min) {
             throw ValidationException::withMessages([
                 'budget_max' => ['Ngân sách tối đa phải lớn hơn hoặc bằng ngân sách tối thiểu.'],
             ]);

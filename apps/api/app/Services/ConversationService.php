@@ -151,7 +151,7 @@ class ConversationService
     /**
      * Send a message with optional file attachment.
      *
-     * @param  array{body?: string|null}  $data
+     * @param  array<string, mixed>  $data
      */
     public function sendMessage(
         Conversation $conversation,
@@ -174,14 +174,14 @@ class ConversationService
             $message = $conversation->messages()->create([
                 'sender_id' => $sender->id,
                 'body' => $data['body'] ?? '',
-                'attachment_path' => $attachmentPath,
+                'attachment_path' => is_string($attachmentPath) ? $attachmentPath : null,
                 'attachment_name' => $attachmentName,
             ]);
         } catch (Throwable $e) {
             // No orphaned upload on disk if the INSERT fails after the file
             // was already stored (MessageSent broadcasts outside the try,
             // exactly once, only after a committed row).
-            if ($attachmentPath !== null) {
+            if (is_string($attachmentPath)) {
                 Storage::disk('local')->delete($attachmentPath);
             }
 
@@ -217,7 +217,7 @@ class ConversationService
 
         // Sender hiển thị "Đã xem" ngay khi receiver mở thread.
         rescue(
-            fn () => broadcast(new MessageSeen($conversation, $user, $now->toISOString())),
+            fn () => broadcast(new MessageSeen($conversation, $user, (string) $now->toISOString())),
             report: false
         );
     }

@@ -41,6 +41,9 @@ class ApiThrottle
         return tap($response, fn () => $this->limiter->hit($key, $decaySeconds));
     }
 
+    /**
+     * @return array<string, int|string>
+     */
     protected function getHeaders(string $key, int $maxAttempts): array
     {
         return [

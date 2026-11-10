@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property Carbon|null $seen_at
  * @property list<int>|null $deleted_for_user_ids
- * @property array<string, mixed>|null $reactions
+ * @property array<int|string, mixed>|null $reactions
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

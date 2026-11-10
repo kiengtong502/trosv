@@ -43,7 +43,10 @@ class AiController extends Controller
      */
     public function priceAdvice(PriceAdviceRequest $request): JsonResponse
     {
-        return response()->json(['data' => $this->priceAdvice->advise((int) $request->validated('listing_id'))]);
+        $listingId = $request->validated('listing_id');
+        $id = is_numeric($listingId) ? (int) $listingId : 0;
+
+        return response()->json(['data' => $this->priceAdvice->advise($id)]);
     }
 
     /**

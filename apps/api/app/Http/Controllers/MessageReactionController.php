@@ -29,7 +29,7 @@ class MessageReactionController extends Controller
         // fresh(): re-read the row so a reaction arriving milliseconds
         // earlier (double-tap on slow networks, other device) is never
         // clobbered by a stale in-memory reactions map.
-        $fresh = $message->fresh();
+        $fresh = $message->fresh() ?? $message;
         $reactions = $fresh->reactions ?? [];
         $mine = (string) $user->id;
 
@@ -53,7 +53,7 @@ class MessageReactionController extends Controller
 
         $user = $this->authUser($request);
 
-        $fresh = $message->fresh();
+        $fresh = $message->fresh() ?? $message;
         $reactions = $fresh->reactions ?? [];
         unset($reactions[(string) $user->id]);
         $message->reactions = $reactions;

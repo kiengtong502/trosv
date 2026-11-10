@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Typography\FontFactory;
 
 class ListingSeeder extends Seeder
 {
@@ -109,8 +110,8 @@ class ListingSeeder extends Seeder
 
             for ($i = 0; $i < 16; $i++) {
                 // Phân bổ đều cho các chủ nhà (để mỗi chủ nhà sở hữu nhiều phòng)
-                $landlord = $landlords[($globalIndex - 1) % $landlords->count()];
-                $ward = $cityWards[$i % $cityWards->count()];
+                $landlord = $landlords[($globalIndex - 1) % $landlords->count()] ?? null;
+                $ward = $cityWards[$i % $cityWards->count()] ?? null;
                 $tpl = $listingTemplates[$i % count($listingTemplates)];
                 $street = $streets[$i % count($streets)];
 
@@ -119,7 +120,12 @@ class ListingSeeder extends Seeder
                 $houseNumber = mt_rand(1, 280);
 
                 // Gần một trường cụ thể để demo tính năng lọc khoảng cách
-                $school = $citySchools[$i % $citySchools->count()];
+                $school = $citySchools[$i % $citySchools->count()] ?? null;
+
+                if (! $landlord instanceof User || ! $ward instanceof Ward || ! $school instanceof School) {
+                    continue;
+                }
+
                 // Tọa độ thực trong bán kính 200m - 800m quanh trường hoặc phường
                 $lat = (float) $school->latitude + (mt_rand(-35, 35) / 10000);
                 $lng = (float) $school->longitude + (mt_rand(-35, 35) / 10000);
@@ -166,13 +172,13 @@ class ListingSeeder extends Seeder
 
         $image = $manager->createImage(640, 424)->fill($bg);
 
-        $image->text($label, 320, 190, function ($font) {
+        $image->text($label, 320, 190, function (FontFactory $font): void {
             $font->size(5);
             $font->color('#FFFFFF');
             $font->align('center', 'center');
         });
 
-        $image->text($sub, 320, 230, function ($font) {
+        $image->text($sub, 320, 230, function (FontFactory $font): void {
             $font->size(4);
             $font->color('#F3F4F6');
             $font->align('center', 'center');

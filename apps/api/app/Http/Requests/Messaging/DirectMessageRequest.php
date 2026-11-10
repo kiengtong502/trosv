@@ -17,10 +17,11 @@ class DirectMessageRequest extends FormRequest
         $target = $this->route('user');
 
         if (! $target instanceof User) {
-            $target = User::find($target);
+            $userModel = User::find($target);
+            $target = $userModel instanceof User ? $userModel : null;
         }
 
-        if (! $target) {
+        if (! $target instanceof User) {
             return false;
         }
 

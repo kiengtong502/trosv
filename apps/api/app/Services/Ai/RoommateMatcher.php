@@ -54,8 +54,12 @@ class RoommateMatcher
         // cap at 5 and re-attach the personal fields Backend owns.
         $byId = $candidates->keyBy('id');
         $results = [];
-        foreach ($response['results'] as $row) {
-            $candidate = $byId->get($row['id'] ?? null);
+
+        /** @var list<array{id: int, score?: int|float, reason?: string}> $aiRows */
+        $aiRows = is_array($response['results'] ?? null) ? $response['results'] : [];
+        foreach ($aiRows as $row) {
+            $candidateId = (int) ($row['id'] ?? 0);
+            $candidate = $byId->get($candidateId);
             if ($candidate === null || count($results) >= 5) {
                 continue;
             }
@@ -83,7 +87,11 @@ class RoommateMatcher
         return $results;
     }
 
-    /** The AI contract profile shape - no name, email or phone here. */
+    /**
+     * The AI contract profile shape - no name, email or phone here.
+     *
+     * @return array<string, mixed>
+     */
     private function candidatePayload(User $user): array
     {
         return [

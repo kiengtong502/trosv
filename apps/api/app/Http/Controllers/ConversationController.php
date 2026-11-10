@@ -93,7 +93,7 @@ class ConversationController extends Controller
         $this->authorizeParticipant($request, $conversation);
 
         $validated = $request->validated();
-        $afterId = isset($validated['after_id']) ? (int) $validated['after_id'] : null;
+        $afterId = isset($validated['after_id']) && is_numeric($validated['after_id']) ? (int) $validated['after_id'] : null;
 
         /** @var User $user */
         $user = $this->authUser($request);
