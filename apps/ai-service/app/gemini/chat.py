@@ -4,33 +4,16 @@ from __future__ import annotations
 
 import json
 import logging
-from pathlib import Path
 from typing import Any
 
 from google.genai import types
 from pydantic import BaseModel, Field
 
-from app.gemini.client import generate_with_fallback, get_client
+from app.gemini.client import generate_with_fallback, get_client, load_knowledge_base
 
 logger = logging.getLogger("ai_service.gemini.chat")
 
-
-def _load_knowledge_base() -> str:
-    candidates = [
-        Path(__file__).parent / "knowledge.md",
-        Path(__file__).parent.parent / "knowledge.md",
-        Path(__file__).parent.parent.parent / "knowledge.md",
-    ]
-    for p in candidates:
-        if p.exists():
-            try:
-                return p.read_text(encoding="utf-8")
-            except Exception as exc:
-                logger.warning(f"Failed to read knowledge file {p}: {exc}")
-    return ""
-
-
-KNOWLEDGE_BASE = _load_knowledge_base()
+KNOWLEDGE_BASE = load_knowledge_base()
 
 
 class ChatResponseSchema(BaseModel):

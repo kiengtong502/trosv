@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 from typing import Any
 
 from google import genai
@@ -68,3 +69,19 @@ def generate_with_fallback(
             )
     logger.warning(f"All Gemini models exhausted. Last error: {last_error}")
     return None
+
+
+def load_knowledge_base() -> str:
+    """Load grounding knowledge base markdown file across relative candidate paths."""
+    candidates = [
+        Path(__file__).parent / "knowledge.md",
+        Path(__file__).parent.parent / "knowledge.md",
+        Path(__file__).parent.parent.parent / "knowledge.md",
+    ]
+    for p in candidates:
+        if p.exists():
+            try:
+                return p.read_text(encoding="utf-8")
+            except Exception as exc:
+                logger.warning(f"Failed to read knowledge file {p}: {exc}")
+    return ""

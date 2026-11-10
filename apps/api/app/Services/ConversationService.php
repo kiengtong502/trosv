@@ -80,7 +80,7 @@ class ConversationService
      *
      * @return Collection<int, Conversation>
      */
-    public function getUserConversations(User $user)
+    public function getUserConversations(User $user): Collection
     {
         $studentQuery = $user->studentConversations()->select('id')->getQuery();
         $landlordQuery = $user->landlordConversations()->select('id')->getQuery();
@@ -103,7 +103,7 @@ class ConversationService
      *
      * @return Collection<int, Message>
      */
-    public function getConversationMessages(Conversation $conversation, User $viewer, ?int $afterId = null)
+    public function getConversationMessages(Conversation $conversation, User $viewer, ?int $afterId = null): Collection
     {
         $query = $conversation->messages()
             ->with('sender:id')

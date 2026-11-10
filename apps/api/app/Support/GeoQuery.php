@@ -56,13 +56,13 @@ class GeoQuery
      */
     public static function applyDistance(Builder $query, float $latitude, float $longitude, ?float $maxKm = null): Builder
     {
-        $bindings = [$latitude, $longitude, $latitude];
+        $bindings = self::distanceBindings($latitude, $longitude);
 
         $query->addSelect(DB::raw(self::DISTANCE_SQL.' AS distance_km'));
         $query->addBinding($bindings, 'select');
 
         if ($maxKm !== null) {
-            $query->whereRaw(self::DISTANCE_SQL.' <= ?', array_merge($bindings, [$maxKm]));
+            $query->whereRaw(self::DISTANCE_SQL.' <= ?', self::distanceBindings($latitude, $longitude, $maxKm));
         }
 
         return $query;

@@ -143,6 +143,7 @@ services:
       CACHE_STORE: array
       BCRYPT_ROUNDS: 4
       TRUSTED_PROXIES: ""
+      BROADCAST_CONNECTION: "null"
     entrypoint: ["sh", "-c", "touch /var/www/html/.env && exec docker-php-entrypoint \"$$@\"", "--"]
     volumes:
       - ./apps/api/tests:/var/www/html/tests:ro
