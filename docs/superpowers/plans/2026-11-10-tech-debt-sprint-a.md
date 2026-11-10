@@ -44,7 +44,7 @@
   - `GeoQuery::distanceBinding(float $lat, float $lng, ?float $maxKm = null): array`
   - `GeoQuery::addDistanceSelect(Builder $query, float $lat, float $lng, ?float $maxKm = null): void`
 
-- [ ] **Step 1: Write the failing unit test for `GeoQuery`**
+- [x] **Step 1: Write the failing unit test for `GeoQuery`**
 
 Create `apps/api/tests/Unit/GeoQueryTest.php`:
 ```php
@@ -74,7 +74,7 @@ class GeoQueryTest extends TestCase
 }
 ```
 
-- [ ] **Step 2: Implement `App\Support\GeoQuery`**
+- [x] **Step 2: Implement `App\Support\GeoQuery`**
 
 Create `apps/api/app/Support/GeoQuery.php`:
 ```php
@@ -127,15 +127,15 @@ class GeoQuery
 }
 ```
 
-- [ ] **Step 3: Refactor `Listing.php` and `ListingFilterService.php` to use `GeoQuery`**
+- [x] **Step 3: Refactor `Listing.php` and `ListingFilterService.php` to use `GeoQuery`**
 
 Replace `Listing::DISTANCE_SQL` references with `GeoQuery::distanceSql()`. Update `Listing::scopeWithDistance` and `ListingFilterService::orderByRaw` to invoke `GeoQuery`.
 
-- [ ] **Step 4: Verify tests pass**
+- [x] **Step 4: Verify tests pass**
 
 Verify `GeoQueryTest` and existing `GeoTest` pass.
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add apps/api/app/Support/GeoQuery.php apps/api/app/Models/Listing.php apps/api/app/Services/ListingFilterService.php apps/api/tests/Unit/GeoQueryTest.php apps/api/tests/Unit/GeoTest.php
@@ -158,23 +158,23 @@ git commit -m "refactor(api): trich xuat geoquery dong goi tinh toan toa do have
   - `ConversationService::getUnreadTotal(User $user): int`
   - `ConversationService::findOrCreateDirectConversation(int $studentId, int $targetUserId): array{Conversation, bool}`
 
-- [ ] **Step 1: Check existing `ConversationTest`**
+- [x] **Step 1: Check existing `ConversationTest`**
 
 Verify feature tests in `apps/api/tests/Feature/ConversationTest.php` pass.
 
-- [ ] **Step 2: Add query methods to `ConversationService`**
+- [x] **Step 2: Add query methods to `ConversationService`**
 
 Move the index query with unread count subquery and student/landlord relationships into `ConversationService::getUserConversations(User $user)`. Move direct conversation instantiation into `ConversationService::findOrCreateDirectConversation()`.
 
-- [ ] **Step 3: Thin `ConversationController`**
+- [x] **Step 3: Thin `ConversationController`**
 
 Update `index()`, `store()`, `direct()`, and `unreadCount()` in `ConversationController.php` to delegate directly to `ConversationService`. Ensure all controller methods are concise (< 30 lines) with proper type hinting.
 
-- [ ] **Step 4: Verify tests pass**
+- [x] **Step 4: Verify tests pass**
 
 Run `ConversationTest` and `BroadcastChannelTest` to confirm zero functional regression.
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add apps/api/app/Services/ConversationService.php apps/api/app/Http/Controllers/ConversationController.php
@@ -202,7 +202,7 @@ git commit -m "refactor(api): tinh gon conversationcontroller chuyen logic sang 
 - Consumes: PHPStan static analysis tool
 - Produces: 0 errors with empty baseline
 
-- [ ] **Step 1: Type `AiClient` and AI Services**
+- [x] **Step 1: Type `AiClient` and AI Services**
 
 - In `AiClient.php`: Add `@return array<string, mixed>` to `post()`.
 - In `ChatAssistant.php`: Add `assert($listing instanceof Listing);` after `find()`, and type closure parameter `/** @param array{role: string, content: string} $msg */`.
@@ -211,24 +211,24 @@ git commit -m "refactor(api): tinh gon conversationcontroller chuyen logic sang 
 - In `PriceAdvisor.php`: Ensure `median(list<int|float> $values)` receives strictly typed numeric lists.
 - In `DescriptionGenerator.php`: Handle nullable `$ward` safely.
 
-- [ ] **Step 2: Type Controllers, Seeders, and Misc**
+- [x] **Step 2: Type Controllers, Seeders, and Misc**
 
 - In `MessageDeletionController.php`: Cast `$message->deleted_for_user_ids` to `(array)` and type array operations.
 - In `ListingSeeder.php` & `ConversationSeeder.php`: Add `@var` docblocks on collection loops and relation models.
 - In `bootstrap/app.php`: Handle exception type annotations.
 
-- [ ] **Step 3: Clear `phpstan-baseline.neon` and verify 0 errors**
+- [x] **Step 3: Clear `phpstan-baseline.neon` and verify 0 errors**
 
 Empty `apps/api/phpstan-baseline.neon` (to `parameters: ignoreErrors: []`).
 Run: `phpstan analyse --no-progress --memory-limit=1G`
 Expected: [OK] No errors.
 
-- [ ] **Step 4: Run Pint to ensure code style compliance**
+- [x] **Step 4: Run Pint to ensure code style compliance**
 
 Run: `pint --test`
 Expected: 0 format issues.
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add apps/api/app/ apps/api/database/ apps/api/bootstrap/ apps/api/phpstan-baseline.neon
@@ -259,11 +259,11 @@ git commit -m "refactor(api): xoa bo hoan toan phpstan baseline voi 0 loi type"
   - `recommend_areas_with_gemini(...) -> list[dict[str, Any]] | None`
   - `chat_with_gemini(...) -> str | None`
 
-- [ ] **Step 1: Create `app/gemini/client.py`**
+- [x] **Step 1: Create `app/gemini/client.py`**
 
 Extract `get_api_key()`, `is_gemini_enabled()`, `_get_client()`, and `generate_with_fallback()` into `app/gemini/client.py`.
 
-- [ ] **Step 2: Create domain endpoint modules**
+- [x] **Step 2: Create domain endpoint modules**
 
 - `description.py`: Description generation schema + prompt logic.
 - `price_advice.py`: Price advice schema + prompt logic.
@@ -271,16 +271,16 @@ Extract `get_api_key()`, `is_gemini_enabled()`, `_get_client()`, and `generate_w
 - `areas.py`: Area recommendation schema + prompt logic.
 - `chat.py`: Knowledge base loading + chat generation prompt logic.
 
-- [ ] **Step 3: Create `app/gemini/__init__.py` and delete monolithic `gemini.py`**
+- [x] **Step 3: Create `app/gemini/__init__.py` and delete monolithic `gemini.py`**
 
 Re-export the 5 public generation functions and helper functions in `__init__.py`. Remove `gemini.py`.
 
-- [ ] **Step 4: Verify contract tests and file line limits**
+- [x] **Step 4: Verify contract tests and file line limits**
 
 Run `pytest apps/ai-service/tests/test_contract.py`.
 Verify all files in `apps/ai-service/app/gemini/` are under 120 lines.
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add apps/ai-service/app/gemini/ apps/ai-service/app/gemini.py
@@ -298,15 +298,15 @@ git commit -m "refactor(ai): module hoa gemini thanh package theo domain"
 - Consumes: Complete project repository
 - Produces: Clean git status and all CI checks green
 
-- [ ] **Step 1: Run Backend Code Style & Static Analysis**
+- [x] **Step 1: Run Backend Code Style & Static Analysis**
 
 Verify Pint and PHPStan pass with 0 errors.
 
-- [ ] **Step 2: Run Backend and AI Tests**
+- [x] **Step 2: Run Backend and AI Tests**
 
 Verify Laravel feature tests and AI contract tests pass.
 
-- [ ] **Step 3: Commit plan completion**
+- [x] **Step 3: Commit plan completion**
 
 ```bash
 git commit -am "docs(debt): hoan thanh implementation plan sprint a"
