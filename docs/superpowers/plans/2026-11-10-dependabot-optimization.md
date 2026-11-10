@@ -36,11 +36,11 @@
 - Consumes: Existing `.github/dependabot.yml` definitions
 - Produces: Updated Dependabot v2 config with `ignore` for `semver-major`, `open-pull-requests-limit: 1`, and groups for docker/actions
 
-- [ ] **Step 1: Check existing `.github/dependabot.yml`**
+- [x] **Step 1: Check existing `.github/dependabot.yml`**
 
 Read [.github/dependabot.yml](file:///home/user/Projects/trosv/.github/dependabot.yml) to verify current contents and line ranges.
 
-- [ ] **Step 2: Update `.github/dependabot.yml`**
+- [x] **Step 2: Update `.github/dependabot.yml`**
 
 Apply the following changes:
 - For `composer` (/apps/api), `npm` (/apps/web), and `pip` (/apps/ai-service):
@@ -70,12 +70,12 @@ Apply the following changes:
         patterns: ["*"]
     ```
 
-- [ ] **Step 3: Verify YAML syntax and schema correctness**
+- [x] **Step 3: Verify YAML syntax and schema correctness**
 
 Run: `python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))"`
 Expected: Exit code 0 with no syntax errors.
 
-- [ ] **Step 4: Commit changes**
+- [x] **Step 4: Commit changes**
 
 Run:
 ```bash
@@ -94,12 +94,12 @@ git commit -m "chore(ci): toi uu cau hinh dependabot va han che so luong pr"
 - Consumes: Open PR list from GitHub
 - Produces: Closed PRs #84 through #92 with explanatory comment
 
-- [ ] **Step 1: Verify PR list to confirm targets**
+- [x] **Step 1: Verify PR list to confirm targets**
 
 Run: `gh pr list --state open`
 Expected: Target PRs are #84, #85, #86, #87, #88, #89, #90, #91, #92. Confirm PRs #51 and #83 are NOT included in the closing target list.
 
-- [ ] **Step 2: Close PRs #84 through #92**
+- [x] **Step 2: Close PRs #84 through #92**
 
 Run:
 ```bash
@@ -108,7 +108,7 @@ for pr in 84 85 86 87 88 89 90 91 92; do
 done
 ```
 
-- [ ] **Step 3: Verify only human PRs remain open**
+- [x] **Step 3: Verify only human PRs remain open**
 
 Run: `gh pr list --state open`
 Expected: Only human PRs (e.g. #51, #83) remain open.
@@ -124,7 +124,7 @@ Expected: Only human PRs (e.g. #51, #83) remain open.
 - Consumes: Local git status and remote state
 - Produces: Clean git status on working branch
 
-- [ ] **Step 1: Check git status and log**
+- [x] **Step 1: Check git status and log**
 
 Run: `git status` and `git log -1`
 Expected: Working tree clean, last commit reflects the Dependabot configuration update.
