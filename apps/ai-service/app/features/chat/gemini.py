@@ -9,7 +9,7 @@ from typing import Any
 from google.genai import types
 from pydantic import BaseModel, Field
 
-from app.gemini.client import generate_with_fallback, get_client, load_knowledge_base
+from app.shared.gemini_client import generate_with_fallback, get_client, load_knowledge_base
 
 logger = logging.getLogger("ai_service.gemini.chat")
 

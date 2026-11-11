@@ -7,14 +7,12 @@ import os
 
 from fastapi import FastAPI
 
-from app.routers import (
-    areas_router,
-    chat_router,
-    description_router,
-    health_router,
-    price_advice_router,
-    roommates_router,
-)
+from app.features.areas.router import router as areas_router
+from app.features.chat.router import router as chat_router
+from app.features.description.router import router as description_router
+from app.features.health.router import router as health_router
+from app.features.price_advice.router import router as price_advice_router
+from app.features.roommates.router import router as roommates_router
 
 FAKE_MODE = os.getenv("FAKE_MODE", "true").lower() != "false"
 

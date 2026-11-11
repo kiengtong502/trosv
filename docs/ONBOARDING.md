@@ -81,6 +81,8 @@ apps/web/   React 18 + TypeScript strict SPA (Vite 6, Tailwind CSS v4, Radix UI,
   src/app/                 router, providers, error boundary
   src/styles.css           Tailwind CSS v4 + design tokens (màu sắc, typography, shadow)
 apps/ai-service/ FastAPI (stub FAKE_MODE)
+  app/features/<name>/     router, schemas, heuristics (rule-based), gemini (LLM) cho tung endpoint
+  app/shared/              Gemini client, guard_fake (503), BaseReq
 docs/       contracts/, architecture/, reports/, runbooks/, ONBOARDING.md
 infra/      docker/, deploy/, backup/
 scripts/    cong cu no ky thuat & dev helpers
