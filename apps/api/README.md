@@ -25,7 +25,7 @@ composer install
 cp .env.example .env                # DB_HOST=127.0.0.1
 php artisan key:generate
 php artisan migrate --seed
-php artisan serve                   # http://localhost:8000
+php artisan serve                   # http://localhost:8000 (chi de dev; image Docker dung FrankenPHP)
 ```
 
 ## Test

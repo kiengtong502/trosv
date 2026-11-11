@@ -442,6 +442,22 @@ class ConversationTest extends TestCase
     // Attachments: multipart upload + signed URL
     // ------------------------------------------------------------------
 
+    public function test_upload_that_failed_at_php_level_is_rejected_with_422_not_500(): void
+    {
+        $conv = $this->createConversation();
+
+        // What PHP hands over when the file exceeds upload_max_filesize: an
+        // error code and an EMPTY temp path (so hasFile() is false for it).
+        $broken = new UploadedFile('', 'to-lon.pdf', 'application/pdf', UPLOAD_ERR_INI_SIZE, true);
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->post("/api/conversations/{$conv->id}/messages", ['body' => 'file', 'file' => $broken], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('file');
+
+        $this->assertSame(0, Message::where('conversation_id', $conv->id)->count());
+    }
+
     public function test_attachment_upload_and_signed_url_download(): void
     {
         $conv = $this->createConversation();

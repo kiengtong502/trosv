@@ -170,3 +170,12 @@ Restore drill + quy trình: `infra/backup/RESTORE.md`. Rollback code:
   phải `up -d --build` (restart không đủ).
 - **Ảnh biến mất sau `down`** - uploads nằm trong volume `trosv-storage`;
   `down -v` xóa nó. Chỉ `down` là giữ.
+- **Backend restart liên tục, log có `LOI: storage/app khong ghi duoc`** - volume
+  `trosv-storage` do image cũ (chạy root) tạo, image hiện tại chạy `www-data`.
+  Chạy một lần rồi `up -d backend`:
+  `docker compose run --rm --no-deps --user root --entrypoint chown backend -R www-data:www-data /var/www/html/storage/app`.
+  Backend cố ý từ chối khởi động thay vì để upload "thành công" nhưng mất file.
+- **Upload > 1 MB trả 413** - giới hạn nằm ở nginx (`client_max_body_size 16m` trong
+  `apps/web/nginx.conf.template`) và backend (`request_body max_size 16MB` trong
+  `apps/api/docker/Caddyfile`, `post_max_size` trong `apps/api/docker/php.ini`).
+  Đổi cả ba cùng lúc, và khớp tầng validate (ảnh 2 MB, tệp chat 5 MB).

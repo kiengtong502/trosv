@@ -23,7 +23,10 @@ class MessageSendRequest extends FormRequest
     /** @return array<string, array<int, mixed>> */
     public function rules(): array
     {
-        return $this->hasFile('file')
+        // file() is non-null for a broken upload too (e.g. bigger than PHP's
+        // upload_max_filesize) while hasFile() is false for it. Using hasFile()
+        // here would validate it as a plain text message and crash later.
+        return $this->file('file') !== null
             ? [
                 'body' => ['nullable', 'string', 'max:1000'],
                 'file' => ['required', 'file', 'mimes:'.self::ATTACHMENT_MIMES, 'max:'.self::ATTACHMENT_MAX_KB],

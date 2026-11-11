@@ -76,8 +76,12 @@ Messaging rules worth knowing:
 - Code is organised by domain module under `app/Modules/<Module>` (see
   "Backend layout" below).
 
-Infrastructure: a `queue` container runs `queue:work`. A `scheduler` container
-runs `schedule:run` every minute, but **no tasks are scheduled yet**.
+Infrastructure: the `backend` container serves the API with FrankenPHP (Caddy +
+PHP, config in `apps/api/docker/`), not `php artisan serve`; the same image runs
+`reverb`, `queue` and `scheduler`, all as `www-data`. `queue` and `scheduler` wait for
+a healthy `backend` (migrations done). A `queue` container runs `queue:work`. A
+`scheduler` container runs `schedule:run` every minute, but **no tasks are scheduled yet**.
+`php artisan serve` is for local development only.
 
 ### Backend layout
 

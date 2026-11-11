@@ -44,7 +44,6 @@ x-default-logging: &default-logging
     max-file: "3"
 
 x-backend-env: &backend-env
-  PHP_CLI_SERVER_WORKERS: 4
   APP_ENV: production
   APP_DEBUG: "false"
   # Bat buoc: khong co gia tri mac dinh an toan (fail-fast neu thieu).
@@ -102,11 +101,14 @@ services:
         required: false # bo sung bien phu (khong ghi de block ben duoi)
     # migrate luon chay (idempotent, seeder idempotent nen SEED_ON_BOOT=1
     # chi don gian chay them db:seed - an toan reboot bat ky luc nao).
+    # Fail-fast neu volume storage khong ghi duoc (vd. volume cu do root tao truoc khi
+    # image chuyen sang www-data): neu khong, upload "thanh cong" nhung file mat.
     command: >
-      sh -c "php artisan migrate --force
+      sh -c "[ -w storage/app ] || { echo 'LOI: storage/app khong ghi duoc boi www-data. Chay: docker compose run --rm --no-deps --user root --entrypoint chown backend -R www-data:www-data /var/www/html/storage/app' >&2; exit 1; }
+      && php artisan migrate --force
       && if [ \"$$SEED_ON_BOOT\" = \"1\" ]; then php artisan db:seed --force; fi
       && php artisan storage:link --relative --force || true
-      && exec php artisan serve --host=0.0.0.0 --port=8000"
+      && exec frankenphp run --config /etc/frankenphp/Caddyfile --adapter caddyfile"
     environment:
       <<: *backend-env
       SEED_ON_BOOT: ${SEED_ON_BOOT:-0}
@@ -183,8 +185,12 @@ services:
       - path: ./apps/api/.env
         required: false
     environment: *backend-env
+    # Cho backend healthy (da migrate xong): neu khong, lan khoi dong dau worker
+    # chay khi bang cache/jobs chua ton tai.
     depends_on:
       db:
+        condition: service_healthy
+      backend:
         condition: service_healthy
 
   scheduler:
@@ -196,8 +202,12 @@ services:
       - path: ./apps/api/.env
         required: false
     environment: *backend-env
+    # Cho backend healthy (da migrate xong): neu khong, lan khoi dong dau worker
+    # chay khi bang cache/jobs chua ton tai.
     depends_on:
       db:
+        condition: service_healthy
+      backend:
         condition: service_healthy
 
   frontend:

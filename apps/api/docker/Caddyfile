@@ -1,0 +1,41 @@
+# ============================================================
+# FrankenPHP (Caddy + PHP) cho backend. Lang nghe HTTP :8000 - TLS do
+# Caddy/nginx phia truoc xu ly (compose: profile tls).
+# ============================================================
+{
+	admin off
+	auto_https off
+	skip_install_trust
+
+	frankenphp
+
+	servers {
+		timeouts {
+			read_header 10s
+			read_body 2m
+			write 2m
+			idle 2m
+		}
+	}
+}
+
+:8000 {
+	root * /var/www/html/public
+
+	encode zstd gzip
+
+	header -Server
+
+	# Upload lon nhat: 5 anh x 2MB (tin dang) hoac 5MB (tep tin nhan) + overhead multipart.
+	request_body {
+		max_size 16MB
+	}
+
+	log {
+		output stdout
+	}
+
+	# Phuc vu file tinh trong public/ (gom /storage -> storage/app/public) va
+	# chuyen moi request con lai cho public/index.php.
+	php_server
+}
