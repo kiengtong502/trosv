@@ -112,6 +112,14 @@ FastAPI with `POST /roommates`, `/areas`, `/price-advice`, `/description`,
 answers in the contract's shape; `false` needs `GEMINI_API_KEY` or `LLM_API_KEY`.
 Contract: `docs/contracts/AI_CONTRACT.md`.
 
+Layout (same feature idea as the other apps): `app/features/<name>/` for
+`roommates`, `price_advice`, `areas`, `chat`, `description` and `health`. Each
+feature has `router.py` (endpoint), `schemas.py` (request model),
+`heuristics.py` (rule-based answer used in `FAKE_MODE`) and `gemini.py` (LLM
+call). `app/shared/` holds the Gemini client, the `guard_fake` 503 guard,
+`BaseReq` and `int_or`. `app/main.py` mounts the routers and owns `FAKE_MODE`
+(tests flip it there).
+
 ## 5. Frontend (`apps/web`)
 
 React 18, TypeScript (strict), Vite, Tailwind CSS v4, Radix UI, Leaflet, lucide

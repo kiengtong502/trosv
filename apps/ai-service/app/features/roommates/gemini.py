@@ -9,7 +9,7 @@ from typing import Any
 from google.genai import types
 from pydantic import BaseModel, Field
 
-from app.gemini.client import generate_with_fallback, get_client
+from app.shared.gemini_client import generate_with_fallback, get_client
 
 logger = logging.getLogger("ai_service.gemini.roommates")
 
