@@ -1,20 +1,17 @@
 # ============================================================
-# TROSV backend - PHP 8.3 CLI, Debian 13 "trixie" (latest stable).
+# TROSV backend - FrankenPHP (Caddy + PHP 8.3), Debian 13 "trixie".
+# Mot image cho moi vai tro: web (frankenphp), reverb, queue, scheduler,
+# test (compose doi lenh). Khong con `php artisan serve` (dev server cua PHP).
 # ============================================================
-FROM php:8.3-cli-trixie
+FROM dunglas/frankenphp:1-php8.3-trixie
 
-# libpng/jpeg/freetype are required for the GD extension (seeder sample images).
-# pcntl is required by Laravel Reverb (SIGINT/SIGTERM constants + signal
-# handlers) and is NOT compiled into the PHP images by default - without it
-# "reverb:start" dies with "Undefined constant SIGINT".
-# Debian (apt) package names khac Alpine (apk): libicu-dev (khong phai
-# icu-dev), libonig-dev (khong phai oniguruma-dev), libjpeg-dev, libfreetype6-dev.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libpq-dev libicu-dev libonig-dev libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-jpeg --with-freetype \
-    && docker-php-ext-install pdo_pgsql pgsql bcmath intl zip gd pcntl
+# pcntl: Laravel Reverb can SIGINT/SIGTERM (reverb:start chet neu thieu).
+# install-php-extensions tu cai thu vien he thong (libpq, icu, gd, ...).
+RUN install-php-extensions pdo_pgsql pgsql bcmath intl zip gd pcntl opcache \
+    && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY docker/php.ini $PHP_INI_DIR/conf.d/zz-trosv.ini
+COPY docker/Caddyfile /etc/frankenphp/Caddyfile
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -36,6 +33,25 @@ RUN mkdir -p bootstrap/cache && rm -f bootstrap/cache/*.php
 # No "|| true": a failure here must break the build, not hide a broken image.
 RUN php artisan storage:link --relative --force
 
+# Chay bang www-data (khong root). Caddy ghi data/config vao /tmp; frankenphp
+# bo capability bind port <1024 (khong can: lang nghe 8000).
+# Chi thu muc ghi duoc moi chown: code va vendor de root-owned, chi doc.
+ENV XDG_DATA_HOME=/tmp/caddy-data \
+    XDG_CONFIG_HOME=/tmp/caddy-config
+RUN setcap -r /usr/local/bin/frankenphp \
+    && mkdir -p storage/app/public storage/framework/cache storage/framework/sessions \
+        storage/framework/views storage/logs \
+    && chown www-data:www-data /var/www/html \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chown -h www-data:www-data public/storage
+USER 33:33
+
 EXPOSE 8000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Image goc cua FrankenPHP co HEALTHCHECK goi admin API cua Caddy (:2019) - da tat
+# (admin off) va cac service khac (queue, scheduler, reverb) khong phai web server.
+# Compose khai bao healthcheck rieng cho backend va reverb.
+HEALTHCHECK NONE
+
+# Web server. Cac service khac (reverb, queue, scheduler) ghi de bang `command:`.
+CMD ["--config", "/etc/frankenphp/Caddyfile", "--adapter", "caddyfile"]

@@ -190,4 +190,20 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   history window, model order, key precedence, guards) is fully caught. It also found a typo in
   the production chat system prompt ("Luêu trả lời" -> "Luôn trả lời"), now fixed. Not done from
   P4: extracting the duplicated request/parse/fallback plumbing; the tests now make that safe.
-- Open: P1, P6-P11.
+- **P1 fixed (branch `chore/api-production-runtime`).** The API image is now FrankenPHP (Caddy +
+  PHP 8.3) with a production `php.ini`; `artisan serve` is gone from compose and the image.
+  Config: `apps/api/docker/{Caddyfile,php.ini}`. Verified by building and running the full stack
+  (isolated compose project): 25 live checks (auth, JSON errors, gzip, uploads, files served
+  from `/storage`, signed attachment URLs and tampering, 413/422 limits, Reverb broadcast, 300
+  requests at 32 concurrency with no failures), the PHP suite inside the image (231 tests), a
+  from-scratch boot with no queue/scheduler errors, and graceful stop (about 0.5 s, exit 0).
+  Not done: the native mode of `infra/deploy/deploy.sh` and the CI e2e job still use
+  `artisan serve` (demo and test only); CI does not run the compose stack.
+- **P3 completed.** The `api` image now runs as `www-data` too. Because an old root-owned
+  `trosv-storage` volume made uploads fail *silently*, the backend now refuses to start when
+  storage is not writable and prints the fix (also in `docs/runbooks/DEPLOY.md`).
+- **Bugs found while verifying P1 (all pre-existing, now fixed):**
+  nginx capped request bodies at its 1 MB default, so any larger photo or attachment got 413
+  through the real stack (now 16 MB); an attachment over PHP's upload limit returned 500 instead
+  of a 422 (regression test added); `queue`/`scheduler` raced the migrations on a fresh stack.
+- Open: P6-P11.
