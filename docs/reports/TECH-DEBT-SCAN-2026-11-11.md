@@ -183,4 +183,11 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   `listings` cycle is gone (feature graph is acyclic); `Paged<T>` lives in `shared/types`;
   `shell.tsx` moved to `app/`; `Footer` is in `shared/layout`. ESLint `no-restricted-imports`
   enforces `app > features > shared` (verified to fail on a deliberate violation).
-- Open: P1, P4, P6-P11.
+- **P4 fixed (branch `chore/ai-gemini-tests`).** 107 new offline tests cover the shared Gemini
+  client (key precedence, model fallback order, SDK errors), each feature's prompt building and
+  response validation, and the router decision (Gemini answer vs heuristic fallback vs 503).
+  `app/` coverage 67% -> 98%; a 14-mutant check (breaking id filtering, limits, verdict check,
+  history window, model order, key precedence, guards) is fully caught. It also found a typo in
+  the production chat system prompt ("Luêu trả lời" -> "Luôn trả lời"), now fixed. Not done from
+  P4: extracting the duplicated request/parse/fallback plumbing; the tests now make that safe.
+- Open: P1, P6-P11.
