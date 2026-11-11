@@ -104,9 +104,6 @@ Conventions:
 - Tests mirror the modules: `tests/Feature/<Module>/`. Cross-cutting tests
   (authorization matrix, security headers, config guard) are in `tests/Feature/Shared`.
 - Migrations, factories and seeders stay in `database/` (one global history).
-- **Do not rename the legacy morph alias** `App\Models\User` in
-  `AppServiceProvider`: Sanctum stores it in `personal_access_tokens`, and
-  removing it logs everyone out.
 
 ## 4. AI service (`apps/ai-service`)
 
