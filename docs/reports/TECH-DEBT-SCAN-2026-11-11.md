@@ -169,3 +169,18 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
 4. P1 (production runtime): M, do before any real traffic.
 5. P7 coverage tooling, then P6/P10 as files are touched; P8 majors one at a time, React and
    Vite last.
+
+## Status (branch `chore/debt-quick-wins`)
+
+- **P2 fixed.** `ai-service` port is bound to `127.0.0.1:8001` only.
+- **P3 partly fixed.** `ai-service` image runs as a non-root user and has a `HEALTHCHECK`.
+  The `api` image is deliberately unchanged: the same image runs `backend`, `reverb`, `queue`
+  and `scheduler`, so an image-level `HEALTHCHECK` would mark the non-HTTP ones unhealthy, and
+  non-root needs the `trosv-storage` volume ownership sorted out. Do it together with P1, when
+  the production image is split from the dev image. `deploy.yml` still has no `timeout-minutes`.
+  Neither Docker change could be built in the scan environment; CI `docker-build` covers the build.
+- **P5 fixed.** `shared/` imports nothing from `features/` or `app/`; the `favorites` <->
+  `listings` cycle is gone (feature graph is acyclic); `Paged<T>` lives in `shared/types`;
+  `shell.tsx` moved to `app/`; `Footer` is in `shared/layout`. ESLint `no-restricted-imports`
+  enforces `app > features > shared` (verified to fail on a deliberate violation).
+- Open: P1, P4, P6-P11.
