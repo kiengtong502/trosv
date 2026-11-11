@@ -21,13 +21,13 @@ RUN pip install --no-cache-dir -r requirements.txt \
 
 COPY --chown=app:app . .
 
-USER app
+USER 10001
 
 EXPOSE 8001
 
 # Image python slim khong co curl - dung urllib (non-2xx/raise => exit 1).
 HEALTHCHECK --interval=15s --timeout=3s --start-period=15s --retries=5 \
-    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"
+    CMD ["python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"]
 
 # Khoi lenh that do compose gan (uvicorn ...); CMD giu cho chay doc lap.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
