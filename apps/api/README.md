@@ -44,10 +44,14 @@ Tài khoản demo (mật khẩu `password`):
 
 | Thư mục | Nội dung |
 |---|---|
-| `app/Http/Controllers` | Auth/Profile, Reference (cities/wards/schools/amenities), Listing (duyệt + chi tiết + đánh giá), LandlordListing (CRUD + ảnh), Favorite, Conversation (nhắn tin), Attachment (signed URL), AiController |
-| `app/Http/Resources` | User, City, Ward, School, ListingSummary, ListingDetail, Review, Conversation, Message - shape đúng §3 hợp đồng |
-| `app/Http/Middleware` | `role:student|landlord` (EnsureRole), `throttle.api` (429 tiếng Việt theo IP/User), SecurityHeaders |
-| `app/Services` | `AiService` (chuẩn bị dữ liệu và xử lý nghiệp vụ AI), `AiClient` (HTTP client gọi FastAPI) |
+| `app/Modules/Auth` | `User`, Auth/Profile, hồ sơ công khai sinh viên |
+| `app/Modules/Reference` | cities/wards/schools/amenities |
+| `app/Modules/Listing` | Listing/Review (duyệt + chi tiết + đánh giá), LandlordListing (CRUD + ảnh), `ListingPolicy` |
+| `app/Modules/Favorite` | Yêu thích (sinh viên) |
+| `app/Modules/Messaging` | Conversation/Message, Attachment (signed URL), events realtime, `ConversationService` |
+| `app/Modules/Ai` | `AiController`, `AiClient` (HTTP client gọi FastAPI), các service gợi ý |
+| `app/Shared` | `Controller` gốc, middleware (`role:student|landlord`, `throttle.api` 429 tiếng Việt, SecurityHeaders), `Support` |
+| `routes/api.php` | `/health` và nạp `app/Modules/*/routes.php` (mỗi module tự khai báo endpoint) |
 | `lang/vi` | Thông báo lỗi validate tiếng Việt |
 
 ## Ghi chú kỹ thuật

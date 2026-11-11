@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Conversation;
-use App\Models\Listing;
-use App\Models\User;
+use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Models\Listing;
+use App\Modules\Messaging\Models\Conversation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

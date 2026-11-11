@@ -73,11 +73,40 @@ Messaging rules worth knowing:
 - Realtime: events `MessageSent`, `MessageSeen`, `MessageReacted`,
   `MessageDeleted` on the private channel `conversation.{id}`. Broadcast failures
   are swallowed so a chat message never fails because of the socket.
-- Code lives in `app/Http/Controllers`, `app/Services` (`ConversationService`,
-  `ListingFilterService`, `ListingImageService`, `AiClient`), `app/Policies`.
+- Code is organised by domain module under `app/Modules/<Module>` (see
+  "Backend layout" below).
 
 Infrastructure: a `queue` container runs `queue:work`. A `scheduler` container
 runs `schedule:run` every minute, but **no tasks are scheduled yet**.
+
+### Backend layout
+
+`app/` holds domain modules plus a small shared kernel. A module owns its
+models, controllers, requests, resources, policies, events, services and its own
+route file; nothing is split by file type across the whole app.
+
+| Module | Owns |
+|---|---|
+| `Modules/Auth` | `User`, register/login/profile, public student profile |
+| `Modules/Reference` | `City`, `Ward`, `School`, `Amenity` and their read endpoints |
+| `Modules/Listing` | `Listing`, `ListingImage`, `Review`, browse/detail, landlord CRUD, `ListingPolicy`, filter and image services |
+| `Modules/Favorite` | student favorites endpoints |
+| `Modules/Messaging` | `Conversation`, `Message`, policies, realtime events, attachments, `ConversationService` |
+| `Modules/Ai` | AI proxy endpoints, `AiClient`, recommenders, `AiUnavailableException` |
+| `Shared` | base `Controller`, `AuthorizesResources`, middleware (`role`, `throttle.api`, security headers, request id, production guard), `Support` (`Geo`, `GeoQuery`, `StoragePath`), `HealthController` |
+
+Conventions:
+
+- Routes: `routes/api.php` only holds `/health` and loads every
+  `app/Modules/*/routes.php`; a module's web routes live in `web.php` beside it.
+- Models point at their factory and policy with `#[UseFactory]` / `#[UsePolicy]`
+  because Laravel's name-based discovery only works for `App\Models`.
+- Tests mirror the modules: `tests/Feature/<Module>/`. Cross-cutting tests
+  (authorization matrix, security headers, config guard) are in `tests/Feature/Shared`.
+- Migrations, factories and seeders stay in `database/` (one global history).
+- **Do not rename the legacy morph alias** `App\Models\User` in
+  `AppServiceProvider`: Sanctum stores it in `personal_access_tokens`, and
+  removing it logs everyone out.
 
 ## 4. AI service (`apps/ai-service`)
 

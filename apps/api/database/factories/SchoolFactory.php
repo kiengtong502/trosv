@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\City;
-use App\Models\School;
+use App\Modules\Reference\Models\City;
+use App\Modules\Reference\Models\School;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\City;
-use App\Models\School;
-use App\Models\Ward;
+use App\Modules\Reference\Models\City;
+use App\Modules\Reference\Models\School;
+use App\Modules\Reference\Models\Ward;
 use Illuminate\Database\Seeder;
 
 class SchoolSeeder extends Seeder

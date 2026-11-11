@@ -1,11 +1,11 @@
 <?php
 
-use App\Exceptions\AiUnavailableException;
-use App\Http\Middleware\AddRequestId;
-use App\Http\Middleware\ApiThrottle;
-use App\Http\Middleware\EnsureProductionConfig;
-use App\Http\Middleware\EnsureRole;
-use App\Http\Middleware\SecurityHeaders;
+use App\Modules\Ai\Exceptions\AiUnavailableException;
+use App\Shared\Http\Middleware\AddRequestId;
+use App\Shared\Http\Middleware\ApiThrottle;
+use App\Shared\Http\Middleware\EnsureProductionConfig;
+use App\Shared\Http\Middleware\EnsureRole;
+use App\Shared\Http\Middleware\SecurityHeaders;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

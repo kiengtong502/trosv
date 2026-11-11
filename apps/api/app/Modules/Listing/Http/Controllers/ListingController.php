@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Modules\Listing\Http\Controllers;
+
+use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Http\Requests\ListingBrowseRequest;
+use App\Modules\Listing\Http\Resources\ListingDetailResource;
+use App\Modules\Listing\Http\Resources\ListingSummaryResource;
+use App\Modules\Listing\Models\Listing;
+use App\Modules\Listing\Services\ListingFilterService;
+use App\Shared\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+/**
+ * Public listing browse (API_CONTRACT §4 - "Duyệt tin đăng").
+ */
+class ListingController extends Controller
+{
+    public const PER_PAGE_DEFAULT = 12;
+
+    public const PER_PAGE_MAX = 50;
+
+    public function index(ListingBrowseRequest $request, ListingFilterService $filterService): JsonResponse
+    {
+        $validated = $request->validated();
+
+        // Validation (422 with Vietnamese messages, per API_CONTRACT §1)
+        // lives in ListingBrowseRequest.
+
+        // max_km and sort=distance require school_id.
+        if (
+            (isset($validated['max_km']) || ($validated['sort'] ?? null) === 'distance')
+            && empty($validated['school_id'])
+        ) {
+            return response()->json([
+                'message' => 'Cần cung cấp school_id khi dùng max_km hoặc sort=distance.',
+                'errors' => ['school_id' => ['Cần cung cấp school_id khi dùng max_km hoặc sort=distance.']],
+            ], 422);
+        }
+
+        $perPage = is_numeric($validated['per_page'] ?? null) ? (int) $validated['per_page'] : self::PER_PAGE_DEFAULT;
+
+        $query = $filterService->buildQuery($validated);
+        $page = $query->paginate($perPage);
+
+        $favoritedIds = $this->favoritedListingIds($request, $page->getCollection());
+        $request->attributes->set('favorited_listing_ids', $favoritedIds);
+
+        return response()->json([
+            'data' => ListingSummaryResource::collection($page->getCollection())->resolve($request),
+            'meta' => [
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $perPage,
+                'total' => $page->total(),
+            ],
+        ]);
+    }
+
+    /**
+     * Ids of listings on this page favorited by the current (student) user -
+     * exactly ONE query. Guests and landlords get an empty set.
+     */
+    /**
+     * @param  Collection<int, Listing>  $listings
+     * @return list<int|string>
+     */
+    private function favoritedListingIds(Request $request, Collection $listings): array
+    {
+        $user = $request->user('sanctum');
+
+        if (! $user instanceof User || $user->role !== User::ROLE_STUDENT || $listings->isEmpty()) {
+            return [];
+        }
+
+        /** @var list<int|string> $ids */
+        $ids = $user->favorites()
+            ->whereIn('listings.id', $listings->modelKeys())
+            ->pluck('listings.id')
+            ->all();
+
+        return $ids;
+    }
+
+    /**
+     * GET /api/listings/{id} - public detail. Hidden listings 404 for
+     * everyone except the owner; rented listings stay visible.
+     */
+    public function show(Request $request, Listing $listing): JsonResponse
+    {
+        $user = $request->user('sanctum');
+
+        // Hidden listings: 404 unless the viewer is the owner landlord.
+        if ($listing->status === Listing::STATUS_HIDDEN
+            && (! $user instanceof User || $user->id !== $listing->user_id)) {
+            abort(404);
+        }
+
+        $listing->load(['ward.city', 'coverImage', 'images', 'amenities', 'landlord'])
+            ->loadCount('reviews')
+            ->loadAvg('reviews', 'listing_rating');
+
+        // Personalize is_favorited when a logged-in student is viewing.
+        $favorited = $user instanceof User && $user->role === User::ROLE_STUDENT
+            ? $user->favorites()->where('listings.id', $listing->id)->exists()
+            : false;
+        $request->attributes->set('favorited_listing_ids', $favorited ? [$listing->id] : []);
+
+        return response()->json([
+            'data' => (new ListingDetailResource($listing))->resolve($request),
+        ]);
+    }
+}

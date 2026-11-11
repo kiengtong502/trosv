@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Amenity;
+use App\Modules\Reference\Models\Amenity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
