@@ -68,18 +68,17 @@ Smoke nhanh API: `bash scripts/e2e-smoke.sh` - xanh là đủ để bắt đầu
 
 ```
 apps/api/   Laravel API
-  app/Http/Controllers     Auth/, AI proxy, Listing, Conversation, ...
-  app/Http/Requests        FormRequest validate (mỗi endpoint một file)
-  app/Http/Resources       Shape JSON ra ngoài (đối chiếu API_CONTRACT §3)
-  app/Http/Middleware      throttle, role, security headers, ...
-  app/Models|Policies      Eloquent + quyền (outsider = 404)
-  routes/api.php           toàn bộ endpoint + throttle
-  tests/Feature/           210+ test, gồm ma trận phân quyền
+  app/Modules/<Module>/    mỗi domain một module: Models, Http/{Controllers,Requests,Resources},
+                           Policies, Events, Services, routes.php (Auth, Reference, Listing,
+                           Favorite, Messaging, Ai)
+  app/Shared/              Controller gốc, middleware (role, throttle, security headers), Support (Geo, StoragePath)
+  routes/api.php           /health + nạp app/Modules/*/routes.php
+  tests/Feature/<Module>/  210+ test theo module, gồm ma trận phân quyền (Shared/)
 apps/web/   React 18 + TypeScript strict SPA (Vite 6, Tailwind CSS v4, Radix UI, Leaflet)
-  src/api/                 axios client + hàm gọi API theo nhóm (Sanctum Bearer)
-  src/pages/               màn hình SPA (Home, Search, RoomDetail, Messages, ...)
-  src/ui/                  Design system & Radix UI primitives (button, card, dialog, shell, input, ...)
-  src/hooks/               custom hooks (useAuthForm, useListingSearch, useStickToBottom, ...)
+  src/features/            mỗi domain một thư mục (auth, listings, search, room, favorites,
+                           landlord, messaging, profile, ai): pages/ components/ hooks/ api/ lib/
+  src/shared/              ui (design system), layout (shell), api (axios), hooks, lib, constants
+  src/app/                 router, providers, error boundary
   src/styles.css           Tailwind CSS v4 + design tokens (màu sắc, typography, shadow)
 apps/ai-service/ FastAPI (stub FAKE_MODE)
 docs/       contracts/, architecture/, reports/, runbooks/, ONBOARDING.md

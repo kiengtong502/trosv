@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\City;
-use App\Models\Ward;
+use App\Modules\Reference\Models\City;
+use App\Modules\Reference\Models\Ward;
 use Illuminate\Database\Seeder;
 
 class WardSeeder extends Seeder

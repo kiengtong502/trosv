@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Listing;
-use App\Models\Review;
-use App\Models\User;
+use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Models\Listing;
+use App\Modules\Listing\Models\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

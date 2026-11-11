@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\AttachmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Private chat attachments, opened straight in a browser tab via the
-// temporary signed URL from MessageResource (60 minutes, no token).
-Route::get('/attachments/{message}', [AttachmentController::class, 'show'])
-    ->name('attachments.show')->middleware('signed:relative');
+// Module web routes (e.g. Messaging's signed attachment URL) live in
+// app/Modules/<Module>/web.php.
+foreach (glob(app_path('Modules/*/web.php')) ?: [] as $moduleRoutes) {
+    require $moduleRoutes;
+}

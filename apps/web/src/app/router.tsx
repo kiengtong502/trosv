@@ -1,8 +1,8 @@
-import { MessagesEmptyPane } from "@/pages/messages/MessagesEmptyPane";
+import { MessagesEmptyPane } from "@/features/messaging/components/MessagesEmptyPane";
 import { Suspense, lazy } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
-import { AppShell } from "@/components/shell";
+import { ROUTES } from "@/shared/constants/routes";
+import { AppShell } from "@/shared/layout/shell";
 import { PageFallback } from "@/app/PageFallback";
 import { ErrorBoundary } from "@/app/ErrorBoundary";
 import { ProtectedRoute } from "@/app/ProtectedRoute";
@@ -10,21 +10,21 @@ import { ProtectedRoute } from "@/app/ProtectedRoute";
 /* Route-level code splitting: each screen is its own chunk; Leaflet stays
    in the map chunk (see vite manualChunks) and is only pulled by the two
    screens that render one. */
-const Home = lazy(() => import("@/pages/Home"));
-const Search = lazy(() => import("@/pages/Search"));
-const RoomDetail = lazy(() => import("@/pages/RoomDetail"));
-const Favorites = lazy(() => import("@/pages/Favorites"));
-const Messages = lazy(() => import("@/pages/Messages"));
-const ConversationDetail = lazy(() => import("@/pages/ConversationDetail"));
-const Login = lazy(() => import("@/pages/Login"));
-const Register = lazy(() => import("@/pages/Register"));
-const Profile = lazy(() => import("@/pages/Profile"));
-const StudentPublic = lazy(() => import("@/pages/StudentPublic"));
-const AiRoommates = lazy(() => import("@/pages/AiRoommates"));
-const AiAreaSuggestions = lazy(() => import("@/pages/AiAreaSuggestions"));
-const LandlordDashboard = lazy(() => import("@/pages/LandlordDashboard"));
-const LandlordForm = lazy(() => import("@/pages/LandlordForm"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
+const Home = lazy(() => import("@/features/home/pages/Home"));
+const Search = lazy(() => import("@/features/search/pages/Search"));
+const RoomDetail = lazy(() => import("@/features/room/pages/RoomDetail"));
+const Favorites = lazy(() => import("@/features/favorites/pages/Favorites"));
+const Messages = lazy(() => import("@/features/messaging/pages/Messages"));
+const ConversationDetail = lazy(() => import("@/features/messaging/pages/ConversationDetail"));
+const Login = lazy(() => import("@/features/auth/pages/Login"));
+const Register = lazy(() => import("@/features/auth/pages/Register"));
+const Profile = lazy(() => import("@/features/profile/pages/Profile"));
+const StudentPublic = lazy(() => import("@/features/profile/pages/StudentPublic"));
+const AiRoommates = lazy(() => import("@/features/ai/pages/AiRoommates"));
+const AiAreaSuggestions = lazy(() => import("@/features/ai/pages/AiAreaSuggestions"));
+const LandlordDashboard = lazy(() => import("@/features/landlord/pages/LandlordDashboard"));
+const LandlordForm = lazy(() => import("@/features/landlord/pages/LandlordForm"));
+const NotFound = lazy(() => import("@/app/NotFound"));
 
 /* AppShell renders <Outlet/> itself; the Suspense boundary lives inside
    the shell (see components/shell.tsx <Outlet/> wrapper). */

@@ -57,7 +57,7 @@ E2E_BASE_URL=http://localhost:5174 npx playwright test
 ## Ghi chú kỹ thuật
 
 - Token lưu `localStorage` (`token`, `user`); nhận 401 "mất phiên" thì xóa
-  cả hai và chuyển `/login` (xem `src/api/axiosClient.ts` - 401 từ form
+  cả hai và chuyển `/login` (xem `src/shared/api/axiosClient.ts` - 401 từ form
   login sai mật khẩu không gây redirect).
 - Style hệ thống sử dụng **Tailwind CSS v4** với design tokens tập trung tại
   `src/styles.css` (bảng màu ấm sinh viên, font Inter & Inter Tight Variable,

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Conversation;
-use App\Models\User;
+use App\Modules\Auth\Models\User;
+use App\Modules\Messaging\Models\Conversation;
 use Illuminate\Support\Facades\Broadcast;
 
 /*

@@ -17,7 +17,7 @@ FROM node:22-trixie AS build
 
 # Declared so compose build args actually reach `npm run build`. Docker
 # silently drops undeclared args, which would bake the localhost fallbacks
-# from src/config/env.ts into the bundle - fine for the dev stack only.
+# from src/shared/config/env.ts into the bundle - fine for the dev stack only.
 ARG VITE_API_URL=http://localhost:8000/api
 ARG VITE_REVERB_APP_KEY=my-app-key
 ARG VITE_REVERB_HOST=localhost

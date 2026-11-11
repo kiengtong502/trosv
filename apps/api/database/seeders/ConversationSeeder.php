@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Conversation;
-use App\Models\Listing;
-use App\Models\Message;
-use App\Models\User;
+use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Models\Listing;
+use App\Modules\Messaging\Models\Conversation;
+use App\Modules\Messaging\Models\Message;
 use Illuminate\Database\Seeder;
 
 class ConversationSeeder extends Seeder

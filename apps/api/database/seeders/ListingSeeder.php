@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Amenity;
-use App\Models\City;
-use App\Models\Listing;
-use App\Models\ListingImage;
-use App\Models\School;
-use App\Models\User;
-use App\Models\Ward;
+use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Models\Listing;
+use App\Modules\Listing\Models\ListingImage;
+use App\Modules\Reference\Models\Amenity;
+use App\Modules\Reference\Models\City;
+use App\Modules\Reference\Models\School;
+use App\Modules\Reference\Models\Ward;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;

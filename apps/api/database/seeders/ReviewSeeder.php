@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Conversation;
-use App\Models\Review;
+use App\Modules\Listing\Models\Review;
+use App\Modules\Messaging\Models\Conversation;
 use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder

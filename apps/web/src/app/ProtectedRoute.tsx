@@ -1,8 +1,8 @@
 import type React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import type { UserRole } from "@/types/api";
-import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import type { UserRole } from "@/shared/types/api";
+import { ROUTES } from "@/shared/constants/routes";
 import { PageFallback } from "@/app/PageFallback";
 
 /** Route guard: guests -> login (with redirect back), wrong role -> home. */

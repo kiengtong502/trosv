@@ -71,7 +71,7 @@ Các tín hiệu sau được quét bởi công cụ nhưng được xác nhận
 2. **Bộ dữ liệu hạt giống (Seeders)**:
    - `SchoolSeeder.php`: Dữ liệu danh mục các trường đại học/cao đẳng tại TP.HCM. Việc giữ các dòng khai báo địa chỉ nguyên vẹn giúp dễ đối soát với danh mục Bộ GD&ĐT.
 3. **Bộ minh họa giao diện vector (SVG Icons & Illustrations)**:
-   - `apps/web/src/ui/illustrations.tsx`: Các thẻ hình học SVG có thuộc tính lặp lại (stroke, fill, path coordinates).
+   - `apps/web/src/shared/ui/illustrations.tsx`: Các thẻ hình học SVG có thuộc tính lặp lại (stroke, fill, path coordinates).
 
 ---
 
