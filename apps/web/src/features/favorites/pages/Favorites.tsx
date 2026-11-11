@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
-import { getFavorites, removeFavorite } from "@/features/favorites/api/favoritesApi";
+import { getFavorites, removeFavorite } from "@/features/listings/api/favoritesApi";
 import type { Listing } from "@/shared/types/api";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { GateScreen, FavoritesGateIllustration } from "@/shared/layout/gates";

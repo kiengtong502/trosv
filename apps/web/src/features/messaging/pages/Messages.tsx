@@ -1,6 +1,6 @@
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { GateScreen, MessagesGateIllustration } from "@/shared/layout/gates";
-import { Footer } from "@/shared/layout/shell";
+import { Footer } from "@/shared/layout/footer";
 import MessagesList from "@/features/messaging/pages/MessagesList";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 

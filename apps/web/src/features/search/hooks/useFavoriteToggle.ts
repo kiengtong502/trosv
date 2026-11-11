@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
-import { addFavorite, removeFavorite } from "@/features/favorites/api/favoritesApi";
+import { addFavorite, removeFavorite } from "@/features/listings/api/favoritesApi";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES } from "@/shared/constants/routes";
 import { toast } from "@/shared/ui/toast";

@@ -9,13 +9,8 @@ import type {
   Review,
   School,
   Ward,
-  PaginationMeta,
+  Paged,
 } from "@/shared/types/api";
-
-export interface Paged<T> {
-  data: T[];
-  meta: PaginationMeta;
-}
 
 /** Typing lives at the boundary; see envelope.ts. */
 function toPaged<T>(res: {

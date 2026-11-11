@@ -8,7 +8,7 @@ import { formatVnd, TYPE_LABELS } from "@/shared/lib/format";
 import { Rating, Tag } from "@/shared/ui/badge";
 import { HousePlaceholder } from "@/shared/ui/icons";
 import { toast } from "@/shared/ui/toast";
-import { addFavorite, removeFavorite } from "@/features/favorites/api/favoritesApi";
+import { addFavorite, removeFavorite } from "@/features/listings/api/favoritesApi";
 import { cn } from "@/shared/lib/utils";
 
 export interface DistanceBadgeProps {

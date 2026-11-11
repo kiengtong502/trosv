@@ -233,6 +233,12 @@ export interface PaginationMeta {
   total?: number;
 }
 
+/** One page of a paginated list (data + pagination meta). */
+export interface Paged<T> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
 /** Query params cho GET /listings - filter sidebar co nhieu tuy chon. */
 export interface ListingQuery {
   [k: string]: string | number | (string | number)[] | undefined | null;

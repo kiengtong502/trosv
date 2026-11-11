@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { addFavorite, removeFavorite } from "@/features/favorites/api/favoritesApi";
+import { addFavorite, removeFavorite } from "@/features/listings/api/favoritesApi";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { toast } from "@/shared/ui/toast";
 import type { Listing } from "@/shared/types/api";

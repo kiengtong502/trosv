@@ -1,5 +1,6 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { onSessionClear } from "@/shared/api/axiosClient";
 import { API_BASE, REVERB } from "@/shared/config/env";
 import { TOKEN_KEY } from "@/shared/constants/storage";
 
@@ -86,3 +87,6 @@ export function disconnectEcho(): void {
   echo.disconnect();
   echo = null;
 }
+
+// Logout / 401 closes the socket (axiosClient cannot import this feature).
+onSessionClear(disconnectEcho);

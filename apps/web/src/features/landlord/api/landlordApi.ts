@@ -1,7 +1,6 @@
 import api from "@/shared/api/axiosClient";
 import { envelope, pagedEnvelope } from "@/shared/api/envelope";
-import type { Listing, ListingPayload } from "@/shared/types/api";
-import type { Paged } from "@/features/listings/api/listingApi";
+import type { Listing, ListingPayload, Paged } from "@/shared/types/api";
 
 // API_CONTRACT §4 - "Chủ nhà: quản lý tin đăng"
 export function getMyListings(page = 1, status = ""): Promise<Paged<Listing>> {

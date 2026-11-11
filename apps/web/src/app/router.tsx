@@ -2,7 +2,7 @@ import { MessagesEmptyPane } from "@/features/messaging/components/MessagesEmpty
 import { Suspense, lazy } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
-import { AppShell } from "@/shared/layout/shell";
+import { AppShell } from "@/app/shell";
 import { PageFallback } from "@/app/PageFallback";
 import { ErrorBoundary } from "@/app/ErrorBoundary";
 import { ProtectedRoute } from "@/app/ProtectedRoute";
@@ -27,7 +27,7 @@ const LandlordForm = lazy(() => import("@/features/landlord/pages/LandlordForm")
 const NotFound = lazy(() => import("@/app/NotFound"));
 
 /* AppShell renders <Outlet/> itself; the Suspense boundary lives inside
-   the shell (see components/shell.tsx <Outlet/> wrapper). */
+   the shell (see app/shell.tsx <Outlet/> wrapper). */
 function ShellWithoutFooter() {
   return (
     <AppShell

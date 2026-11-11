@@ -1,17 +1,28 @@
 import axios from "axios";
 import { API_URL } from "@/shared/config/env";
-import { disconnectEcho } from "@/features/messaging/api/echo";
 import { TOKEN_KEY } from "@/shared/constants/storage";
 
 const USER_KEY = "user";
 
 export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
 
+const sessionClearHandlers: (() => void)[] = [];
+
+/**
+ * Cho module khac (vd. socket realtime) dang ky don dep khi mat phien, de
+ * axiosClient khong phai import nguoc vao feature.
+ */
+export const onSessionClear = (handler: () => void): void => {
+  sessionClearHandlers.push(handler);
+};
+
 /** Xoa toan bo phien (token + user) - dung cho 401 lan logout. */
 export const clearSession = (): void => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
-  disconnectEcho();
+  sessionClearHandlers.forEach((handler) => {
+    handler();
+  });
 };
 
 const axiosClient = axios.create({
