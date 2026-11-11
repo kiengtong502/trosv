@@ -2,7 +2,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down logs test-api test-ai lint-api lint-web build-web test-e2e smoke backup check
+.PHONY: help up down logs test-api test-ai lint-api lint-web build-web test-e2e smoke smoke-stack backup check
 
 help: ## Hien thi danh sach cac target kha dung
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-12s %s\n", $$1, $$2}'
@@ -55,6 +55,11 @@ test-e2e: ## Chay kiem thu giao dien E2E Playwright
 
 smoke: ## Chay bo kiem thu smoke test API va quy trinh nghiep vu
 	bash scripts/e2e-smoke.sh
+
+smoke-stack: ## Smoke test stack docker compose dang chay (nginx + FrankenPHP + Reverb), xem scripts/stack-smoke.py
+	@set -a; [ -f .env ] && . ./.env; set +a; \
+	STACK_WEB_URL=http://localhost:$${FRONTEND_PORT:-5174} STACK_API_URL=http://localhost:$${API_PORT:-8000} \
+	STACK_REVERB=localhost:$${REVERB_PORT:-8080} python3 scripts/stack-smoke.py
 
 backup: ## Chay sao luu database va storage volume vao thu muc backups
 	bash infra/backup/backup.sh
