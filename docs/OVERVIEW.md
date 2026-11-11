@@ -91,15 +91,31 @@ Contract: `docs/contracts/AI_CONTRACT.md`.
 React 18, TypeScript (strict), Vite, Tailwind CSS v4, Radix UI, Leaflet, lucide
 icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
 
+Code is organised by feature (domain module), not by file type. Each folder in
+`src/features` owns everything for one domain: `pages/` (routed screens),
+`components/`, `hooks/`, `api/` (typed calls), `lib/` (pure logic and its tests)
+and, where needed, `context/`. A feature may import from `shared/`. Importing
+another feature is allowed (for example `room` uses `messaging`, `favorites` and
+`ai`; most features use `auth` and `listings`) but keep it one-directional: do not
+add a feature that imports back into one that already imports it.
+
 | Folder | What is in it |
 |---|---|
-| `src/app` | router (lazy routes), providers, error boundary, route fallbacks |
-| `src/pages` | one file per screen; subfolders `messages/`, `profile/`, `room/`, `search/` hold that screen's parts |
-| `src/components` | shared building blocks: `shell` (header, rail, footer), `ListingCard`, `ListingMap`, `HobbySelector`, `AiChatWidget`… |
-| `src/ui` | small design-system pieces: `button`, `input`, `dialog`, `switch`, `avatar`, `page-header`, `plate-band`… |
-| `src/api` | axios client and typed calls; `envelope.ts` unwraps `{ data, meta }`; `echo.ts` is the websocket client |
-| `src/hooks` | data and behaviour hooks (search, room detail, conversation data and realtime, `useStickToBottom`, `useReveal`) |
-| `src/context` | `AuthContext` |
+| `src/app` | router (lazy routes), providers, error boundary, route fallbacks, `NotFound` |
+| `src/features/auth` | login, register, `AuthContext`, `authApi` |
+| `src/features/home` | landing page and its sections |
+| `src/features/listings` | shared listing domain: `ListingCard`, `ListingMap`, `listingApi`, reference data (cities, wards, schools, amenities) |
+| `src/features/search` | search page, filter bar, filter/URL logic |
+| `src/features/room` | room detail page, gallery, reviews, contact card |
+| `src/features/favorites` | favorites page, `favoritesApi` |
+| `src/features/landlord` | dashboard, listing form, `landlordApi` |
+| `src/features/messaging` | inbox, thread, bubbles, realtime hooks, `messagingApi`, `echo.ts` (websocket client) |
+| `src/features/profile` | profile, public student page, `HobbySelector`, `SchoolCombobox`, hobby catalogue |
+| `src/features/ai` | AI area suggestions, roommate matching, chat widget, `aiApi` |
+| `src/shared/ui` | design-system pieces: `button`, `input`, `dialog`, `switch`, `avatar`, `page-header`, `plate-band`… |
+| `src/shared/layout` | app `shell` (header, rail, footer) and signed-out `gates` |
+| `src/shared/api` | axios client; `envelope.ts` unwraps `{ data, meta }` |
+| `src/shared/{hooks,lib,constants,config,types}` | cross-feature hooks, helpers, route/storage constants, env, API types |
 | `src/styles.css` | design tokens, motion utilities |
 
 ### Design system
@@ -162,7 +178,7 @@ icons, react-router 7. UI copy is Vietnamese. `npm run build` runs `tsc` first.
   changes it, and older accounts get a stable fallback from their id
   (`User::avatarKey()`), so the API always sends one. The key is returned on
   `/me`, public profiles, `other_user`, review `student` and listing `landlord`.
-  The art is in `src/ui/avatar-art.ts`; `Avatar` falls back to initials when no
+  The art is in `src/shared/ui/avatar-art.ts`; `Avatar` falls back to initials when no
   key is given (the AI roommate list has none). The profile header avatar opens
   a picker dialog with a "Ngẫu nhiên" button. To add one, add the key to
   `User::AVATARS` and `AVATAR_KEYS`, and draw it in `avatar-art.ts`.

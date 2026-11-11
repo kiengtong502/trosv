@@ -1,5 +1,5 @@
-import { ErrorState } from "@/ui/empty-state";
-import { Button } from "@/ui/button";
+import { ErrorState } from "@/shared/ui/empty-state";
+import { Button } from "@/shared/ui/button";
 
 export function ErrorBoundary() {
   return (

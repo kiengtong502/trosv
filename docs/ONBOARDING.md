@@ -76,10 +76,10 @@ apps/api/   Laravel API
   routes/api.php           toàn bộ endpoint + throttle
   tests/Feature/           210+ test, gồm ma trận phân quyền
 apps/web/   React 18 + TypeScript strict SPA (Vite 6, Tailwind CSS v4, Radix UI, Leaflet)
-  src/api/                 axios client + hàm gọi API theo nhóm (Sanctum Bearer)
-  src/pages/               màn hình SPA (Home, Search, RoomDetail, Messages, ...)
-  src/ui/                  Design system & Radix UI primitives (button, card, dialog, shell, input, ...)
-  src/hooks/               custom hooks (useAuthForm, useListingSearch, useStickToBottom, ...)
+  src/features/            mỗi domain một thư mục (auth, listings, search, room, favorites,
+                           landlord, messaging, profile, ai): pages/ components/ hooks/ api/ lib/
+  src/shared/              ui (design system), layout (shell), api (axios), hooks, lib, constants
+  src/app/                 router, providers, error boundary
   src/styles.css           Tailwind CSS v4 + design tokens (màu sắc, typography, shadow)
 apps/ai-service/ FastAPI (stub FAKE_MODE)
 docs/       contracts/, architecture/, reports/, runbooks/, ONBOARDING.md

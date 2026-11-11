@@ -1,4 +1,4 @@
-import { Skeleton } from "@/ui/badge";
+import { Skeleton } from "@/shared/ui/badge";
 
 export function PageFallback() {
   /* Skeleton mirroring a generic page body while the chunk loads. */
