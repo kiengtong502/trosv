@@ -17,7 +17,7 @@ const DEBT = {
   "src/features/ai/components/AiChatWidget.tsx": { complexity: 12, lines: 158 },
   "src/features/listings/components/ListingCard.tsx": { complexity: 14, lines: 170 },
   "src/features/listings/components/ListingMap.tsx": { complexity: 12, lines: 149 },
-  "src/shared/layout/shell.tsx": { complexity: 12, lines: 153 },
+  "src/app/shell.tsx": { complexity: 12, lines: 153 },
   "src/features/landlord/hooks/useListingForm.ts": { complexity: 12, lines: 128 },
   "src/features/ai/pages/AiRoommates.tsx": { complexity: 12, lines: 143 },
   "src/features/messaging/pages/ConversationDetail.tsx": { complexity: 19, lines: 155 },
@@ -84,6 +84,40 @@ export default tseslint.config(
     },
   },
   { files: ["src/**/*.{ts,tsx}"], rules: sizeRules(LIMITS) },
+  {
+    /* Layering: app -> features -> shared. Lower layers never import upwards. */
+    files: ["src/shared/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/features/*", "@/app/*"],
+              message:
+                "shared/ must not depend on features/ or app/ (layering: app > features > shared).",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/features/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/app/*"],
+              message: "features/ must not depend on app/ (layering: app > features > shared).",
+            },
+          ],
+        },
+      ],
+    },
+  },
   ...Object.entries(DEBT).map(([file, limits]) => ({
     files: [file],
     rules: sizeRules(limits),

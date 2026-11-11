@@ -15,7 +15,7 @@ import { toast } from "@/shared/ui/toast";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { GateScreen, MessagesGateIllustration } from "@/shared/layout/gates";
-import { Footer } from "@/shared/layout/shell";
+import { Footer } from "@/shared/layout/footer";
 import { ThreadRoomCard } from "@/features/messaging/components/ThreadRoomCard";
 import { TypingDots } from "@/features/messaging/components/TypingDots";
 import { Composer, MESSAGE_MAX } from "@/features/messaging/components/thread/Composer";
