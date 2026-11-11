@@ -43,7 +43,7 @@ class MessageReactionController extends Controller
         $message->reactions = $reactions;
         $message->save();
 
-        rescue(fn () => broadcast(new MessageReacted($message, $user->id)), report: false);
+        rescue(fn () => event(new MessageReacted($message, $user->id)), report: false);
 
         return response()->json(['data' => ['reactions' => $reactions]]);
     }
@@ -60,7 +60,7 @@ class MessageReactionController extends Controller
         $message->reactions = $reactions;
         $message->save();
 
-        rescue(fn () => broadcast(new MessageReacted($message, $user->id)), report: false);
+        rescue(fn () => event(new MessageReacted($message, $user->id)), report: false);
 
         return response()->json(['data' => ['reactions' => $reactions]]);
     }
