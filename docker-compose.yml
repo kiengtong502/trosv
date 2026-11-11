@@ -268,7 +268,9 @@ services:
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
     ports:
-      - "8001:8001"
+      # Chi bind loopback: backend goi qua mang compose (AI_URL), khong publish ra host
+      # (endpoint khong co xac thuc, dung API key that => ai cung goi duoc).
+      - "127.0.0.1:8001:8001"
     healthcheck:
       # Image python slim khong co curl - dung urllib (non-2xx/raise => exit 1).
       test: ["CMD-SHELL", "python3 -c 'import urllib.request; urllib.request.urlopen(\"http://127.0.0.1:8001/health\", timeout=3)'"]
