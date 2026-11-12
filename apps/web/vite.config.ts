@@ -10,6 +10,18 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     restoreMocks: true,
     // A test that prints a console error/warn it did not expect is a bug.
+    coverage: {
+      provider: "v8",
+      // Count every source file, tested or not, so untouched code shows up as 0%.
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/**/*.test.{ts,tsx}", "src/test/**", "src/**/*.d.ts"],
+      reporter: ["text-summary", "json-summary", "lcov"],
+      reportsDirectory: "./coverage",
+      // Ratchet: set just under the measured value so coverage can only go up. Raise these
+      // when you add tests; never lower them. Unit tests only - the Playwright suite
+      // covers the UI separately and is not counted here.
+      thresholds: { lines: 22, functions: 20, branches: 24, statements: 23 },
+    },
   },
   plugins: [tailwindcss(), react()],
   resolve: {
