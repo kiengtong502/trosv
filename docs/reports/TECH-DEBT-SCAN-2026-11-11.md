@@ -220,4 +220,14 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   immediately by `onError`, and Login never returned to the page the user came from. Still open:
   `favorites`, `home`, `ai`, `room`, `landlord` have little or no unit coverage, and E2E is
   still not hermetic (`waitForTimeout`, `test.skip`).
-- Open: P6, P8-P11, and the rest of P7.
+- **P8 partly fixed (branch `chore/deps-safe-updates`).** Every in-range update applied: web
+  (Playwright 1.65, axios 1.21.1, lucide 1.72, Prettier 3.10, TypeScript 5.9, typescript-eslint
+  8.72.2, Vite 6.4.6) and API (Laravel 12.72, Sanctum 4.4, Reverb 1.13, Larastan 3.15, PHPUnit
+  11.5.57 and 17 more). Only the majors remain: React 19, Vite 8, `@vitejs/plugin-react` 6,
+  TypeScript 7, jsdom 31, knip 6, Laravel 13, PHPUnit 12, `google-genai` 3.
+  Correction to the P8 text above: the 9 moderate `npm audit` findings are **not** cleared by the
+  typescript-eslint bump. They are one `minimatch` DoS advisory (GHSA-g3hv-75wg-m249, versions
+  below 11.0.1) reached through `typescript-estree` and ESLint, dev tooling only (`npm audit
+  --omit=dev`: 0), and npm's suggested "fixes" are downgrades. Wait for upstream. Also note
+  ESLint 10 is installed while `eslint-plugin-jsx-a11y` declares support up to ESLint 9.
+- Open: P6, P8 majors, P9-P11, and the rest of P7.
