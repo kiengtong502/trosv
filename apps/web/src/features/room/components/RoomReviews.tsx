@@ -61,9 +61,18 @@ export interface RoomReviewsProps {
   reviews: Review[];
   /** The viewer is a student and may write a review. */
   canWrite: boolean;
+  /** The viewer is a signed-in student (so we can say why they cannot review yet). */
+  isStudent?: boolean;
 }
 
-export function RoomReviews({ listing, reviews, canWrite }: RoomReviewsProps) {
+/** Why a student has no "write a review" button: they must message first, or already reviewed. */
+function reviewHint(listing: Listing): string {
+  return listing.my_conversation_id == null
+    ? "Nhắn tin cho chủ nhà để có thể đánh giá phòng này."
+    : "Bạn đã đánh giá phòng này.";
+}
+
+export function RoomReviews({ listing, reviews, canWrite, isStudent = false }: RoomReviewsProps) {
   return (
     <section className={cn(PANEL, listing.latitude == null && "lg:col-span-2")}>
       <div className="mb-3 flex items-center justify-between">
@@ -76,6 +85,9 @@ export function RoomReviews({ listing, reviews, canWrite }: RoomReviewsProps) {
           </Button>
         ) : null}
       </div>
+      {isStudent && !canWrite ? (
+        <p className="mb-3 text-sm text-muted">{reviewHint(listing)}</p>
+      ) : null}
       <RatingBars listing={listing} />
       {reviews.length === 0 ? (
         <p className="rounded-lg border border-dashed border-line-strong p-4 text-sm text-muted">

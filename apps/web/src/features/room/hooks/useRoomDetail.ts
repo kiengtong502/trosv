@@ -60,9 +60,16 @@ export function useRoomDetail(id: number) {
       });
   }, [id, loadReviews]);
 
+  /** Reload the room (averages, can_review) and the first page of reviews, without a spinner. */
+  const refresh = useCallback(() => {
+    getListing(id).then(setListing).catch(ignoreError("refresh room"));
+    loadReviews(1);
+  }, [id, loadReviews]);
+
   return {
     listing,
     setListing,
+    refresh,
     loading,
     error,
     reviews,

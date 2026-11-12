@@ -10,10 +10,10 @@ const listing = (over: Record<string, unknown> = {}) =>
 const review = (over: Record<string, unknown>) =>
   ({ id: 1, rating: 4, ...over }) as unknown as Review;
 
-function renderReviews(l: Listing, reviews: Review[], canWrite = false) {
+function renderReviews(l: Listing, reviews: Review[], canWrite = false, isStudent = false) {
   return render(
     <MemoryRouter>
-      <RoomReviews listing={l} reviews={reviews} canWrite={canWrite} />
+      <RoomReviews listing={l} reviews={reviews} canWrite={canWrite} isStudent={isStudent} />
     </MemoryRouter>,
   );
 }
@@ -63,5 +63,31 @@ describe("RoomReviews", () => {
     const href = screen.getByRole("link", { name: "Viết đánh giá" }).getAttribute("href");
     expect(href).toBe("/rooms/12?review=1");
     expect(href).not.toContain(":id");
+  });
+
+  describe("why a student cannot review", () => {
+    it("tells a student who has not messaged the landlord to do that first", () => {
+      renderReviews(listing({ my_conversation_id: null }), [], false, true);
+      expect(
+        screen.getByText("Nhắn tin cho chủ nhà để có thể đánh giá phòng này."),
+      ).toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: "Viết đánh giá" })).not.toBeInTheDocument();
+    });
+
+    it("tells a student who already has a conversation but no button that they have reviewed", () => {
+      renderReviews(listing({ my_conversation_id: 5 }), [], false, true);
+      expect(screen.getByText("Bạn đã đánh giá phòng này.")).toBeInTheDocument();
+    });
+
+    it("says nothing to a student who can write a review (they have the button)", () => {
+      renderReviews(listing({ my_conversation_id: 5 }), [], true, true);
+      expect(screen.queryByText(/Nhắn tin cho chủ nhà để có thể đánh giá/)).not.toBeInTheDocument();
+      expect(screen.queryByText("Bạn đã đánh giá phòng này.")).not.toBeInTheDocument();
+    });
+
+    it("says nothing to visitors and landlords", () => {
+      renderReviews(listing({ my_conversation_id: null }), [], false, false);
+      expect(screen.queryByText(/Nhắn tin cho chủ nhà để có thể đánh giá/)).not.toBeInTheDocument();
+    });
   });
 });

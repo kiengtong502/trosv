@@ -121,4 +121,28 @@ describe("useRoomDetail", () => {
     });
     expect(api.getListing).toHaveBeenLastCalledWith(2);
   });
+
+  it("refresh reloads the room and its first page of reviews without a loading flash", async () => {
+    api.getListing.mockResolvedValue({ ...room(12), can_review: true });
+    api.getListingReviews.mockResolvedValue({ data: [], meta: META });
+    const { result } = renderHook(() => useRoomDetail(12));
+    await waitFor(() => {
+      expect(result.current.listing?.can_review).toBe(true);
+    });
+
+    // After a review was posted the server says the student cannot review again.
+    api.getListing.mockResolvedValue({ ...room(12), can_review: false });
+    api.getListingReviews.mockResolvedValue({ data: [REVIEW], meta: META });
+    act(() => {
+      result.current.refresh();
+    });
+
+    expect(result.current.loading).toBe(false);
+    await waitFor(() => {
+      expect(result.current.listing?.can_review).toBe(false);
+    });
+    await waitFor(() => {
+      expect(result.current.reviews).toEqual([REVIEW]);
+    });
+  });
 });

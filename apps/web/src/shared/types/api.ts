@@ -52,6 +52,13 @@ export interface Review {
   landlord_rating?: number;
 }
 
+/** Body of POST /listings/{id}/reviews (students). Both ratings are required, 1-5. */
+export interface ReviewPayload {
+  listing_rating: number;
+  landlord_rating: number;
+  comment?: string | null;
+}
+
 export interface ListingImage {
   id: number;
   url: string;
