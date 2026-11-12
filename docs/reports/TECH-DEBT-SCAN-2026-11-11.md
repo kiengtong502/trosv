@@ -213,4 +213,11 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   or the migrate/worker race each fails it. It found one more bug: with Reverb down every chat
   action (send, read, react, unsend) returned 500, because `broadcast()` fires in a destructor
   outside `rescue()`; fixed with `event()` and six regression tests.
-- Open: P6-P11.
+- **P7 partly fixed (branch `chore/coverage-auth-tests`).** Coverage is now measured and gated:
+  web via `@vitest/coverage-v8` (15.4% -> 22.3% lines, floor 22%), API via `pcov` (97.1%, floor
+  96%); both fail CI if coverage drops (verified). 45 new `auth` unit tests took it from 0%
+  and found three real UI bugs, fixed: Login/Register client-side validation messages were wiped
+  immediately by `onError`, and Login never returned to the page the user came from. Still open:
+  `favorites`, `home`, `ai`, `room`, `landlord` have little or no unit coverage, and E2E is
+  still not hermetic (`waitForTimeout`, `test.skip`).
+- Open: P6, P8-P11, and the rest of P7.

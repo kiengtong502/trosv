@@ -4,6 +4,9 @@ inputs:
   working-directory:
     description: Directory holding composer.json
     default: apps/api
+  coverage:
+    description: Coverage driver for setup-php ("none" or "pcov"). Only the test job needs one.
+    default: none
 runs:
   using: composite
   steps:
@@ -11,7 +14,7 @@ runs:
       with:
         php-version: "8.3"
         extensions: pdo_pgsql, pgsql, bcmath, intl, zip, gd, pcntl
-        coverage: none
+        coverage: ${{ inputs.coverage }}
         tools: composer:v2
 
     - id: composer-cache

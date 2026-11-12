@@ -244,7 +244,7 @@ add a feature that imports back into one that already imports it.
 - CI is zero-tolerance and split by area. `ci.yml` only decides what runs (path
   filters on PRs; pushes and the merge queue run everything) and gates the
   result; the work lives in reusable workflows `_api.yml` (Pint, PHPStan max,
-  PHPUnit, composer audit), `_web.yml` (ESLint, Prettier, tsc, Vitest unit tests, knip dead-code check, a build that
+  PHPUnit with a pcov coverage floor, composer audit), `_web.yml` (ESLint, Prettier, tsc, Vitest unit tests with a coverage floor, knip dead-code check, a build that
   fails on warnings, `npm audit`), `_ai.yml` (Ruff, mypy, pytest, pip-audit),
   `_infra.yml` (actionlint, hadolint, shellcheck, `compose config`, image
   builds), `_e2e.yml` (Playwright against the bundle `_web` built, shared as
@@ -262,6 +262,11 @@ add a feature that imports back into one that already imports it.
   timeouts and cancel-on-new-push (never on `stable`). `deploy.yml` deploys only
   a CI-green tip of `stable`, smoke-tests it, and rolls back to the previous
   commit if the smoke test fails.
+- Coverage floors are ratchets, set just under the measured value: web unit tests
+  (`vite.config.ts`, `npm run test:coverage`: lines 22%) and API (`_api.yml`,
+  `php artisan test --coverage --min=96`: measured 97.1%). Raise them when coverage
+  rises; never lower them. Web unit coverage excludes the Playwright suite, which
+  covers the UI separately.
 - Known gotchas: seed photos are served from the Docker web container on `:5174`
   (`e2e/listings/images.spec.ts` fails without it).
 

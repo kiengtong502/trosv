@@ -39,7 +39,14 @@ const sizeRules = ({ complexity, lines }) => ({
 
 export default tseslint.config(
   {
-    ignores: ["dist", "node_modules", "playwright-report", "test-results", "playwright.config.ts"],
+    ignores: [
+      "dist",
+      "node_modules",
+      "coverage",
+      "playwright-report",
+      "test-results",
+      "playwright.config.ts",
+    ],
   },
   {
     files: ["**/*.{ts,tsx}"],

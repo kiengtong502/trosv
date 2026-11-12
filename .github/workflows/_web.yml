@@ -24,9 +24,22 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
 
-      # Unit tests (Vitest, jsdom): fast, run before the slower build and e2e.
+      # Unit tests (Vitest, jsdom) with coverage: fast, run before the slower build and e2e.
+      # vite.config.ts holds the coverage floor (a ratchet): the step fails if coverage drops.
       - name: Unit tests
-        run: npm test
+        run: npm run test:coverage
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          [ -f coverage/coverage-summary.json ] || exit 0
+          node -e '
+            const total = require("./coverage/coverage-summary.json").total;
+            const rows = ["lines", "statements", "functions", "branches"].map(
+              (k) => "| " + k + " | " + total[k].pct + "% |",
+            );
+            console.log(["### Web unit-test coverage", "| metric | covered |", "|---|---|", ...rows].join("\n"));
+          ' >> "$GITHUB_STEP_SUMMARY"
 
       # Dead code gate: unused files, exports, types and dependencies fail the job.
       - name: knip (dead code)

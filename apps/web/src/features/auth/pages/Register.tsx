@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES } from "@/shared/constants/routes";
 import { ART_ASSETS } from "@/shared/constants/assets";
 import { errFieldErrors, errMessage } from "@/shared/api/axiosClient";
-import { useAuthForm } from "@/features/auth/hooks/useAuthForm";
+import { FormValidationError, useAuthForm } from "@/features/auth/hooks/useAuthForm";
 import { Button } from "@/shared/ui/button";
 import { Field } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
@@ -18,7 +18,6 @@ import type { RegisterPayload, UserRole } from "@/shared/types/api";
 export default function Register() {
   useDocumentTitle("Đăng ký · TROSV");
   const { register } = useAuth();
-  const navigate = useNavigate();
   const role: UserRole = "student";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,7 +32,7 @@ export default function Register() {
     setFormError("");
     if (password !== passwordConfirmation) {
       setFieldErrors({ password_confirmation: ["Mật khẩu nhập lại chưa khớp."] });
-      throw new Error("Mật khẩu chưa khớp");
+      throw new FormValidationError();
     }
     const payload: RegisterPayload = {
       name: name.trim(),
@@ -43,7 +42,6 @@ export default function Register() {
       role: pickedRole,
     };
     await register(payload);
-    void navigate(ROUTES.HOME, { replace: true });
   }
 
   const form = useAuthForm({

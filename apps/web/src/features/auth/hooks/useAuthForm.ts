@@ -9,7 +9,18 @@ import { ROUTES } from "@/shared/constants/routes";
  * khi thành công. Riêng phần trạng thái lỗi thuộc về từng page (Login dùng
  * chuỗi alert, Register dùng map lỗi theo field), nên page tự clear trong
  * `submit()` và map lỗi trong `onError(err)`.
+ *
+ * Kiểm tra phía client: `submit()` đặt lỗi theo field rồi `throw new FormValidationError()`
+ * để dừng, và hook KHÔNG gọi `onError` cho lỗi này (nếu không onError sẽ ghi đè lỗi
+ * field vừa đặt).
  */
+export class FormValidationError extends Error {
+  constructor() {
+    super("Form validation failed");
+    this.name = "FormValidationError";
+  }
+}
+
 export interface UseAuthFormConfig {
   submit: () => Promise<void>;
   onError?: (err: unknown) => void;
@@ -34,7 +45,7 @@ export function useAuthForm({ submit, onError, afterSuccess }: UseAuthFormConfig
         void navigate(ROUTES.HOME, { replace: true });
       }
     } catch (err: unknown) {
-      onError?.(err);
+      if (!(err instanceof FormValidationError)) onError?.(err);
     } finally {
       setBusy(false);
     }
