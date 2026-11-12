@@ -267,6 +267,11 @@ add a feature that imports back into one that already imports it.
   `php artisan test --coverage --min=96`: measured 97.1%). Raise them when coverage
   rises; never lower them. Web unit coverage excludes the Playwright suite, which
   covers the UI separately.
+- Regenerate `apps/api/composer.lock` with the same Composer CI uses (latest 2.x), not an
+  older system one. `composer.json` has a `config.policy` section that only newer Composers
+  hash, so a lock written by e.g. 2.8 fails CI's `composer validate --strict`. Without a local
+  PHP 8.3 + current Composer: `docker run --rm -u $(id -u):$(id -g) -e COMPOSER_HOME=/tmp
+  -v "$PWD/apps/api:/app" -w /app composer:2 update` (or `update --lock` to refresh the hash only).
 - Known gotchas: seed photos are served from the Docker web container on `:5174`
   (`e2e/listings/images.spec.ts` fails without it).
 
