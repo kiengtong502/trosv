@@ -31,7 +31,7 @@ class ProfileUpdateRequest extends FormRequest
 
         $user = $this->user();
         if ($user instanceof User && $user->role === User::ROLE_STUDENT) {
-            $rules['school_id'] = ['sometimes', 'integer', 'exists:schools,id'];
+            $rules['school_id'] = ['sometimes', 'nullable', 'integer', 'exists:schools,id'];
             $rules['budget_min'] = ['sometimes', 'nullable', 'integer', 'min:0', 'max:2100000000'];
             $rules['budget_max'] = ['sometimes', 'nullable', 'integer', 'min:0', 'max:2100000000'];
             $rules['sleep_schedule'] = ['sometimes', 'nullable', Rule::in([

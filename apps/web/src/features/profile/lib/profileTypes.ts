@@ -151,7 +151,8 @@ export function buildProfilePayload(
   };
   if (!isStudent) return payload;
 
-  if (form.school_id) payload["school_id"] = Number(form.school_id);
+  // null clears the school; omitting it would silently keep the old one.
+  payload["school_id"] = form.school_id ? Number(form.school_id) : null;
   payload["budget_min"] = form.budget_min ? Number(form.budget_min) : null;
   payload["budget_max"] = form.budget_max ? Number(form.budget_max) : null;
   payload["sleep_schedule"] = form.sleep_schedule || null;

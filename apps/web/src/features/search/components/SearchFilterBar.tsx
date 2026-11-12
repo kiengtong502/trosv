@@ -9,16 +9,10 @@ export interface SearchFilterBarProps {
   search: SearchState;
   showMap: boolean;
   onToggleMap: () => void;
-  onSaveSearch: () => void;
 }
 
 /** The navy strip under the header: search box and the filter pills. */
-export function SearchFilterBar({
-  search,
-  showMap,
-  onToggleMap,
-  onSaveSearch,
-}: SearchFilterBarProps) {
+export function SearchFilterBar({ search, showMap, onToggleMap }: SearchFilterBarProps) {
   return (
     <PlateBand
       size="strip"
@@ -43,21 +37,9 @@ export function SearchFilterBar({
 
       <button
         type="button"
-        onClick={onSaveSearch}
-        className={
-          "ml-auto h-9 flex-none rounded-lg px-3 text-sm font-medium text-white/85 " +
-          "transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none " +
-          "focus-visible:ring-2 focus-visible:ring-flyer"
-        }
-      >
-        Lưu tìm kiếm
-      </button>
-
-      <button
-        type="button"
         onClick={onToggleMap}
         className={
-          "flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
+          "ml-auto flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
           "bg-flyer px-3 text-sm font-semibold text-flyer-ink lg:hidden"
         }
         aria-pressed={showMap}

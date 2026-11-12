@@ -5,7 +5,6 @@ import { useListingSearch } from "@/features/search/hooks/useListingSearch";
 import { ListingMap } from "@/features/listings/components/ListingMap";
 import { cn } from "@/shared/lib/utils";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
-import { toast } from "@/shared/ui/toast";
 import { ActiveChips } from "../components/ActiveChips";
 import { ListingResults } from "../components/ListingResults";
 import { MobileViewToggle, type MobileTab } from "../components/MobileViewToggle";
@@ -40,9 +39,6 @@ export default function Search() {
         search={search}
         showMap={mobileTab === "map"}
         onToggleMap={toggleMobileTab}
-        onSaveSearch={() => {
-          toast("Đã lưu tiêu chí tìm kiếm vào bộ nhớ trình duyệt.");
-        }}
       />
 
       {/* Result metadata + Active filter chips */}

@@ -150,6 +150,19 @@ class ProfileTest extends TestCase
             ->assertJsonValidationErrors(['school_id']);
     }
 
+    public function test_student_can_clear_school(): void
+    {
+        $user = User::factory()->student()->create();
+        $this->assertNotNull($user->school_id);
+
+        $this->actingAs($user, 'sanctum')
+            ->putJson('/api/profile', ['school_id' => null])
+            ->assertOk()
+            ->assertJsonPath('data.school_id', null);
+
+        $this->assertNull($user->fresh()->school_id);
+    }
+
     public function test_profile_requires_authentication(): void
     {
         $this->putJson('/api/profile', ['name' => 'X'])

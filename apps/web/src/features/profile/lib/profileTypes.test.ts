@@ -216,10 +216,10 @@ describe("buildProfilePayload", () => {
     });
   });
 
-  it("clears unset student fields with null, and omits school_id when none is chosen", () => {
+  it("clears unset student fields with null, including school_id when none is chosen", () => {
     const payload = buildProfilePayload(EMPTY, true);
-    expect(payload).not.toHaveProperty("school_id");
     expect(payload).toMatchObject({
+      school_id: null,
       budget_min: null,
       budget_max: null,
       sleep_schedule: null,
