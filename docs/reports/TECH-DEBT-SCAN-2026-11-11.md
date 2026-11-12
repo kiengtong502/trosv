@@ -206,4 +206,11 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   nginx capped request bodies at its 1 MB default, so any larger photo or attachment got 413
   through the real stack (now 16 MB); an attachment over PHP's upload limit returned 500 instead
   of a 422 (regression test added); `queue`/`scheduler` raced the migrations on a fresh stack.
+- **CI now runs the real stack (branch `chore/ci-stack-smoke`).** `_stack.yml` starts the compose
+  stack and runs `scripts/stack-smoke.py` (26 checks, incl. a chat message delivered over a real
+  WebSocket to Reverb) plus a clean-start check of queue/scheduler; it gates Deploy through
+  `ci-ok`. Mutation-checked: re-introducing the nginx 1 MB limit, a dead backend-to-Reverb path
+  or the migrate/worker race each fails it. It found one more bug: with Reverb down every chat
+  action (send, read, react, unsend) returned 500, because `broadcast()` fires in a destructor
+  outside `rescue()`; fixed with `event()` and six regression tests.
 - Open: P6-P11.

@@ -1,7 +1,7 @@
 name: CI
 
 # The pipeline is split by area into reusable workflows (_api, _web, _ai, _infra,
-# _e2e) and local composite actions (.github/actions/*). This file only decides
+# _e2e, _stack) and local composite actions (.github/actions/*). This file only decides
 # WHAT runs (path filters) and gates the result (ci-ok).
 on:
   push:
@@ -96,6 +96,13 @@ jobs:
     if: needs.changes.outputs.e2e == 'true' && !cancelled() && !failure()
     uses: ./.github/workflows/_e2e.yml
 
+  # The real docker compose stack (nginx + FrankenPHP + Reverb + workers) - what ships. Runs
+  # whenever anything that can change it changed; also gates Deploy via ci-ok.
+  stack:
+    needs: changes
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.web == 'true' || needs.changes.outputs.infra == 'true'
+    uses: ./.github/workflows/_stack.yml
+
   secrets:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -122,7 +129,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [changes, api, web, ai-service, infra, e2e, secrets]
+    needs: [changes, api, web, ai-service, infra, e2e, stack, secrets]
     steps:
       - name: Every job succeeded or was legitimately skipped
         env:

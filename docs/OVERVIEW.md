@@ -247,8 +247,12 @@ add a feature that imports back into one that already imports it.
   PHPUnit, composer audit), `_web.yml` (ESLint, Prettier, tsc, Vitest unit tests, knip dead-code check, a build that
   fails on warnings, `npm audit`), `_ai.yml` (Ruff, mypy, pytest, pip-audit),
   `_infra.yml` (actionlint, hadolint, shellcheck, `compose config`, image
-  builds) and `_e2e.yml` (Playwright against the bundle `_web` built, shared as
-  an artifact). Setup is shared through local composite actions in
+  builds), `_e2e.yml` (Playwright against the bundle `_web` built, shared as
+  an artifact) and `_stack.yml` (starts the real docker compose stack, the thing
+  that ships, and runs `scripts/stack-smoke.py` against it: uploads through nginx,
+  `/storage`, signed attachments, size limits, and a chat message delivered over
+  Reverb; then checks queue/scheduler started without errors; run it locally with
+  `make smoke-stack`). Setup is shared through local composite actions in
   `.github/actions/` (PHP, Node, Python; Composer, npm, pip and Playwright
   caches). `ci-ok` is the one check to require in branch protection (skipped
   areas are fine, failed or cancelled ones are not). Also `secrets` (gitleaks),

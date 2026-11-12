@@ -143,8 +143,8 @@ class ConversationService
                 'body' => $roomPath,
             ]);
             $conversation->touch();
-            rescue(fn () => broadcast(new MessageSent($msg1->load(['sender:id', 'conversation']))), report: false);
-            rescue(fn () => broadcast(new MessageSent($msg2->load(['sender:id', 'conversation']))), report: false);
+            rescue(fn () => event(new MessageSent($msg1->load(['sender:id', 'conversation']))), report: false);
+            rescue(fn () => event(new MessageSent($msg2->load(['sender:id', 'conversation']))), report: false);
         }
     }
 
@@ -194,7 +194,9 @@ class ConversationService
         // Realtime bubble delivery over Reverb (replaces 5s client polling).
         // Message shape mirrors MessageResource/contract §3 (body/reactions
         // match MessageResource exactly; seen_at starts null).
-        rescue(fn () => broadcast(new MessageSent($message->load(['sender:id', 'conversation']))), report: false);
+        // event(), not broadcast(): broadcast() returns a PendingBroadcast that only fires in
+        // its destructor, i.e. AFTER rescue() returned, so a dead Reverb escaped as a 500.
+        rescue(fn () => event(new MessageSent($message->load(['sender:id', 'conversation']))), report: false);
 
         return $message;
     }
@@ -217,7 +219,7 @@ class ConversationService
 
         // Sender hiển thị "Đã xem" ngay khi receiver mở thread.
         rescue(
-            fn () => broadcast(new MessageSeen($conversation, $user, (string) $now->toISOString())),
+            fn () => event(new MessageSeen($conversation, $user, (string) $now->toISOString())),
             report: false
         );
     }
