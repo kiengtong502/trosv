@@ -4,7 +4,7 @@ import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES } from "@/shared/constants/routes";
 import { ART_ASSETS } from "@/shared/constants/assets";
 import { errMessage } from "@/shared/api/axiosClient";
-import { useAuthForm } from "@/features/auth/hooks/useAuthForm";
+import { FormValidationError, useAuthForm } from "@/features/auth/hooks/useAuthForm";
 import { Button } from "@/shared/ui/button";
 import { Field } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
@@ -27,29 +27,35 @@ export default function Login() {
     if (!password) nextErrors["password"] = "Bạn cần nhập mật khẩu.";
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
-      throw new Error("Chưa điền đủ thông tin");
+      throw new FormValidationError();
     }
     setErrors({});
     await login(email.trim(), password);
-    const from =
-      typeof location.state === "object" &&
-      location.state != null &&
-      "from" in location.state &&
-      typeof (location.state as { from: unknown }).from === "string"
-        ? (location.state as { from: string }).from
-        : ROUTES.HOME;
-    void navigate(from, { replace: true });
+  }
+
+  // Back to the page the user was sent away from (ProtectedRoute puts it in
+  // location.state.from), otherwise home. Must be afterSuccess: the hook's default
+  // navigation to home would otherwise run after, and win over, this one.
+  function redirectTarget(): string {
+    const state: unknown = location.state;
+    if (typeof state === "object" && state != null && "from" in state) {
+      const from = state.from;
+      if (typeof from === "string") return from;
+    }
+    return ROUTES.HOME;
   }
 
   const form = useAuthForm({
     submit,
+    afterSuccess: () => {
+      void navigate(redirectTarget(), { replace: true });
+    },
     onError: (err) => {
       setErrors({
-        form:
-          errMessage(err, "Đăng nhập không thành công. Bạn kiểm tra lại email và mật khẩu nhé.") !==
-          "Chưa điền đủ thông tin"
-            ? errMessage(err, "Đăng nhập không thành công. Bạn kiểm tra lại email và mật khẩu nhé.")
-            : "",
+        form: errMessage(
+          err,
+          "Đăng nhập không thành công. Bạn kiểm tra lại email và mật khẩu nhé.",
+        ),
       });
     },
   });
