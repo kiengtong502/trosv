@@ -64,7 +64,8 @@ test.describe("route fade, image fade-in, scroll reveal", () => {
     });
     await page.getByRole("link", { name: /Xem tất cả phòng/ }).click();
     await expect(page).toHaveURL(/\/rooms$/);
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    // The shell scrolls to the top in an effect that runs just after the URL changes.
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     const wrapper = page.getByTestId("route-fade");
     await expect(wrapper).toBeVisible();
     expect(await wrapper.evaluate((el) => getComputedStyle(el).animationName)).toBe("fade-in");
