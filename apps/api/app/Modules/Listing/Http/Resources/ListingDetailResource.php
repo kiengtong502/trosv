@@ -65,10 +65,11 @@ class ListingDetailResource extends JsonResource
             ? (float) $listing->reviews_avg_listing_rating
             : $listing->reviews()->avg('listing_rating');
 
+        // The landlord is rated on their own column (landlord_rating), not on the rooms.
         $landlordAvg = $listing->user_id
             ? Review::query()
                 ->whereIn('listing_id', Listing::where('user_id', $listing->user_id)->select('id'))
-                ->avg('listing_rating')
+                ->avg('landlord_rating')
             : null;
 
         $areaAvg = $listing->ward_id
