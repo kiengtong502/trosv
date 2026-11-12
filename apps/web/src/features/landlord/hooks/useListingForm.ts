@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import {
@@ -13,7 +13,7 @@ import { aiDescription } from "@/features/ai/api/aiApi";
 import { toggleId } from "@/shared/lib/list";
 import { errMessage, errFieldErrors } from "@/shared/api/axiosClient";
 import { ROUTES, route } from "@/shared/constants/routes";
-import type { ListingImage } from "@/shared/types/api";
+import type { ListingImage, ListingPayload } from "@/shared/types/api";
 import {
   EMPTY_FORM,
   buildDescriptionRequest,
@@ -27,6 +27,34 @@ import {
 export interface ToastLike {
   success: (msg: string) => unknown;
   error: (msg: string) => unknown;
+}
+
+/**
+ * Saves the form and returns where to go next. When creating, the id of the new listing is
+ * remembered in `createdId`: if the photo upload that follows fails and the landlord presses
+ * save again, the retry updates that listing instead of creating a duplicate.
+ */
+async function saveListing(args: {
+  id: number | undefined;
+  createdId: { current: number | null };
+  payload: ListingPayload;
+  files: File[];
+}): Promise<string> {
+  const { id, createdId, payload, files } = args;
+  if (id) {
+    const updated = await updateListing(id, payload);
+    if (files.length > 0) await uploadImages(id, files);
+    return route(ROUTES.ROOM_DETAIL, { id: updated.id });
+  }
+  let listingId = createdId.current;
+  if (listingId === null) {
+    listingId = (await createListing(payload)).id;
+    createdId.current = listingId;
+  } else {
+    await updateListing(listingId, payload);
+  }
+  if (files.length > 0) await uploadImages(listingId, files);
+  return ROUTES.LANDLORD;
 }
 
 /**
@@ -49,6 +77,9 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   const [busy, setBusy] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  // Id of the listing this form already created. If the photo upload that follows the
+  // create fails, pressing save again must finish the job, not create a second listing.
+  const createdId = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -112,21 +143,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     const payload = buildListingPayload(form, isEdit);
 
     try {
-      if (isEdit) {
-        const updated = await updateListing(id, payload);
-        // Upload newly picked images, if any.
-        if (newFiles.length > 0) {
-          await uploadImages(id, newFiles);
-        }
-        void navigate(route(ROUTES.ROOM_DETAIL, { id: updated.id }));
-      } else {
-        const created = await createListing(payload);
-        // Jump to edit page to upload images for the new listing.
-        if (newFiles.length > 0) {
-          await uploadImages(created.id, newFiles);
-        }
-        void navigate(ROUTES.LANDLORD);
-      }
+      void navigate(await saveListing({ id, createdId, payload, files: newFiles }));
     } catch (err: unknown) {
       setErrors(errFieldErrors(err));
       setNotice(errMessage(err));

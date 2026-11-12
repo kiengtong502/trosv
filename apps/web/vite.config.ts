@@ -20,7 +20,7 @@ export default defineConfig({
       // Ratchet: set just under the measured value so coverage can only go up. Raise these
       // when you add tests; never lower them. Unit tests only - the Playwright suite
       // covers the UI separately and is not counted here.
-      thresholds: { lines: 22, functions: 20, branches: 24, statements: 23 },
+      thresholds: { lines: 32, functions: 30, branches: 32, statements: 33 },
     },
   },
   plugins: [tailwindcss(), react()],

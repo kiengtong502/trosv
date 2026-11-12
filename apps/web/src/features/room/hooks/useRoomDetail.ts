@@ -39,7 +39,7 @@ export function useRoomDetail(id: number) {
           setReviews(data);
           setReviewMeta(meta);
         })
-        .catch(ignoreError("record room view"));
+        .catch(ignoreError("load room reviews"));
     },
     [id],
   );

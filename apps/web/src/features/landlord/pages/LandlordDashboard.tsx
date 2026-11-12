@@ -45,11 +45,13 @@ export default function LandlordDashboard() {
   const [confirmDelete, setConfirmDelete] = useState<Listing | null>(null);
   const [busyDelete, setBusyDelete] = useState(false);
 
-  // Render-phase reset: refetch on status change
+  // Render-phase reset: refetch on status change. Also forget the last failure, or the
+  // error screen would stay up even after the new request succeeds.
   const [prevStatus, setPrevStatus] = useState(status);
   if (prevStatus !== status) {
     setPrevStatus(status);
     setLoading(true);
+    setError("");
   }
 
   useEffect(() => {
@@ -242,42 +244,16 @@ export default function LandlordDashboard() {
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
-        <Dialog
-          open={confirmDelete != null}
-          onOpenChange={(o) => {
-            if (!o) setConfirmDelete(null);
+        <DeleteListingDialog
+          listing={confirmDelete}
+          busy={busyDelete}
+          onCancel={() => {
+            setConfirmDelete(null);
           }}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Xóa tin đăng?</DialogTitle>
-              <DialogDescription>
-                Tin "{confirmDelete?.title}" sẽ bị xóa vĩnh viễn khỏi hệ thống. Thao tác này không
-                thể hoàn tác.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setConfirmDelete(null);
-                }}
-              >
-                Giữ lại
-              </Button>
-              <Button
-                variant="danger"
-                loading={busyDelete}
-                onClick={() => {
-                  void doDelete();
-                }}
-              >
-                Xóa tin
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          onConfirm={() => {
+            void doDelete();
+          }}
+        />
       </div>
     </>
   );
@@ -288,4 +264,43 @@ function cnDot(status: string | undefined): string {
   if (status === "rented") return "inline-block size-1.5 rounded-full bg-white/70";
   if (status === "hidden") return "inline-block size-1.5 rounded-full bg-white/50";
   return "inline-block size-1.5 rounded-full bg-white";
+}
+
+function DeleteListingDialog({
+  listing,
+  busy,
+  onCancel,
+  onConfirm,
+}: {
+  listing: Listing | null;
+  busy: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Dialog
+      open={listing != null}
+      onOpenChange={(o) => {
+        if (!o) onCancel();
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Xóa tin đăng?</DialogTitle>
+          <DialogDescription>
+            Tin "{listing?.title}" sẽ bị xóa vĩnh viễn khỏi hệ thống. Thao tác này không thể hoàn
+            tác.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onCancel}>
+            Giữ lại
+          </Button>
+          <Button variant="danger" loading={busy} onClick={onConfirm}>
+            Xóa tin
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }

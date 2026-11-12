@@ -230,4 +230,15 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   below 11.0.1) reached through `typescript-estree` and ESLint, dev tooling only (`npm audit
   --omit=dev`: 0), and npm's suggested "fixes" are downgrades. Wait for upstream. Also note
   ESLint 10 is installed while `eslint-plugin-jsx-a11y` declares support up to ESLint 9.
-- Open: P6, P8 majors, P9-P11, and the rest of P7.
+- **P7 more (branch `test/landlord-room-units`).** 81 new unit tests for `landlord` and `room`
+  (API contract, listing form hook, dashboard, contact card, reviews, room loader, favorites);
+  web unit coverage 22% -> 32% lines (floor raised to 32%), 492 tests, 7/7 mutants caught. They
+  found four real bugs, fixed: (1) a failed photo upload after creating a listing made the
+  next "save" create a **duplicate listing**; (2) the landlord dashboard stayed on its error
+  screen after a failed load even when a later load succeeded; (3) the "Viết đánh giá" link
+  pointed at the literal path `/rooms/:id?review=1`; (4) a copy/paste log label. Two functions in
+  the lint ratchet got smaller (`useListingForm` 128 -> 117 lines, `LandlordDashboard` 235 -> 210)
+  and their entries were lowered. **Open product gap:** nothing handles `?review=1`; there is no
+  review-writing form (`createReview` was removed as dead code), so that button only reloads
+  the room page. Either build the form or hide the button.
+- Open: P6, P8 majors, P9-P11, and `favorites`, `home`, `ai` unit tests.

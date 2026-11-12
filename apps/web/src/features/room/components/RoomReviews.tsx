@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ROUTES } from "@/shared/constants/routes";
+import { ROUTES, route } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/button";
 import { Avatar } from "@/shared/ui/avatar";
 import { Rating } from "@/shared/ui/badge";
@@ -70,7 +70,9 @@ export function RoomReviews({ listing, reviews, canWrite }: RoomReviewsProps) {
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted">Đánh giá</h2>
         {canWrite ? (
           <Button variant="outline" size="sm" asChild>
-            <Link to={`${ROUTES.ROOM_DETAIL}?review=1`}>Viết đánh giá</Link>
+            <Link to={`${route(ROUTES.ROOM_DETAIL, { id: listing.id })}?review=1`}>
+              Viết đánh giá
+            </Link>
           </Button>
         ) : null}
       </div>
