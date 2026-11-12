@@ -36,6 +36,8 @@ jobs:
       - run: composer validate --strict
 
       - uses: ./.github/actions/setup-php
+        with:
+          coverage: pcov
 
       - name: Pint (style)
         run: ./vendor/bin/pint --test
@@ -67,9 +69,10 @@ jobs:
           php artisan key:generate --force
 
       # phpunit.xml fails on warnings, notices, deprecations, risky tests and
-      # stray output, so green means zero warnings.
+      # stray output, so green means zero warnings. --min is a ratchet: measured 97.1%
+      # when it was added; raise it when coverage rises, never lower it.
       - name: Tests
-        run: php artisan test
+        run: php artisan test --coverage --min=96
         env:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
