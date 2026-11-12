@@ -7,11 +7,18 @@ import type { Attachment } from "./useAttachment";
 /** Longest message the composer allows. */
 export const MESSAGE_MAX = 1000;
 
+const BLOB_URL = /^blob:https?:\/\/[\w.:-]+\/[\w-]+$/;
+
+/** Only a blob: object url from URL.createObjectURL may reach <img src>; anything else is dropped. */
+function safeBlobUrl(url: string | null): string | null {
+  return url !== null && BLOB_URL.test(url) ? url : null;
+}
+
 function AttachmentChip({ attachment }: { attachment: Attachment }) {
   const { file, remove } = attachment;
   if (!file) return null;
   // The preview is always a blob: object url made by useAttachment; refuse anything else.
-  const preview = attachment.preview?.startsWith("blob:") ? attachment.preview : null;
+  const preview = safeBlobUrl(attachment.preview);
   return (
     <div className="mb-2 max-w-sm flex items-center gap-2 rounded-xl border border-line bg-paper/80 p-2 shadow-xs">
       {preview ? (
