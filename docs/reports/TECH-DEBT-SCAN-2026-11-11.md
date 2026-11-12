@@ -230,4 +230,22 @@ load capacity, accessibility (axe) results, and the e2e suite on this machine (C
   below 11.0.1) reached through `typescript-estree` and ESLint, dev tooling only (`npm audit
   --omit=dev`: 0), and npm's suggested "fixes" are downgrades. Wait for upstream. Also note
   ESLint 10 is installed while `eslint-plugin-jsx-a11y` declares support up to ESLint 9.
-- Open: P6, P8 majors, P9-P11, and the rest of P7.
+- **P7 more (branch `test/landlord-room-units`).** 81 new unit tests for `landlord` and `room`
+  (API contract, listing form hook, dashboard, contact card, reviews, room loader, favorites);
+  web unit coverage 22% -> 32% lines (floor raised to 32%), 492 tests, 7/7 mutants caught. They
+  found four real bugs, fixed: (1) a failed photo upload after creating a listing made the
+  next "save" create a **duplicate listing**; (2) the landlord dashboard stayed on its error
+  screen after a failed load even when a later load succeeded; (3) the "Viết đánh giá" link
+  pointed at the literal path `/rooms/:id?review=1`; (4) a copy/paste log label. Two functions in
+  the lint ratchet got smaller (`useListingForm` 128 -> 117 lines, `LandlordDashboard` 235 -> 210)
+  and their entries were lowered. **Product gap closed (branch `feat/review-form`):** nothing handled `?review=1` (the review form
+  had been removed as dead code), so that button only reloaded the room page. The form is now built:
+  a dialog opened by `?review=1` (the URL is the state, so deep links, Back and Escape work), two
+  accessible star inputs (room and landlord, the two ratings the API requires), an optional comment
+  with a counter, errors in the app's usual banner style, a toast on success, and a refresh of the
+  list and averages. Students who cannot review yet get a one-line reason. Checked in a real
+  browser (desktop and mobile, no console errors) as well as by 40 new tests; web coverage is now
+  34% lines (floor 33%), 532 tests. Building it exposed a **backend bug**: `landlord_avg` averaged
+  `listing_rating`, so the landlord's own rating was never used (three 5-star landlord ratings
+  showed 4.0); fixed in `ListingDetailResource` with a test that fails without the fix.
+- Open: P6, P8 majors, P9-P11, and `favorites`, `home`, `ai` unit tests.

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ROUTES } from "@/shared/constants/routes";
+import { ROUTES, route } from "@/shared/constants/routes";
 import { Button } from "@/shared/ui/button";
 import { Avatar } from "@/shared/ui/avatar";
 import { Rating } from "@/shared/ui/badge";
@@ -61,19 +61,33 @@ export interface RoomReviewsProps {
   reviews: Review[];
   /** The viewer is a student and may write a review. */
   canWrite: boolean;
+  /** The viewer is a signed-in student (so we can say why they cannot review yet). */
+  isStudent?: boolean;
 }
 
-export function RoomReviews({ listing, reviews, canWrite }: RoomReviewsProps) {
+/** Why a student has no "write a review" button: they must message first, or already reviewed. */
+function reviewHint(listing: Listing): string {
+  return listing.my_conversation_id == null
+    ? "Nhắn tin cho chủ nhà để có thể đánh giá phòng này."
+    : "Bạn đã đánh giá phòng này.";
+}
+
+export function RoomReviews({ listing, reviews, canWrite, isStudent = false }: RoomReviewsProps) {
   return (
     <section className={cn(PANEL, listing.latitude == null && "lg:col-span-2")}>
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted">Đánh giá</h2>
         {canWrite ? (
           <Button variant="outline" size="sm" asChild>
-            <Link to={`${ROUTES.ROOM_DETAIL}?review=1`}>Viết đánh giá</Link>
+            <Link to={`${route(ROUTES.ROOM_DETAIL, { id: listing.id })}?review=1`}>
+              Viết đánh giá
+            </Link>
           </Button>
         ) : null}
       </div>
+      {isStudent && !canWrite ? (
+        <p className="mb-3 text-sm text-muted">{reviewHint(listing)}</p>
+      ) : null}
       <RatingBars listing={listing} />
       {reviews.length === 0 ? (
         <p className="rounded-lg border border-dashed border-line-strong p-4 text-sm text-muted">

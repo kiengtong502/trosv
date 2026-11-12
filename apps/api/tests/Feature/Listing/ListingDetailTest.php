@@ -142,14 +142,14 @@ class ListingDetailTest extends TestCase
             'landlord_rating' => 4,
         ]);
 
-        // Another listing of the SAME landlord with a 2-star review -
-        // must drag landlord_avg down but not listing_avg.
+        // Another listing of the SAME landlord, reviewed 2 stars for the room and 1 star for
+        // the landlord - must drag landlord_avg down but not listing_avg.
         $otherListingOfLandlord = Listing::factory()->create(['user_id' => $this->landlord->id]);
         Review::factory()->create([
             'listing_id' => $otherListingOfLandlord->id,
             'student_id' => User::factory()->student()->create()->id,
             'listing_rating' => 2,
-            'landlord_rating' => 2,
+            'landlord_rating' => 1,
         ]);
 
         // A listing in the SAME ward with a 1-star review -
@@ -168,7 +168,9 @@ class ListingDetailTest extends TestCase
         $ratings = $this->getJson("/api/listings/{$this->listing->id}")->json('data.ratings');
 
         $this->assertEqualsWithDelta(5.0, $ratings['listing_avg'], 0.001); // only this listing
-        $this->assertEqualsWithDelta(3.5, $ratings['landlord_avg'], 0.001); // (5+2)/2 across landlord's listings
+        // The landlord is averaged on landlord_rating across ALL their listings: (4+1)/2. Averaging the
+        // room ratings instead would give (5+2)/2 = 3.5, so the three averages must all differ.
+        $this->assertEqualsWithDelta(2.5, $ratings['landlord_avg'], 0.001);
         $this->assertEqualsWithDelta(3.0, $ratings['area_avg'], 0.001); // (5+1)/2 - the 2★ listing is in another ward
     }
 

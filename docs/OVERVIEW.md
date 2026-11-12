@@ -263,7 +263,7 @@ add a feature that imports back into one that already imports it.
   a CI-green tip of `stable`, smoke-tests it, and rolls back to the previous
   commit if the smoke test fails.
 - Coverage floors are ratchets, set just under the measured value: web unit tests
-  (`vite.config.ts`, `npm run test:coverage`: lines 22%) and API (`_api.yml`,
+  (`vite.config.ts`, `npm run test:coverage`: lines 33%) and API (`_api.yml`,
   `php artisan test --coverage --min=96`: measured 97.1%). Raise them when coverage
   rises; never lower them. Web unit coverage excludes the Playwright suite, which
   covers the UI separately.
