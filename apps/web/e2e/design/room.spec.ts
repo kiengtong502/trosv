@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { settleAnimations } from "./helpers";
 
 const API = "http://localhost:8000/api";
 
@@ -12,6 +13,8 @@ async function openFirstRoom(page: Page): Promise<number> {
   if (id == null) throw new Error("no listings in the dev database");
   await page.goto(`/rooms/${id}`);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  // The bento grid fades up child by child (motion-stagger). Measure only once it has settled.
+  await settleAnimations(page);
   return id;
 }
 

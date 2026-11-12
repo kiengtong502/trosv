@@ -35,3 +35,20 @@ export async function firstConversationId(page: Page, token: string): Promise<nu
   const body = (await res.json()) as { data?: { id: number }[] };
   return body.data?.[0]?.id ?? null;
 }
+
+/**
+ * Wait until every finite CSS/Web animation on the page has finished. Layout measurements
+ * (boundingBox, getBoundingClientRect) taken while the page is still easing in, like the
+ * `motion-stagger` fade-up with its per-child delay, are off by the slide distance and make
+ * tests flaky. Infinite animations (a pulsing badge) are skipped: they never finish.
+ */
+export async function settleAnimations(page: Page): Promise<void> {
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => Number.isFinite(a.effect?.getComputedTiming().endTime ?? Infinity))
+        .map((a) => a.finished.catch(() => undefined)),
+    ),
+  );
+}
