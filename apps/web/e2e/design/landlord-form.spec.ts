@@ -64,20 +64,20 @@ test.describe("landlord listing form", () => {
 
     await expect(page.locator("#lf-lat")).not.toHaveValue("");
     await expect(page.locator("#lf-lng")).not.toHaveValue("");
-    await expect(picker.locator(".leaflet-marker-icon")).toHaveCount(1);
+    await expect(picker.locator(".leaflet-overlay-pane path.leaflet-interactive")).toHaveCount(1);
   });
 
   test("typing in other fields does not reset the map you already picked on", async ({ page }) => {
     const picker = page.getByTestId("coordinate-picker");
     await picker.scrollIntoViewIfNeeded();
     await picker.locator(".leaflet-container").click({ position: { x: 120, y: 90 } });
-    await expect(picker.locator(".leaflet-marker-icon")).toHaveCount(1);
+    await expect(picker.locator(".leaflet-overlay-pane path.leaflet-interactive")).toHaveCount(1);
     const lat = await page.locator("#lf-lat").inputValue();
 
     await page.locator("#lf-title").fill("Phòng thử nghiệm");
-    await page.locator("#lf-address").fill("12 Đường số 5");
+    await page.locator("#lf-street").fill("12 Đường số 5");
 
-    await expect(picker.locator(".leaflet-marker-icon")).toHaveCount(1);
+    await expect(picker.locator(".leaflet-overlay-pane path.leaflet-interactive")).toHaveCount(1);
     await expect(page.locator("#lf-lat")).toHaveValue(lat);
   });
 
