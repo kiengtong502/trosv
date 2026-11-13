@@ -12,6 +12,7 @@ use App\Shared\Support\StoragePath;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -30,21 +31,28 @@ class ConversationService
             $q->where('student_id', $userBId)->where('landlord_id', $userAId);
         })->first();
 
+        $wasCreated = $conversation === null;
         if (! $conversation) {
             $conversation = Conversation::create([
                 'student_id' => $userAId,
                 'landlord_id' => $userBId,
                 'listing_id' => $listingId,
             ]);
-
-            return [$conversation, true];
         }
 
-        if ($listingId !== null && $conversation->listing_id !== $listingId) {
-            $conversation->update(['listing_id' => $listingId]);
+        if ($listingId !== null) {
+            $listingIds = array_unique(array_filter([$conversation->listing_id, $listingId]));
+            DB::table('conversation_listing')->insertOrIgnore(array_values(array_map(
+                fn (int $id) => ['conversation_id' => $conversation->id, 'listing_id' => $id],
+                $listingIds,
+            )));
+
+            if ($conversation->listing_id !== $listingId) {
+                $conversation->update(['listing_id' => $listingId]);
+            }
         }
 
-        return [$conversation, false];
+        return [$conversation, $wasCreated];
     }
 
     /**
@@ -54,11 +62,11 @@ class ConversationService
      */
     public function startListingConversation(User $student, Listing $listing): array
     {
-        [$conversation, $wasCreated] = $this->findOrCreateConversation(
+        [$conversation, $wasCreated] = DB::transaction(fn () => $this->findOrCreateConversation(
             $student->id,
             $listing->user_id,
             $listing->id
-        );
+        ));
 
         $this->sendRoomLinkIfNecessary($conversation, $student, $listing);
 

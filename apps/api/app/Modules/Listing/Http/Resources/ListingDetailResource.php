@@ -94,11 +94,7 @@ class ListingDetailResource extends JsonResource
             return null;
         }
 
-        $id = $listing->conversations()
-            ->where('student_id', $user->id)
-            ->value('id');
-
-        return is_numeric($id) ? (int) $id : null;
+        return $listing->conversationIdForStudent($user->id);
     }
 
     /**

@@ -22,7 +22,7 @@ class ApiThrottle
     public function __construct(protected RateLimiter $limiter) {}
 
     /** @param  Closure(Request): Response  $next */
-    public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decaySeconds = 60): Response
+    public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1): Response
     {
         $user = $request->user();
         $identifier = $user ? 'u:'.$user->id : 'ip:'.$request->ip();
@@ -38,7 +38,8 @@ class ApiThrottle
 
         $response = $next($request);
 
-        return tap($response, fn () => $this->limiter->hit($key, $decaySeconds));
+        // Route parameters use minutes, while RateLimiter expects seconds.
+        return tap($response, fn () => $this->limiter->hit($key, $decayMinutes * 60));
     }
 
     /**

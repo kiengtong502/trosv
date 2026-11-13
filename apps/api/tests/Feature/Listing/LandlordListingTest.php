@@ -4,6 +4,7 @@ namespace Tests\Feature\Listing;
 
 use App\Modules\Auth\Models\User;
 use App\Modules\Listing\Models\Listing;
+use App\Modules\Messaging\Models\Conversation;
 use App\Modules\Reference\Models\Ward;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -200,6 +201,67 @@ class LandlordListingTest extends TestCase
         $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
         $this->assertDatabaseMissing('listing_images', ['id' => $image->id]);
         Storage::disk('public')->assertMissing('listings/doomed.jpg'); // file also gone
+    }
+
+    public function test_deleting_latest_listing_preserves_chat_history_and_participant_access(): void
+    {
+        $earlierListing = $this->makeOwnedListing();
+        $latestListing = $this->makeOwnedListing();
+        $conversation = Conversation::create([
+            'listing_id' => $latestListing->id,
+            'student_id' => $this->student->id,
+            'landlord_id' => $this->landlord->id,
+        ]);
+        $earlierMessage = $conversation->messages()->create([
+            'sender_id' => $this->student->id,
+            'body' => "Question about room {$earlierListing->id}",
+        ]);
+        $latestMessage = $conversation->messages()->create([
+            'sender_id' => $this->landlord->id,
+            'body' => "Reply about room {$latestListing->id}",
+        ]);
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->deleteJson("/api/listings/{$latestListing->id}")
+            ->assertOk();
+
+        $this->assertDatabaseMissing('listings', ['id' => $latestListing->id]);
+        $this->assertDatabaseHas('listings', ['id' => $earlierListing->id]);
+        $this->assertDatabaseHas('conversations', [
+            'id' => $conversation->id,
+            'listing_id' => null,
+            'student_id' => $this->student->id,
+            'landlord_id' => $this->landlord->id,
+        ]);
+
+        foreach ([$this->student, $this->landlord] as $participant) {
+            $this->actingAs($participant, 'sanctum')
+                ->getJson('/api/conversations')
+                ->assertOk()
+                ->assertJsonCount(1, 'data')
+                ->assertJsonPath('data.0.id', $conversation->id)
+                ->assertJsonPath('data.0.listing', null);
+
+            $this->getJson("/api/conversations/{$conversation->id}/messages")
+                ->assertOk()
+                ->assertJsonCount(2, 'data')
+                ->assertJsonPath('data.0.id', $earlierMessage->id)
+                ->assertJsonPath('data.0.body', $earlierMessage->body)
+                ->assertJsonPath('data.1.id', $latestMessage->id)
+                ->assertJsonPath('data.1.body', $latestMessage->body);
+
+            $this->postJson("/api/conversations/{$conversation->id}/read")
+                ->assertOk();
+        }
+
+        $this->actingAs($this->student, 'sanctum')
+            ->postJson("/api/conversations/{$conversation->id}/messages", ['body' => 'Continue chatting'])
+            ->assertCreated()
+            ->assertJsonPath('data.body', 'Continue chatting');
+
+        $this->actingAs($this->otherLandlord, 'sanctum')
+            ->getJson("/api/conversations/{$conversation->id}/messages")
+            ->assertNotFound();
     }
 
     public function test_other_landlord_cannot_delete_returns_403(): void

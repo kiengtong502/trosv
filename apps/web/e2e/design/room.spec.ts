@@ -19,6 +19,33 @@ async function openFirstRoom(page: Page): Promise<number> {
 }
 
 test.describe("room page bento", () => {
+  test("room content fits phone, tablet and desktop widths", async ({ page }) => {
+    await openFirstRoom(page);
+    for (const width of [360, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await settleAnimations(page);
+      const sizes = await page.evaluate(() => {
+        const gallery = document.querySelector('[data-testid="room-gallery"]')!;
+        const bounds = gallery.getBoundingClientRect();
+        return {
+          viewport: document.documentElement.clientWidth,
+          page: document.documentElement.scrollWidth,
+          galleryLeft: bounds.left,
+          galleryRight: bounds.right,
+        };
+      });
+      expect(sizes.page, `page overflow at ${width}px`).toBeLessThanOrEqual(sizes.viewport + 1);
+      expect(sizes.galleryLeft).toBeGreaterThanOrEqual(0);
+      expect(sizes.galleryRight).toBeLessThanOrEqual(sizes.viewport + 1);
+      if (width < 768) {
+        const title = await page.getByRole("heading", { level: 1 }).boundingBox();
+        const share = await page.getByRole("button", { name: "Chia sẻ", exact: true }).boundingBox();
+        expect(title!.width).toBeCloseTo(sizes.galleryRight - sizes.galleryLeft, 0);
+        expect(share!.y).toBeGreaterThanOrEqual(title!.y + title!.height);
+      }
+    }
+  });
+
   test("hero: gallery and contact card sit side by side on desktop", async ({ page }) => {
     await page.setViewportSize({ width: 1320, height: 900 });
     await openFirstRoom(page);

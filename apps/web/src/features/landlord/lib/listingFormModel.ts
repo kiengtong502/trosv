@@ -3,7 +3,7 @@
   payloads, the address-guess rule and the photo limits. No React.
 */
 
-import type { Listing, ListingPayload } from "@/shared/types/api";
+import type { City, Listing, ListingPayload, Ward } from "@/shared/types/api";
 
 export interface ListingFormState {
   title: string;
@@ -11,6 +11,7 @@ export interface ListingFormState {
   price: string | number;
   area_m2: string | number;
   address: string;
+  street_address: string;
   latitude: string | number;
   longitude: string | number;
   city_id: string | number;
@@ -26,6 +27,7 @@ export const EMPTY_FORM: ListingFormState = {
   price: "",
   area_m2: "",
   address: "",
+  street_address: "",
   latitude: "",
   longitude: "",
   city_id: "",
@@ -41,6 +43,19 @@ export const MAX_PHOTOS = 5;
 const orElse = <T, F>(value: T | null | undefined, fallback: F): T | F => value || fallback;
 const orBlank = <T>(value: T | null | undefined): T | "" => value ?? "";
 
+/** Remove only the known administrative suffix, preserving older street-only addresses. */
+function streetFromListing(listing: Listing): string {
+  const parts = (listing.address || "").split(",").map((part) => part.trim());
+  for (const name of [listing.ward?.city?.name, listing.ward?.name]) {
+    if (name && parts.at(-1)?.toLocaleLowerCase() === name.toLocaleLowerCase()) parts.pop();
+  }
+  return parts.join(", ");
+}
+
+export function listingAddress(street: string, ward?: Ward, city?: City): string {
+  return [street.trim(), ward?.name, city?.name ?? ward?.city?.name].filter(Boolean).join(", ");
+}
+
 /** Form values for editing an existing listing. */
 export function formFromListing(l: Listing): ListingFormState {
   return {
@@ -49,6 +64,7 @@ export function formFromListing(l: Listing): ListingFormState {
     price: l.price,
     area_m2: orBlank(l.area_m2),
     address: orElse(l.address, ""),
+    street_address: streetFromListing(l),
     latitude: orBlank(l.latitude),
     longitude: orBlank(l.longitude),
     city_id: orElse(l.ward?.city?.id, ""),

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DragEvent } from "react";
 import { Trash2 } from "lucide-react";
 import { Tag } from "@/shared/ui/badge";
@@ -49,6 +49,42 @@ export function ExistingPhotos({ form: f }: { form: ListingFormApi }) {
 }
 
 /** Drag and drop (or click) to choose new photos: up to 5, the first is the cover. */
+function PendingPhoto({
+  file,
+  index,
+  onRemove,
+}: {
+  file: File;
+  index: number;
+  onRemove: () => void;
+}) {
+  const imageRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const preview = URL.createObjectURL(file);
+    if (imageRef.current) imageRef.current.src = preview;
+    return () => {
+      URL.revokeObjectURL(preview);
+    };
+  }, [file]);
+  return (
+    <div className="relative overflow-hidden rounded-xl bg-sunken">
+      <img
+        ref={imageRef}
+        alt={`Ảnh mới ${index + 1}: ${file.name}`}
+        className="aspect-3/2 w-full object-cover"
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Bỏ ảnh mới ${index + 1}`}
+        className="absolute right-1 top-1 grid size-8 place-items-center rounded-full bg-card/90 text-ink"
+      >
+        <Trash2 className="size-4" aria-hidden />
+      </button>
+    </div>
+  );
+}
+
 export function PhotoDropzone({ form: f }: { form: ListingFormApi }) {
   const [dragOver, setDragOver] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -56,7 +92,7 @@ export function PhotoDropzone({ form: f }: { form: ListingFormApi }) {
   const onDrop = (e: DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    f.pickFiles(Array.from(e.dataTransfer.files).filter((file) => file.type.startsWith("image/")));
+    f.pickFiles(Array.from(e.dataTransfer.files));
   };
 
   return (
@@ -80,7 +116,10 @@ export function PhotoDropzone({ form: f }: { form: ListingFormApi }) {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") fileInput.current?.click();
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileInput.current?.click();
+          }
         }}
         aria-label="Chọn hoặc kéo thả ảnh"
       >
@@ -88,7 +127,7 @@ export function PhotoDropzone({ form: f }: { form: ListingFormApi }) {
         <p className="text-xs text-muted">JPG, PNG hoặc WebP · tối đa 5 ảnh · mỗi ảnh 2 MB</p>
         {f.newFiles.length > 0 ? (
           <p className="text-xs text-ink-2 tabular-nums">
-            Đã chọn {f.newFiles.length} ảnh (ảnh đầu tiên là ảnh bìa)
+            Đã chọn {f.newFiles.length} ảnh mới · tổng {f.images.length + f.newFiles.length}/5 ảnh
           </p>
         ) : null}
       </div>
@@ -100,6 +139,20 @@ export function PhotoDropzone({ form: f }: { form: ListingFormApi }) {
         className="sr-only"
         onChange={f.handleFilePick}
       />
+      {f.newFiles.length > 0 ? (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {f.newFiles.map((file, index) => (
+            <PendingPhoto
+              key={`${file.name}-${file.lastModified}-${index}`}
+              file={file}
+              index={index}
+              onRemove={() => {
+                f.removeNewFile(index);
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

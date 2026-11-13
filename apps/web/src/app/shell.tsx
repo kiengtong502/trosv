@@ -49,12 +49,13 @@ function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 grid h-14 grid-cols-2 items-center gap-4 border-b border-line bg-card px-5",
-        "min-[890px]:h-[72px] lg:grid-cols-[1fr_auto_1fr]",
+        "sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6",
       )}
     >
-      {/* Left: product nav (desktop, like Zillow's left group). */}
-      <div className="hidden items-center gap-1 justify-self-start lg:flex">
+      <Link to={ROUTES.HOME} className="flex shrink-0 items-center" aria-label="TROSV trang chủ">
+        <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
+      </Link>
+      <nav aria-label="Điều hướng chính" className="hidden items-center gap-1 lg:flex">
         <NavLink
           to={ROUTES.ROOMS}
           className={({ isActive }) =>
@@ -119,17 +120,10 @@ function Header() {
             Đăng tin
           </NavLink>
         ) : null}
-      </div>
-
-      {/* Center: wordmark (Zillow puts the logo mid-header on desktop). */}
-      <div className="flex items-center gap-3 justify-self-start lg:justify-self-center">
-        <Link to={ROUTES.HOME} className="flex items-center" aria-label="TROSV trang chủ">
-          <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-6 w-auto" />
-        </Link>
-      </div>
+      </nav>
 
       {/* Right: account (always right-aligned). */}
-      <div className="flex items-center gap-2 justify-self-end">
+      <div className="ml-auto flex shrink-0 items-center gap-2">
         {user ? (
           <DropdownMenuPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuPrimitive.Trigger asChild>
@@ -248,7 +242,7 @@ function Rail() {
         className={cn(
           "relative z-30 flex items-center justify-around bg-card border-t border-line lg:border-t-0 lg:border-r",
           "h-14 fixed bottom-0 left-0 right-0",
-          "lg:sticky lg:top-[72px] lg:h-[calc(100vh-72px)] lg:w-16 lg:flex-col",
+          "lg:sticky lg:top-[var(--nav-h)] lg:h-[calc(100vh-var(--nav-h))] lg:w-16 lg:flex-col",
           "lg:items-center lg:justify-start lg:gap-4 lg:p-2",
           isConversationThread && "hidden lg:flex",
         )}

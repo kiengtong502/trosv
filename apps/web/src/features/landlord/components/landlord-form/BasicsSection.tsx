@@ -2,6 +2,7 @@ import { Field } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { SELECT, SECTION } from "./styles";
 import type { ListingFormApi } from "./types";
+import { PriceInput } from "./PriceInput";
 
 const TYPE_OPTIONS = [
   { value: "room", label: "Phòng trọ" },
@@ -32,15 +33,11 @@ export function BasicsSection({ form: f }: { form: ListingFormApi }) {
           </select>
         </Field>
         <Field id="lf-price" label="Giá mỗi tháng (VND)" error={err("price")} required>
-          <Input
-            id="lf-price"
-            type="number"
-            min={100000}
-            max={100000000}
-            value={String(f.form.price)}
-            onChange={f.set("price")}
-            placeholder="2500000"
-            className="tabular-nums"
+          <PriceInput
+            value={f.form.price}
+            onChange={(value) => {
+              f.setField("price", value);
+            }}
           />
         </Field>
         <Field id="lf-area" label="Diện tích (m²)" error={err("area_m2")} required>
@@ -56,9 +53,10 @@ export function BasicsSection({ form: f }: { form: ListingFormApi }) {
         </Field>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field id="lf-city" label="Tỉnh/TP" error={err("city_id")}>
+        <Field id="lf-city" label="Tỉnh/thành phố" error={err("city_id")} required>
           <select
             id="lf-city"
+            required
             value={cityId}
             onChange={(e) => {
               f.changeCity(e.target.value);
@@ -73,9 +71,10 @@ export function BasicsSection({ form: f }: { form: ListingFormApi }) {
             ))}
           </select>
         </Field>
-        <Field id="lf-ward" label="Phường" error={err("ward_id")} required>
+        <Field id="lf-ward" label="Phường/xã" error={err("ward_id")} required>
           <select
             id="lf-ward"
+            required
             value={String(f.form.ward_id)}
             onChange={f.set("ward_id")}
             className={SELECT}
@@ -90,12 +89,23 @@ export function BasicsSection({ form: f }: { form: ListingFormApi }) {
           </select>
         </Field>
       </div>
-      <Field id="lf-address" label="Địa chỉ" error={err("address")} required>
+      <Field id="lf-street" label="Số nhà, tên đường" required>
+        <Input
+          id="lf-street"
+          value={f.form.street_address}
+          onChange={f.set("street_address")}
+          placeholder="12 Đường số 5"
+          maxLength={250}
+          required
+        />
+      </Field>
+      <Field id="lf-address" label="Địa chỉ đầy đủ (tự động)" error={err("address")}>
         <Input
           id="lf-address"
           value={f.form.address}
-          onChange={f.set("address")}
-          placeholder="12 Đường số 5"
+          readOnly
+          className="bg-tint text-ink-2"
+          placeholder="Nhập số nhà, tên đường và chọn khu vực ở trên"
         />
       </Field>
     </section>

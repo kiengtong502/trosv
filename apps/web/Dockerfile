@@ -20,9 +20,9 @@ FROM node:22-trixie AS build
 # from src/shared/config/env.ts into the bundle - fine for the dev stack only.
 ARG VITE_API_URL=http://localhost:8000/api
 ARG VITE_REVERB_APP_KEY=my-app-key
-ARG VITE_REVERB_HOST=localhost
-ARG VITE_REVERB_PORT=8080
-ARG VITE_REVERB_SCHEME=http
+ARG VITE_REVERB_HOST=""
+ARG VITE_REVERB_PORT=""
+ARG VITE_REVERB_SCHEME=""
 
 WORKDIR /app
 

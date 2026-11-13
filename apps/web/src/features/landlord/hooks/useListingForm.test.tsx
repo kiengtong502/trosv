@@ -5,7 +5,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ROUTES } from "@/shared/constants/routes";
-import type { Listing } from "@/shared/types/api";
+import type { City, Listing, Ward } from "@/shared/types/api";
 import { MAX_PHOTOS } from "../lib/listingFormModel";
 import { useListingForm } from "./useListingForm";
 
@@ -17,6 +17,7 @@ const api = vi.hoisted(() => ({
   getListing: vi.fn(),
   aiDescription: vi.fn(),
 }));
+const references = vi.hoisted(() => ({ cities: [] as City[], wards: [] as Ward[] }));
 vi.mock("@/features/landlord/api/landlordApi", () => ({
   createListing: api.createListing,
   updateListing: api.updateListing,
@@ -27,7 +28,11 @@ vi.mock("@/features/listings/api/listingApi", () => ({ getListing: api.getListin
 vi.mock("@/features/ai/api/aiApi", () => ({ aiDescription: api.aiDescription }));
 vi.mock("@/features/listings/hooks/useReferenceData", () => {
   const empty = { data: [], loading: false, error: false, reload: () => undefined };
-  return { useWards: () => empty, useCities: () => empty, useAmenities: () => empty };
+  return {
+    useWards: () => ({ ...empty, data: references.wards }),
+    useCities: () => ({ ...empty, data: references.cities }),
+    useAmenities: () => empty,
+  };
 });
 
 const toast = { success: vi.fn(), error: vi.fn() };
@@ -73,6 +78,8 @@ function filled(result: ReturnType<typeof mount>["result"]) {
 }
 
 beforeEach(() => {
+  references.cities = [];
+  references.wards = [];
   Object.values(api).forEach((fn) => {
     fn.mockReset();
   });
@@ -114,6 +121,28 @@ describe("useListingForm: loading", () => {
 });
 
 describe("useListingForm: editing fields", () => {
+  it("sends the composed address and updates it when the street changes", async () => {
+    references.cities = [{ id: 1, name: "Đà Nẵng" }];
+    references.wards = [{ id: 10, name: "Hải Châu", city: { id: 1, name: "Đà Nẵng" } }];
+    api.createListing.mockResolvedValue({ id: 11 });
+    const { result } = mount();
+    act(() => {
+      result.current.changeCity("1");
+      result.current.setField("ward_id", "10");
+      result.current.setField("street_address", "12 Lê Lợi");
+    });
+    expect(result.current.form.address).toBe("12 Lê Lợi, Hải Châu, Đà Nẵng");
+    act(() => {
+      result.current.setField("street_address", "14 Lê Lợi");
+    });
+    await act(async () => {
+      await result.current.handleSubmit(submitEvent(), navigate as NavigateFunction);
+    });
+    expect(api.createListing).toHaveBeenCalledWith(
+      expect.objectContaining({ address: "14 Lê Lợi, Hải Châu, Đà Nẵng" }),
+    );
+  });
+
   it("setField updates one field and clears old validation errors", async () => {
     api.createListing.mockRejectedValue(apiError(422, { errors: { title: ["Bắt buộc"] } }));
     const { result } = mount();
@@ -132,7 +161,7 @@ describe("useListingForm: editing fields", () => {
   it("set(key) reads the value of an input event", () => {
     const { result } = mount();
     act(() => {
-      result.current.set("address")({
+      result.current.set("street_address")({
         target: { value: "12 Lê Lợi" },
       } as ChangeEvent<HTMLInputElement>);
     });
@@ -375,6 +404,52 @@ describe("useListingForm: submitting an edit", () => {
 
     expect(result.current.notice).toBe("Không phải tin của bạn.");
     expect(navigate).not.toHaveBeenCalled();
+  });
+});
+
+describe("useListingForm: adding photos", () => {
+  it("adds photos across separate picks and can remove a pending photo", () => {
+    const { result } = mount();
+    const a = file("a.png");
+    const b = file("b.png");
+    act(() => {
+      result.current.pickFiles([a]);
+    });
+    act(() => {
+      result.current.pickFiles([b]);
+    });
+    expect(result.current.newFiles).toEqual([a, b]);
+    act(() => {
+      result.current.removeNewFile(0);
+    });
+    expect(result.current.newFiles).toEqual([b]);
+  });
+
+  it("counts earlier picks when enforcing the five-photo limit", () => {
+    const { result } = mount();
+    act(() => {
+      result.current.pickFiles(Array.from({ length: 4 }, (_, i) => file(`${i}.png`)));
+    });
+    act(() => {
+      result.current.pickFiles([file("fifth.png"), file("sixth.png")]);
+    });
+    expect(result.current.newFiles).toHaveLength(4);
+    expect(result.current.notice).toBe("Tối đa 5 ảnh mỗi tin.");
+  });
+
+  it("rejects oversized photos and unsupported file types", () => {
+    const { result } = mount();
+    act(() => {
+      result.current.pickFiles([new File(["x"], "file.pdf", { type: "application/pdf" })]);
+    });
+    expect(result.current.notice).toBe("Chỉ nhận ảnh JPG, PNG hoặc WebP.");
+    act(() => {
+      result.current.pickFiles([
+        new File([new Uint8Array(2 * 1024 * 1024 + 1)], "large.png", { type: "image/png" }),
+      ]);
+    });
+    expect(result.current.notice).toBe("Mỗi ảnh có dung lượng tối đa 2 MB.");
+    expect(result.current.newFiles).toEqual([]);
   });
 });
 

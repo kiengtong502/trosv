@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
-import { getConversations } from "@/features/messaging/api/messagingApi";
+import { useConversations } from "@/features/messaging/hooks/useConversations";
 import type { Conversation } from "@/shared/types/api";
 import { CONV_PREVIEW_EVENT, type ConvPreviewDetail } from "@/shared/constants/events";
 import { Skeleton } from "@/shared/ui/badge";
@@ -11,7 +11,6 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { Search } from "lucide-react";
 import { ConversationListItem } from "@/features/messaging/components/ConversationListItem";
-import { ignoreError } from "@/shared/lib/async";
 
 /*
   Two panes from 890px (sidebar + thread), single pane on mobile where
@@ -22,27 +21,11 @@ import { ignoreError } from "@/shared/lib/async";
 
 export default function MessagesList() {
   const { id } = useParams();
-  const [convs, setConvs] = useState<Conversation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { conversations: convs, setConversations: setConvs, loading } = useConversations();
   const [query, setQuery] = useState("");
   const { user } = useAuth();
 
   useDocumentTitle("Tin nhắn · TROSV");
-
-  useEffect(() => {
-    let active = true;
-    getConversations()
-      .then((rows) => {
-        if (active) setConvs(rows);
-      })
-      .catch(ignoreError("load conversations"))
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   /* Thread -> sidebar preview sync while the thread is open. */
   useEffect(() => {
@@ -71,7 +54,7 @@ export default function MessagesList() {
     return () => {
       window.removeEventListener(CONV_PREVIEW_EVENT, onPreview);
     };
-  }, []);
+  }, [setConvs]);
 
   const isThreadOpen = id != null;
 

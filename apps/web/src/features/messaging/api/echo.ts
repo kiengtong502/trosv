@@ -78,6 +78,7 @@ export function getEcho(): Echo<"reverb"> | null {
 export interface EchoReactive {
   // Generic payload: hook goi listen<MessageSentEvent>('.message.sent', ...).
   listen(eventName: string, callback: (payload: unknown) => void): unknown;
+  stopListening(eventName: string, callback: (payload: unknown) => void): unknown;
   listenForWhisper(eventName: string, callback: (payload: unknown) => void): unknown;
 }
 

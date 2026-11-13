@@ -1,5 +1,6 @@
 import api from "@/shared/api/axiosClient";
 import { envelope, envelopeArray } from "@/shared/api/envelope";
+import { CONVERSATION_READ_EVENT } from "@/shared/constants/events";
 import type { Conversation, Message, MessagePayload } from "@/shared/types/api";
 
 // API_CONTRACT §4 - "Nhắn tin"
@@ -62,4 +63,7 @@ export const sendMessage = (
 };
 
 export const markRead = (conversationId: number | string): Promise<unknown> =>
-  api.post(`/conversations/${conversationId}/read`);
+  api.post(`/conversations/${conversationId}/read`).then((response) => {
+    window.dispatchEvent(new CustomEvent(CONVERSATION_READ_EVENT, { detail: { conversationId } }));
+    return response;
+  });

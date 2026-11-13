@@ -1,33 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import type { NavigateFunction } from "react-router-dom";
-import {
-  createListing,
-  updateListing,
-  uploadImages,
-  deleteImage,
-} from "@/features/landlord/api/landlordApi";
+import { createListing, updateListing, uploadImages } from "@/features/landlord/api/landlordApi";
 import { getListing } from "@/features/listings/api/listingApi";
 import { useAmenities, useCities, useWards } from "@/features/listings/hooks/useReferenceData";
 import { aiDescription } from "@/features/ai/api/aiApi";
 import { toggleId } from "@/shared/lib/list";
 import { errMessage, errFieldErrors } from "@/shared/api/axiosClient";
 import { ROUTES, route } from "@/shared/constants/routes";
-import type { ListingImage, ListingPayload } from "@/shared/types/api";
+import type { ListingPayload } from "@/shared/types/api";
+import { useListingPhotos, type ToastLike } from "./useListingPhotos";
 import {
   EMPTY_FORM,
   buildDescriptionRequest,
   buildListingPayload,
   formFromListing,
-  photoLimitError,
+  listingAddress,
   type ListingFormState,
 } from "../lib/listingFormModel";
-
-/** Toast interface du can cua hook - khong toan bo toast context. */
-export interface ToastLike {
-  success: (msg: string) => unknown;
-  error: (msg: string) => unknown;
-}
 
 /**
  * Saves the form and returns where to go next. When creating, the id of the new listing is
@@ -70,13 +60,18 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   const { data: wards } = useWards();
   const { data: cities } = useCities();
   const { data: amenities } = useAmenities();
-  const [form, setForm] = useState<ListingFormState>({ ...EMPTY_FORM });
-  const [images, setImages] = useState<ListingImage[]>([]);
-  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [values, setForm] = useState<ListingFormState>({ ...EMPTY_FORM });
+  const selectedWard = wards.find((ward) => String(ward.id) === String(values.ward_id));
+  const selectedCity = cities.find((city) => String(city.id) === String(values.city_id));
+  const form = {
+    ...values,
+    address: listingAddress(values.street_address, selectedWard, selectedCity),
+  };
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [busy, setBusy] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  const { setImages, ...photos } = useListingPhotos(id, toast, setNotice);
   // Id of the listing this form already created. If the photo upload that follows the
   // create fails, pressing save again must finish the job, not create a second listing.
   const createdId = useRef<number | null>(null);
@@ -91,11 +86,15 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
       .catch((err: unknown) => {
         setNotice(errMessage(err, "Không tải được tin đăng."));
       });
-  }, [id, isEdit]);
+  }, [id, isEdit, setImages]);
 
   const setField = (key: keyof ListingFormState, value: string): void => {
     setErrors({});
-    setForm((f) => ({ ...f, [key]: value }));
+    setForm((f) => ({
+      ...f,
+      [key]: value,
+      ...(key === "ward_id" && String(f.ward_id) !== value ? { latitude: "", longitude: "" } : {}),
+    }));
   };
 
   /** onChange handler for a text input, select or textarea bound to `key`. */
@@ -108,7 +107,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   /** Choosing another city clears the ward, so the two never disagree. */
   const changeCity = (cityId: string): void => {
     setErrors({});
-    setForm((f) => ({ ...f, city_id: cityId, ward_id: "" }));
+    setForm((f) => ({ ...f, city_id: cityId, ward_id: "", latitude: "", longitude: "" }));
   };
 
   /** Stable on purpose: the map effect depends on it and must not restart. */
@@ -143,40 +142,13 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     const payload = buildListingPayload(form, isEdit);
 
     try {
-      void navigate(await saveListing({ id, createdId, payload, files: newFiles }));
+      void navigate(await saveListing({ id, createdId, payload, files: photos.newFiles }));
     } catch (err: unknown) {
       setErrors(errFieldErrors(err));
       setNotice(errMessage(err));
     } finally {
       setBusy(false);
     }
-  }
-
-  async function handleDeleteImage(imageId: number): Promise<void> {
-    if (!id || !window.confirm("Xóa ảnh này?")) return;
-    try {
-      await deleteImage(id, imageId);
-      setImages((rows) => rows.filter((i) => i.id !== imageId));
-      toast.success("Đã xóa ảnh.");
-    } catch (err) {
-      toast.error(errMessage(err));
-    }
-  }
-
-  /** Accepts the picked photos, or explains why not. Returns whether they were accepted. */
-  function pickFiles(files: File[]): boolean {
-    const limitError = photoLimitError(isEdit, images.length, files.length);
-    if (limitError) {
-      setNotice(limitError);
-      return false;
-    }
-    setNotice("");
-    setNewFiles(files);
-    return true;
-  }
-
-  function handleFilePick(e: ChangeEvent<HTMLInputElement>): void {
-    if (!pickFiles(Array.from(e.target.files || []))) e.target.value = "";
   }
 
   return {
@@ -189,9 +161,7 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     setField,
     changeCity,
     setCoordinates,
-    pickFiles,
-    images,
-    newFiles,
+    ...photos,
     errors,
     busy,
     aiBusy,
@@ -199,7 +169,5 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
     toggleAmenity,
     generateDescription,
     handleSubmit,
-    handleDeleteImage,
-    handleFilePick,
   };
 }

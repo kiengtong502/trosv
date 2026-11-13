@@ -120,7 +120,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     return new JsonResponse(['message' => 'Dịch vụ AI tạm thời không khả dụng.'], 503);
                 }
 
-                return new JsonResponse(['message' => $e->getMessage() ?: 'Lỗi máy chủ.'], $e->getStatusCode());
+                return new JsonResponse(
+                    ['message' => $e->getMessage() ?: 'Lỗi máy chủ.'],
+                    $e->getStatusCode(),
+                    $e->getHeaders(),
+                );
             }
 
             // 500 - never leak internals when APP_DEBUG=false.

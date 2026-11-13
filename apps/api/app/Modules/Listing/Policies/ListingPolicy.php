@@ -26,8 +26,7 @@ class ListingPolicy
      */
     public function review(User $user, Listing $listing): bool
     {
-        return $listing->conversations()
-            ->where('student_id', $user->id)
-            ->exists();
+        return $user->role === User::ROLE_STUDENT
+            && $listing->conversationIdForStudent($user->id) !== null;
     }
 }

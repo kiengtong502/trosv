@@ -18,7 +18,11 @@ export const REVERB: {
   scheme: string;
 } = {
   key: import.meta.env.VITE_REVERB_APP_KEY || "my-app-key",
-  host: import.meta.env.VITE_REVERB_HOST || "localhost",
-  port: Number(import.meta.env.VITE_REVERB_PORT || 8080),
-  scheme: import.meta.env.VITE_REVERB_SCHEME || "http",
+  host: import.meta.env.VITE_REVERB_HOST || window.location.hostname,
+  port: Number(
+    import.meta.env.VITE_REVERB_PORT ||
+      window.location.port ||
+      (window.location.protocol === "https:" ? 443 : 80),
+  ),
+  scheme: import.meta.env.VITE_REVERB_SCHEME || window.location.protocol.replace(":", ""),
 };

@@ -16,7 +16,7 @@ export function SearchFilterBar({ search, showMap, onToggleMap }: SearchFilterBa
   return (
     <PlateBand
       size="strip"
-      className="sticky top-14 z-20 min-[890px]:top-[72px] lg:z-10"
+      className="sticky top-[var(--nav-h)] z-20 lg:z-10"
       contentClassName="gap-2 overflow-x-auto"
     >
       <Input

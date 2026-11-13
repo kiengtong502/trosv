@@ -219,6 +219,97 @@ class ListingDetailTest extends TestCase
             ->assertJsonPath('data.can_review', false);
     }
 
+    public function test_contacting_another_room_keeps_review_access_to_previous_rooms(): void
+    {
+        $student = User::factory()->student()->create();
+        $otherStudent = User::factory()->student()->create();
+        $second = Listing::factory()->create(['user_id' => $this->landlord->id]);
+        $untouched = Listing::factory()->create(['user_id' => $this->landlord->id]);
+
+        $conversationId = $this->actingAs($student, 'sanctum')
+            ->postJson('/api/conversations', ['listing_id' => $this->listing->id])
+            ->assertCreated()->json('data.id');
+        $this->postJson('/api/conversations', ['listing_id' => $second->id])
+            ->assertOk()->assertJsonPath('data.id', $conversationId);
+        $this->postJson('/api/conversations', ['listing_id' => $second->id])->assertOk();
+        $this->assertDatabaseCount('conversation_listing', 2);
+
+        foreach ([$this->listing, $second] as $room) {
+            $this->getJson("/api/listings/{$room->id}")
+                ->assertOk()
+                ->assertJsonPath('data.my_conversation_id', $conversationId)
+                ->assertJsonPath('data.can_review', true);
+        }
+
+        $this->getJson("/api/listings/{$untouched->id}")
+            ->assertOk()->assertJsonPath('data.can_review', false)
+            ->assertJsonPath('data.my_conversation_id', null);
+        $this->postJson("/api/listings/{$untouched->id}/reviews", [
+            'listing_rating' => 4, 'landlord_rating' => 5,
+        ])->assertForbidden();
+
+        $this->actingAs($otherStudent, 'sanctum')
+            ->getJson("/api/listings/{$this->listing->id}")
+            ->assertOk()->assertJsonPath('data.can_review', false);
+        $this->postJson("/api/listings/{$this->listing->id}/reviews", [
+            'listing_rating' => 4, 'landlord_rating' => 5,
+        ])->assertForbidden();
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->deleteJson("/api/listings/{$second->id}")->assertOk();
+        $this->actingAs($student, 'sanctum')
+            ->getJson("/api/listings/{$this->listing->id}")
+            ->assertOk()->assertJsonPath('data.can_review', true)
+            ->assertJsonPath('data.my_conversation_id', $conversationId);
+        $payload = ['listing_rating' => 4, 'landlord_rating' => 5];
+        $this->postJson("/api/listings/{$this->listing->id}/reviews", $payload)->assertCreated();
+        $this->getJson("/api/listings/{$this->listing->id}")
+            ->assertOk()->assertJsonPath('data.can_review', false);
+        $this->postJson("/api/listings/{$this->listing->id}/reviews", $payload)->assertStatus(422);
+    }
+
+    public function test_existing_conversation_keeps_its_previous_room_when_contacting_another(): void
+    {
+        $student = User::factory()->student()->create();
+        $conversation = Conversation::factory()->create([
+            'listing_id' => $this->listing->id,
+            'student_id' => $student->id,
+            'landlord_id' => $this->landlord->id,
+        ]);
+        $second = Listing::factory()->create(['user_id' => $this->landlord->id]);
+
+        $this->actingAs($student, 'sanctum')
+            ->postJson('/api/conversations', ['listing_id' => $second->id])->assertOk();
+        $this->getJson("/api/listings/{$this->listing->id}")
+            ->assertOk()->assertJsonPath('data.can_review', true)
+            ->assertJsonPath('data.my_conversation_id', $conversation->id);
+    }
+
+    public function test_contact_history_migration_backfills_existing_room_contexts(): void
+    {
+        $student = User::factory()->student()->create();
+        $conversation = Conversation::factory()->create([
+            'listing_id' => $this->listing->id,
+            'student_id' => $student->id,
+            'landlord_id' => $this->landlord->id,
+        ]);
+        Conversation::factory()->create(['listing_id' => null]);
+
+        $migration = require database_path('migrations/2026_11_13_000002_track_conversation_listings.php');
+        $migration->down();
+        $migration->up();
+
+        $this->assertDatabaseCount('conversation_listing', 1);
+        $this->assertDatabaseHas('conversation_listing', [
+            'conversation_id' => $conversation->id,
+            'listing_id' => $this->listing->id,
+        ]);
+        $this->assertDatabaseCount('conversations', 2);
+        $this->actingAs($student, 'sanctum')
+            ->getJson("/api/listings/{$this->listing->id}")
+            ->assertOk()->assertJsonPath('data.can_review', true);
+    }
+
     // ------------------------------------------------------------------
     // GET /listings/{id}/reviews
     // ------------------------------------------------------------------

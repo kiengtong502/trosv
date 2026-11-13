@@ -7,6 +7,7 @@ import {
   buildListingPayload,
   formFromListing,
   photoLimitError,
+  listingAddress,
 } from "./listingFormModel";
 
 const FILLED = {
@@ -33,6 +34,7 @@ describe("formFromListing", () => {
       price: 3_000_000,
       area_m2: 30,
       address: "1 Đường B",
+      street_address: "1 Đường B",
       latitude: 16.1,
       longitude: 108.2,
       ward: { id: 10, name: "Hải Châu", city: { id: 1, name: "Đà Nẵng" } },
@@ -46,6 +48,7 @@ describe("formFromListing", () => {
       price: 3_000_000,
       area_m2: 30,
       address: "1 Đường B",
+      street_address: "1 Đường B",
       latitude: 16.1,
       longitude: 108.2,
       city_id: 1,
@@ -69,6 +72,23 @@ describe("formFromListing", () => {
       amenity_ids: [],
       status: "available",
     });
+  });
+});
+
+describe("listing address", () => {
+  const city = { id: 1, name: "Đà Nẵng" };
+  const ward = { id: 10, name: "Hải Châu", city };
+
+  it("joins street, ward and city in order", () => {
+    expect(listingAddress(" 12 Lê Lợi ", ward, city)).toBe("12 Lê Lợi, Hải Châu, Đà Nẵng");
+    expect(listingAddress("", undefined, undefined)).toBe("");
+  });
+
+  it("opens a saved full address without duplicating the ward or city", () => {
+    const listing = { address: "12, Đường số 5, Hải Châu, Đà Nẵng", ward } as Listing;
+    const form = formFromListing(listing);
+    expect(form.street_address).toBe("12, Đường số 5");
+    expect(listingAddress(form.street_address, ward, city)).toBe(listing.address);
   });
 });
 

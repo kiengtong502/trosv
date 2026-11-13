@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
 import { ART_ASSETS } from "@/shared/constants/assets";
 import { getListings } from "@/features/listings/api/listingApi";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import { useCities, useSchools } from "@/features/listings/hooks/useReferenceData";
 import type { City, Listing, School } from "@/shared/types/api";
 import { PlateBand } from "@/shared/ui/plate-band";
@@ -121,6 +122,7 @@ const QUICK_FILTERS = [
 ];
 
 export default function Home() {
+  const { user } = useAuth();
   useDocumentTitle("Trang chủ · TROSV");
   const revealStrip = useReveal();
   const revealCta = useReveal();
@@ -227,7 +229,7 @@ export default function Home() {
             </p>
           </div>
           <Link
-            to={ROUTES.REGISTER}
+            to={user?.role === "landlord" ? ROUTES.LANDLORD_NEW : ROUTES.REGISTER}
             className="motion-press inline-flex h-10 items-center rounded-lg bg-flyer-ink px-5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             Đăng tin ngay

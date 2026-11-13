@@ -186,6 +186,7 @@ class AuthTest extends TestCase
 
     public function test_login_is_throttled_to_10_per_minute(): void
     {
+        $this->freezeTime();
         $user = User::factory()->create(['password' => 'password123']);
 
         for ($i = 0; $i < 10; $i++) {
@@ -195,12 +196,20 @@ class AuthTest extends TestCase
             ])->assertStatus(422);
         }
 
-        // The 11th attempt within the same minute is rate limited (429).
+        // Waiting more than one second must not reset the one-minute window.
+        $this->travel(2)->seconds();
         $this->postJson('/api/login', [
             'email' => $user->email,
             'password' => 'password123',
         ])->assertStatus(429)
+            ->assertHeader('Retry-After', '58')
             ->assertExactJson(['message' => 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.']);
+
+        $this->travel(59)->seconds();
+        $this->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => 'password123',
+        ])->assertOk();
     }
 
     // ------------------------------------------------------------------

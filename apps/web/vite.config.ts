@@ -34,6 +34,10 @@ export default defineConfig({
   cacheDir: process.env["VITE_CACHE_DIR"],
   server: {
     proxy: {
+      "/app": {
+        target: "http://127.0.0.1:8080",
+        ws: true,
+      },
       "/attachments": {
         target: "http://127.0.0.1:8000",
         changeOrigin: false,

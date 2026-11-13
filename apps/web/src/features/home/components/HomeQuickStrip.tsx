@@ -1,5 +1,15 @@
 import { Link } from "react-router-dom";
-import { GraduationCap, MapPin, MessageCircle, Sparkles, Users } from "lucide-react";
+import { useRef } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  MapPin,
+  MessageCircle,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { Button } from "@/shared/ui/button";
 import { ROUTES } from "@/shared/constants/routes";
 import { cn } from "@/shared/lib/utils";
 import type { School } from "@/shared/types/api";
@@ -37,25 +47,63 @@ const FEATURES = [
 
 /** One slim card: schools as chips, then four shortcuts. Replaces a wall of tiles. */
 export function HomeQuickStrip({ schools }: { schools: School[] }) {
+  const schoolsRef = useRef<HTMLDivElement>(null);
+
+  function scrollSchools(direction: number): void {
+    const row = schoolsRef.current;
+    row?.scrollBy({ left: direction * row.clientWidth * 0.8, behavior: "smooth" });
+  }
+
   return (
     <section
       data-testid="quick-strip"
       className="overflow-hidden rounded-xl border border-line bg-card shadow-card"
     >
-      <div className="flex items-center gap-2.5 overflow-x-auto border-b border-line px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex items-center gap-2.5 border-b border-line px-4 py-3">
         <h2 className="flex flex-none items-center gap-2 text-[15px] font-bold text-ink">
           <GraduationCap className="size-5 text-plate" aria-hidden />
           Tìm theo trường
         </h2>
-        {schools.slice(0, 6).map((s) => (
-          <Link
-            key={s.id}
-            to={`${ROUTES.ROOMS}?school_id=${s.id}`}
-            className="flex-none rounded-full border border-line-strong bg-card px-3.5 py-1.5 text-[13.5px] font-semibold text-ink transition-colors hover:bg-ink hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
-          >
-            {s.name}
-          </Link>
-        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="hidden shrink-0 lg:inline-flex"
+          aria-label="Cuộn trường sang trái"
+          onClick={() => {
+            scrollSchools(-1);
+          }}
+        >
+          <ChevronLeft className="size-4" aria-hidden />
+        </Button>
+        <div
+          ref={schoolsRef}
+          role="region"
+          aria-label="Danh sách trường"
+          className="flex min-w-0 flex-1 items-center gap-2.5 overflow-x-auto py-1 [scrollbar-width:thin] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+        >
+          {schools.slice(0, 6).map((s) => (
+            <Link
+              key={s.id}
+              to={`${ROUTES.ROOMS}?school_id=${s.id}`}
+              className="flex-none whitespace-nowrap rounded-full border border-line-strong bg-card px-3.5 py-1.5 text-[13.5px] font-semibold text-ink transition-colors hover:bg-ink hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+            >
+              {s.name}
+            </Link>
+          ))}
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="hidden shrink-0 lg:inline-flex"
+          aria-label="Cuộn trường sang phải"
+          onClick={() => {
+            scrollSchools(1);
+          }}
+        >
+          <ChevronRight className="size-4" aria-hidden />
+        </Button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4">
         {FEATURES.map((f, i) => (

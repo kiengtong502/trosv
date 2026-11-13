@@ -35,6 +35,11 @@ export function useConversationRealtime(
   const { user } = useAuth();
   const [otherTyping, setOtherTyping] = useState(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onPreviewRef = useRef(onPreviewEvent);
+
+  useEffect(() => {
+    onPreviewRef.current = onPreviewEvent;
+  }, [onPreviewEvent]);
 
   useEffect(() => {
     const echo = getEcho();
@@ -59,7 +64,7 @@ export function useConversationRealtime(
       lastIdRef.current = Math.max(lastIdRef.current, msg.id);
       // Sidebar preview (Messenger): thread là nguồn sự thật khi đang
       // mở - phát event để Messages.tsx cập nhật item tương ứng.
-      onPreviewEvent?.(msg);
+      onPreviewRef.current?.(msg);
       if (msg.sender_id !== user?.id) markRead(id).catch(ignoreError("mark conversation read"));
     });
 
@@ -119,7 +124,7 @@ export function useConversationRealtime(
       // của họ và sidebar/badge ngừng nhận realtime.
       echo.leave(`conversation.${id}`);
     };
-  }, [id, user?.id, setMessages, lastIdRef, onPreviewEvent]);
+  }, [id, user?.id, setMessages, lastIdRef]);
 
   return { otherTyping, setOtherTyping };
 }

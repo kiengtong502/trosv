@@ -591,6 +591,7 @@ class AiProxyTest extends TestCase
 
     public function test_ai_endpoints_are_throttled_to_10_per_minute(): void
     {
+        $this->freezeTime();
         Http::fake(['*/chat' => Http::response(['reply' => 'ok'])]);
 
         for ($i = 0; $i < 10; $i++) {
@@ -599,9 +600,16 @@ class AiProxyTest extends TestCase
                 ->assertOk();
         }
 
+        $this->travel(2)->seconds();
         $this->actingAs($this->student, 'sanctum')
             ->postJson('/api/ai/chat', ['message' => 'lần 11'])
             ->assertStatus(429)
+            ->assertHeader('Retry-After', '58')
             ->assertJsonPath('message', 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.');
+
+        $this->travel(59)->seconds();
+        $this->actingAs($this->student, 'sanctum')
+            ->postJson('/api/ai/chat', ['message' => 'after the limit expires'])
+            ->assertOk();
     }
 }

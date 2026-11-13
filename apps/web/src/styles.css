@@ -5,6 +5,12 @@
 @import "leaflet.markercluster/dist/MarkerCluster.css";
 @import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
+/* Keep Leaflet panes and controls below page navigation and floating actions. */
+.leaflet-container {
+  isolation: isolate;
+  z-index: 0;
+}
+
 /*
   TROSV design tokens.
 
@@ -171,7 +177,7 @@
 
 @media (min-width: 890px) {
   :root {
-    --nav-h: 72px;
+    --nav-h: 64px;
   }
 }
 

@@ -30,8 +30,8 @@ function RoomAddress({ listing }: { listing: Listing }) {
     listing.ward && !listing.address.includes(listing.ward.name) ? listing.ward.name : "";
   return (
     <p className="mt-2 flex items-center gap-1.5 text-sm text-muted">
-      <MapPin className="size-4 text-plate" aria-hidden />
-      <span>
+      <MapPin className="size-4 shrink-0 text-plate" aria-hidden />
+      <span className="min-w-0 break-words">
         {listing.address}
         {ward ? `, ${ward}` : ""}
       </span>
@@ -57,7 +57,7 @@ function RoomActions({
   onCopyLink,
 }: Pick<RoomHeaderProps, "isFavorite" | "onToggleFavorite" | "onCopyLink">) {
   return (
-    <div className="flex gap-2">
+    <div className="flex shrink-0 gap-2">
       <Button
         variant="outline"
         size="sm"
@@ -87,10 +87,10 @@ export function RoomHeader({
   onCopyLink,
 }: RoomHeaderProps) {
   return (
-    <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
-      <div className="min-w-0 flex-1">
+    <div className="mt-3 flex flex-col items-start justify-between gap-4 md:flex-row">
+      <div className="w-full min-w-0 md:flex-1">
         <RoomTags listing={listing} />
-        <h1 className="text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">
+        <h1 className="break-words text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">
           {listing.title}
         </h1>
         <RoomAddress listing={listing} />

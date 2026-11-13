@@ -18,3 +18,5 @@ export interface ConvPreviewDetail {
 }
 
 export const CONV_PREVIEW_EVENT = "trosv:conv-preview";
+
+export const CONVERSATION_READ_EVENT = "trosv:conversation-read";
