@@ -8,7 +8,7 @@ import {
   useNavigate,
   useNavigationType,
 } from "react-router-dom";
-import { LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown, Menu } from "lucide-react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES, route } from "@/shared/constants/routes";
@@ -38,6 +38,57 @@ import { AiChatWidget } from "@/features/ai/components/AiChatWidget";
 
 /* ---------- Header ---------- */
 
+function MobileNavigation({ role }: { role: string | undefined }) {
+  if (!role) return null;
+  const items: { to: string; label: string }[] = [
+    { to: ROUTES.ROOMS, label: role === "landlord" ? "Xem phòng" : "Tìm phòng" },
+  ];
+  if (role === "student") {
+    items.push(
+      { to: ROUTES.AI_ROOMMATES, label: "Bạn cùng phòng" },
+      { to: ROUTES.AI_AREA_SUGGESTIONS, label: "Khu vực phù hợp" },
+    );
+  }
+  if (role === "landlord") {
+    items.push(
+      { to: ROUTES.LANDLORD, label: "Quản lý tin đăng" },
+      { to: ROUTES.LANDLORD_NEW, label: "Đăng tin mới" },
+    );
+  }
+  return (
+    <DropdownMenuPrimitive.Root>
+      <DropdownMenuPrimitive.Trigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 lg:hidden"
+          aria-label="Menu điều hướng"
+        >
+          <Menu className="size-5" aria-hidden />
+        </Button>
+      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          align="start"
+          sideOffset={8}
+          className="z-50 min-w-52 max-w-[calc(100vw-1.5rem)] rounded-xl border border-line bg-card p-1.5 shadow-pop lg:hidden"
+        >
+          {items.map((item) => (
+            <DropdownMenuPrimitive.Item key={item.to} asChild>
+              <Link
+                to={item.to}
+                className="block rounded-lg px-3 py-3 text-sm text-ink outline-none data-[highlighted]:bg-tint"
+              >
+                {item.label}
+              </Link>
+            </DropdownMenuPrimitive.Item>
+          ))}
+        </DropdownMenuPrimitive.Content>
+      </DropdownMenuPrimitive.Portal>
+    </DropdownMenuPrimitive.Root>
+  );
+}
+
 function Header() {
   const { user, logout } = useAuth();
   const [aiOpen, setAiOpen] = React.useState(false);
@@ -47,11 +98,8 @@ function Header() {
   /* Note: keyboard/aria wiring stays handled by Radix for both menus. */
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6",
-      )}
-    >
+    <header className="sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6">
+      <MobileNavigation role={user?.role} />
       <Link to={ROUTES.HOME} className="flex shrink-0 items-center" aria-label="TROSV trang chủ">
         <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
       </Link>
@@ -65,7 +113,7 @@ function Header() {
             )
           }
         >
-          Thuê phòng
+          {user?.role === "landlord" ? "Xem phòng" : "Tìm phòng"}
         </NavLink>
 
         {user?.role === "student" ? (
@@ -110,6 +158,7 @@ function Header() {
         {user?.role === "landlord" ? (
           <NavLink
             to={ROUTES.LANDLORD}
+            end
             className={({ isActive }) =>
               cn(
                 "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
@@ -117,13 +166,18 @@ function Header() {
               )
             }
           >
-            Đăng tin
+            Quản lý tin đăng
           </NavLink>
         ) : null}
       </nav>
 
       {/* Right: account (always right-aligned). */}
       <div className="ml-auto flex shrink-0 items-center gap-2">
+        {user?.role === "landlord" ? (
+          <Button asChild size="sm" className="hidden px-3 text-sm lg:inline-flex">
+            <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
+          </Button>
+        ) : null}
         {user ? (
           <DropdownMenuPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuPrimitive.Trigger asChild>
