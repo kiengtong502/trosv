@@ -39,7 +39,9 @@ test.describe("room page bento", () => {
       expect(sizes.galleryRight).toBeLessThanOrEqual(sizes.viewport + 1);
       if (width < 768) {
         const title = await page.getByRole("heading", { level: 1 }).boundingBox();
-        const share = await page.getByRole("button", { name: "Chia sẻ", exact: true }).boundingBox();
+        const share = await page
+          .getByRole("button", { name: "Chia sẻ", exact: true })
+          .boundingBox();
         expect(title!.width).toBeCloseTo(sizes.galleryRight - sizes.galleryLeft, 0);
         expect(share!.y).toBeGreaterThanOrEqual(title!.y + title!.height);
       }
