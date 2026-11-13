@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 const API = "http://localhost:8000/api";
 
@@ -16,6 +16,7 @@ export async function loginAs(page: Page, email: string): Promise<LoginData> {
     data: { email, password: "password" },
     headers: { Accept: "application/json" },
   });
+  expect(res.status(), "Seeded account login must succeed before opening the page").toBe(200);
   const data = ((await res.json()) as { data: LoginData }).data;
   await page.addInitScript(
     ([t, u]) => {

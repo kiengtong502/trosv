@@ -33,6 +33,8 @@ jobs:
       DB_USERNAME: rental
       DB_PASSWORD: rental
       BROADCAST_CONNECTION: "null"
+      # Browser cases share one IP; API tests exercise persistent rate limits.
+      CACHE_STORE: array
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
