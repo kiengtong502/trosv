@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Shared;
 
-use App\Modules\Listing\Models\Listing;
 use App\Shared\Support\Geo;
 use PHPUnit\Framework\TestCase;
 
@@ -30,9 +29,6 @@ class GeoTest extends TestCase
         $this->assertGreaterThan(1135.0, $distance);
         $this->assertLessThan(1145.0, $distance);
         $this->assertSame(1137.8, $distance);
-
-        // Listing DISTANCE_SQL references Geo::EARTH_RADIUS_KM
-        $this->assertStringStartsWith('6371 * ACOS(', Listing::DISTANCE_SQL);
     }
 
     public function test_legacy_and_new_haversine_results_equal_for_twenty_sample_pairs(): void

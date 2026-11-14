@@ -40,6 +40,9 @@ class ReviewController extends Controller
     {
         $user = $this->authUser($request);
 
+        // Hidden listings 404 for non-owners, like GET /listings/{id}.
+        abort_if($listing->status === Listing::STATUS_HIDDEN, 404);
+
         $data = $request->validated();
 
         // ERD §4: only students who already have a conversation may review.

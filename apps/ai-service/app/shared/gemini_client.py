@@ -33,7 +33,8 @@ def get_client() -> genai.Client | None:
     if not api_key:
         return None
     try:
-        return genai.Client(api_key=api_key)
+        # 10 s per model call (ms): the backend gives up after 15 s anyway.
+        return genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=10_000))
     except Exception as exc:
         logger.error(f"Failed to initialize Google GenAI client: {exc}")
         return None

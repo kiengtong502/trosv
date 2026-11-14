@@ -28,7 +28,9 @@ class ApiThrottle
         $identifier = $user ? 'u:'.$user->id : 'ip:'.$request->ip();
         $key = 'api-throttle:'.$identifier.':'.sha1($request->method().'|'.$request->getPathInfo());
 
-        if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
+        // Count BEFORE handling, using the atomic increment's result: parallel
+        // requests must not all pass a check that only sees finished requests.
+        if ($this->limiter->hit($key, $decaySeconds) > $maxAttempts) {
             throw new ThrottleRequestsException(
                 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.',
                 null,
@@ -36,9 +38,7 @@ class ApiThrottle
             );
         }
 
-        $response = $next($request);
-
-        return tap($response, fn () => $this->limiter->hit($key, $decaySeconds));
+        return $next($request);
     }
 
     /**
@@ -48,7 +48,7 @@ class ApiThrottle
     {
         return [
             'X-RateLimit-Limit' => $maxAttempts,
-            'X-RateLimit-Remaining' => max(0, $this->limiter->remaining($key, $maxAttempts) - 1),
+            'X-RateLimit-Remaining' => max(0, $this->limiter->remaining($key, $maxAttempts)),
             'Retry-After' => $this->limiter->availableIn($key),
             'X-RateLimit-Reset' => $this->availableAt($this->limiter->availableIn($key)),
         ];

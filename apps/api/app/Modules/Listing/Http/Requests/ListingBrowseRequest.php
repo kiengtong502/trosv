@@ -2,8 +2,8 @@
 
 namespace App\Modules\Listing\Http\Requests;
 
-use App\Modules\Listing\Http\Controllers\ListingController;
 use App\Modules\Listing\Models\Listing;
+use App\Shared\Http\Controllers\Controller;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -41,7 +41,7 @@ class ListingBrowseRequest extends FormRequest
             'max_km' => ['nullable', 'numeric', 'min:0', 'max:500'],
             'sort' => ['nullable', Rule::in(['newest', 'price_asc', 'price_desc', 'distance', 'rating'])],
             'page' => ['nullable', 'integer', 'min:1'],
-            'per_page' => ['nullable', 'integer', 'min:1', 'max:'.ListingController::PER_PAGE_MAX],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:'.Controller::PER_PAGE_MAX],
             'q' => ['nullable', 'string', 'max:200'],
             'school_id' => ['nullable', 'integer', 'exists:schools,id'],
         ];

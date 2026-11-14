@@ -4,6 +4,7 @@ namespace App\Modules\Listing\Policies;
 
 use App\Modules\Auth\Models\User;
 use App\Modules\Listing\Models\Listing;
+use App\Modules\Messaging\Models\Conversation;
 
 /**
  * Listing ownership (API_CONTRACT §4 - "Chủ nhà: quản lý tin đăng").
@@ -26,8 +27,11 @@ class ListingPolicy
      */
     public function review(User $user, Listing $listing): bool
     {
-        return $listing->conversations()
+        // By user pair, not listing_id: one conversation per pair keeps only
+        // the LAST room asked about, earlier rooms must stay reviewable.
+        return Conversation::query()
             ->where('student_id', $user->id)
+            ->where('landlord_id', $listing->user_id)
             ->exists();
     }
 }

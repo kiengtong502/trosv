@@ -18,10 +18,6 @@ use Illuminate\Http\Request;
  */
 class ListingController extends Controller
 {
-    public const PER_PAGE_DEFAULT = 12;
-
-    public const PER_PAGE_MAX = 50;
-
     public function index(ListingBrowseRequest $request, ListingFilterService $filterService): JsonResponse
     {
         $validated = $request->validated();
@@ -40,23 +36,14 @@ class ListingController extends Controller
             ], 422);
         }
 
-        $perPage = is_numeric($validated['per_page'] ?? null) ? (int) $validated['per_page'] : self::PER_PAGE_DEFAULT;
+        $perPage = is_numeric($validated['per_page'] ?? null) ? (int) $validated['per_page'] : 12;
 
-        $query = $filterService->buildQuery($validated);
-        $page = $query->paginate($perPage);
+        $page = $filterService->buildQuery($validated)->paginate($perPage);
 
         $favoritedIds = $this->favoritedListingIds($request, $page->getCollection());
         $request->attributes->set('favorited_listing_ids', $favoritedIds);
 
-        return response()->json([
-            'data' => ListingSummaryResource::collection($page->getCollection())->resolve($request),
-            'meta' => [
-                'current_page' => $page->currentPage(),
-                'last_page' => $page->lastPage(),
-                'per_page' => $perPage,
-                'total' => $page->total(),
-            ],
-        ]);
+        return $this->paginated($page, ListingSummaryResource::class, $request);
     }
 
     /**

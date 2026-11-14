@@ -143,16 +143,6 @@ class Listing extends Model
     }
 
     /**
-     * Haversine distance (km) between a point and listings - PostgreSQL
-     * flavor from ERD §4 (parameters must be CAST to float8; placeholder
-     * order: point lat, point lng, point lat).
-     */
-    /**
-     * Distance SQL expression delegated to GeoQuery.
-     */
-    public const DISTANCE_SQL = GeoQuery::DISTANCE_SQL;
-
-    /**
      * Scope: public listings only.
      *
      * @param  Builder<Listing>  $query

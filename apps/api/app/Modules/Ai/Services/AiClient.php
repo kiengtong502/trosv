@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Http;
  */
 class AiClient
 {
-    private const TIMEOUT_SECONDS = 30;
+    // Each wait holds a PHP worker thread (2 per CPU): keep it short.
+    private const TIMEOUT_SECONDS = 15;
 
     /**
      * POST a JSON payload to the AI service and return the decoded body.
