@@ -2,6 +2,8 @@
 
 namespace App\Modules\Ai\Http\Requests;
 
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,7 +25,7 @@ class AreaSuggestionsRequest extends FormRequest
         return [
             'budget_min' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'budget_max' => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'school_id' => ['sometimes', 'nullable', 'integer', 'exists:schools,id'],
+            'school_id' => ['sometimes', 'nullable', 'integer', Rule::exists('schools', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::schoolIds()))],
             'priorities' => ['sometimes', 'nullable', 'array'],
             'priorities.*' => [Rule::in(['cheap', 'near_school', 'well_rated', 'many_options'])],
         ];

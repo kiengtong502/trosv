@@ -78,6 +78,8 @@ export interface Ward {
 export interface School {
   id: number;
   name: string;
+  campus_name?: string | null;
+  address?: string | null;
   /* API returns city as a nested object (city_id is not serialized). */
   city_id?: number;
   city?: { id: number; name: string };

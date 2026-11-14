@@ -72,24 +72,25 @@ class ListingBrowseTest extends TestCase
             ->assertJsonStructure(['data' => [['id', 'name']]]);
     }
 
-    public function test_cities_endpoint_returns_sorted_list_with_correct_structure(): void
+    public function test_cities_endpoint_only_returns_supported_city_with_correct_structure(): void
     {
         City::query()->delete();
         City::factory()->create(['name' => 'Can Tho']);
         City::factory()->create(['name' => 'An Giang']);
         City::factory()->create(['name' => 'Binh Duong']);
+        City::factory()->create(['name' => 'TP.HCM']);
 
         $response = $this->getJson('/api/cities')
             ->assertOk()
             ->assertJsonStructure(['data' => [['id', 'name', 'type', 'latitude', 'longitude']]]);
 
         $names = collect($response->json('data'))->pluck('name')->all();
-        $this->assertSame(['An Giang', 'Binh Duong', 'Can Tho'], $names);
+        $this->assertSame(['TP.HCM'], $names);
     }
 
     public function test_wards_and_schools_filter_by_city_id(): void
     {
-        $city1 = City::factory()->create();
+        $city1 = City::where('name', 'TP.HCM')->firstOrFail();
         $city2 = City::factory()->create();
 
         $ward1 = Ward::factory()->create(['city_id' => $city1->id]);
@@ -100,16 +101,12 @@ class ListingBrowseTest extends TestCase
 
         $this->getJson("/api/wards?city_id={$city1->id}")
             ->assertOk()
-            ->assertJsonPath('data.0.id', $ward1->id)
-            ->assertJsonPath('data.0.city.id', $city1->id)
-            ->assertJsonMissing(['id' => $ward2->id]);
+            ->assertJsonFragment(['id' => $ward1->id, 'name' => $ward1->name])
+            ->assertJsonMissing(['name' => $city2->name]);
 
         $this->getJson("/api/schools?city_id={$city2->id}")
             ->assertOk()
-            ->assertJsonPath('data.0.id', $school2->id)
-            ->assertJsonPath('data.0.city.id', $city2->id)
-            ->assertJsonPath('data.0.ward.id', $ward2->id)
-            ->assertJsonMissing(['id' => $school1->id]);
+            ->assertJsonCount(0, 'data');
     }
 
     // ------------------------------------------------------------------

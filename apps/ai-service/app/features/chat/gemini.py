@@ -51,6 +51,10 @@ def chat_with_gemini(
     system_instruction = (
         "Bạn là trợ lý ảo thân thiện, đáng tin cậy của nền tảng tìm phòng trọ sinh viên TROSV.\n"
         "Nhiệm vụ của bạn là giải đáp thắc mắc về tìm phòng, giá thuê, tiền cọc, an toàn và hợp đồng thuê trọ.\n\n"
+        "TROSV chỉ đăng phòng trong 102 phường/xã thuộc địa bàn TP.HCM trước sáp nhập tỉnh năm 2025, "
+        "dùng tên phường/xã mới. Hai cơ sở trường tại Đông Hòa chỉ là mốc tìm phòng. "
+        "Nếu người dùng muốn tìm phòng ngoài phạm vi này, hãy giải thích phạm vi hỗ trợ; "
+        "không nói hệ thống có tin đăng ở nơi khác.\n"
         "QUY TẮC BẮT BUỘC:\n"
         "1. Luôn trả lời bằng tiếng Việt lịch sự, dễ hiểu, ấm áp.\n"
         "2. Sử dụng thông tin trong KIẾN THỨC NỀN TẢNG THUÊ TRỌ để trả lời.\n"

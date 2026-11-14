@@ -276,16 +276,16 @@ Dùng `selectRaw(... AS distance_km)` để hiển thị và `whereRaw` với c�
 
 ## 5. Dữ liệu mẫu (seeder)
 
-Dữ liệu trải khắp Việt Nam, nhóm theo 34 đơn vị hành chính cấp tỉnh (NQ 202/2025/QH15):
+Dữ liệu khởi tạo mới chỉ phục vụ địa bàn TP.HCM trước sáp nhập tỉnh năm 2025, dùng tên phường/xã mới:
 
 | Bảng | Nội dung |
 |---|---|
-| cities | Đủ 34 tỉnh/TP: 6 thành phố TW (Hà Nội, TP.HCM, Hải Phòng, Đà Nẵng, Huế, Cần Thơ) + 28 tỉnh, kèm tọa độ tâm |
-| wards | 185 phường/xã thuộc 12 thành phố nhiều sinh viên; riêng TP.HCM đủ 168 đơn vị sau sáp nhập (mỗi ward có `city_id`) |
-| schools | 32 trường ĐH thuộc 10 thành phố, riêng TP.HCM đủ 20 trường, mỗi trường gán 1 phường/xa (`city_id` + `ward_id`) |
+| cities | TP.HCM, kèm tọa độ tâm |
+| wards | 102 đơn vị thuộc địa bàn TP.HCM cũ: 78 phường, 24 xã; lấy từ `database/data/hcm-wards-102.json` |
+| schools | 61 trường/cơ sở chính từ `database/data/hcm-schools-main-campuses.json`; 59 trường có phường/xã, ĐH Quốc tế và ĐH Khoa học Sức khỏe tại Đông Hòa có `ward_id = null` và vẫn dùng làm mốc khoảng cách |
 | amenities | Wi-Fi, Máy lạnh, Máy nước nóng, Máy giặt, Tủ lạnh, Bếp, WC riêng, Chỗ để xe, Bảo vệ, Giờ giấc tự do |
 | users | 3 chủ nhà, 10 sinh viên (hồ sơ điền đủ, phần lớn `looking_for_roommate = true`). Mật khẩu chung `password`. Email theo mẫu `student1@example.com`, `landlord1@example.com` |
-| listings | 30 tin, đủ 3 loại, giá 1,5 đến 6 triệu, tọa độ quanh tâm khu vực, 3 đến 6 tiện ích mỗi tin, mỗi tin 1 ảnh mẫu lưu cục bộ, vài tin `rented` |
-| khác | Vài hội thoại có tin nhắn, vài đánh giá |
+| listings | 16 tin minh họa tại TP.HCM, đủ 3 loại, giá 1,8 đến 12 triệu, tọa độ minh họa quanh trường, 4 đến 7 tiện ích mỗi tin, mỗi tin 1 ảnh mẫu khi có GD, trạng thái `available` |
+| khác | 6 hội thoại có tin nhắn, 4 đánh giá |
 
-Chạy: `php artisan migrate:fresh --seed`.
+`php artisan db:seed` nạp bộ demo trên database trống; nếu đã có thành phố, `DatabaseSeeder` bỏ qua. Các seeder mới không xóa dữ liệu tỉnh khác đã tồn tại. `migrate:fresh --seed` xóa toàn bộ dữ liệu trước khi tạo lại, chỉ dùng trên database thử nghiệm riêng hoặc khi chủ động muốn reset.

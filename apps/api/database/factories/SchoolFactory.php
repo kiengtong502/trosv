@@ -15,7 +15,9 @@ class SchoolFactory extends Factory
     {
         return [
             'name' => fake()->unique()->company().' University',
-            'city_id' => City::factory(),
+            'city_id' => fn () => City::firstOrCreate(['name' => 'TP.HCM'], [
+                'type' => City::TYPE_CITY, 'latitude' => 10.7769, 'longitude' => 106.7009,
+            ])->id,
             'latitude' => fake()->latitude(8.20, 23.40),
             'longitude' => fake()->longitude(102.10, 109.50),
         ];

@@ -1,174 +1,199 @@
 # Đối chiếu dữ liệu phường/xã TROSV
 
-Rà soát database `rental` ngày 13/11/2026. Các truy vấn đọc chạy trong kết nối đặt `default_transaction_read_only=on`. Số lượng bao gồm các trạng thái tin phòng hiện có.
+Cập nhật ngày **15/11/2026**, snapshot lúc **00:56:37 (UTC+07:00)** của database `rental`. Dữ liệu được lấy bằng một truy vấn SELECT tổng hợp; kết nối đặt `default_transaction_read_only=on` và đã đọc lại `transaction_read_only=on`. Lượt này không chạy seed/migration hoặc sửa dữ liệu.
 
-Bảng đối chiếu dùng [bộ 102 đơn vị](hcm-wards-102.md) và [file JSON ánh xạ](hcm-ward-mapping-review.json). Mã trong bộ 102 đơn vị và ID nội bộ trong database được ghi thành hai trường riêng.
+Báo cáo này thay số liệu ngày 13/11/2026. Chi tiết từng bản ghi nằm trong [JSON đối chiếu](hcm-ward-mapping-review.json); số liệu cũ chỉ giữ ở `previous_review` để so sánh, không còn là hiện trạng.
 
-## Tổng hợp
+## Kết quả hiện tại
 
-| Nội dung | Số lượng |
+**Đã đồng bộ đủ 102 phường/xã và 61 trường TP.HCM. Không còn thiếu 92 phường/xã như báo cáo cũ.** Phạm vi phòng là địa bàn TP.HCM trước sáp nhập tỉnh năm 2025, dùng tên phường/xã mới. Hai cơ sở Đông Hòa vẫn được phép làm mốc tìm phòng theo lựa chọn của người dùng.
+
+| Nội dung | Snapshot hiện tại |
 | --- | ---: |
-| Phường/xã toàn database | 45 |
-| Phường/xã mang nhãn TP.HCM | 17 |
-| Tên TP.HCM trùng bộ dữ liệu mới | 10 |
-| Tên cũ có đích nhập toàn bộ | 6 |
-| Tên cũ bị chia địa bàn | 1 |
-| Đơn vị trong bộ 102 chưa có theo tên hiện tại | 92 |
-| Tin phòng gắn phường TP.HCM | 23 |
-| Trường mang nhãn TP.HCM | 20 |
-| Phường/xã ngoài phạm vi | 28 |
-| Tin phòng ngoài phạm vi | 31 |
-| Trường ngoài phạm vi | 40 |
-| Hồ sơ đang tham chiếu trường ngoài phạm vi | 9 |
+| Phường/xã toàn database | 130 |
+| Phường/xã TP.HCM khớp bộ 102 | 102 |
+| Trong đó phường / xã | 78 / 24 |
+| Đơn vị trong bộ 102 còn thiếu theo tên | 0 |
+| Điểm phường/xã lệch JSON nguồn ở độ chính xác DB | 0 |
+| Trường mang nhãn TP.HCM | 61 |
+| Trường gắn một trong 102 phường/xã | 59 |
+| Cơ sở Đông Hòa được giữ làm mốc, `ward_id = null` | 2 |
+| Điểm trường lệch dữ liệu người dùng ở độ chính xác DB | 0 |
+| Tin phòng gắn phường TP.HCM, mọi trạng thái | 23 |
+| Trong đó tin có trạng thái `available` | 21 |
+| Tổng tin phòng, mọi thành phố và trạng thái | 54 |
+| Phường/xã ngoài phạm vi còn trong DB | 28 |
+| Tin phòng ngoài phạm vi còn trong DB | 31 |
+| Trường ngoài danh mục TP.HCM còn trong DB | 40 |
+| Hồ sơ đang tham chiếu trường ngoài danh mục TP.HCM | 9 |
 
-92 đơn vị thiếu được xác định theo tên khớp hiện tại. Sáu ánh xạ nhập toàn bộ có 4 đích chưa trùng tên trong DB và 2 đích đã tồn tại là Linh Xuân, Tân Hưng. Cần hợp nhất các đích trước khi tính số bản ghi mới cần tạo.
+Đối chiếu tọa độ chỉ xác nhận DB khớp hai file JSON ở độ chính xác 7 chữ số thập phân. Đây không phải xác nhận ghim nằm đúng địa giới hoặc xác minh độc lập vị trí thực tế.
 
-## Bảng ánh xạ 17 phường TP.HCM
+## Các ánh xạ cũ đã xử lý
 
-Đích trong bảng thể hiện quan hệ địa bàn. Vị trí của từng phòng và cơ sở trường cần được đối chiếu với địa chỉ thực tế trước khi cập nhật liên kết. Các trường hợp nhập toàn bộ và chia địa bàn dựa vào Điều 1 của [Nghị quyết 1685/NQ-UBTVQH15](https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-1685-nq-ubtvqh15-sap-xep-cac-dvhc-cap-xa-cua-thanh-pho-ho-chi-minh-nam-2025-119250616211341304.htm).
+| Tên cũ | Tên hiện tại | Mã hành chính | ID đích trong DB |
+| --- | --- | --- | ---: |
+| Phường Bến Nghé | Phường Sài Gòn | `26740` | 18 |
+| Phường Linh Trung | Phường Linh Xuân | `26800` | 21 |
+| Phường Linh Chiểu | Phường Thủ Đức | `26824` | 22 |
+| Phường Võ Thị Sáu | Phường Xuân Hòa | `27139` | 23 |
+| Phường Tân Phong | Phường Tân Hưng | `27475` | 30 |
+| Phường Thảo Điền | Phường An Khánh | `27094` | 31 |
 
-| ID DB | Tên đang dùng | Đích dự kiến và mã | Cơ sở | Tin phòng | Trường |
-| --- | --- | --- | --- | ---: | ---: |
-| 16 | Phường Diên Hồng | Phường Diên Hồng (`27169`) | Khớp tên | 1 | 1 |
-| 17 | Phường Chợ Quán | Phường Chợ Quán (`27301`) | Khớp tên | 1 | 3 |
-| 18 | Phường Bến Nghé | Phường Sài Gòn (`26740`) | Khoản 1 | 1 | 1 |
-| 19 | Phường Bến Thành | Phường Bến Thành (`26743`) | Khớp tên | 1 | 1 |
-| 20 | Phường Linh Trung | Phường Linh Xuân (`26800`) | Khoản 70 | 1 | 3 |
-| 21 | Phường Linh Xuân | Phường Linh Xuân (`26800`) | Khớp tên | 1 | 1 |
-| 22 | Phường Linh Chiểu | Phường Thủ Đức (`26824`) | Khoản 68 | 1 | 1 |
-| 23 | Phường Võ Thị Sáu | Phường Xuân Hòa (`27139`) | Khoản 6 | 1 | 2 |
-| 24 | Phường Tân Phong | Phường Tân Hưng (`27475`) | Khoản 21 | 2 | 2 |
-| 25 | Phường Thạnh Mỹ Tây | Phường Thạnh Mỹ Tây (`26956`) | Khớp tên | 1 | 1 |
-| 26 | Phường Bình Lợi Trung | Phường Bình Lợi Trung (`26905`) | Khớp tên | 1 | 1 |
-| 27 | Phường Xóm Chiếu | Phường Xóm Chiếu (`27259`) | Khớp tên | 1 | 1 |
-| 28 | Phường Hạnh Thông | Phường Hạnh Thông (`26890`) | Khớp tên | 1 | 1 |
-| 29 | Phường Chợ Lớn | Phường Chợ Lớn (`27343`) | Khớp tên | 1 | 1 |
-| 30 | Phường Tân Hưng | Phường Tân Hưng (`27475`) | Khớp tên | 7 | 0 |
-| 31 | Phường Thảo Điền | Phường An Khánh (`27094`) | Khoản 78 | 1 | 0 |
-| 32 | Phường Đa Kao | Phường Sài Gòn (`26740`) / Phường Tân Định (`26737`) | Khoản 1, 2 | 0 | 0 |
+Sáu tên cũ trên không còn trong snapshot; các đích mới đều đã có. Đa Kao cũng không còn bản ghi tên cũ. Cơ chế giữ/chuyển ID và khóa tham chiếu nằm trong [WardSeeder.php](../../apps/api/database/seeders/WardSeeder.php). Không cần lặp lại bước nhập/hợp nhất chỉ vì báo cáo ngày 13/11 từng liệt kê chúng.
 
-Có 7 tin phòng và 9 trường đang tham chiếu 6 phường có đích nhập toàn bộ. Đa Kao hiện có 0 tin phòng và 0 trường tham chiếu.
+Các chỉ số `full_merge_wards` và `split_wards` ở phần `summary` của JSON hiện bằng 0 để chỉ số tên cũ còn chờ xử lý trong snapshot, không phải phủ nhận sáu ánh xạ đã hoàn thành. Thông tin này được ghi riêng ở `completed_ward_mappings`.
 
-## Tin phòng TP.HCM cần đối chiếu
+## Đối chiếu đủ 102 đơn vị với ID database
 
-Ngưỡng 5 km giữa ghim phòng và điểm phường trong database được chọn để ưu tiên rà soát. Khoảng cách dùng tọa độ hiện có trong database. Việc xác định phường cho từng ghim cần địa chỉ thực tế hoặc đa giác ranh giới.
+Nguồn tên, mã và tọa độ là [hcm-wards-102.json](../../apps/api/database/data/hcm-wards-102.json). **Mã hành chính không phải ID database.** Số tin bao gồm mọi trạng thái; số trường là các bản ghi có `school.ward_id` trỏ tới đơn vị đó.
 
-| ID tin | Phường đang gắn | Khoảng cách đến điểm phường (km) | Địa chỉ đang lưu |
-| --- | --- | ---: | --- |
-| 4 | Phường Bến Thành | 16.64 | Số 126 Đường Võ Văn Ngân, Phường Bến Thành, TP.HCM |
-| 7 | Phường Linh Chiểu | 11.13 | Số 205 Đường An Dương Vương, Phường Linh Chiểu, TP.HCM |
-| 8 | Phường Võ Thị Sáu | 6.14 | Số 215 Đường Đặng Thùy Trâm, Phường Võ Thị Sáu, TP.HCM |
-| 9 | Phường Tân Phong | 15.51 | Số 175 Đường Nguyễn Văn Bảo, Phường Tân Phong, TP.HCM |
-| 11 | Phường Bình Lợi Trung | 6.15 | Số 242 Đường Tô Hiến Thành, Phường Bình Lợi Trung, TP.HCM |
-| 13 | Phường Hạnh Thông | 6.27 | Số 124 Đường Lý Thường Kiệt, Phường Hạnh Thông, TP.HCM |
-| 15 | Phường Tân Hưng | 17.92 | Số 118 Đường Đinh Tiên Hoàng, Phường Tân Hưng, TP.HCM |
-| 54 | Phường Tân Hưng | 5.47 | E39 Hoàng Quốc Việt, Phường Phú Thuận, TPHCM |
+| ID DB | Phường/xã hiện tại | Mã hành chính | Tin phòng | Trường |
+| ---: | --- | --- | ---: | ---: |
+| 16 | Phường Diên Hồng | `27169` | 1 | 1 |
+| 17 | Phường Chợ Quán | `27301` | 1 | 3 |
+| 18 | Phường Sài Gòn | `26740` | 1 | 3 |
+| 19 | Phường Bến Thành | `26743` | 1 | 2 |
+| 21 | Phường Linh Xuân | `26800` | 2 | 6 |
+| 22 | Phường Thủ Đức | `26824` | 1 | 1 |
+| 23 | Phường Xuân Hòa | `27139` | 1 | 3 |
+| 25 | Phường Thạnh Mỹ Tây | `26956` | 1 | 3 |
+| 26 | Phường Bình Lợi Trung | `26905` | 1 | 0 |
+| 27 | Phường Xóm Chiếu | `27259` | 1 | 2 |
+| 28 | Phường Hạnh Thông | `26890` | 1 | 2 |
+| 29 | Phường Chợ Lớn | `27343` | 1 | 3 |
+| 30 | Phường Tân Hưng | `27475` | 9 | 2 |
+| 31 | Phường An Khánh | `27094` | 1 | 2 |
+| 46 | Phường Tân Định | `26737` | 0 | 0 |
+| 47 | Phường Cầu Ông Lãnh | `26758` | 0 | 1 |
+| 48 | Phường Bàn Cờ | `27154` | 0 | 1 |
+| 49 | Phường Nhiêu Lộc | `27142` | 0 | 0 |
+| 50 | Phường Khánh Hội | `27265` | 0 | 0 |
+| 51 | Phường Vĩnh Hội | `27286` | 0 | 0 |
+| 52 | Phường An Đông | `27316` | 0 | 0 |
+| 53 | Phường Bình Tây | `27367` | 0 | 0 |
+| 54 | Phường Bình Tiên | `27373` | 0 | 0 |
+| 55 | Phường Bình Phú | `27364` | 0 | 0 |
+| 56 | Phường Phú Lâm | `27349` | 0 | 0 |
+| 57 | Phường Tân Thuận | `27478` | 0 | 0 |
+| 58 | Phường Phú Thuận | `27484` | 0 | 0 |
+| 59 | Phường Tân Mỹ | `27487` | 0 | 1 |
+| 60 | Phường Chánh Hưng | `27418` | 0 | 1 |
+| 61 | Phường Phú Định | `27427` | 0 | 0 |
+| 62 | Phường Bình Đông | `27424` | 0 | 0 |
+| 63 | Phường Vườn Lài | `27190` | 0 | 0 |
+| 64 | Phường Hòa Hưng | `27163` | 0 | 3 |
+| 65 | Phường Minh Phụng | `27238` | 0 | 0 |
+| 66 | Phường Bình Thới | `27232` | 0 | 0 |
+| 67 | Phường Hòa Bình | `27211` | 0 | 0 |
+| 68 | Phường Phú Thọ | `27226` | 0 | 0 |
+| 69 | Phường Đông Hưng Thuận | `26791` | 0 | 0 |
+| 70 | Phường Trung Mỹ Tây | `26785` | 0 | 1 |
+| 71 | Phường Tân Thới Hiệp | `26782` | 0 | 0 |
+| 72 | Phường Thới An | `26773` | 0 | 0 |
+| 73 | Phường An Phú Đông | `26767` | 0 | 0 |
+| 74 | Phường An Lạc | `27460` | 0 | 0 |
+| 75 | Phường Tân Tạo | `27457` | 0 | 0 |
+| 76 | Phường Bình Tân | `27442` | 0 | 0 |
+| 77 | Phường Bình Trị Đông | `27448` | 0 | 0 |
+| 78 | Phường Bình Hưng Hòa | `27439` | 0 | 0 |
+| 79 | Phường Gia Định | `26944` | 0 | 4 |
+| 80 | Phường Bình Thạnh | `26929` | 0 | 1 |
+| 81 | Phường Bình Quới | `26911` | 0 | 0 |
+| 82 | Phường An Nhơn | `26876` | 0 | 1 |
+| 83 | Phường Gò Vấp | `26884` | 0 | 1 |
+| 84 | Phường An Hội Đông | `26878` | 0 | 0 |
+| 85 | Phường Thông Tây Hội | `26898` | 0 | 0 |
+| 86 | Phường An Hội Tây | `26882` | 0 | 0 |
+| 87 | Phường Đức Nhuận | `27043` | 0 | 0 |
+| 88 | Phường Cầu Kiệu | `27058` | 0 | 0 |
+| 89 | Phường Phú Nhuận | `27073` | 0 | 1 |
+| 90 | Phường Tân Sơn Hòa | `26977` | 0 | 2 |
+| 91 | Phường Tân Sơn Nhất | `26968` | 0 | 1 |
+| 92 | Phường Tân Hòa | `26995` | 0 | 0 |
+| 93 | Phường Bảy Hiền | `26983` | 0 | 1 |
+| 94 | Phường Tân Bình | `27004` | 0 | 0 |
+| 95 | Phường Tân Sơn | `27007` | 0 | 0 |
+| 96 | Phường Tây Thạnh | `27013` | 0 | 1 |
+| 97 | Phường Tân Sơn Nhì | `27019` | 0 | 0 |
+| 98 | Phường Phú Thọ Hòa | `27022` | 0 | 0 |
+| 99 | Phường Tân Phú | `27031` | 0 | 0 |
+| 100 | Phường Phú Thạnh | `27028` | 0 | 0 |
+| 101 | Phường Hiệp Bình | `26809` | 0 | 0 |
+| 102 | Phường Tam Bình | `26803` | 0 | 0 |
+| 103 | Phường Tăng Nhơn Phú | `26842` | 0 | 4 |
+| 104 | Phường Long Bình | `26833` | 0 | 0 |
+| 105 | Phường Long Phước | `26857` | 0 | 0 |
+| 106 | Phường Long Trường | `26860` | 0 | 0 |
+| 107 | Phường Cát Lái | `27112` | 0 | 1 |
+| 108 | Phường Bình Trưng | `27097` | 0 | 0 |
+| 109 | Phường Phước Long | `26848` | 0 | 0 |
+| 110 | Xã Vĩnh Lộc | `27601` | 0 | 0 |
+| 111 | Xã Tân Vĩnh Lộc | `27604` | 0 | 0 |
+| 112 | Xã Bình Lợi | `27610` | 0 | 0 |
+| 113 | Xã Tân Nhựt | `27595` | 0 | 0 |
+| 114 | Xã Bình Chánh | `27637` | 0 | 0 |
+| 115 | Xã Hưng Long | `27628` | 0 | 0 |
+| 116 | Xã Bình Hưng | `27619` | 0 | 0 |
+| 117 | Xã Bình Khánh | `27667` | 0 | 0 |
+| 118 | Xã An Thới Đông | `27673` | 0 | 0 |
+| 119 | Xã Cần Giờ | `27664` | 0 | 0 |
+| 120 | Xã Thạnh An | `27676` | 0 | 0 |
+| 121 | Xã Củ Chi | `27553` | 0 | 0 |
+| 122 | Xã Tân An Hội | `27496` | 0 | 0 |
+| 123 | Xã Thái Mỹ | `27526` | 0 | 0 |
+| 124 | Xã An Nhơn Tây | `27508` | 0 | 0 |
+| 125 | Xã Nhuận Đức | `27511` | 0 | 0 |
+| 126 | Xã Phú Hòa Đông | `27541` | 0 | 0 |
+| 127 | Xã Bình Mỹ | `27544` | 0 | 0 |
+| 128 | Xã Đông Thạnh | `27568` | 0 | 0 |
+| 129 | Xã Hóc Môn | `27559` | 0 | 0 |
+| 130 | Xã Xuân Thới Sơn | `27577` | 0 | 0 |
+| 131 | Xã Bà Điểm | `27592` | 0 | 0 |
+| 132 | Xã Nhà Bè | `27655` | 0 | 0 |
+| 133 | Xã Hiệp Phước | `27658` | 0 | 0 |
 
-`ListingSeeder.php` lấy phường theo vòng lặp tại dòng 114, chọn trường độc lập tại dòng 123 và đặt ghim gần trường tại dòng 130–131. Cách sinh này có thể tạo địa chỉ/phường và ghim lệch nhau. Khi chuẩn bị dữ liệu demo cần chọn phường, địa chỉ và điểm ghim nhất quán. [Code seeder](../../apps/api/database/seeders/ListingSeeder.php)
+Danh sách thiếu `missing_target_units` trong JSON hiện là mảng rỗng.
 
-### Các địa chỉ cần kiểm tra riêng
+## Trường và cơ sở được phép ngoài bộ 102
 
-| ID tin | Phường đang gắn | Đích theo thông tin địa chỉ | Bằng chứng và việc cần xác nhận |
-| --- | --- | --- | --- |
-| 51 | Phường Tân Hưng | Phường Tân Thuận | Địa chỉ hiện ghi Tân Thuận, khác ward_id đang gắn Tân Hưng. Cần xác nhận địa chỉ/ghim thực tế. |
-| 52 | Phường Tân Hưng | Phường Phú Thuận | Địa chỉ hiện ghi Phú Thuận, khác ward_id đang gắn Tân Hưng. Đối chiếu khoản 19. |
-| 53 | Phường Tân Phong | Phường Tân Hưng | Địa chỉ ghi khu vực Tân Quy. Khoản 21 đưa Tân Quy vào Tân Hưng. Cần xác nhận vị trí phòng. |
-| 54 | Phường Tân Hưng | Phường Phú Thuận | Địa chỉ ghi Phú Thuận, khác ward_id đang gắn Tân Hưng. Đối chiếu khoản 19. |
-| 55 | Phường Tân Hưng | Xã Nhà Bè | Địa chỉ ghi xã Phước Kiển cũ. Khoản 134 đưa Phước Kiển vào xã Nhà Bè. Cần xác nhận vị trí phòng. |
-| 61 | Phường Tân Hưng | Phường Tân Thuận / Phường Tân Hưng | Địa chỉ 350 Huỳnh Tấn Phát ghi Tân Hưng, còn tin 51 cùng số nhà/đường ghi Tân Thuận và hai ghim rất gần nhau. Cần xác minh địa chỉ thực tế. |
+Danh mục [61 cơ sở chính](../../apps/api/database/data/hcm-schools-main-campuses.json) đã được đối chiếu theo tên, tọa độ và liên kết phường. Có 59 trường gắn phường/xã đúng theo file nguồn; hai trường sau được giữ làm mốc khoảng cách:
 
-Các đích theo địa chỉ là ứng viên rà soát. Tin 61 cùng số nhà và đường với tin 51 nhưng ghi khác phường, cần xác minh điểm thực tế trước khi chọn đích.
+| ID DB | Trường | Cơ sở | Địa chỉ nguồn | Liên kết phường |
+| ---: | --- | --- | --- | --- |
+| 24 | ĐH Quốc tế | Cơ sở | khu phố 6, Đông Hòa, TP.HCM | `null` theo chủ đích |
+| 61 | ĐH Khoa học Sức khỏe | Cơ sở | Tòa nhà hành chính YA1, Đ. Hải Thượng Lãn Ông, Khu Đô thị ĐHQG-HCM, Đông Hòa, Hồ Chí Minh, Việt Nam | `null` theo chủ đích |
 
-## Trường và liên kết hồ sơ
+Không nhập phường Đông Hòa vào bộ 102 để phục vụ hai cơ sở này. Chi tiết cả 101 bản ghi trường hiện có trong DB, gồm số hồ sơ tham chiếu từng trường, nằm ở `school_assessments` trong JSON.
 
-Bảng sau thể hiện đích suy ra từ `schools.ward_id` hiện tại. Cần đối chiếu địa chỉ từng cơ sở học, đặc biệt khi một trường có nhiều cơ sở.
+## Database đang dùng và bộ seed mới là hai hiện trạng khác nhau
 
-| ID trường | Tên trong DB | ID phường DB | Đích theo phường đang gắn | Hồ sơ liên kết |
-| --- | --- | ---: | --- | ---: |
-| 21 | ĐH Bách Khoa - ĐHQG TP.HCM (HCMUT) | 16 | Phường Diên Hồng | 0 |
-| 22 | ĐH Khoa học Tự nhiên - ĐHQG TP.HCM (HCMUS) | 17 | Phường Chợ Quán | 0 |
-| 23 | ĐH KHXH&NV - ĐHQG TP.HCM (USSH HCM) | 18 | Phường Sài Gòn | 0 |
-| 24 | ĐH Quốc tế - ĐHQG TP.HCM (HCMIU) | 20 | Phường Linh Xuân | 0 |
-| 25 | ĐH Công nghệ Thông tin - ĐHQG TP.HCM (UIT) | 20 | Phường Linh Xuân | 0 |
-| 26 | ĐH Kinh tế - Luật - ĐHQG TP.HCM (UEL) | 21 | Phường Linh Xuân | 0 |
-| 27 | ĐH Kinh tế TP.HCM (UEH) | 23 | Phường Xuân Hòa | 0 |
-| 28 | ĐH Tôn Đức Thắng (TDTU) | 24 | Phường Tân Hưng | 1 |
-| 29 | ĐH Sư phạm Kỹ thuật TP.HCM (HCMUTE) | 22 | Phường Thủ Đức | 0 |
-| 30 | ĐH Công nghệ TP.HCM (HUTECH) | 25 | Phường Thạnh Mỹ Tây | 0 |
-| 31 | ĐH Sư phạm TP.HCM (HCMUE) | 17 | Phường Chợ Quán | 0 |
-| 32 | ĐH Y Dược TP.HCM (UMP) | 29 | Phường Chợ Lớn | 0 |
-| 33 | ĐH Luật TP.HCM (HCMULAW) | 27 | Phường Xóm Chiếu | 0 |
-| 34 | ĐH Ngân hàng TP.HCM (HUB) | 19 | Phường Bến Thành | 0 |
-| 35 | ĐH Nông Lâm TP.HCM (NLU) | 20 | Phường Linh Xuân | 0 |
-| 36 | ĐH Văn Lang (VLU) | 26 | Phường Bình Lợi Trung | 0 |
-| 37 | ĐH RMIT Việt Nam (RMIT) | 24 | Phường Tân Hưng | 0 |
-| 38 | ĐH Sài Gòn (SGU) | 17 | Phường Chợ Quán | 0 |
-| 39 | ĐH Công nghiệp TP.HCM (IUH) | 28 | Phường Hạnh Thông | 0 |
-| 40 | ĐH Mở TP.HCM (HCMCOU) | 23 | Phường Xuân Hòa | 0 |
-
-## Dữ liệu ngoài phạm vi
-
-| Thành phố | Phường/xã | Tin phòng | Trường | Hồ sơ tham chiếu trường |
+| Thành phố ngoài phạm vi | Phường/xã còn trong DB | Tin phòng | Trường | Hồ sơ tham chiếu trường |
 | --- | ---: | ---: | ---: | ---: |
 | Hà Nội | 15 | 16 | 20 | 9 |
 | Đà Nẵng | 13 | 15 | 20 | 0 |
 
-Các ID và số liên kết từng bản ghi được ghi trong file JSON. Đối với 9 hồ sơ đang tham chiếu trường ngoài phạm vi, cần lựa chọn trường đúng theo thông tin người dùng khi chuyển phạm vi hoạt động.
+Dữ liệu Hà Nội/Đà Nẵng đang được giữ nguyên trong database hiện hữu. Không được hiểu việc dọn seeder là đã xóa các bản ghi này. Giới hạn hoạt động dùng [ServiceArea.php](../../apps/api/app/Shared/Support/ServiceArea.php); lượt này không chạy lại các luồng UI/API.
 
-## Tác động xóa dữ liệu đã kiểm tra trong PostgreSQL
+Bộ seed trong code hiện chỉ tạo **1 thành phố, 102 phường/xã, 61 trường, 16 phòng minh họa và 13 tài khoản** khi khởi tạo database trống. [DatabaseSeeder.php](../../apps/api/database/seeders/DatabaseSeeder.php) bỏ qua bộ demo nếu đã có thành phố. Không chạy `migrate:fresh` để làm cho số lượng DB hiện hữu giống bộ seed mới.
 
-- Xóa phường/xã sẽ xóa các tin phòng tham chiếu do `listings.ward_id` dùng `ON DELETE CASCADE`.
-- Khi tin phòng bị xóa, các liên kết tiện ích, bản ghi ảnh, đánh giá, yêu thích và liên kết lịch sử phòng trong hội thoại bị xóa theo.
-- Trường đang tham chiếu phường bị xóa sẽ có `ward_id = NULL`.
-- Xóa trường sẽ đặt `school_id = NULL` cho các hồ sơ đang tham chiếu.
-- Hội thoại đang tham chiếu tin bị xóa sẽ có `listing_id = NULL`.
+## Phòng minh họa và phần còn cần xác minh
 
-Các tác động trên được đọc từ khóa ngoại của database đang chạy. Trước khi loại dữ liệu cần sao lưu và chuẩn bị cách xử lý các liên kết.
+Theo xác nhận của người dùng, các phòng đang dùng là dữ liệu minh họa giao diện. Lượt này chỉ cập nhật liên kết và trạng thái của 54 tin trong `listing_assessments`, không gán lại phường dựa trên địa chỉ/ghim.
 
-## 92 đơn vị chưa khớp tên hiện tại
+Các bảng khoảng cách >5 km và đích suy ra từ địa chỉ trong báo cáo cũ không được coi là kết quả hiện tại hoặc đã giải quyết. Trường `distance_to_current_ward_reference_km` được để `null` vì không tính lại ở lượt này. [ListingSeeder.php](../../apps/api/database/seeders/ListingSeeder.php) vẫn sinh địa chỉ và tọa độ minh họa, chưa xác nhận vị trí thực tế.
 
-- **Quận 1** — Phường Sài Gòn, Phường Tân Định, Phường Cầu Ông Lãnh.
-- **Quận 3** — Phường Bàn Cờ, Phường Xuân Hòa, Phường Nhiêu Lộc.
-- **Quận 4** — Phường Khánh Hội, Phường Vĩnh Hội.
-- **Quận 5** — Phường An Đông.
-- **Quận 6** — Phường Bình Tây, Phường Bình Tiên, Phường Bình Phú, Phường Phú Lâm.
-- **Quận 7** — Phường Tân Thuận, Phường Phú Thuận, Phường Tân Mỹ.
-- **Quận 8** — Phường Chánh Hưng, Phường Phú Định, Phường Bình Đông.
-- **Quận 10** — Phường Vườn Lài, Phường Hòa Hưng.
-- **Quận 11** — Phường Minh Phụng, Phường Bình Thới, Phường Hòa Bình, Phường Phú Thọ.
-- **Quận 12** — Phường Đông Hưng Thuận, Phường Trung Mỹ Tây, Phường Tân Thới Hiệp, Phường Thới An, Phường An Phú Đông.
-- **Quận Bình Tân** — Phường An Lạc, Phường Tân Tạo, Phường Bình Tân, Phường Bình Trị Đông, Phường Bình Hưng Hòa.
-- **Quận Bình Thạnh** — Phường Gia Định, Phường Bình Thạnh, Phường Bình Quới.
-- **Quận Gò Vấp** — Phường An Nhơn, Phường Gò Vấp, Phường An Hội Đông, Phường Thông Tây Hội, Phường An Hội Tây.
-- **Quận Phú Nhuận** — Phường Đức Nhuận, Phường Cầu Kiệu, Phường Phú Nhuận.
-- **Quận Tân Bình** — Phường Tân Sơn Hòa, Phường Tân Sơn Nhất, Phường Tân Hòa, Phường Bảy Hiền, Phường Tân Bình, Phường Tân Sơn.
-- **Quận Tân Phú** — Phường Tây Thạnh, Phường Tân Sơn Nhì, Phường Phú Thọ Hòa, Phường Tân Phú, Phường Phú Thạnh.
-- **TP. Thủ Đức** — Phường Hiệp Bình, Phường Thủ Đức, Phường Tam Bình, Phường Tăng Nhơn Phú, Phường Long Bình, Phường Long Phước, Phường Long Trường, Phường Cát Lái, Phường Bình Trưng, Phường Phước Long, Phường An Khánh.
-- **Huyện Bình Chánh** — Xã Vĩnh Lộc, Xã Tân Vĩnh Lộc, Xã Bình Lợi, Xã Tân Nhựt, Xã Bình Chánh, Xã Hưng Long, Xã Bình Hưng.
-- **Huyện Cần Giờ** — Xã Bình Khánh, Xã An Thới Đông, Xã Cần Giờ, Xã Thạnh An.
-- **Huyện Củ Chi** — Xã Củ Chi, Xã Tân An Hội, Xã Thái Mỹ, Xã An Nhơn Tây, Xã Nhuận Đức, Xã Phú Hòa Đông, Xã Bình Mỹ.
-- **Huyện Hóc Môn** — Xã Đông Thạnh, Xã Hóc Môn, Xã Xuân Thới Sơn, Xã Bà Điểm.
-- **Huyện Nhà Bè** — Xã Nhà Bè, Xã Hiệp Phước.
+Những điểm còn thiếu bằng chứng:
 
-## Đối chiếu tiếp tọa độ Bình Mỹ
+- 101 điểm tọa độ phường/xã từ bộ nguồn chưa được kiểm chứng độc lập; Hiệp Phước dùng tọa độ do người dùng cung cấp.
+- Điểm Bình Mỹ `10.66, 106.77` vẫn được giữ trong `coordinate_followup` với trạng thái chờ xác minh từ báo cáo trước; lượt này chưa thay điểm đó.
+- Tọa độ cơ sở trường đã khớp dữ liệu người dùng, chưa tra cứu lại độc lập từng ghim.
+- Bộ nguồn chưa có đa giác ranh giới; không thể dùng việc khớp tên hoặc khoảng cách tới điểm phường để kết luận một tọa độ thuộc phường đó.
 
-Danh bạ Công an TP.HCM công bố địa chỉ Công an xã Bình Mỹ tại 76 Hà Duy Phiên, ấp 6, xã Bình Mỹ. Có thể dùng địa chỉ này làm một mốc đối chiếu vị trí. Tọa độ tham chiếu cho toàn xã vẫn cần xác minh và ghi rõ cách chọn điểm. [Danh bạ chính thức](https://congan.hochiminhcity.gov.vn/wps/portal/Home/trang-chu/noi-dung-chi-tiet/danh%2Bba)
+## Việc còn lại
 
-Điểm `10.66, 106.77` trong bộ nguồn tiếp tục được đánh dấu cần kiểm tra. Lượt này chưa xác định điểm thay thế đủ căn cứ.
+1. Khi chuẩn bị demo AI, chọn lại trường trong danh mục TP.HCM cho các hồ sơ mẫu đang dùng trường ngoài phạm vi; báo cáo này không tự sửa 9 hồ sơ.
+2. Chỉ xử lý/xóa dữ liệu ngoài phạm vi trong DB bằng một tác vụ riêng sau khi có yêu cầu và sao lưu. Các khóa ngoại hiện tại, gồm `listings.ward_id` xóa dây chuyền, đã được đọc lại ở `deletion_effects_observed` trong JSON.
+3. Kiểm chứng tọa độ phường/xã trước khi dùng làm dữ liệu vị trí chính thức. Chưa cần rà lại địa chỉ thực tế của từng phòng mẫu nếu nhóm chỉ dùng chúng để thử giao diện.
 
-## Cách chuẩn bị bước cập nhật tiếp theo
-
-1. Xác nhận địa chỉ/ghim của các tin đã được đánh dấu và cơ sở trường đang dùng.
-2. Lập đích cuối cùng cho từng tin và trường, ưu tiên giữ ID của tin, trường và các liên kết hồ sơ.
-3. Lưu mã đơn vị tham chiếu riêng khi bổ sung bộ 102 đơn vị. Bảng `wards` hiện có ID nội bộ và các cột tên, tọa độ, thành phố.
-4. Sau khi sao lưu, cập nhật/hợp nhất phường và chuyển các khóa tham chiếu trong giao dịch. Các tên trùng như Linh Xuân và Tân Hưng cần hợp nhất về một bản ghi đích.
-5. Kiểm tra lại số tin, trường và hồ sơ, rồi xử lý các dữ liệu ngoài phạm vi đã chọn.
-6. Đồng bộ seeder, backend, giao diện và AI với bộ dữ liệu đã xác nhận.
-
-## Giới hạn của lượt đối chiếu
-
-- Đã rà toàn bộ 45 phường/xã, 60 trường và 54 tin phòng qua dữ liệu đọc. Liên kết hồ sơ được tổng hợp theo trường.
-- Quan hệ tên cũ → mới dùng nghị quyết và bộ 102 đơn vị. Tên trùng mới chỉ xác nhận sự khớp tên.
-- 101 tọa độ trong bộ nguồn còn cần kiểm chứng. Tọa độ Hiệp Phước dùng theo thông tin người dùng.
-- Việc xác định phường thực tế của từng phòng và cơ sở trường còn cần địa chỉ chính xác hoặc ranh giới.
-- Bảng này là kết quả rà soát tại thời điểm đọc. Khi dữ liệu phòng, trường hoặc hồ sơ thay đổi, số lượng liên kết cần được kiểm tra lại.
+Báo cáo phản ánh snapshot nêu ở đầu file. Khi database hoặc hai JSON nguồn thay đổi, cần đối chiếu lại số lượng và các liên kết.

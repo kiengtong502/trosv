@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Modules\Auth\Models\User;
 use App\Modules\Reference\Models\School;
+use App\Shared\Support\ServiceArea;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,14 +23,14 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'role' => User::ROLE_LANDLORD,
                 'phone' => '090'.str_pad((string) ($i + 1), 7, '0', STR_PAD_LEFT),
-                'bio' => 'Chủ nhà cho thuê nhà trọ dành cho sinh viên trên toàn quốc.',
+                'bio' => 'Chủ nhà cho thuê nhà trọ dành cho sinh viên tại TP.HCM.',
             ]);
         }
 
         // 10 students with complete profiles.
         // Resolve school ids dynamically: PostgreSQL sequences do not roll back,
         // so hardcoded ids would break when seeds run after a rollback (tests).
-        $schoolIds = School::orderBy('id')->pluck('id')->all();
+        $schoolIds = School::whereIn('id', ServiceArea::schoolIds())->orderBy('id')->pluck('id')->all();
         $sleepSchedules = [User::SLEEP_EARLY, User::SLEEP_NORMAL, User::SLEEP_LATE];
         $personalities = [User::PERSONALITY_INTROVERT, User::PERSONALITY_AMBIVERT, User::PERSONALITY_EXTROVERT];
         $interestPool = [

@@ -20,19 +20,16 @@ export function DistanceBadge({ distanceKm, className }: DistanceBadgeProps) {
   const kmFormatted = new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 }).format(
     distanceKm,
   );
-  const minutes = Math.max(1, Math.round(distanceKm * 3));
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded bg-plate px-1.5 py-0.5 text-xs font-medium text-white",
         className,
       )}
-      title={`${kmFormatted} km tới trường (~${minutes} phút xe máy)`}
+      title={`${kmFormatted} km tới trường theo đường chim bay`}
     >
       <Navigation className="size-3" aria-hidden />
-      <span>
-        {kmFormatted} km · ~{minutes}p xe
-      </span>
+      <span>{kmFormatted} km · chim bay</span>
     </span>
   );
 }

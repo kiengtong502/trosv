@@ -2,6 +2,8 @@
 
 namespace App\Modules\Ai\Http\Requests;
 
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +31,7 @@ class AiChatRequest extends FormRequest
             // resource exhaustion (audit run 2). Gioi han 10.000 ky tu lon
             // hon bat ky lich su chat hop le nao (message gioi han 1000).
             'history.*.content' => ['required', 'string', 'max:10000'],
-            'listing_id' => ['sometimes', 'nullable', 'integer', 'exists:listings,id'],
+            'listing_id' => ['sometimes', 'nullable', 'integer', Rule::exists('listings', 'id')->where(fn (Builder $query) => $query->whereIn('ward_id', ServiceArea::wardIds()))],
         ];
     }
 

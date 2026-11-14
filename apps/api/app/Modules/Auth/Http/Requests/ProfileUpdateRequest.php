@@ -3,6 +3,8 @@
 namespace App\Modules\Auth\Http\Requests;
 
 use App\Modules\Auth\Models\User;
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +33,7 @@ class ProfileUpdateRequest extends FormRequest
 
         $user = $this->user();
         if ($user instanceof User && $user->role === User::ROLE_STUDENT) {
-            $rules['school_id'] = ['sometimes', 'nullable', 'integer', 'exists:schools,id'];
+            $rules['school_id'] = ['sometimes', 'nullable', 'integer', Rule::exists('schools', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::schoolIds()))];
             $rules['budget_min'] = ['sometimes', 'nullable', 'integer', 'min:0', 'max:2100000000'];
             $rules['budget_max'] = ['sometimes', 'nullable', 'integer', 'min:0', 'max:2100000000'];
             $rules['sleep_schedule'] = ['sometimes', 'nullable', Rule::in([

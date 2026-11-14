@@ -7,37 +7,15 @@ export const SELECT_FIELD_CLASS =
 
 const LABEL_CLASS = "flex flex-col gap-1 text-xs font-medium text-ink-2";
 
-/** Province/city and ward selects; the ward list follows the chosen city. */
-export function LocationSelects({
-  idPrefix,
-  search,
-  cityAllLabel = "Tất cả",
-}: {
-  idPrefix: string;
-  search: SearchState;
-  cityAllLabel?: string;
-}) {
+/** Fixed service city and optional ward filter. */
+export function LocationSelects({ idPrefix, search }: { idPrefix: string; search: SearchState }) {
   const { city_id: cityId, ward_id: wardId } = search.filters;
   return (
     <>
       <div>
         <label htmlFor={`${idPrefix}-city`} className={LABEL_CLASS}>
           Tỉnh / Thành phố
-          <select
-            id={`${idPrefix}-city`}
-            value={cityId}
-            onChange={(e) => {
-              search.setCity(e.target.value);
-            }}
-            className={SELECT_FIELD_CLASS}
-          >
-            <option value="">{cityAllLabel}</option>
-            {search.cities.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <input id={`${idPrefix}-city`} value="TP.HCM" readOnly className={SELECT_FIELD_CLASS} />
         </label>
       </div>
 

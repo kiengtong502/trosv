@@ -25,7 +25,10 @@ export default function Search() {
     setMobileTab((t) => (t === "list" ? "map" : "list"));
   };
 
-  const chips = useMemo(() => buildFilterChips(search.filters, search, search), [search]);
+  const chips = useMemo(
+    () => buildFilterChips(search.filters, search, search).filter((chip) => chip.key !== "city_id"),
+    [search],
+  );
   const onHover = useCallback((id: number | null) => {
     setHoveredListing(id);
   }, []);
@@ -108,6 +111,8 @@ export default function Search() {
             }
           >
             <ListingMap
+              school={search.selectedSchool}
+              radiusKm={Number(search.filters.max_km)}
               listings={search.mapListings.length > 0 ? search.mapListings : search.listings}
               selectedId={hoveredListing}
               onSelect={(id) => {

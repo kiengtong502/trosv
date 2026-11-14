@@ -14,8 +14,10 @@ class WardFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Phường '.fake()->unique()->city(),
-            'city_id' => City::factory(),
+            'name' => fake()->randomElement(['Phường Tân Hưng', 'Phường Sài Gòn', 'Phường Chợ Quán', 'Phường Diên Hồng']),
+            'city_id' => fn () => City::firstOrCreate(['name' => 'TP.HCM'], [
+                'type' => City::TYPE_CITY, 'latitude' => 10.7769, 'longitude' => 106.7009,
+            ])->id,
             'latitude' => fake()->latitude(8.20, 23.40),
             'longitude' => fake()->longitude(102.10, 109.50),
         ];

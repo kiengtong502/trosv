@@ -12,7 +12,7 @@ export const RADIUS_OPTIONS = [
 
 const LABEL_CLASS = "flex flex-col gap-1 text-xs font-medium text-ink-2";
 
-/** "Gần trường": city, ward, then the schools in that ward, then a radius. */
+/** "Gần trường": city, optional ward, school, then a radius. */
 export function NearSchoolPill({ search }: { search: SearchState }) {
   const { city_id: cityId, ward_id: wardId, school_id: schoolId, max_km: maxKm } = search.filters;
   const schools = schoolsFor(search.schools, { cityId, wardId });
@@ -27,7 +27,7 @@ export function NearSchoolPill({ search }: { search: SearchState }) {
       }}
     >
       <div className="flex flex-col gap-3 min-w-[250px]">
-        <LocationSelects idPrefix="near-school" search={search} cityAllLabel="Tất cả tỉnh thành" />
+        <LocationSelects idPrefix="near-school" search={search} />
 
         <div>
           <label htmlFor="filter-school" className={LABEL_CLASS}>
@@ -38,7 +38,7 @@ export function NearSchoolPill({ search }: { search: SearchState }) {
               onChange={(e) => {
                 search.setFilter("school_id", e.target.value);
               }}
-              disabled={wardId === ""}
+              disabled={cityId === ""}
               className={SELECT_FIELD_CLASS}
             >
               <option value="">{schoolPlaceholder(cityId, wardId)}</option>

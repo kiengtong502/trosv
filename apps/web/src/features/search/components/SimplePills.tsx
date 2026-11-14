@@ -11,13 +11,13 @@ export function AreaPill({ search }: { search: SearchState }) {
   return (
     <FilterPill
       label="Bộ lọc"
-      active={search.filters.city_id !== "" || search.filters.ward_id !== ""}
+      active={search.filters.ward_id !== ""}
       onClear={() => {
         search.setCity("");
       }}
     >
       <div className="flex flex-col gap-3 min-w-[240px]">
-        <LocationSelects idPrefix="filter" search={search} cityAllLabel="Tất cả" />
+        <LocationSelects idPrefix="filter" search={search} />
         <button
           type="button"
           onClick={search.resetFilters}

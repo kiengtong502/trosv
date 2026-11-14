@@ -61,10 +61,12 @@ export function useListingForm(id: number | undefined, toast: ToastLike) {
   const { data: cities } = useCities();
   const { data: amenities } = useAmenities();
   const [values, setForm] = useState<ListingFormState>({ ...EMPTY_FORM });
+  const cityId = cities[0]?.id ?? values.city_id;
   const selectedWard = wards.find((ward) => String(ward.id) === String(values.ward_id));
-  const selectedCity = cities.find((city) => String(city.id) === String(values.city_id));
+  const selectedCity = cities.find((city) => String(city.id) === String(cityId));
   const form = {
     ...values,
+    city_id: cityId,
     address: listingAddress(values.street_address, selectedWard, selectedCity),
   };
   const [errors, setErrors] = useState<Record<string, string[]>>({});

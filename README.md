@@ -5,12 +5,20 @@ lọc theo trường và phường, nhắn tin trực tiếp với chủ trọ, 
 đánh giá, và các gợi ý AI (bạn cùng phòng, tư vấn giá, gợi ý khu vực,
 trợ lý chat).
 
+## Phạm vi hoạt động
+
+Tin đăng chỉ phục vụ 102 phường/xã theo tên mới trên địa bàn TP.HCM trước sáp nhập tỉnh năm 2025. Danh mục trường gồm 61 cơ sở chính, giữ ĐH Quốc tế và ĐH Khoa học Sức khỏe tại Đông Hòa làm mốc tính khoảng cách.
+
+API và form đăng/sửa tin kiểm tra phường/xã theo `apps/api/database/data/hcm-wards-102.json`. Phạm vi này dựa vào phường/xã được chọn, chưa kiểm tra tọa độ thuộc đa giác địa giới. Dữ liệu tỉnh khác đang có trong database được giữ lại nhưng không xuất hiện trong danh mục và tìm phòng. Hồ sơ cũ chọn trường ngoài TP.HCM cần chọn lại trường để dùng gợi ý khu vực hoặc tìm bạn cùng phòng.
+
+Khởi tạo database mới bằng seeder chỉ tạo dữ liệu TP.HCM: 1 thành phố, 102 phường/xã, 61 trường, 16 tin minh họa và 13 tài khoản demo. Việc dọn seeder không xóa dữ liệu Hà Nội/Đà Nẵng trong database đã có.
+
 ## Tính năng
 
 | Tính năng | Ghi chú |
 |---|---|
 | Duyệt và lọc phòng | Từ khóa, loại tin, giá, khu vực (tỉnh/TP → phường), gần trường (bán kính km), tiện ích, sắp xếp |
-| Bản đồ | Leaflet, điểm tin đăng + trường, lọc theo bán kính |
+| Bản đồ | Leaflet, điểm tin đăng và trường được chọn, popup cơ sở/địa chỉ, vòng bán kính theo đường chim bay |
 | Tài khoản | Sinh viên / chủ nhà, hồ sơ sở thích và lối sống |
 | Nhắn tin | Chat realtime (WebSocket), gửi tệp đính kèm, đánh dấu đã đọc |
 | Đánh giá | Chỉ sinh viên đã nhắn tin với chủ nhà mới được đánh giá |

@@ -377,6 +377,8 @@ def test_chat_system_prompt_requires_legal_disclaimer(llm):
     calls = llm(chat, dumps({"reply": "ok"}))
     chat.chat_with_gemini("hi", [])
     instruction = calls[0].config.system_instruction
+    assert "102 phường/xã" in instruction
+    assert "Đông Hòa chỉ là mốc tìm phòng" in instruction
     assert "không thay thế tư vấn pháp lý" in instruction
     assert "Luôn trả lời bằng tiếng Việt" in instruction
     assert calls[0].config.response_schema is chat.ChatResponseSchema

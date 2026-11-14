@@ -115,7 +115,7 @@ rồi lọc phường/xã và trường theo `city_id`.
 |---|---|---|
 | `GET /cities` | Công khai | `data: [{ id, name, type: "city\|"province", latitude, longitude }]` (xếp theo tên A-Z, được cache tăng tốc) |
 | `GET /wards?city_id=` | Công khai | `data: [{ id, name, city: { id, name, type }, latitude, longitude }]` |
-| `GET /schools?city_id=` | Công khai | `data: [{ id, name, city: { id, name, type }, ward: { id, name } \| null, latitude, longitude }]` - `ward` la phuong chua truong, dung `ward.id` de goi `GET /listings?ward_id=` |
+| `GET /schools?city_id=` | Công khai | `data: [{ id, name, campus_name, address, city: { id, name, type }, ward: { id, name } \| null, latitude, longitude }]` - `ward` la phuong chua truong, dung `ward.id` de goi `GET /listings?ward_id=` | `campus_name` và `address` lấy từ danh mục cơ sở, có thể `null` nếu chưa có thông tin.
 | `GET /amenities` | Công khai | `data: [{ id, name }]` (được cache tăng tốc) |
 
 ### Duyệt tin đăng
@@ -125,6 +125,8 @@ rồi lọc phường/xã và trường theo `city_id`.
 | `GET /listings` | Công khai | `q` (tiêu đề hoặc địa chỉ), `price_min`, `price_max`, `city_id` (qua ward của tin), `ward_id`, `type`, `amenity_ids[]` (phải có tất cả), `school_id` + `max_km` (lọc theo khoảng cách), `sort` = `newest` (mặc định), `price_asc`, `price_desc`, `distance` (cần `school_id`), `rating`, `page`, `per_page` | `Listing (tóm tắt)` có phân trang. Chỉ tin `available`. Sắp xếp `rating` tối ưu hóa đánh giá tốt nhất lên trước, tin chưa đánh giá xuống cuối |
 | `GET /listings/{id}` | Công khai | | `data: Listing (chi tiết)`. Tin `hidden`: trả 404 trừ chủ tin |
 | `GET /listings/{id}/reviews` | Công khai | `page` | `Review` có phân trang, mới nhất trước |
+
+Bản đồ hiển thị riêng trường được chọn, cho bấm xem cơ sở và địa chỉ. Khi có `max_km`, vòng tròn quanh trường biểu diễn bán kính theo đường chim bay. Trường vẫn hiện khi không có phòng phù hợp; xóa lựa chọn trường sẽ bỏ dấu trường và vòng tròn.
 
 Với bản đồ, Frontend gọi `GET /listings` với cùng bộ lọc và `per_page=50`, rồi vẽ các điểm theo `latitude`, `longitude` của kết quả.
 

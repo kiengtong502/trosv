@@ -54,6 +54,8 @@ Mật khẩu mặc định cho tất cả tài khoản: `password`
 
 ---
 
+Bộ dữ liệu khởi tạo mới chỉ phục vụ TP.HCM: 102 phường/xã, 61 trường (gồm hai cơ sở Đông Hòa làm mốc khoảng cách), 16 tin minh họa, 3 chủ nhà và 10 sinh viên. Database đã có dữ liệu không tự thay đổi theo seeder mới.
+
 ## 3. Dừng hệ thống
 
 - Dừng container và giữ lại dữ liệu:

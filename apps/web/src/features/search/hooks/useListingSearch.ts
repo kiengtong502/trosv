@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getListings } from "@/features/listings/api/listingApi";
 import {
@@ -36,7 +36,13 @@ export function useListingSearch() {
   const { data: schools } = useSchools();
   const { data: amenities } = useAmenities();
 
-  const [filters, setFilters] = useState<ListingFilters>(() => filtersFromParams(searchParams));
+  const [storedFilters, setFilters] = useState<ListingFilters>(() =>
+    filtersFromParams(searchParams),
+  );
+  const filters = useMemo(
+    () => ({ ...storedFilters, city_id: String(cities[0]?.id ?? "") }),
+    [storedFilters, cities],
+  );
   const [page, setPage] = useState(1);
   const [listings, setListings] = useState<Listing[]>([]);
   const [mapListings, setMapListings] = useState<Listing[]>([]);
@@ -130,6 +136,7 @@ export function useListingSearch() {
     cities,
     wards,
     schools,
+    selectedSchool: schools.find((school) => String(school.id) === filters.school_id) ?? null,
     amenities,
     // search state
     filters,

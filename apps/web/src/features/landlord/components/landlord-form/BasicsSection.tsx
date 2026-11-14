@@ -54,22 +54,7 @@ export function BasicsSection({ form: f }: { form: ListingFormApi }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field id="lf-city" label="Tỉnh/thành phố" error={err("city_id")} required>
-          <select
-            id="lf-city"
-            required
-            value={cityId}
-            onChange={(e) => {
-              f.changeCity(e.target.value);
-            }}
-            className={SELECT}
-          >
-            <option value="">Chọn tỉnh/thành phố</option>
-            {f.cities.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <Input id="lf-city" value="TP.HCM" readOnly className="bg-tint text-ink-2" />
         </Field>
         <Field id="lf-ward" label="Phường/xã" error={err("ward_id")} required>
           <select

@@ -5,6 +5,7 @@ namespace Tests\Feature\Ai;
 use App\Modules\Auth\Models\User;
 use App\Modules\Listing\Models\Listing;
 use App\Modules\Reference\Models\Amenity;
+use App\Modules\Reference\Models\City;
 use App\Modules\Reference\Models\School;
 use App\Modules\Reference\Models\Ward;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -162,7 +163,9 @@ class AiProxyTest extends TestCase
         $this->completeProfile($this->student);
         $localSchool = School::factory()->create(['city_id' => $this->student->school->city_id]);
         $local = $this->completeProfile(User::factory()->create(), ['school_id' => $localSchool->id]);
-        $remote = $this->completeProfile(User::factory()->create(), ['school_id' => School::factory()->create()->id]);
+        $remote = $this->completeProfile(User::factory()->create(), ['school_id' => School::factory()->create([
+            'city_id' => City::factory()->create(['name' => 'Hà Nội'])->id,
+        ])->id]);
         Http::fake(['*/roommates' => Http::response(['results' => [
             ['id' => $local->id, 'score' => 80, 'reason' => 'Cùng thành phố.'],
             ['id' => $remote->id, 'score' => 99, 'reason' => 'Khác thành phố.'],
@@ -356,7 +359,9 @@ class AiProxyTest extends TestCase
 
         $near = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.87, 'longitude' => 106.78]);
         $far = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.75, 'longitude' => 106.66]);
-        $otherCity = Ward::factory()->create();
+        $otherCity = Ward::factory()->create([
+            'city_id' => City::factory()->create(['name' => 'Hà Nội'])->id,
+        ]);
         Listing::factory()->create(['ward_id' => $otherCity->id, 'price' => 2_000_000, 'status' => 'available']);
 
         $amenity = Amenity::factory()->create();

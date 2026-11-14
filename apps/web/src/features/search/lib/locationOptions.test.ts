@@ -56,6 +56,12 @@ describe("schoolsFor", () => {
   it("a ward that no school belongs to gives an empty list", () => {
     expect(schoolsFor(schools, { cityId: "", wardId: "99" })).toEqual([]);
   });
+
+  it("includes schools without a mapped ward when choosing by city", () => {
+    const school = { id: 5, name: "ĐH Quốc tế", city_id: 20, ward: null };
+    expect(schoolsFor([school], { cityId: "20", wardId: "" })).toEqual([school]);
+    expect(schoolsFor([school], { cityId: "20", wardId: "2" })).toEqual([]);
+  });
 });
 
 describe("placeholders", () => {
@@ -63,7 +69,7 @@ describe("placeholders", () => {
     expect(wardPlaceholder("")).toBe("Chọn Tỉnh/TP trước");
     expect(wardPlaceholder("10")).toBe("Tất cả phường");
     expect(schoolPlaceholder("", "")).toBe("Chọn Tỉnh/TP trước");
-    expect(schoolPlaceholder("10", "")).toBe("Chọn Phường trước");
+    expect(schoolPlaceholder("10", "")).toBe("Chọn trường trong tỉnh/thành phố");
     expect(schoolPlaceholder("10", "1")).toBe("Chọn trường trong phường này");
   });
 });

@@ -3,6 +3,8 @@
 namespace App\Modules\Ai\Services;
 
 use App\Modules\Auth\Models\User;
+use App\Modules\Reference\Models\School;
+use App\Shared\Support\ServiceArea;
 use Illuminate\Validation\ValidationException;
 
 class RoommateMatcher
@@ -27,9 +29,9 @@ class RoommateMatcher
 
         $me->load('school:id,name,city_id');
         $cityId = $me->school?->city_id;
-        if ($cityId === null) {
+        if ($cityId === null || ! School::whereIn('id', ServiceArea::schoolIds())->whereKey($me->school_id)->exists()) {
             throw ValidationException::withMessages([
-                'school_id' => ['Trường trong hồ sơ chưa có tỉnh/thành phố. Hãy chọn trường có thông tin khu vực.'],
+                'school_id' => ['Hãy chọn trường thuộc danh mục TP.HCM trong hồ sơ để tìm bạn cùng phòng.'],
             ]);
         }
 

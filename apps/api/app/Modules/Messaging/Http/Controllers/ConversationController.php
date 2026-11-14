@@ -39,7 +39,7 @@ class ConversationController extends Controller
         /** @var User $student */
         $student = $this->authUser($request);
         /** @var Listing $listing */
-        $listing = Listing::findOrFail($validated['listing_id']);
+        $listing = Listing::inServiceArea()->findOrFail($validated['listing_id']);
 
         // A student cannot start a conversation about their own listing
         if ($listing->user_id === $student->id) {

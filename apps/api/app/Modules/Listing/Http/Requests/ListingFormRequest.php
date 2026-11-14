@@ -3,6 +3,8 @@
 namespace App\Modules\Listing\Http\Requests;
 
 use App\Modules\Listing\Models\Listing;
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -53,7 +55,7 @@ abstract class ListingFormRequest extends FormRequest
             'address' => ['required', 'string', 'max:300'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'ward_id' => ['required', 'integer', 'exists:wards,id'],
+            'ward_id' => ['required', 'integer', Rule::exists('wards', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::wardIds()))],
             'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'amenity_ids' => ['sometimes', 'array'],
             'amenity_ids.*' => ['integer', 'exists:amenities,id'],
@@ -92,6 +94,7 @@ abstract class ListingFormRequest extends FormRequest
             'max.string' => ':attribute không được vượt quá :max ký tự.',
             'between.numeric' => ':attribute phải trong khoảng :min đến :max.',
             'exists' => ':attribute không tồn tại.',
+            'ward_id.exists' => 'Hãy chọn phường/xã thuộc phạm vi TP.HCM được hỗ trợ.',
             'in' => ':attribute không hợp lệ.',
         ];
     }
@@ -107,7 +110,7 @@ abstract class ListingFormRequest extends FormRequest
             'address' => 'Địa chỉ',
             'latitude' => 'Vĩ độ',
             'longitude' => 'Kinh độ',
-            'ward_id' => 'Quận',
+            'ward_id' => 'Phường/xã',
             'description' => 'Mô tả',
             'amenity_ids' => 'Tiện ích',
             'amenity_ids.*' => 'Tiện ích',

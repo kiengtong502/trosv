@@ -43,9 +43,13 @@ async function focusIndicatorColor(target: ReturnType<Page["locator"]>): Promise
 }
 
 test.describe("review fixes", () => {
-  test("room lightbox covers the site header", async ({ page }) => {
+  test("room lightbox covers the site header", async ({ page, request }) => {
     await page.setViewportSize({ width: 1360, height: 900 });
-    await page.goto("/rooms/48");
+    const response = await request.get("http://localhost:8000/api/listings?per_page=1");
+    expect(response.ok()).toBe(true);
+    const { data } = (await response.json()) as { data: { id: number }[] };
+    expect(data).toHaveLength(1);
+    await page.goto(`/rooms/${String(data[0]!.id)}`);
     await page.getByRole("button", { name: "Xem ảnh lớn" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();

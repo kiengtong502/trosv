@@ -2,7 +2,10 @@
 
 namespace App\Modules\Messaging\Http\Requests;
 
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * POST /api/conversations (student). Rules copied verbatim from the
@@ -19,7 +22,7 @@ class ConversationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'listing_id' => ['required', 'integer', 'exists:listings,id'],
+            'listing_id' => ['required', 'integer', Rule::exists('listings', 'id')->where(fn (Builder $query) => $query->whereIn('ward_id', ServiceArea::wardIds()))],
         ];
     }
 

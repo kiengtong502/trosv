@@ -31,7 +31,7 @@ class LandlordListingController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = $this->authUser($request)
-            ->listings()
+            ->listings()->inServiceArea()
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')
             ->withAvg('reviews', 'listing_rating')

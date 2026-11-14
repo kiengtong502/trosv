@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Modules\Listing\Models\Listing;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Route::bind('listing', fn (string $id) => Listing::inServiceArea()->findOrFail($id));
+
         // PROMPTS.md step 10: surface N+1 queries as exceptions in dev/test.
         Model::preventLazyLoading(! app()->isProduction());
 

@@ -20,7 +20,7 @@ class FavoriteController extends Controller
     public function index(Request $request): JsonResponse
     {
         $page = $this->authUser($request)
-            ->favorites()
+            ->favorites()->inServiceArea()
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')
             ->withAvg('reviews', 'listing_rating')
@@ -42,7 +42,7 @@ class FavoriteController extends Controller
      */
     public function attach(Request $request, int $listingId): JsonResponse
     {
-        $listing = Listing::find($listingId);
+        $listing = Listing::inServiceArea()->find($listingId);
 
         if (! $listing) {
             abort(404);
@@ -59,7 +59,7 @@ class FavoriteController extends Controller
      */
     public function detach(Request $request, int $listingId): JsonResponse
     {
-        $listing = Listing::find($listingId);
+        $listing = Listing::inServiceArea()->find($listingId);
 
         if (! $listing) {
             abort(404);

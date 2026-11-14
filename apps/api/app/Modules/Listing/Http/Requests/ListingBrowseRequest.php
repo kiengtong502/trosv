@@ -4,6 +4,8 @@ namespace App\Modules\Listing\Http\Requests;
 
 use App\Modules\Listing\Http\Controllers\ListingController;
 use App\Modules\Listing\Models\Listing;
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,8 +35,8 @@ class ListingBrowseRequest extends FormRequest
                     $fail('Giá tối đa phải lớn hơn hoặc bằng giá tối thiểu.');
                 }
             }],
-            'ward_id' => ['nullable', 'integer', 'exists:wards,id'],
-            'city_id' => ['nullable', 'integer', 'exists:cities,id'],
+            'ward_id' => ['nullable', 'integer', Rule::exists('wards', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::wardIds()))],
+            'city_id' => ['nullable', 'integer', Rule::exists('cities', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::cityIds()))],
             'type' => ['nullable', Rule::in([Listing::TYPE_ROOM, Listing::TYPE_APARTMENT, Listing::TYPE_HOUSE])],
             'amenity_ids' => ['nullable', 'array'],
             'amenity_ids.*' => ['integer', 'exists:amenities,id'],
@@ -43,7 +45,7 @@ class ListingBrowseRequest extends FormRequest
             'page' => ['nullable', 'integer', 'min:1'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:'.ListingController::PER_PAGE_MAX],
             'q' => ['nullable', 'string', 'max:200'],
-            'school_id' => ['nullable', 'integer', 'exists:schools,id'],
+            'school_id' => ['nullable', 'integer', Rule::exists('schools', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::schoolIds()))],
         ];
     }
 
@@ -70,7 +72,7 @@ class ListingBrowseRequest extends FormRequest
         return [
             'price_min' => 'Giá tối thiểu',
             'price_max' => 'Giá tối đa',
-            'ward_id' => 'Quận',
+            'ward_id' => 'Phường/xã',
             'type' => 'Loại tin',
             'amenity_ids' => 'Tiện ích',
             'max_km' => 'Bán kính (km)',

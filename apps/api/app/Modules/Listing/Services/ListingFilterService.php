@@ -19,7 +19,7 @@ class ListingFilterService
      */
     public function buildQuery(array $filters): Builder
     {
-        $query = Listing::query()
+        $query = Listing::query()->inServiceArea()
             ->where('status', Listing::STATUS_AVAILABLE)
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')

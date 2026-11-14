@@ -6,6 +6,7 @@ use App\Modules\Auth\Models\User;
 use App\Modules\Reference\Models\School;
 use App\Modules\Reference\Models\Ward;
 use App\Shared\Support\Geo;
+use App\Shared\Support\ServiceArea;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
@@ -38,13 +39,13 @@ class AreaRecommender
 
         /** @var School|null $school */
         $school = $schoolId !== null ? School::find($schoolId) : null;
-        if ($school !== null && $school->city_id === null) {
+        if ($schoolId !== null && ($school === null || ! School::whereIn('id', ServiceArea::schoolIds())->whereKey($schoolId)->exists())) {
             throw ValidationException::withMessages([
-                'school_id' => ['Trường đã chọn chưa có tỉnh/thành phố. Hãy chọn trường có thông tin khu vực.'],
+                'school_id' => ['Hãy chọn trường thuộc danh mục TP.HCM để nhận gợi ý.'],
             ]);
         }
 
-        $wards = Ward::query()
+        $wards = Ward::query()->whereIn('id', ServiceArea::wardIds())
             ->when($school !== null, fn ($q) => $q->where('city_id', $school?->city_id))
             ->whereHas('listings', fn ($q) => $q->visible()
                 ->whereBetween('price', [$budgetMin, $budgetMax]))

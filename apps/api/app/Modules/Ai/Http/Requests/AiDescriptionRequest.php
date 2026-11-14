@@ -2,6 +2,8 @@
 
 namespace App\Modules\Ai\Http\Requests;
 
+use App\Shared\Support\ServiceArea;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +27,7 @@ class AiDescriptionRequest extends FormRequest
             'price' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'area_m2' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'ward_id' => ['sometimes', 'nullable', 'integer', 'exists:wards,id'],
+            'ward_id' => ['sometimes', 'nullable', 'integer', Rule::exists('wards', 'id')->where(fn (Builder $query) => $query->whereIn('id', ServiceArea::wardIds()))],
             'amenity_ids' => ['sometimes', 'nullable', 'array'],
             'amenity_ids.*' => ['integer', 'exists:amenities,id'],
         ];

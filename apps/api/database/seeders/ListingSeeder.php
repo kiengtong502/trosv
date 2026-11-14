@@ -31,25 +31,12 @@ class ListingSeeder extends Seeder
             $manager = new ImageManager(new Driver);
         }
 
-        // 3 thành phố mục tiêu
-        $cities = City::whereIn('name', ['TP.HCM', 'Hà Nội', 'Đà Nẵng'])->orderBy('id')->get();
+        $city = City::where('name', 'TP.HCM')->firstOrFail();
 
-        $streetNames = [
-            'Hà Nội' => [
-                'Đường Xuân Thủy', 'Đường Hồ Tùng Mậu', 'Đường Đại Cồ Việt', 'Đường Giải Phóng',
-                'Đường Chùa Láng', 'Đường Chùa Bộc', 'Phố Tôn Thất Tùng', 'Đường Nguyễn Trãi',
-                'Đường Cầu Giấy', 'Đường Trần Đại Nghĩa', 'Đường Lê Thanh Nghị', 'Đường Duy Tân',
-            ],
-            'TP.HCM' => [
-                'Đường Lý Thường Kiệt', 'Đường Nguyễn Văn Cừ', 'Đường Đinh Tiên Hoàng', 'Đường Võ Văn Ngân',
-                'Đường Điện Biên Phủ', 'Đường Nguyễn Hữu Thọ', 'Đường An Dương Vương', 'Đường Đặng Thùy Trâm',
-                'Đường Nguyễn Văn Bảo', 'Đường D2 (Nguyễn Gia Trí)', 'Đường Tô Hiến Thành', 'Đường Sư Vạn Hạnh',
-            ],
-            'Đà Nẵng' => [
-                'Đường Nguyễn Lương Bằng', 'Đường Ngũ Hành Sơn', 'Đường Tôn Đức Thắng', 'Đường Lương Nhữ Hộc',
-                'Đường Nguyễn Văn Linh', 'Đường Núi Thành', 'Đường Xô Viết Nghệ Tĩnh', 'Đường Trần Đại Nghĩa',
-                'Đường Dũng Sĩ Thanh Khê', 'Đường Cao Thắng', 'Đường Nam Cao', 'Đường Hải Phòng',
-            ],
+        $streets = [
+            'Đường Lý Thường Kiệt', 'Đường Nguyễn Văn Cừ', 'Đường Đinh Tiên Hoàng', 'Đường Võ Văn Ngân',
+            'Đường Điện Biên Phủ', 'Đường Nguyễn Hữu Thọ', 'Đường An Dương Vương', 'Đường Đặng Thùy Trâm',
+            'Đường Nguyễn Văn Bảo', 'Đường D2 (Nguyễn Gia Trí)', 'Đường Tô Hiến Thành', 'Đường Sư Vạn Hạnh',
         ];
 
         $listingTemplates = [
@@ -102,63 +89,61 @@ class ListingSeeder extends Seeder
 
         $globalIndex = 1;
 
-        // Mỗi thành phố tạo 15-18 phòng thực tế gần các trường
-        foreach ($cities as $city) {
-            $cityWards = Ward::where('city_id', $city->id)->get();
-            $citySchools = School::where('city_id', $city->id)->get();
-            $streets = $streetNames[$city->name] ?? ['Đường Trung Tâm'];
+        // Tạo 16 phòng minh họa tại TP.HCM, không phải tin đăng thực tế.
+        $cityWards = Ward::where('city_id', $city->id)->get();
+        // Đông Hòa campuses remain search references, not locations for demo rooms.
+        $citySchools = School::where('city_id', $city->id)->whereNotNull('ward_id')->get();
 
-            for ($i = 0; $i < 16; $i++) {
-                // Phân bổ đều cho các chủ nhà (để mỗi chủ nhà sở hữu nhiều phòng)
-                $landlord = $landlords[($globalIndex - 1) % $landlords->count()] ?? null;
-                $ward = $cityWards[$i % $cityWards->count()] ?? null;
-                $tpl = $listingTemplates[$i % count($listingTemplates)];
-                $street = $streets[$i % count($streets)];
+        for ($i = 0; $i < 16; $i++) {
+            // Phân bổ đều cho các chủ nhà (để mỗi chủ nhà sở hữu nhiều phòng)
+            $landlord = $landlords[($globalIndex - 1) % $landlords->count()] ?? null;
+            $ward = $cityWards[$i % $cityWards->count()] ?? null;
+            $tpl = $listingTemplates[$i % count($listingTemplates)];
+            $street = $streets[$i % count($streets)];
 
-                $price = mt_rand((int) ($tpl['min_price'] / 100_000), (int) ($tpl['max_price'] / 100_000)) * 100_000;
-                $area = mt_rand($tpl['min_area'], $tpl['max_area']);
-                $houseNumber = mt_rand(1, 280);
+            $price = mt_rand((int) ($tpl['min_price'] / 100_000), (int) ($tpl['max_price'] / 100_000)) * 100_000;
+            $area = mt_rand($tpl['min_area'], $tpl['max_area']);
+            $houseNumber = mt_rand(1, 280);
 
-                // Gần một trường cụ thể để demo tính năng lọc khoảng cách
-                $school = $citySchools[$i % $citySchools->count()] ?? null;
+            // Gần một trường cụ thể để demo tính năng lọc khoảng cách
+            $school = $citySchools[$i % $citySchools->count()] ?? null;
 
-                if (! $landlord instanceof User || ! $ward instanceof Ward || ! $school instanceof School) {
-                    continue;
-                }
-
-                // Tọa độ thực trong bán kính 200m - 800m quanh trường hoặc phường
-                $lat = (float) $school->latitude + (mt_rand(-35, 35) / 10000);
-                $lng = (float) $school->longitude + (mt_rand(-35, 35) / 10000);
-
-                $title = sprintf('%s - Gần %s (%dm²)', $tpl['prefix'], $school->name, $area);
-                $address = sprintf('Số %d %s, %s, %s', $houseNumber, $street, $ward->name, $city->name);
-
-                $listing = Listing::create([
-                    'user_id' => $landlord->id,
-                    'ward_id' => $ward->id,
-                    'title' => $title,
-                    'description' => sprintf('%s Vị trí thuận tiện đi lại đến %s. Địa chỉ: %s.', $tpl['desc'], $school->name, $address),
-                    'type' => $tpl['type'],
-                    'price' => $price,
-                    'area_m2' => $area,
-                    'address' => $address,
-                    'latitude' => $lat,
-                    'longitude' => $lng,
-                    'status' => Listing::STATUS_AVAILABLE,
-                ]);
-
-                // Gán tiện ích
-                $shuffled = $amenityIds;
-                shuffle($shuffled);
-                $listing->amenities()->attach(array_slice($shuffled, 0, mt_rand(4, 7)));
-
-                // Tạo ảnh minh họa
-                if ($manager !== null) {
-                    $this->createSampleImage($manager, $listing, $globalIndex, $city->name);
-                }
-
-                $globalIndex++;
+            if (! $landlord instanceof User || ! $ward instanceof Ward || ! $school instanceof School) {
+                continue;
             }
+
+            // Tọa độ minh họa quanh trường để thử bộ lọc khoảng cách.
+            $lat = (float) $school->latitude + (mt_rand(-35, 35) / 10000);
+            $lng = (float) $school->longitude + (mt_rand(-35, 35) / 10000);
+
+            $title = sprintf('%s - Gần %s (%dm²)', $tpl['prefix'], $school->name, $area);
+            $address = sprintf('Số %d %s, %s, %s', $houseNumber, $street, $ward->name, $city->name);
+
+            $listing = Listing::create([
+                'user_id' => $landlord->id,
+                'ward_id' => $ward->id,
+                'title' => $title,
+                'description' => sprintf('%s Vị trí thuận tiện đi lại đến %s. Địa chỉ: %s.', $tpl['desc'], $school->name, $address),
+                'type' => $tpl['type'],
+                'price' => $price,
+                'area_m2' => $area,
+                'address' => $address,
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'status' => Listing::STATUS_AVAILABLE,
+            ]);
+
+            // Gán tiện ích
+            $shuffled = $amenityIds;
+            shuffle($shuffled);
+            $listing->amenities()->attach(array_slice($shuffled, 0, mt_rand(4, 7)));
+
+            // Tạo ảnh minh họa
+            if ($manager !== null) {
+                $this->createSampleImage($manager, $listing, $globalIndex, $city->name);
+            }
+
+            $globalIndex++;
         }
     }
 

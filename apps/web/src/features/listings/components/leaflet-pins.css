@@ -78,6 +78,40 @@
   box-shadow: none;
 }
 
+.trosv-school-marker {
+  display: grid;
+  place-items: center;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #1d4ed8;
+  color: white;
+  box-shadow: 0 2px 8px #0003;
+}
+
+.trosv-school-marker svg {
+  width: 25px;
+  height: 25px;
+}
+
+.trosv-school-marker:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+.leaflet-tooltip.trosv-school-label {
+  width: max-content;
+  max-width: 200px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.trosv-school-popup p {
+  margin: 6px 0 0;
+}
+
 /* Attribution small and muted */
 .leaflet-control-attribution {
   font-size: 10px;

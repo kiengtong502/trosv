@@ -8,6 +8,7 @@ use App\Modules\Messaging\Models\Conversation;
 use App\Modules\Reference\Models\Amenity;
 use App\Modules\Reference\Models\Ward;
 use App\Shared\Support\GeoQuery;
+use App\Shared\Support\ServiceArea;
 use Database\Factories\ListingFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -80,6 +81,15 @@ class Listing extends Model
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
         ];
+    }
+
+    /**
+     * @param  Builder<Listing>  $query
+     * @return Builder<Listing>
+     */
+    public function scopeInServiceArea(Builder $query): Builder
+    {
+        return $query->whereIn('listings.ward_id', ServiceArea::wardIds());
     }
 
     /** @return BelongsTo<User, $this> */
@@ -182,7 +192,7 @@ class Listing extends Model
      */
     public function scopeVisible(Builder $query): Builder
     {
-        return $query->where('status', '!=', self::STATUS_HIDDEN);
+        return $query->inServiceArea()->where('status', '!=', self::STATUS_HIDDEN);
     }
 
     /**

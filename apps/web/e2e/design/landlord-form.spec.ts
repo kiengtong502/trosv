@@ -24,23 +24,20 @@ test.describe("landlord listing form", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Đăng tin mới" })).toBeVisible();
   });
 
-  test("the ward list waits for a city, follows it, and resets when it changes", async ({
-    page,
-  }) => {
+  test("TP.HCM is fixed and its 102 wards are immediately available", async ({ page }) => {
     const ward = page.locator("#lf-ward");
-    await expect(ward).toBeDisabled();
+    await expect(ward).toBeEnabled();
 
     const city = page.locator("#lf-city");
-    await city.selectOption({ label: "TP.HCM" });
-    await expect(ward).toBeEnabled();
-    const hcmWards = await ward.locator("option").count();
-    expect(hcmWards).toBeGreaterThan(1);
+    await expect(city).toHaveValue("TP.HCM");
+    await expect(city).toHaveAttribute("readonly");
+    await expect(ward.locator("option")).toHaveCount(103);
 
     await ward.selectOption({ index: 1 });
     await expect(ward).not.toHaveValue("");
 
-    await city.selectOption({ index: 2 });
-    await expect(ward).toHaveValue("");
+    await page.locator("#lf-street").fill("12 Đường số 5");
+    await expect(page.locator("#lf-address")).toHaveValue(/12 Đường số 5, .+, TP.HCM/);
   });
 
   test("an amenity chip toggles on and off", async ({ page }) => {

@@ -43,6 +43,6 @@ export function wardPlaceholder(cityId: string): string {
 
 export function schoolPlaceholder(cityId: string, wardId: string): string {
   if (cityId === "") return "Chọn Tỉnh/TP trước";
-  if (wardId === "") return "Chọn Phường trước";
+  if (wardId === "") return "Chọn trường trong tỉnh/thành phố";
   return "Chọn trường trong phường này";
 }
