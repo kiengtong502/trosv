@@ -16,23 +16,6 @@ class GeoQuery
         .'COS(RADIANS(longitude) - RADIANS(CAST(? AS float8))) + '
         .'SIN(RADIANS(CAST(? AS float8))) * SIN(RADIANS(latitude))))';
 
-    public static function distanceSql(string $latCol = 'latitude', string $lngCol = 'longitude'): string
-    {
-        if ($latCol === 'latitude' && $lngCol === 'longitude') {
-            return self::DISTANCE_SQL;
-        }
-
-        return sprintf(
-            '%d * ACOS(LEAST(1, COS(RADIANS(CAST(? AS float8))) * COS(RADIANS(%s)) * '
-            .'COS(RADIANS(%s) - RADIANS(CAST(? AS float8))) + '
-            .'SIN(RADIANS(CAST(? AS float8))) * SIN(RADIANS(%s))))',
-            Geo::EARTH_RADIUS_KM,
-            $latCol,
-            $lngCol,
-            $latCol
-        );
-    }
-
     /**
      * @return list<float>
      */

@@ -46,6 +46,24 @@ class PolicyTest extends TestCase
         $this->assertTrue($student->can('review', $listing));
     }
 
+    public function test_review_stays_allowed_after_asking_about_another_room(): void
+    {
+        $student = User::factory()->student()->create();
+        $landlord = User::factory()->landlord()->create();
+        $roomA = Listing::factory()->create(['user_id' => $landlord->id]);
+        $roomB = Listing::factory()->create(['user_id' => $landlord->id]);
+
+        // One conversation per pair: asking about B moves listing_id off A.
+        Conversation::factory()->create([
+            'listing_id' => $roomB->id,
+            'student_id' => $student->id,
+            'landlord_id' => $landlord->id,
+        ]);
+
+        $this->assertTrue($student->can('review', $roomA));
+        $this->assertFalse($student->can('review', Listing::factory()->create()));
+    }
+
     public function test_conversation_participate_covers_both_sides_only(): void
     {
         $conversation = Conversation::factory()->create();

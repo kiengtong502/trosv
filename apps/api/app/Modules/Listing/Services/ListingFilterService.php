@@ -58,6 +58,7 @@ class ListingFilterService
     protected function applySearchTerm(Builder $query, ?string $q): void
     {
         if (! empty($q)) {
+            $q = addcslashes($q, '%_\\'); // user text is literal, not LIKE wildcards
             // ILIKE: PostgreSQL case-insensitive search (ERD §4).
             $query->where(function (Builder $sub) use ($q) {
                 $sub->where('title', 'ilike', "%{$q}%")

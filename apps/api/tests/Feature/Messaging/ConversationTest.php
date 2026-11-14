@@ -225,6 +225,32 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.0.last_message.sender_id', $this->student->id);
     }
 
+    public function test_unsent_messages_are_not_counted_as_unread(): void
+    {
+        $conv = $this->createConversation();
+        Message::factory()->create([
+            'conversation_id' => $conv->id,
+            'sender_id' => $this->landlord->id,
+            'deleted_at' => now(),
+        ]);
+
+        $this->actingAs($this->student, 'sanctum')
+            ->getJson('/api/conversations')
+            ->assertOk()
+            ->assertJsonPath('data.0.unread_count', 0);
+    }
+
+    public function test_cannot_start_conversation_about_hidden_listing(): void
+    {
+        $this->listing->update(['status' => Listing::STATUS_HIDDEN]);
+
+        $this->actingAs($this->student, 'sanctum')
+            ->postJson('/api/conversations', ['listing_id' => $this->listing->id])
+            ->assertNotFound();
+
+        $this->assertDatabaseCount('conversations', 0);
+    }
+
     public function test_list_orders_by_latest_activity(): void
     {
         $older = $this->createConversation();

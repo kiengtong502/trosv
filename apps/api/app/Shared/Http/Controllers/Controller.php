@@ -17,7 +17,7 @@ abstract class Controller
     use AuthorizesResources;
 
     /** Maximum page size for every paginated endpoint (step 4 convention). */
-    protected const PER_PAGE_MAX = 50;
+    public const PER_PAGE_MAX = 50;
 
     /** The authenticated user. Only for routes behind `auth:sanctum`; anything else is a 401. */
     protected function authUser(Request $request): User

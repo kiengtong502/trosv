@@ -69,7 +69,8 @@ class ListingImageService
             abort(404);
         }
 
-        Storage::disk('public')->delete($image->path ?? '');
+        // Row first: a failed delete must not leave a row pointing at no file.
         $image->delete();
+        Storage::disk('public')->delete($image->path ?? '');
     }
 }

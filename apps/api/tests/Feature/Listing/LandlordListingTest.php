@@ -4,6 +4,7 @@ namespace Tests\Feature\Listing;
 
 use App\Modules\Auth\Models\User;
 use App\Modules\Listing\Models\Listing;
+use App\Modules\Messaging\Models\Conversation;
 use App\Modules\Reference\Models\Ward;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -200,6 +201,24 @@ class LandlordListingTest extends TestCase
         $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
         $this->assertDatabaseMissing('listing_images', ['id' => $image->id]);
         Storage::disk('public')->assertMissing('listings/doomed.jpg'); // file also gone
+    }
+
+    public function test_deleting_listing_keeps_the_conversation(): void
+    {
+        $listing = $this->makeOwnedListing();
+        $conv = Conversation::factory()->create([
+            'listing_id' => $listing->id,
+            'student_id' => $this->student->id,
+            'landlord_id' => $this->landlord->id,
+        ]);
+        $conv->messages()->create(['sender_id' => $this->student->id, 'body' => 'Còn phòng không?']);
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->deleteJson("/api/listings/{$listing->id}")
+            ->assertOk();
+
+        $this->assertDatabaseHas('conversations', ['id' => $conv->id, 'listing_id' => null]);
+        $this->assertDatabaseCount('messages', 1);
     }
 
     public function test_other_landlord_cannot_delete_returns_403(): void

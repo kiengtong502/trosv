@@ -25,11 +25,13 @@ class ConversationService
      */
     public function findOrCreateConversation(int $userAId, int $userBId, ?int $listingId = null): array
     {
-        $conversation = Conversation::where(function ($q) use ($userAId, $userBId) {
+        $pair = fn () => Conversation::where(function ($q) use ($userAId, $userBId) {
             $q->where('student_id', $userAId)->where('landlord_id', $userBId);
         })->orWhere(function ($q) use ($userAId, $userBId) {
             $q->where('student_id', $userBId)->where('landlord_id', $userAId);
-        })->first();
+        });
+
+        $conversation = $pair()->first();
 
         if (! $conversation) {
             try {
@@ -42,11 +44,7 @@ class ConversationService
                 return [$conversation, true];
             } catch (UniqueConstraintViolationException) {
                 // Double-click race: the other request created the pair first.
-                $conversation = Conversation::where(function ($q) use ($userAId, $userBId) {
-                    $q->where('student_id', $userAId)->where('landlord_id', $userBId);
-                })->orWhere(function ($q) use ($userAId, $userBId) {
-                    $q->where('student_id', $userBId)->where('landlord_id', $userAId);
-                })->firstOrFail();
+                $conversation = $pair()->firstOrFail();
             }
         }
 
@@ -102,7 +100,8 @@ class ConversationService
             ->withCount(['messages as unread_count' => function ($q) use ($user): void {
                 /** @var Builder<Message> $q */
                 $q->where('sender_id', '!=', $user->id)
-                    ->whereNull('read_at');
+                    ->whereNull('read_at')
+                    ->whereNull('deleted_at'); // unsent messages are not readable
             }])
             ->orderByDesc('updated_at')
             ->get();

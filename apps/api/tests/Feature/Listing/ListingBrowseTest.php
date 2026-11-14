@@ -176,6 +176,15 @@ class ListingBrowseTest extends TestCase
             ->assertJsonCount(0, 'data');
     }
 
+    public function test_q_wildcards_are_literal(): void
+    {
+        $this->makeListing(['title' => 'Phòng 100% mới', 'address' => '12 Đường số 5']);
+        $this->makeListing(['title' => 'Căn hộ cao cấp', 'address' => '45 Nguyễn Huệ']);
+
+        $this->getJson('/api/listings?q='.urlencode('_'))->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/listings?q='.urlencode('100%'))->assertOk()->assertJsonCount(1, 'data');
+    }
+
     public function test_filter_by_price_range(): void
     {
         $this->makeListing(['price' => 1_500_000]);

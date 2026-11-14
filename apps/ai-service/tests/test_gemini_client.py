@@ -75,17 +75,19 @@ def test_get_client_builds_client_with_key(monkeypatch):
     seen: dict[str, Any] = {}
 
     class FakeClient:
-        def __init__(self, api_key: str) -> None:
+        def __init__(self, api_key: str, http_options: Any = None) -> None:
             seen["api_key"] = api_key
+            seen["timeout"] = http_options.timeout
 
     monkeypatch.setenv("GEMINI_API_KEY", "secret")
     monkeypatch.setattr(gemini_client.genai, "Client", FakeClient)
     assert isinstance(get_client(), FakeClient)
-    assert seen == {"api_key": "secret"}
+    # Bounded per call: a hung Gemini must not hold a worker forever.
+    assert seen == {"api_key": "secret", "timeout": 10_000}
 
 
 def test_get_client_swallows_constructor_errors(monkeypatch):
-    def boom(api_key: str) -> None:
+    def boom(api_key: str, http_options: Any = None) -> None:
         raise RuntimeError(api_key)
 
     monkeypatch.setenv("GEMINI_API_KEY", "secret")

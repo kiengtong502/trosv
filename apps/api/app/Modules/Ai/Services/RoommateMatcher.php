@@ -32,6 +32,10 @@ class RoommateMatcher
             ->where('budget_min', '<=', $me->budget_max)
             ->where('budget_max', '>=', $me->budget_min)
             ->with('school:id,name')
+            // Same school first, then most recently active - without an order
+            // the 20-row cap silently picks the oldest students.
+            ->orderByRaw('school_id = ? DESC', [$me->school_id])
+            ->latest('updated_at')
             ->limit(20)
             ->get();
 
