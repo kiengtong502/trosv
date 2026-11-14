@@ -3,24 +3,27 @@ from typing import Any
 from app.features.description.schemas import DescriptionReq
 from app.shared.parsing import int_or
 
-_TYPE_LABELS = {"room": "Phong tro", "apartment": "Can ho", "house": "Nha nguyen can"}
+_TYPE_LABELS = {"room": "Phòng trọ", "apartment": "Căn hộ", "house": "Nhà nguyên căn"}
 
 
 def generate_description(req: DescriptionReq) -> dict[str, Any]:
     """Heuristic description generation."""
-    type_label = _TYPE_LABELS.get(req.type or "", "Phong tro")
-    parts: list[str] = [f"{type_label} \u201c{req.title}\u201d dang cho thue"]
+    type_label = _TYPE_LABELS.get(req.type or "", "Phòng trọ")
+    parts: list[str] = [f"{type_label} \u201c{req.title}\u201d đang cho thuê"]
     if req.area_m2:
-        parts.append(f"dien tich {req.area_m2:g} m2")
-    if req.ward or req.address:
-        parts.append("vi tri " + ", ".join(x for x in [req.address, req.ward] if x))
+        parts.append(f"diện tích {req.area_m2:g} m²")
+    location = req.address or ""
+    if req.ward and req.ward.casefold() not in location.casefold():
+        location = ", ".join(x for x in [location, req.ward] if x)
+    if location:
+        parts.append("địa chỉ " + location)
     if req.amenities:
-        parts.append("co san " + ", ".join(req.amenities))
+        parts.append("tiện ích gồm " + ", ".join(req.amenities))
     if req.price:
-        parts.append(f"gia thue {int_or(req.price, 0):,} dong mot thang")
+        parts.append(f"giá thuê {int_or(req.price, 0):,} đồng/tháng")
     body = (
         ", ".join(parts)
-        + ". Khong gian thoang, phu hop sinh vien hoac nguoi di lam muon an toan, tien nghi gan nha. Lien he truc tiep qua tin nhan trong trang de xem phong va trao doi chi tiet."
+        + ". Liên hệ trực tiếp với chủ nhà qua tin nhắn trên TROSV để hỏi thêm thông tin và hẹn xem phòng."
     )
     words = body.split()
     return {"description": " ".join(words[:130])}

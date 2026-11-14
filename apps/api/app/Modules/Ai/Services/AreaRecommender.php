@@ -15,7 +15,7 @@ class AreaRecommender
 
     /**
      * Area suggestions: budget/school fall back to the profile. Per-ward
-     * stats computed in PHP; AI ranks and returns reasons; Backend
+     * stats computed in PHP within the school's city; AI ranks and returns reasons; Backend
      * re-attaches names and stats.
      *
      * @param  array<string, mixed>  $data  validated request data
@@ -38,8 +38,14 @@ class AreaRecommender
 
         /** @var School|null $school */
         $school = $schoolId !== null ? School::find($schoolId) : null;
+        if ($school !== null && $school->city_id === null) {
+            throw ValidationException::withMessages([
+                'school_id' => ['Trường đã chọn chưa có tỉnh/thành phố. Hãy chọn trường có thông tin khu vực.'],
+            ]);
+        }
 
         $wards = Ward::query()
+            ->when($school !== null, fn ($q) => $q->where('city_id', $school?->city_id))
             ->whereHas('listings', fn ($q) => $q->visible()
                 ->whereBetween('price', [$budgetMin, $budgetMax]))
             ->with(['listings' => fn ($q) => $q->visible()

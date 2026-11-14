@@ -283,7 +283,7 @@ def test_description_prompt_defaults_for_missing_fields(llm):
     prompt = calls[0].contents
     assert "thỏa thuận" in prompt
     assert "không rõ" in prompt
-    assert "cơ bản" in prompt
+    assert "Tiện ích: chưa cung cấp" in prompt
 
 
 # ========================================================================== chat

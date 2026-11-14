@@ -1,0 +1,945 @@
+{
+  "title": "102 phường/xã trong phạm vi TROSV",
+  "province_code": "79",
+  "scope": "Phường/xã sau sắp xếp năm 2025 trên địa bàn TP.HCM trước sáp nhập cấp tỉnh, theo danh sách 102 đơn vị người dùng cung cấp.",
+  "counts": {
+    "total": 102,
+    "wards": 78,
+    "communes": 24
+  },
+  "sources": {
+    "administrative_resolution": "https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-1685-nq-ubtvqh15-sap-xep-cac-dvhc-cap-xa-cua-thanh-pho-ho-chi-minh-nam-2025-119250616211341304.htm",
+    "dataset_repository": "https://github.com/open-admin-data/vietnam-administrative-divisions",
+    "dataset_revision": "54cdb052284b02e75dfaa44089ca383aa12c57db",
+    "dataset_path": "divisions/ho-chi-minh-79",
+    "dataset_license": "CC-BY-4.0",
+    "dataset_license_url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "adaptations": "Lọc 102 đơn vị, thêm loại, tiền tố Phường/Xã và nhóm địa bàn cũ. Tọa độ Hiệp Phước được thay theo thông tin người dùng.",
+  "coordinate_status_definitions": {
+    "unverified": "Tọa độ chép từ nguồn, chưa xác minh vị trí thực tế hoặc ý nghĩa điểm tọa độ.",
+    "user_provided": "Tọa độ do người dùng cung cấp, chưa xác minh độc lập."
+  },
+  "coordinate_usage_note": "Tọa độ là điểm tham chiếu cần đối chiếu trước khi dùng cho bản đồ và tính khoảng cách. Bộ dữ liệu hiện gồm các điểm tọa độ, chưa có đa giác ranh giới.",
+  "units": [
+    {
+      "code": "26740",
+      "name": "Phường Sài Gòn",
+      "type": "ward",
+      "former_area": "Quận 1",
+      "latitude": "10.782",
+      "longitude": "106.677",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26737",
+      "name": "Phường Tân Định",
+      "type": "ward",
+      "former_area": "Quận 1",
+      "latitude": "10.791",
+      "longitude": "106.694",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26743",
+      "name": "Phường Bến Thành",
+      "type": "ward",
+      "former_area": "Quận 1",
+      "latitude": "10.77",
+      "longitude": "106.695",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26758",
+      "name": "Phường Cầu Ông Lãnh",
+      "type": "ward",
+      "former_area": "Quận 1",
+      "latitude": "10.763",
+      "longitude": "106.691",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27154",
+      "name": "Phường Bàn Cờ",
+      "type": "ward",
+      "former_area": "Quận 3",
+      "latitude": "10.77",
+      "longitude": "106.682",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27139",
+      "name": "Phường Xuân Hòa",
+      "type": "ward",
+      "former_area": "Quận 3",
+      "latitude": "10.782",
+      "longitude": "106.69",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27142",
+      "name": "Phường Nhiêu Lộc",
+      "type": "ward",
+      "former_area": "Quận 3",
+      "latitude": "10.786",
+      "longitude": "106.675",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27259",
+      "name": "Phường Xóm Chiếu",
+      "type": "ward",
+      "former_area": "Quận 4",
+      "latitude": "10.76",
+      "longitude": "106.712",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27265",
+      "name": "Phường Khánh Hội",
+      "type": "ward",
+      "former_area": "Quận 4",
+      "latitude": "10.76",
+      "longitude": "106.702",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27286",
+      "name": "Phường Vĩnh Hội",
+      "type": "ward",
+      "former_area": "Quận 4",
+      "latitude": "10.756",
+      "longitude": "106.694",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27301",
+      "name": "Phường Chợ Quán",
+      "type": "ward",
+      "former_area": "Quận 5",
+      "latitude": "10.758",
+      "longitude": "106.681",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27316",
+      "name": "Phường An Đông",
+      "type": "ward",
+      "former_area": "Quận 5",
+      "latitude": "10.755",
+      "longitude": "106.672",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27343",
+      "name": "Phường Chợ Lớn",
+      "type": "ward",
+      "former_area": "Quận 5",
+      "latitude": "10.752",
+      "longitude": "106.659",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27367",
+      "name": "Phường Bình Tây",
+      "type": "ward",
+      "former_area": "Quận 6",
+      "latitude": "10.749",
+      "longitude": "106.648",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27373",
+      "name": "Phường Bình Tiên",
+      "type": "ward",
+      "former_area": "Quận 6",
+      "latitude": "10.743",
+      "longitude": "106.643",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27364",
+      "name": "Phường Bình Phú",
+      "type": "ward",
+      "former_area": "Quận 6",
+      "latitude": "10.739",
+      "longitude": "106.627",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27349",
+      "name": "Phường Phú Lâm",
+      "type": "ward",
+      "former_area": "Quận 6",
+      "latitude": "10.754",
+      "longitude": "106.631",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27478",
+      "name": "Phường Tân Thuận",
+      "type": "ward",
+      "former_area": "Quận 7",
+      "latitude": "10.753",
+      "longitude": "106.728",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27484",
+      "name": "Phường Phú Thuận",
+      "type": "ward",
+      "former_area": "Quận 7",
+      "latitude": "10.731",
+      "longitude": "106.735",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27487",
+      "name": "Phường Tân Mỹ",
+      "type": "ward",
+      "former_area": "Quận 7",
+      "latitude": "10.726",
+      "longitude": "106.724",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27475",
+      "name": "Phường Tân Hưng",
+      "type": "ward",
+      "former_area": "Quận 7",
+      "latitude": "10.74",
+      "longitude": "106.703",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27418",
+      "name": "Phường Chánh Hưng",
+      "type": "ward",
+      "former_area": "Quận 8",
+      "latitude": "10.745",
+      "longitude": "106.676",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27427",
+      "name": "Phường Phú Định",
+      "type": "ward",
+      "former_area": "Quận 8",
+      "latitude": "10.724",
+      "longitude": "106.629",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27424",
+      "name": "Phường Bình Đông",
+      "type": "ward",
+      "former_area": "Quận 8",
+      "latitude": "10.728",
+      "longitude": "106.638",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27169",
+      "name": "Phường Diên Hồng",
+      "type": "ward",
+      "former_area": "Quận 10",
+      "latitude": "10.766",
+      "longitude": "106.664",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27190",
+      "name": "Phường Vườn Lài",
+      "type": "ward",
+      "former_area": "Quận 10",
+      "latitude": "10.767",
+      "longitude": "106.674",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27163",
+      "name": "Phường Hòa Hưng",
+      "type": "ward",
+      "former_area": "Quận 10",
+      "latitude": "10.781",
+      "longitude": "106.669",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27238",
+      "name": "Phường Minh Phụng",
+      "type": "ward",
+      "former_area": "Quận 11",
+      "latitude": "10.757",
+      "longitude": "106.647",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27232",
+      "name": "Phường Bình Thới",
+      "type": "ward",
+      "former_area": "Quận 11",
+      "latitude": "10.763",
+      "longitude": "106.642",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27211",
+      "name": "Phường Hòa Bình",
+      "type": "ward",
+      "former_area": "Quận 11",
+      "latitude": "10.77",
+      "longitude": "106.644",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27226",
+      "name": "Phường Phú Thọ",
+      "type": "ward",
+      "former_area": "Quận 11",
+      "latitude": "10.766",
+      "longitude": "106.655",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26791",
+      "name": "Phường Đông Hưng Thuận",
+      "type": "ward",
+      "former_area": "Quận 12",
+      "latitude": "10.836",
+      "longitude": "106.622",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26785",
+      "name": "Phường Trung Mỹ Tây",
+      "type": "ward",
+      "former_area": "Quận 12",
+      "latitude": "10.859",
+      "longitude": "106.618",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26782",
+      "name": "Phường Tân Thới Hiệp",
+      "type": "ward",
+      "former_area": "Quận 12",
+      "latitude": "10.877",
+      "longitude": "106.641",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26773",
+      "name": "Phường Thới An",
+      "type": "ward",
+      "former_area": "Quận 12",
+      "latitude": "10.879",
+      "longitude": "106.658",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26767",
+      "name": "Phường An Phú Đông",
+      "type": "ward",
+      "former_area": "Quận 12",
+      "latitude": "10.861",
+      "longitude": "106.692",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27460",
+      "name": "Phường An Lạc",
+      "type": "ward",
+      "former_area": "Quận Bình Tân",
+      "latitude": "10.738",
+      "longitude": "106.615",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27457",
+      "name": "Phường Tân Tạo",
+      "type": "ward",
+      "former_area": "Quận Bình Tân",
+      "latitude": "10.748",
+      "longitude": "106.586",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27442",
+      "name": "Phường Bình Tân",
+      "type": "ward",
+      "former_area": "Quận Bình Tân",
+      "latitude": "10.794",
+      "longitude": "106.59",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27448",
+      "name": "Phường Bình Trị Đông",
+      "type": "ward",
+      "former_area": "Quận Bình Tân",
+      "latitude": "10.768",
+      "longitude": "106.61",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27439",
+      "name": "Phường Bình Hưng Hòa",
+      "type": "ward",
+      "former_area": "Quận Bình Tân",
+      "latitude": "10.798",
+      "longitude": "106.603",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26944",
+      "name": "Phường Gia Định",
+      "type": "ward",
+      "former_area": "Quận Bình Thạnh",
+      "latitude": "10.801",
+      "longitude": "106.697",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26929",
+      "name": "Phường Bình Thạnh",
+      "type": "ward",
+      "former_area": "Quận Bình Thạnh",
+      "latitude": "10.811",
+      "longitude": "106.703",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26905",
+      "name": "Phường Bình Lợi Trung",
+      "type": "ward",
+      "former_area": "Quận Bình Thạnh",
+      "latitude": "10.823",
+      "longitude": "106.703",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26956",
+      "name": "Phường Thạnh Mỹ Tây",
+      "type": "ward",
+      "former_area": "Quận Bình Thạnh",
+      "latitude": "10.799",
+      "longitude": "106.718",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26911",
+      "name": "Phường Bình Quới",
+      "type": "ward",
+      "former_area": "Quận Bình Thạnh",
+      "latitude": "10.827",
+      "longitude": "106.737",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26890",
+      "name": "Phường Hạnh Thông",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.82",
+      "longitude": "106.683",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26876",
+      "name": "Phường An Nhơn",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.837",
+      "longitude": "106.683",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26884",
+      "name": "Phường Gò Vấp",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.816",
+      "longitude": "106.685",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26878",
+      "name": "Phường An Hội Đông",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.85",
+      "longitude": "106.665",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26898",
+      "name": "Phường Thông Tây Hội",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.842",
+      "longitude": "106.657",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26882",
+      "name": "Phường An Hội Tây",
+      "type": "ward",
+      "former_area": "Quận Gò Vấp",
+      "latitude": "10.842",
+      "longitude": "106.639",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27043",
+      "name": "Phường Đức Nhuận",
+      "type": "ward",
+      "former_area": "Quận Phú Nhuận",
+      "latitude": "10.806",
+      "longitude": "106.678",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27058",
+      "name": "Phường Cầu Kiệu",
+      "type": "ward",
+      "former_area": "Quận Phú Nhuận",
+      "latitude": "10.8",
+      "longitude": "106.685",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27073",
+      "name": "Phường Phú Nhuận",
+      "type": "ward",
+      "former_area": "Quận Phú Nhuận",
+      "latitude": "10.795",
+      "longitude": "106.675",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26977",
+      "name": "Phường Tân Sơn Hòa",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.797",
+      "longitude": "106.665",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26968",
+      "name": "Phường Tân Sơn Nhất",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.798",
+      "longitude": "106.659",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26995",
+      "name": "Phường Tân Hòa",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.781",
+      "longitude": "106.655",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26983",
+      "name": "Phường Bảy Hiền",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.79",
+      "longitude": "106.647",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27004",
+      "name": "Phường Tân Bình",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.8",
+      "longitude": "106.641",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27007",
+      "name": "Phường Tân Sơn",
+      "type": "ward",
+      "former_area": "Quận Tân Bình",
+      "latitude": "10.821",
+      "longitude": "106.637",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27013",
+      "name": "Phường Tây Thạnh",
+      "type": "ward",
+      "former_area": "Quận Tân Phú",
+      "latitude": "10.813",
+      "longitude": "106.623",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27019",
+      "name": "Phường Tân Sơn Nhì",
+      "type": "ward",
+      "former_area": "Quận Tân Phú",
+      "latitude": "10.801",
+      "longitude": "106.625",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27022",
+      "name": "Phường Phú Thọ Hòa",
+      "type": "ward",
+      "former_area": "Quận Tân Phú",
+      "latitude": "10.789",
+      "longitude": "106.627",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27031",
+      "name": "Phường Tân Phú",
+      "type": "ward",
+      "former_area": "Quận Tân Phú",
+      "latitude": "10.776",
+      "longitude": "106.638",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27028",
+      "name": "Phường Phú Thạnh",
+      "type": "ward",
+      "former_area": "Quận Tân Phú",
+      "latitude": "10.772",
+      "longitude": "106.627",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26809",
+      "name": "Phường Hiệp Bình",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.85",
+      "longitude": "106.719",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26824",
+      "name": "Phường Thủ Đức",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.851",
+      "longitude": "106.759",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26803",
+      "name": "Phường Tam Bình",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.869",
+      "longitude": "106.735",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26800",
+      "name": "Phường Linh Xuân",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.873",
+      "longitude": "106.765",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26842",
+      "name": "Phường Tăng Nhơn Phú",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.845",
+      "longitude": "106.786",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26833",
+      "name": "Phường Long Bình",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.848",
+      "longitude": "106.831",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26857",
+      "name": "Phường Long Phước",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.812",
+      "longitude": "106.86",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26860",
+      "name": "Phường Long Trường",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.798",
+      "longitude": "106.808",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27112",
+      "name": "Phường Cát Lái",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.77",
+      "longitude": "106.775",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27097",
+      "name": "Phường Bình Trưng",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.789",
+      "longitude": "106.755",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26848",
+      "name": "Phường Phước Long",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.825",
+      "longitude": "106.769",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27094",
+      "name": "Phường An Khánh",
+      "type": "ward",
+      "former_area": "TP. Thủ Đức",
+      "latitude": "10.785",
+      "longitude": "106.729",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27601",
+      "name": "Xã Vĩnh Lộc",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.82",
+      "longitude": "106.551",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27604",
+      "name": "Xã Tân Vĩnh Lộc",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.787",
+      "longitude": "106.554",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27610",
+      "name": "Xã Bình Lợi",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.754",
+      "longitude": "106.519",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27595",
+      "name": "Xã Tân Nhựt",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.698",
+      "longitude": "106.57",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27637",
+      "name": "Xã Bình Chánh",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.664",
+      "longitude": "106.57",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27628",
+      "name": "Xã Hưng Long",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.659",
+      "longitude": "106.639",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27619",
+      "name": "Xã Bình Hưng",
+      "type": "commune",
+      "former_area": "Huyện Bình Chánh",
+      "latitude": "10.719",
+      "longitude": "106.656",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27667",
+      "name": "Xã Bình Khánh",
+      "type": "commune",
+      "former_area": "Huyện Cần Giờ",
+      "latitude": "10.643",
+      "longitude": "106.787",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27673",
+      "name": "Xã An Thới Đông",
+      "type": "commune",
+      "former_area": "Huyện Cần Giờ",
+      "latitude": "10.591",
+      "longitude": "106.789",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27664",
+      "name": "Xã Cần Giờ",
+      "type": "commune",
+      "former_area": "Huyện Cần Giờ",
+      "latitude": "10.393",
+      "longitude": "106.932",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27676",
+      "name": "Xã Thạnh An",
+      "type": "commune",
+      "former_area": "Huyện Cần Giờ",
+      "latitude": "10.505",
+      "longitude": "107.337",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27553",
+      "name": "Xã Củ Chi",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "10.974",
+      "longitude": "106.495",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27496",
+      "name": "Xã Tân An Hội",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "10.97",
+      "longitude": "106.465",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27526",
+      "name": "Xã Thái Mỹ",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "11.037",
+      "longitude": "106.435",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27508",
+      "name": "Xã An Nhơn Tây",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "11.089",
+      "longitude": "106.514",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27511",
+      "name": "Xã Nhuận Đức",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "11.06",
+      "longitude": "106.476",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27541",
+      "name": "Xã Phú Hòa Đông",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "10.989",
+      "longitude": "106.556",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27544",
+      "name": "Xã Bình Mỹ",
+      "type": "commune",
+      "former_area": "Huyện Củ Chi",
+      "latitude": "10.66",
+      "longitude": "106.77",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27568",
+      "name": "Xã Đông Thạnh",
+      "type": "commune",
+      "former_area": "Huyện Hóc Môn",
+      "latitude": "10.923",
+      "longitude": "106.771",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27559",
+      "name": "Xã Hóc Môn",
+      "type": "commune",
+      "former_area": "Huyện Hóc Môn",
+      "latitude": "10.886",
+      "longitude": "106.593",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27577",
+      "name": "Xã Xuân Thới Sơn",
+      "type": "commune",
+      "former_area": "Huyện Hóc Môn",
+      "latitude": "10.871",
+      "longitude": "106.574",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27592",
+      "name": "Xã Bà Điểm",
+      "type": "commune",
+      "former_area": "Huyện Hóc Môn",
+      "latitude": "10.84",
+      "longitude": "106.599",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27655",
+      "name": "Xã Nhà Bè",
+      "type": "commune",
+      "former_area": "Huyện Nhà Bè",
+      "latitude": "10.696",
+      "longitude": "106.74",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27658",
+      "name": "Xã Hiệp Phước",
+      "type": "commune",
+      "former_area": "Huyện Nhà Bè",
+      "latitude": "10.657190620522726",
+      "longitude": "106.72935708292374",
+      "coordinate_status": "user_provided",
+      "coordinate_note": "Người dùng cung cấp sau khi kiểm tra vị trí, chưa xác minh độc lập. Tọa độ gốc của nguồn là 11.308, 106.425."
+    }
+  ]
+}

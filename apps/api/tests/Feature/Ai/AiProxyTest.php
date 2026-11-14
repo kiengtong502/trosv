@@ -38,7 +38,7 @@ class AiProxyTest extends TestCase
     private function completeProfile(User $student, array $overrides = []): User
     {
         $student->forceFill(array_merge([
-            'school_id' => School::factory()->create()->id,
+            'school_id' => $this->student->school_id ?? School::factory()->create()->id,
             'budget_min' => 1_500_000,
             'budget_max' => 3_000_000,
             'sleep_schedule' => 'normal',
@@ -155,6 +155,31 @@ class AiProxyTest extends TestCase
             ->postJson('/api/ai/roommates')
             ->assertStatus(422)
             ->assertJsonPath('message', 'Hãy hoàn thiện hồ sơ và bật tìm bạn cùng phòng.');
+    }
+
+    public function test_roommates_only_sends_candidates_from_the_same_city(): void
+    {
+        $this->completeProfile($this->student);
+        $localSchool = School::factory()->create(['city_id' => $this->student->school->city_id]);
+        $local = $this->completeProfile(User::factory()->create(), ['school_id' => $localSchool->id]);
+        $remote = $this->completeProfile(User::factory()->create(), ['school_id' => School::factory()->create()->id]);
+        Http::fake(['*/roommates' => Http::response(['results' => [
+            ['id' => $local->id, 'score' => 80, 'reason' => 'Cùng thành phố.'],
+            ['id' => $remote->id, 'score' => 99, 'reason' => 'Khác thành phố.'],
+        ]])]);
+
+        $this->actingAs($this->student, 'sanctum')->postJson('/api/ai/roommates')
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.user_id', $local->id);
+        Http::assertSent(fn ($request) => array_column($request->data()['candidates'], 'id') === [$local->id]);
+    }
+
+    public function test_roommates_requires_a_school_with_a_known_city(): void
+    {
+        $this->completeProfile($this->student, ['school_id' => School::factory()->create(['city_id' => null])->id]);
+        Http::fake();
+        $this->actingAs($this->student, 'sanctum')->postJson('/api/ai/roommates')
+            ->assertUnprocessable()->assertJsonValidationErrors('school_id');
+        Http::assertNothingSent();
     }
 
     public function test_roommates_requires_looking_for_roommate(): void
@@ -329,8 +354,10 @@ class AiProxyTest extends TestCase
         $school = School::factory()->create(['latitude' => 10.87, 'longitude' => 106.78]);
         $this->student->forceFill(['school_id' => $school->id])->save();
 
-        $near = Ward::factory()->create(['latitude' => 10.87, 'longitude' => 106.78]);
-        $far = Ward::factory()->create(['latitude' => 10.75, 'longitude' => 106.66]);
+        $near = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.87, 'longitude' => 106.78]);
+        $far = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.75, 'longitude' => 106.66]);
+        $otherCity = Ward::factory()->create();
+        Listing::factory()->create(['ward_id' => $otherCity->id, 'price' => 2_000_000, 'status' => 'available']);
 
         $amenity = Amenity::factory()->create();
         Listing::factory()->count(3)->create([
@@ -361,6 +388,7 @@ class AiProxyTest extends TestCase
             '*/areas' => Http::response([
                 'results' => [
                     ['ward_id' => $near->id, 'reason' => 'Giá trung bình nằm trong ngân sách, gần trường.'],
+                    ['ward_id' => $otherCity->id, 'reason' => 'Khác thành phố.'],
                     ['ward_id' => 999, 'reason' => 'fabricated'],
                 ],
             ]),
@@ -400,6 +428,16 @@ class AiProxyTest extends TestCase
         $this->actingAs($student, 'sanctum')
             ->postJson('/api/ai/area-suggestions')
             ->assertStatus(422);
+    }
+
+    public function test_area_suggestions_rejects_a_school_without_a_city(): void
+    {
+        Http::fake();
+        $school = School::factory()->create(['city_id' => null]);
+        $this->actingAs($this->student, 'sanctum')->postJson('/api/ai/area-suggestions', [
+            'school_id' => $school->id, 'budget_max' => 3_000_000,
+        ])->assertUnprocessable()->assertJsonValidationErrors('school_id');
+        Http::assertNothingSent();
     }
 
     // ------------------------------------------------------------------

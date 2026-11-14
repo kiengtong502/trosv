@@ -213,8 +213,16 @@ def test_chat_contract_general_reply(client):
     assert len(data["reply"]) > 0
 
 
-def test_chat_deposit_includes_legal_tail(client):
-    payload = {"message": "Tien coc thue phong thuong la bao nhieu?"}
+@pytest.mark.parametrize(
+    "message",
+    [
+        "Tien coc thue phong thuong la bao nhieu?",
+        "Tiền cọc và hợp đồng thuê phòng cần chú ý gì?",
+        "HỢP ĐỒNG THUÊ PHÒNG",
+    ],
+)
+def test_chat_deposit_includes_legal_tail(client, message):
+    payload = {"message": message}
     response = client.post("/chat", json=payload)
     assert response.status_code == 200
     reply = response.json()["reply"]
@@ -242,6 +250,7 @@ def test_chat_with_listing_context(client):
     reply = response.json()["reply"]
     assert isinstance(reply, str)
     assert len(reply) > 0
+    assert "2,500,000" in reply
 
 
 # ----------------------------------------------------------------------
@@ -265,6 +274,26 @@ def test_description_contract_shape(client):
     assert "description" in data
     assert isinstance(data["description"], str)
     assert len(data["description"]) > 0
+
+
+@pytest.mark.parametrize("address", ["12 Đường số 5", "12 Đường số 5, Phường A, TP.HCM"])
+def test_description_does_not_invent_features_or_repeat_ward(client, address):
+    response = client.post(
+        "/description",
+        json={
+            "title": "Phòng A",
+            "address": address,
+            "ward": "Phường A",
+            "amenities": [],
+        },
+    )
+    description = response.json()["description"]
+    assert "đang cho thuê" in description
+    assert address in description
+    assert description.count("Phường A") == 1
+    assert "thoáng" not in description
+    assert "an toàn" not in description
+    assert "tiện ích gồm" not in description
 
 
 # ----------------------------------------------------------------------

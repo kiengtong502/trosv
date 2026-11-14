@@ -17,31 +17,22 @@ export function SuggestionResults({ s }: { s: AreaSuggestions }) {
       </div>
     );
   }
-  if (s.error === "unavailable") {
+  if (s.error) {
     return (
       <EmptyState
         illustration={<AiUnavailableIllustration />}
-        title="Trợ lý AI đang bận"
-        description="Bạn thử lại sau ít phút nhé."
+        title="Chưa tạo được gợi ý"
+        description={s.error}
         action={
           <Button
             variant="outline"
             onClick={() => {
-              location.reload();
+              void s.suggest();
             }}
           >
             Thử lại
           </Button>
         }
-        className="pt-10"
-      />
-    );
-  }
-  if (s.error === "input") {
-    return (
-      <EmptyState
-        title="Chưa đủ thông tin"
-        description="Bạn chọn trường hoặc khoảng ngân sách rồi thử lại nhé."
         className="pt-10"
       />
     );

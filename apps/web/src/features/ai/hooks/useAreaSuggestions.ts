@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { aiAreaSuggestions } from "@/features/ai/api/aiApi";
-import { errStatus } from "@/shared/api/axiosClient";
+import { aiErrorMessage } from "../lib/aiErrorMessage";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { toggleId } from "@/shared/lib/list";
 import type { AiAreaSuggestion } from "@/shared/types/api";
-
-export type SuggestionError = "unavailable" | "input" | null;
 
 /** Form state (starting from the student's profile) and the "suggest areas" request. */
 export function useAreaSuggestions() {
@@ -16,7 +14,7 @@ export function useAreaSuggestions() {
   const [picks, setPicks] = useState<string[]>([]);
   const [rows, setRows] = useState<AiAreaSuggestion[] | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<SuggestionError>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function suggest(): Promise<void> {
     setBusy(true);
@@ -28,7 +26,7 @@ export function useAreaSuggestions() {
       if (max) payload["budget_max"] = Number(max);
       setRows(await aiAreaSuggestions(payload));
     } catch (err) {
-      setError(errStatus(err) === 503 ? "unavailable" : "input");
+      setError(aiErrorMessage(err));
     } finally {
       setBusy(false);
     }

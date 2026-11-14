@@ -1,0 +1,3801 @@
+{
+  "title": "Đối chiếu phường/xã cũ và bộ 102 đơn vị của TROSV",
+  "reviewed_date": "2026-11-13",
+  "database": "rental",
+  "target_data": "apps/api/database/data/hcm-wards-102.json",
+  "resolution_source": "https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-1685-nq-ubtvqh15-sap-xep-cac-dvhc-cap-xa-cua-thanh-pho-ho-chi-minh-nam-2025-119250616211341304.htm",
+  "method": "Truy vấn SELECT trong kết nối đặt default_transaction_read_only=on. Khớp tên trong cùng TP.HCM, bổ sung ánh xạ địa bàn theo khoản nghị quyết. Tọa độ mới chưa dùng để xác định ranh giới.",
+  "limitations": [
+    "Ánh xạ tên và địa bàn chưa xác nhận vị trí thực tế của từng tin phòng hoặc cơ sở trường.",
+    "Ngưỡng 5 km được chọn để ưu tiên rà soát ghim so với điểm phường hiện có. Kết luận thuộc phường cần địa chỉ hoặc ranh giới.",
+    "Bộ 102 đơn vị có 101 tọa độ nguồn chưa xác minh và một tọa độ Hiệp Phước do người dùng cung cấp.",
+    "Bảng wards hiện dùng id nội bộ và chưa có cột lưu mã hành chính của bộ dữ liệu. Cần lưu mã tham chiếu riêng khi cập nhật."
+  ],
+  "summary": {
+    "total_wards": 45,
+    "total_schools": 60,
+    "total_listings": 54,
+    "hcm_wards": 17,
+    "hcm_listings": 23,
+    "hcm_schools": 20,
+    "same_name_wards": 10,
+    "full_merge_wards": 6,
+    "split_wards": 1,
+    "target_units_missing_by_exact_name": 92,
+    "outside_wards": 28,
+    "outside_listings": 31,
+    "outside_schools": 40,
+    "profiles_linked_to_outside_schools": 9,
+    "hcm_listings_over_5km_from_ward_reference": 8,
+    "listings_linked_to_full_merge_wards": 7,
+    "schools_linked_to_full_merge_wards": 9,
+    "additional_targets_reached_by_full_merges": 4
+  },
+  "ward_mapping": [
+    {
+      "db_ward_id": 1,
+      "current_name": "Phường Dịch Vọng Hậu",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0336000",
+        "longitude": "105.7865000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        17,
+        32
+      ],
+      "school_ids": [
+        2,
+        9,
+        13
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 2,
+      "current_name": "Phường Bách Khoa",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0050000",
+        "longitude": "105.8450000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        18
+      ],
+      "school_ids": [
+        1
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 3,
+      "current_name": "Phường Đồng Tâm",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "20.9980000",
+        "longitude": "105.8420000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        19
+      ],
+      "school_ids": [
+        3,
+        6
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 4,
+      "current_name": "Phường Láng Thượng",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0230000",
+        "longitude": "105.8050000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        20
+      ],
+      "school_ids": [
+        4,
+        7,
+        15
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 5,
+      "current_name": "Phường Trung Liệt",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0110000",
+        "longitude": "105.8230000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        21
+      ],
+      "school_ids": [
+        10,
+        20
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 6,
+      "current_name": "Phường Quang Trung",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0120000",
+        "longitude": "105.8270000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        22
+      ],
+      "school_ids": [
+        5
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 7,
+      "current_name": "Phường Mai Dịch",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0400000",
+        "longitude": "105.7760000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        23
+      ],
+      "school_ids": [
+        8
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 8,
+      "current_name": "Phường Phan Chu Trinh",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0210000",
+        "longitude": "105.8560000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        24
+      ],
+      "school_ids": [
+        11
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 9,
+      "current_name": "Phường Đức Thắng",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0770000",
+        "longitude": "105.7760000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        25
+      ],
+      "school_ids": [
+        12
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 10,
+      "current_name": "Phường Mộ Lao",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "20.9840000",
+        "longitude": "105.7860000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        26
+      ],
+      "school_ids": [
+        14,
+        19
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 11,
+      "current_name": "Phường Thanh Xuân Bắc",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "20.9960000",
+        "longitude": "105.7980000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        27
+      ],
+      "school_ids": [],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 12,
+      "current_name": "Phường Thanh Xuân Trung",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "20.9970000",
+        "longitude": "105.8080000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        28
+      ],
+      "school_ids": [
+        17,
+        18
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 13,
+      "current_name": "Phường Minh Khai",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0530000",
+        "longitude": "105.7350000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        29
+      ],
+      "school_ids": [
+        16
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 14,
+      "current_name": "Phường Quan Hoa",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0350000",
+        "longitude": "105.8010000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        30
+      ],
+      "school_ids": [],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 15,
+      "current_name": "Phường Nghĩa Tân",
+      "current_city": "Hà Nội",
+      "current_coordinates": {
+        "latitude": "21.0425000",
+        "longitude": "105.7930000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        31
+      ],
+      "school_ids": [],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 16,
+      "current_name": "Phường Diên Hồng",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7720000",
+        "longitude": "106.6580000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "27169",
+          "name": "Phường Diên Hồng"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        1
+      ],
+      "school_ids": [
+        21
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 17,
+      "current_name": "Phường Chợ Quán",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7580000",
+        "longitude": "106.6780000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "27301",
+          "name": "Phường Chợ Quán"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        2
+      ],
+      "school_ids": [
+        22,
+        31,
+        38
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 18,
+      "current_name": "Phường Bến Nghé",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7780000",
+        "longitude": "106.7020000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "26740",
+          "name": "Phường Sài Gòn"
+        }
+      ],
+      "resolution_clauses": [
+        1
+      ],
+      "listing_ids": [
+        3
+      ],
+      "school_ids": [
+        23
+      ],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 19,
+      "current_name": "Phường Bến Thành",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7713000",
+        "longitude": "106.6940000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "26743",
+          "name": "Phường Bến Thành"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        4
+      ],
+      "school_ids": [
+        34
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 20,
+      "current_name": "Phường Linh Trung",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8700000",
+        "longitude": "106.7860000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "resolution_clauses": [
+        70
+      ],
+      "listing_ids": [
+        5
+      ],
+      "school_ids": [
+        24,
+        25,
+        35
+      ],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 21,
+      "current_name": "Phường Linh Xuân",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8710000",
+        "longitude": "106.7790000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        6
+      ],
+      "school_ids": [
+        26
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 22,
+      "current_name": "Phường Linh Chiểu",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8520000",
+        "longitude": "106.7710000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "26824",
+          "name": "Phường Thủ Đức"
+        }
+      ],
+      "resolution_clauses": [
+        68
+      ],
+      "listing_ids": [
+        7
+      ],
+      "school_ids": [
+        29
+      ],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 23,
+      "current_name": "Phường Võ Thị Sáu",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7845000",
+        "longitude": "106.6920000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "27139",
+          "name": "Phường Xuân Hòa"
+        }
+      ],
+      "resolution_clauses": [
+        6
+      ],
+      "listing_ids": [
+        8
+      ],
+      "school_ids": [
+        27,
+        40
+      ],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 24,
+      "current_name": "Phường Tân Phong",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7310000",
+        "longitude": "106.7020000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "resolution_clauses": [
+        21
+      ],
+      "listing_ids": [
+        9,
+        53
+      ],
+      "school_ids": [
+        28,
+        37
+      ],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 25,
+      "current_name": "Phường Thạnh Mỹ Tây",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8030000",
+        "longitude": "106.7160000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "26956",
+          "name": "Phường Thạnh Mỹ Tây"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        10
+      ],
+      "school_ids": [
+        30
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 26,
+      "current_name": "Phường Bình Lợi Trung",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8180000",
+        "longitude": "106.6960000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "26905",
+          "name": "Phường Bình Lợi Trung"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        11
+      ],
+      "school_ids": [
+        36
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 27,
+      "current_name": "Phường Xóm Chiếu",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7650000",
+        "longitude": "106.7030000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "27259",
+          "name": "Phường Xóm Chiếu"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        12
+      ],
+      "school_ids": [
+        33
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 28,
+      "current_name": "Phường Hạnh Thông",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8220000",
+        "longitude": "106.6870000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "26890",
+          "name": "Phường Hạnh Thông"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        13
+      ],
+      "school_ids": [
+        39
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 29,
+      "current_name": "Phường Chợ Lớn",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7548000",
+        "longitude": "106.6636000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "27343",
+          "name": "Phường Chợ Lớn"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        14
+      ],
+      "school_ids": [
+        32
+      ],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 30,
+      "current_name": "Phường Tân Hưng",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7420000",
+        "longitude": "106.6950000"
+      },
+      "status": "same_name",
+      "target_candidates": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "resolution_clauses": [],
+      "listing_ids": [
+        15,
+        51,
+        52,
+        54,
+        55,
+        56,
+        61
+      ],
+      "school_ids": [],
+      "note": "Khớp tên trong bộ 102 đơn vị. Vị trí của từng phòng và cơ sở trường cần đối chiếu với địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 31,
+      "current_name": "Phường Thảo Điền",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.8060000",
+        "longitude": "106.7320000"
+      },
+      "status": "full_merge",
+      "target_candidates": [
+        {
+          "code": "27094",
+          "name": "Phường An Khánh"
+        }
+      ],
+      "resolution_clauses": [
+        78
+      ],
+      "listing_ids": [
+        16
+      ],
+      "school_ids": [],
+      "note": "Ánh xạ địa bàn theo nghị quyết. Các bản ghi đang gắn nhầm phường cần sửa theo địa chỉ thực tế."
+    },
+    {
+      "db_ward_id": 32,
+      "current_name": "Phường Đa Kao",
+      "current_city": "TP.HCM",
+      "current_coordinates": {
+        "latitude": "10.7917000",
+        "longitude": "106.6930000"
+      },
+      "status": "split_requires_location",
+      "target_candidates": [
+        {
+          "code": "26740",
+          "name": "Phường Sài Gòn"
+        },
+        {
+          "code": "26737",
+          "name": "Phường Tân Định"
+        }
+      ],
+      "resolution_clauses": [
+        1,
+        2
+      ],
+      "listing_ids": [],
+      "school_ids": [],
+      "note": "Địa bàn cũ được chia sang hai phường. Cần xác định đích theo địa chỉ hoặc ranh giới."
+    },
+    {
+      "db_ward_id": 33,
+      "current_name": "Phường Hòa Khánh Bắc",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0750000",
+        "longitude": "108.1530000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        33,
+        46
+      ],
+      "school_ids": [
+        41
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 34,
+      "current_name": "Phường Hòa Khánh Nam",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0610000",
+        "longitude": "108.1580000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        34,
+        47
+      ],
+      "school_ids": [
+        43,
+        48
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 35,
+      "current_name": "Phường Mỹ An",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0480000",
+        "longitude": "108.2410000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        35,
+        48
+      ],
+      "school_ids": [
+        42
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 36,
+      "current_name": "Phường Khuê Trung",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0280000",
+        "longitude": "108.2120000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        36
+      ],
+      "school_ids": [
+        44
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 37,
+      "current_name": "Phường Thanh Bình",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0790000",
+        "longitude": "108.2140000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        37
+      ],
+      "school_ids": [
+        45
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 38,
+      "current_name": "Phường Hòa Quý",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "15.9810000",
+        "longitude": "108.2490000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        38
+      ],
+      "school_ids": [
+        46,
+        53,
+        58
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 39,
+      "current_name": "Phường Thạc Gián",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0610000",
+        "longitude": "108.2090000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        39
+      ],
+      "school_ids": [
+        47
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 40,
+      "current_name": "Phường Hòa Cường Nam",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0340000",
+        "longitude": "108.2190000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        40
+      ],
+      "school_ids": [
+        49,
+        52
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 41,
+      "current_name": "Phường Hòa Hải",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "15.9920000",
+        "longitude": "108.2580000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        41
+      ],
+      "school_ids": [
+        50,
+        59
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 42,
+      "current_name": "Phường Hải Châu",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0680000",
+        "longitude": "108.2200000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        42
+      ],
+      "school_ids": [
+        51,
+        54
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 43,
+      "current_name": "Phường An Hải Đông",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0630000",
+        "longitude": "108.2370000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [],
+      "school_ids": [
+        55
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 44,
+      "current_name": "Phường An Hải Bắc",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0760000",
+        "longitude": "108.2370000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        44
+      ],
+      "school_ids": [
+        56
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    },
+    {
+      "db_ward_id": 45,
+      "current_name": "Phường Thanh Khê Tây",
+      "current_city": "Đà Nẵng",
+      "current_coordinates": {
+        "latitude": "16.0660000",
+        "longitude": "108.1810000"
+      },
+      "status": "outside_scope",
+      "target_candidates": [],
+      "resolution_clauses": [],
+      "listing_ids": [
+        45
+      ],
+      "school_ids": [
+        57,
+        60
+      ],
+      "note": "Dữ liệu ngoài phạm vi đề tài đã chọn."
+    }
+  ],
+  "missing_target_units": [
+    {
+      "code": "26740",
+      "name": "Phường Sài Gòn",
+      "former_area": "Quận 1",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26737",
+      "name": "Phường Tân Định",
+      "former_area": "Quận 1",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26758",
+      "name": "Phường Cầu Ông Lãnh",
+      "former_area": "Quận 1",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27154",
+      "name": "Phường Bàn Cờ",
+      "former_area": "Quận 3",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27139",
+      "name": "Phường Xuân Hòa",
+      "former_area": "Quận 3",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27142",
+      "name": "Phường Nhiêu Lộc",
+      "former_area": "Quận 3",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27265",
+      "name": "Phường Khánh Hội",
+      "former_area": "Quận 4",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27286",
+      "name": "Phường Vĩnh Hội",
+      "former_area": "Quận 4",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27316",
+      "name": "Phường An Đông",
+      "former_area": "Quận 5",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27367",
+      "name": "Phường Bình Tây",
+      "former_area": "Quận 6",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27373",
+      "name": "Phường Bình Tiên",
+      "former_area": "Quận 6",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27364",
+      "name": "Phường Bình Phú",
+      "former_area": "Quận 6",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27349",
+      "name": "Phường Phú Lâm",
+      "former_area": "Quận 6",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27478",
+      "name": "Phường Tân Thuận",
+      "former_area": "Quận 7",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27484",
+      "name": "Phường Phú Thuận",
+      "former_area": "Quận 7",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27487",
+      "name": "Phường Tân Mỹ",
+      "former_area": "Quận 7",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27418",
+      "name": "Phường Chánh Hưng",
+      "former_area": "Quận 8",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27427",
+      "name": "Phường Phú Định",
+      "former_area": "Quận 8",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27424",
+      "name": "Phường Bình Đông",
+      "former_area": "Quận 8",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27190",
+      "name": "Phường Vườn Lài",
+      "former_area": "Quận 10",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27163",
+      "name": "Phường Hòa Hưng",
+      "former_area": "Quận 10",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27238",
+      "name": "Phường Minh Phụng",
+      "former_area": "Quận 11",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27232",
+      "name": "Phường Bình Thới",
+      "former_area": "Quận 11",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27211",
+      "name": "Phường Hòa Bình",
+      "former_area": "Quận 11",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27226",
+      "name": "Phường Phú Thọ",
+      "former_area": "Quận 11",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26791",
+      "name": "Phường Đông Hưng Thuận",
+      "former_area": "Quận 12",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26785",
+      "name": "Phường Trung Mỹ Tây",
+      "former_area": "Quận 12",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26782",
+      "name": "Phường Tân Thới Hiệp",
+      "former_area": "Quận 12",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26773",
+      "name": "Phường Thới An",
+      "former_area": "Quận 12",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26767",
+      "name": "Phường An Phú Đông",
+      "former_area": "Quận 12",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27460",
+      "name": "Phường An Lạc",
+      "former_area": "Quận Bình Tân",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27457",
+      "name": "Phường Tân Tạo",
+      "former_area": "Quận Bình Tân",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27442",
+      "name": "Phường Bình Tân",
+      "former_area": "Quận Bình Tân",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27448",
+      "name": "Phường Bình Trị Đông",
+      "former_area": "Quận Bình Tân",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27439",
+      "name": "Phường Bình Hưng Hòa",
+      "former_area": "Quận Bình Tân",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26944",
+      "name": "Phường Gia Định",
+      "former_area": "Quận Bình Thạnh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26929",
+      "name": "Phường Bình Thạnh",
+      "former_area": "Quận Bình Thạnh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26911",
+      "name": "Phường Bình Quới",
+      "former_area": "Quận Bình Thạnh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26876",
+      "name": "Phường An Nhơn",
+      "former_area": "Quận Gò Vấp",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26884",
+      "name": "Phường Gò Vấp",
+      "former_area": "Quận Gò Vấp",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26878",
+      "name": "Phường An Hội Đông",
+      "former_area": "Quận Gò Vấp",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26898",
+      "name": "Phường Thông Tây Hội",
+      "former_area": "Quận Gò Vấp",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26882",
+      "name": "Phường An Hội Tây",
+      "former_area": "Quận Gò Vấp",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27043",
+      "name": "Phường Đức Nhuận",
+      "former_area": "Quận Phú Nhuận",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27058",
+      "name": "Phường Cầu Kiệu",
+      "former_area": "Quận Phú Nhuận",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27073",
+      "name": "Phường Phú Nhuận",
+      "former_area": "Quận Phú Nhuận",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26977",
+      "name": "Phường Tân Sơn Hòa",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26968",
+      "name": "Phường Tân Sơn Nhất",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26995",
+      "name": "Phường Tân Hòa",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26983",
+      "name": "Phường Bảy Hiền",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27004",
+      "name": "Phường Tân Bình",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27007",
+      "name": "Phường Tân Sơn",
+      "former_area": "Quận Tân Bình",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27013",
+      "name": "Phường Tây Thạnh",
+      "former_area": "Quận Tân Phú",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27019",
+      "name": "Phường Tân Sơn Nhì",
+      "former_area": "Quận Tân Phú",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27022",
+      "name": "Phường Phú Thọ Hòa",
+      "former_area": "Quận Tân Phú",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27031",
+      "name": "Phường Tân Phú",
+      "former_area": "Quận Tân Phú",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27028",
+      "name": "Phường Phú Thạnh",
+      "former_area": "Quận Tân Phú",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26809",
+      "name": "Phường Hiệp Bình",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26824",
+      "name": "Phường Thủ Đức",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26803",
+      "name": "Phường Tam Bình",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26842",
+      "name": "Phường Tăng Nhơn Phú",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26833",
+      "name": "Phường Long Bình",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26857",
+      "name": "Phường Long Phước",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26860",
+      "name": "Phường Long Trường",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27112",
+      "name": "Phường Cát Lái",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27097",
+      "name": "Phường Bình Trưng",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "26848",
+      "name": "Phường Phước Long",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27094",
+      "name": "Phường An Khánh",
+      "former_area": "TP. Thủ Đức",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27601",
+      "name": "Xã Vĩnh Lộc",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27604",
+      "name": "Xã Tân Vĩnh Lộc",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27610",
+      "name": "Xã Bình Lợi",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27595",
+      "name": "Xã Tân Nhựt",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27637",
+      "name": "Xã Bình Chánh",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27628",
+      "name": "Xã Hưng Long",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27619",
+      "name": "Xã Bình Hưng",
+      "former_area": "Huyện Bình Chánh",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27667",
+      "name": "Xã Bình Khánh",
+      "former_area": "Huyện Cần Giờ",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27673",
+      "name": "Xã An Thới Đông",
+      "former_area": "Huyện Cần Giờ",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27664",
+      "name": "Xã Cần Giờ",
+      "former_area": "Huyện Cần Giờ",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27676",
+      "name": "Xã Thạnh An",
+      "former_area": "Huyện Cần Giờ",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27553",
+      "name": "Xã Củ Chi",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27496",
+      "name": "Xã Tân An Hội",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27526",
+      "name": "Xã Thái Mỹ",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27508",
+      "name": "Xã An Nhơn Tây",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27511",
+      "name": "Xã Nhuận Đức",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27541",
+      "name": "Xã Phú Hòa Đông",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27544",
+      "name": "Xã Bình Mỹ",
+      "former_area": "Huyện Củ Chi",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27568",
+      "name": "Xã Đông Thạnh",
+      "former_area": "Huyện Hóc Môn",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27559",
+      "name": "Xã Hóc Môn",
+      "former_area": "Huyện Hóc Môn",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27577",
+      "name": "Xã Xuân Thới Sơn",
+      "former_area": "Huyện Hóc Môn",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27592",
+      "name": "Xã Bà Điểm",
+      "former_area": "Huyện Hóc Môn",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27655",
+      "name": "Xã Nhà Bè",
+      "former_area": "Huyện Nhà Bè",
+      "coordinate_status": "unverified"
+    },
+    {
+      "code": "27658",
+      "name": "Xã Hiệp Phước",
+      "former_area": "Huyện Nhà Bè",
+      "coordinate_status": "user_provided"
+    }
+  ],
+  "school_assessments": [
+    {
+      "school_id": 1,
+      "name": "ĐH Bách Khoa Hà Nội (HUST)",
+      "city": "Hà Nội",
+      "db_ward_id": 2,
+      "current_ward": "Phường Bách Khoa",
+      "coordinates": {
+        "latitude": "21.0056000",
+        "longitude": "105.8433000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 2,
+      "name": "ĐHQG Hà Nội - ĐH Công nghệ (UET)",
+      "city": "Hà Nội",
+      "db_ward_id": 1,
+      "current_ward": "Phường Dịch Vọng Hậu",
+      "coordinates": {
+        "latitude": "21.0371000",
+        "longitude": "105.7828000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 3,
+      "name": "ĐH Kinh tế Quốc dân (NEU)",
+      "city": "Hà Nội",
+      "db_ward_id": 3,
+      "current_ward": "Phường Đồng Tâm",
+      "coordinates": {
+        "latitude": "20.9961000",
+        "longitude": "105.8427000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 4,
+      "name": "ĐH Ngoại thương (FTU)",
+      "city": "Hà Nội",
+      "db_ward_id": 4,
+      "current_ward": "Phường Láng Thượng",
+      "coordinates": {
+        "latitude": "21.0229000",
+        "longitude": "105.8038000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 5,
+      "name": "Học viện Ngân hàng (BA)",
+      "city": "Hà Nội",
+      "db_ward_id": 6,
+      "current_ward": "Phường Quang Trung",
+      "coordinates": {
+        "latitude": "21.0089000",
+        "longitude": "105.8285000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 6,
+      "name": "ĐH Xây dựng Hà Nội (HUCE)",
+      "city": "Hà Nội",
+      "db_ward_id": 3,
+      "current_ward": "Phường Đồng Tâm",
+      "coordinates": {
+        "latitude": "20.9995000",
+        "longitude": "105.8420000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 7,
+      "name": "ĐH Giao thông Vận tải (UTC)",
+      "city": "Hà Nội",
+      "db_ward_id": 4,
+      "current_ward": "Phường Láng Thượng",
+      "coordinates": {
+        "latitude": "21.0287000",
+        "longitude": "105.8016000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 8,
+      "name": "ĐH Thương mại (TMU)",
+      "city": "Hà Nội",
+      "db_ward_id": 7,
+      "current_ward": "Phường Mai Dịch",
+      "coordinates": {
+        "latitude": "21.0366000",
+        "longitude": "105.7744000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 9,
+      "name": "ĐH Sư phạm Hà Nội (HNUE)",
+      "city": "Hà Nội",
+      "db_ward_id": 1,
+      "current_ward": "Phường Dịch Vọng Hậu",
+      "coordinates": {
+        "latitude": "21.0374000",
+        "longitude": "105.7831000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 10,
+      "name": "ĐH Y Hà Nội (HMU)",
+      "city": "Hà Nội",
+      "db_ward_id": 5,
+      "current_ward": "Phường Trung Liệt",
+      "coordinates": {
+        "latitude": "21.0028000",
+        "longitude": "105.8310000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 11,
+      "name": "ĐH Dược Hà Nội (HUP)",
+      "city": "Hà Nội",
+      "db_ward_id": 8,
+      "current_ward": "Phường Phan Chu Trinh",
+      "coordinates": {
+        "latitude": "21.0205000",
+        "longitude": "105.8576000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 12,
+      "name": "Học viện Tài chính (AOF)",
+      "city": "Hà Nội",
+      "db_ward_id": 9,
+      "current_ward": "Phường Đức Thắng",
+      "coordinates": {
+        "latitude": "21.0772000",
+        "longitude": "105.7766000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 13,
+      "name": "Học viện Báo chí & Tuyên truyền (AJC)",
+      "city": "Hà Nội",
+      "db_ward_id": 1,
+      "current_ward": "Phường Dịch Vọng Hậu",
+      "coordinates": {
+        "latitude": "21.0362000",
+        "longitude": "105.7892000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 14,
+      "name": "Học viện Công nghệ Bưu chính Viễn thông (PTIT)",
+      "city": "Hà Nội",
+      "db_ward_id": 10,
+      "current_ward": "Phường Mộ Lao",
+      "coordinates": {
+        "latitude": "20.9806000",
+        "longitude": "105.7877000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 15,
+      "name": "ĐH Luật Hà Nội (HLU)",
+      "city": "Hà Nội",
+      "db_ward_id": 4,
+      "current_ward": "Phường Láng Thượng",
+      "coordinates": {
+        "latitude": "21.0185000",
+        "longitude": "105.8080000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 16,
+      "name": "ĐH Công nghiệp Hà Nội (HaUI)",
+      "city": "Hà Nội",
+      "db_ward_id": 13,
+      "current_ward": "Phường Minh Khai",
+      "coordinates": {
+        "latitude": "21.0537000",
+        "longitude": "105.7351000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 17,
+      "name": "ĐH Khoa học Tự nhiên - ĐHQGHN (HUS)",
+      "city": "Hà Nội",
+      "db_ward_id": 12,
+      "current_ward": "Phường Thanh Xuân Trung",
+      "coordinates": {
+        "latitude": "20.9944000",
+        "longitude": "105.8083000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 18,
+      "name": "ĐH KHXH&NV - ĐHQGHN (USSH HN)",
+      "city": "Hà Nội",
+      "db_ward_id": 12,
+      "current_ward": "Phường Thanh Xuân Trung",
+      "coordinates": {
+        "latitude": "20.9950000",
+        "longitude": "105.8075000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 19,
+      "name": "ĐH Kiến trúc Hà Nội (HAU)",
+      "city": "Hà Nội",
+      "db_ward_id": 10,
+      "current_ward": "Phường Mộ Lao",
+      "coordinates": {
+        "latitude": "20.9825000",
+        "longitude": "105.7885000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 20,
+      "name": "ĐH Thủy lợi (TLU)",
+      "city": "Hà Nội",
+      "db_ward_id": 5,
+      "current_ward": "Phường Trung Liệt",
+      "coordinates": {
+        "latitude": "21.0076000",
+        "longitude": "105.8242000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 21,
+      "name": "ĐH Bách Khoa - ĐHQG TP.HCM (HCMUT)",
+      "city": "TP.HCM",
+      "db_ward_id": 16,
+      "current_ward": "Phường Diên Hồng",
+      "coordinates": {
+        "latitude": "10.7721000",
+        "longitude": "106.6577000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27169",
+          "name": "Phường Diên Hồng"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 22,
+      "name": "ĐH Khoa học Tự nhiên - ĐHQG TP.HCM (HCMUS)",
+      "city": "TP.HCM",
+      "db_ward_id": 17,
+      "current_ward": "Phường Chợ Quán",
+      "coordinates": {
+        "latitude": "10.7628000",
+        "longitude": "106.6824000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27301",
+          "name": "Phường Chợ Quán"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 23,
+      "name": "ĐH KHXH&NV - ĐHQG TP.HCM (USSH HCM)",
+      "city": "TP.HCM",
+      "db_ward_id": 18,
+      "current_ward": "Phường Bến Nghé",
+      "coordinates": {
+        "latitude": "10.7877000",
+        "longitude": "106.7018000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26740",
+          "name": "Phường Sài Gòn"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 24,
+      "name": "ĐH Quốc tế - ĐHQG TP.HCM (HCMIU)",
+      "city": "TP.HCM",
+      "db_ward_id": 20,
+      "current_ward": "Phường Linh Trung",
+      "coordinates": {
+        "latitude": "10.8779000",
+        "longitude": "106.8019000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 25,
+      "name": "ĐH Công nghệ Thông tin - ĐHQG TP.HCM (UIT)",
+      "city": "TP.HCM",
+      "db_ward_id": 20,
+      "current_ward": "Phường Linh Trung",
+      "coordinates": {
+        "latitude": "10.8700000",
+        "longitude": "106.8030000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 26,
+      "name": "ĐH Kinh tế - Luật - ĐHQG TP.HCM (UEL)",
+      "city": "TP.HCM",
+      "db_ward_id": 21,
+      "current_ward": "Phường Linh Xuân",
+      "coordinates": {
+        "latitude": "10.8697000",
+        "longitude": "106.7781000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 27,
+      "name": "ĐH Kinh tế TP.HCM (UEH)",
+      "city": "TP.HCM",
+      "db_ward_id": 23,
+      "current_ward": "Phường Võ Thị Sáu",
+      "coordinates": {
+        "latitude": "10.7830000",
+        "longitude": "106.6953000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27139",
+          "name": "Phường Xuân Hòa"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 28,
+      "name": "ĐH Tôn Đức Thắng (TDTU)",
+      "city": "TP.HCM",
+      "db_ward_id": 24,
+      "current_ward": "Phường Tân Phong",
+      "coordinates": {
+        "latitude": "10.7325000",
+        "longitude": "106.6996000"
+      },
+      "linked_profiles": 1,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 29,
+      "name": "ĐH Sư phạm Kỹ thuật TP.HCM (HCMUTE)",
+      "city": "TP.HCM",
+      "db_ward_id": 22,
+      "current_ward": "Phường Linh Chiểu",
+      "coordinates": {
+        "latitude": "10.8508000",
+        "longitude": "106.7721000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26824",
+          "name": "Phường Thủ Đức"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 30,
+      "name": "ĐH Công nghệ TP.HCM (HUTECH)",
+      "city": "TP.HCM",
+      "db_ward_id": 25,
+      "current_ward": "Phường Thạnh Mỹ Tây",
+      "coordinates": {
+        "latitude": "10.8018000",
+        "longitude": "106.7148000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26956",
+          "name": "Phường Thạnh Mỹ Tây"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 31,
+      "name": "ĐH Sư phạm TP.HCM (HCMUE)",
+      "city": "TP.HCM",
+      "db_ward_id": 17,
+      "current_ward": "Phường Chợ Quán",
+      "coordinates": {
+        "latitude": "10.7616000",
+        "longitude": "106.6824000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27301",
+          "name": "Phường Chợ Quán"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 32,
+      "name": "ĐH Y Dược TP.HCM (UMP)",
+      "city": "TP.HCM",
+      "db_ward_id": 29,
+      "current_ward": "Phường Chợ Lớn",
+      "coordinates": {
+        "latitude": "10.7548000",
+        "longitude": "106.6636000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27343",
+          "name": "Phường Chợ Lớn"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 33,
+      "name": "ĐH Luật TP.HCM (HCMULAW)",
+      "city": "TP.HCM",
+      "db_ward_id": 27,
+      "current_ward": "Phường Xóm Chiếu",
+      "coordinates": {
+        "latitude": "10.7667000",
+        "longitude": "106.7038000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27259",
+          "name": "Phường Xóm Chiếu"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 34,
+      "name": "ĐH Ngân hàng TP.HCM (HUB)",
+      "city": "TP.HCM",
+      "db_ward_id": 19,
+      "current_ward": "Phường Bến Thành",
+      "coordinates": {
+        "latitude": "10.7706000",
+        "longitude": "106.7032000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26743",
+          "name": "Phường Bến Thành"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 35,
+      "name": "ĐH Nông Lâm TP.HCM (NLU)",
+      "city": "TP.HCM",
+      "db_ward_id": 20,
+      "current_ward": "Phường Linh Trung",
+      "coordinates": {
+        "latitude": "10.8712000",
+        "longitude": "106.7913000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 36,
+      "name": "ĐH Văn Lang (VLU)",
+      "city": "TP.HCM",
+      "db_ward_id": 26,
+      "current_ward": "Phường Bình Lợi Trung",
+      "coordinates": {
+        "latitude": "10.8286000",
+        "longitude": "106.6987000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26905",
+          "name": "Phường Bình Lợi Trung"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 37,
+      "name": "ĐH RMIT Việt Nam (RMIT)",
+      "city": "TP.HCM",
+      "db_ward_id": 24,
+      "current_ward": "Phường Tân Phong",
+      "coordinates": {
+        "latitude": "10.7293000",
+        "longitude": "106.6935000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 38,
+      "name": "ĐH Sài Gòn (SGU)",
+      "city": "TP.HCM",
+      "db_ward_id": 17,
+      "current_ward": "Phường Chợ Quán",
+      "coordinates": {
+        "latitude": "10.7599000",
+        "longitude": "106.6820000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27301",
+          "name": "Phường Chợ Quán"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 39,
+      "name": "ĐH Công nghiệp TP.HCM (IUH)",
+      "city": "TP.HCM",
+      "db_ward_id": 28,
+      "current_ward": "Phường Hạnh Thông",
+      "coordinates": {
+        "latitude": "10.8219000",
+        "longitude": "106.6867000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26890",
+          "name": "Phường Hạnh Thông"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 40,
+      "name": "ĐH Mở TP.HCM (HCMCOU)",
+      "city": "TP.HCM",
+      "db_ward_id": 23,
+      "current_ward": "Phường Võ Thị Sáu",
+      "coordinates": {
+        "latitude": "10.7766000",
+        "longitude": "106.6908000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27139",
+          "name": "Phường Xuân Hòa"
+        }
+      ],
+      "review_note": "Đích suy ra từ phường đang gắn. Cần đối chiếu địa chỉ cơ sở và tọa độ trường trước khi xác nhận."
+    },
+    {
+      "school_id": 41,
+      "name": "ĐH Bách Khoa - ĐH Đà Nẵng (DUT)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 33,
+      "current_ward": "Phường Hòa Khánh Bắc",
+      "coordinates": {
+        "latitude": "16.0749000",
+        "longitude": "108.1532000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 42,
+      "name": "ĐH Kinh tế - ĐH Đà Nẵng (DUE)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 35,
+      "current_ward": "Phường Mỹ An",
+      "coordinates": {
+        "latitude": "16.0494000",
+        "longitude": "108.2405000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 43,
+      "name": "ĐH Sư phạm - ĐH Đà Nẵng (UED)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 34,
+      "current_ward": "Phường Hòa Khánh Nam",
+      "coordinates": {
+        "latitude": "16.0602000",
+        "longitude": "108.1593000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 44,
+      "name": "ĐH Ngoại ngữ - ĐH Đà Nẵng (UFL)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 36,
+      "current_ward": "Phường Khuê Trung",
+      "coordinates": {
+        "latitude": "16.0336000",
+        "longitude": "108.2106000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 45,
+      "name": "ĐH Sư phạm Kỹ thuật - ĐH Đà Nẵng (UTE DN)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 37,
+      "current_ward": "Phường Thanh Bình",
+      "coordinates": {
+        "latitude": "16.0792000",
+        "longitude": "108.2144000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 46,
+      "name": "ĐH CNTT & Truyền thông Việt - Hàn (VKU)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 38,
+      "current_ward": "Phường Hòa Quý",
+      "coordinates": {
+        "latitude": "15.9753000",
+        "longitude": "108.2526000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 47,
+      "name": "ĐH Duy Tân - CS Nguyễn Văn Linh (DTU)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 39,
+      "current_ward": "Phường Thạc Gián",
+      "coordinates": {
+        "latitude": "16.0610000",
+        "longitude": "108.2101000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 48,
+      "name": "ĐH Duy Tân - CS Hòa Khánh (DTU HK)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 34,
+      "current_ward": "Phường Hòa Khánh Nam",
+      "coordinates": {
+        "latitude": "16.0735000",
+        "longitude": "108.1482000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 49,
+      "name": "ĐH Đông Á (UDA)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 40,
+      "current_ward": "Phường Hòa Cường Nam",
+      "coordinates": {
+        "latitude": "16.0325000",
+        "longitude": "108.2201000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 50,
+      "name": "ĐH FPT Đà Nẵng (FPT DN)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 41,
+      "current_ward": "Phường Hòa Hải",
+      "coordinates": {
+        "latitude": "15.9868000",
+        "longitude": "108.2612000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 51,
+      "name": "ĐH Kỹ thuật Y - Dược Đà Nẵng",
+      "city": "Đà Nẵng",
+      "db_ward_id": 42,
+      "current_ward": "Phường Hải Châu",
+      "coordinates": {
+        "latitude": "16.0691000",
+        "longitude": "108.2185000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 52,
+      "name": "ĐH Kiến trúc Đà Nẵng (DAU)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 40,
+      "current_ward": "Phường Hòa Cường Nam",
+      "coordinates": {
+        "latitude": "16.0354000",
+        "longitude": "108.2218000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 53,
+      "name": "Khoa Y - Dược - ĐH Đà Nẵng (SMP DN)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 38,
+      "current_ward": "Phường Hòa Quý",
+      "coordinates": {
+        "latitude": "15.9892000",
+        "longitude": "108.2498000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 54,
+      "name": "Viện Nghiên cứu & Đào tạo Việt - Anh (VNUK)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 42,
+      "current_ward": "Phường Hải Châu",
+      "coordinates": {
+        "latitude": "16.0731000",
+        "longitude": "108.2205000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 55,
+      "name": "Học viện Chính trị Khu vực III",
+      "city": "Đà Nẵng",
+      "db_ward_id": 43,
+      "current_ward": "Phường An Hải Đông",
+      "coordinates": {
+        "latitude": "16.0632000",
+        "longitude": "108.2372000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 56,
+      "name": "ĐH Greenwich Việt Nam - CS Đà Nẵng",
+      "city": "Đà Nẵng",
+      "db_ward_id": 44,
+      "current_ward": "Phường An Hải Bắc",
+      "coordinates": {
+        "latitude": "16.0798000",
+        "longitude": "108.2366000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 57,
+      "name": "ĐH Thể dục Thể thao Đà Nẵng (DSU)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 45,
+      "current_ward": "Phường Thanh Khê Tây",
+      "coordinates": {
+        "latitude": "16.0658000",
+        "longitude": "108.1812000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 58,
+      "name": "Cao đẳng CNTT Đà Nẵng (CIT)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 38,
+      "current_ward": "Phường Hòa Quý",
+      "coordinates": {
+        "latitude": "15.9760000",
+        "longitude": "108.2510000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 59,
+      "name": "Cao đẳng Du lịch Đà Nẵng (DVTC)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 41,
+      "current_ward": "Phường Hòa Hải",
+      "coordinates": {
+        "latitude": "15.9856000",
+        "longitude": "108.2571000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    },
+    {
+      "school_id": 60,
+      "name": "Cao đẳng Thương mại Đà Nẵng (CDTM)",
+      "city": "Đà Nẵng",
+      "db_ward_id": 45,
+      "current_ward": "Phường Thanh Khê Tây",
+      "coordinates": {
+        "latitude": "16.0665000",
+        "longitude": "108.1805000"
+      },
+      "linked_profiles": 0,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "review_note": "Cần xử lý các hồ sơ đang tham chiếu trước khi loại trường khỏi dữ liệu hoạt động."
+    }
+  ],
+  "listing_assessments": [
+    {
+      "listing_id": 1,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Bách Khoa - ĐHQG TP.HCM (HCMUT) (25m²)",
+      "address": "Số 103 Đường Lý Thường Kiệt, Phường Diên Hồng, TP.HCM",
+      "status": "available",
+      "db_ward_id": 16,
+      "current_ward": "Phường Diên Hồng",
+      "coordinates": {
+        "latitude": "10.7707000",
+        "longitude": "106.6550000"
+      },
+      "distance_to_current_ward_reference_km": 0.36,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27169",
+          "name": "Phường Diên Hồng"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 2,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Khoa học Tự nhiên - ĐHQG TP.HCM (HCMUS) (25m²)",
+      "address": "Số 197 Đường Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM",
+      "status": "available",
+      "db_ward_id": 17,
+      "current_ward": "Phường Chợ Quán",
+      "coordinates": {
+        "latitude": "10.7628000",
+        "longitude": "106.6827000"
+      },
+      "distance_to_current_ward_reference_km": 0.74,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27301",
+          "name": "Phường Chợ Quán"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 3,
+      "title": "Studio full nội thất gần trường - Gần ĐH KHXH&NV - ĐHQG TP.HCM (USSH HCM) (32m²)",
+      "address": "Số 257 Đường Đinh Tiên Hoàng, Phường Bến Nghé, TP.HCM",
+      "status": "available",
+      "db_ward_id": 18,
+      "current_ward": "Phường Bến Nghé",
+      "coordinates": {
+        "latitude": "10.7849000",
+        "longitude": "106.7037000"
+      },
+      "distance_to_current_ward_reference_km": 0.79,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26740",
+          "name": "Phường Sài Gòn"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 4,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Quốc tế - ĐHQG TP.HCM (HCMIU) (22m²)",
+      "address": "Số 126 Đường Võ Văn Ngân, Phường Bến Thành, TP.HCM",
+      "status": "available",
+      "db_ward_id": 19,
+      "current_ward": "Phường Bến Thành",
+      "coordinates": {
+        "latitude": "10.8745000",
+        "longitude": "106.8043000"
+      },
+      "distance_to_current_ward_reference_km": 16.64,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26743",
+          "name": "Phường Bến Thành"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 5,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Công nghệ Thông tin - ĐHQG TP.HCM (UIT) (79m²)",
+      "address": "Số 209 Đường Điện Biên Phủ, Phường Linh Trung, TP.HCM",
+      "status": "available",
+      "db_ward_id": 20,
+      "current_ward": "Phường Linh Trung",
+      "coordinates": {
+        "latitude": "10.8692000",
+        "longitude": "106.8057000"
+      },
+      "distance_to_current_ward_reference_km": 2.15,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 6,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Kinh tế - Luật - ĐHQG TP.HCM (UEL) (21m²)",
+      "address": "Số 104 Đường Nguyễn Hữu Thọ, Phường Linh Xuân, TP.HCM",
+      "status": "available",
+      "db_ward_id": 21,
+      "current_ward": "Phường Linh Xuân",
+      "coordinates": {
+        "latitude": "10.8695000",
+        "longitude": "106.7766000"
+      },
+      "distance_to_current_ward_reference_km": 0.31,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26800",
+          "name": "Phường Linh Xuân"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 7,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Kinh tế TP.HCM (UEH) (30m²)",
+      "address": "Số 205 Đường An Dương Vương, Phường Linh Chiểu, TP.HCM",
+      "status": "available",
+      "db_ward_id": 22,
+      "current_ward": "Phường Linh Chiểu",
+      "coordinates": {
+        "latitude": "10.7856000",
+        "longitude": "106.6948000"
+      },
+      "distance_to_current_ward_reference_km": 11.13,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26824",
+          "name": "Phường Thủ Đức"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference",
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 8,
+      "title": "Studio full nội thất gần trường - Gần ĐH Tôn Đức Thắng (TDTU) (42m²)",
+      "address": "Số 215 Đường Đặng Thùy Trâm, Phường Võ Thị Sáu, TP.HCM",
+      "status": "available",
+      "db_ward_id": 23,
+      "current_ward": "Phường Võ Thị Sáu",
+      "coordinates": {
+        "latitude": "10.7295000",
+        "longitude": "106.6966000"
+      },
+      "distance_to_current_ward_reference_km": 6.14,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27139",
+          "name": "Phường Xuân Hòa"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference",
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 9,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Sư phạm Kỹ thuật TP.HCM (HCMUTE) (19m²)",
+      "address": "Số 175 Đường Nguyễn Văn Bảo, Phường Tân Phong, TP.HCM",
+      "status": "available",
+      "db_ward_id": 24,
+      "current_ward": "Phường Tân Phong",
+      "coordinates": {
+        "latitude": "10.8518000",
+        "longitude": "106.7730000"
+      },
+      "distance_to_current_ward_reference_km": 15.51,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference",
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 10,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Công nghệ TP.HCM (HUTECH) (102m²)",
+      "address": "Số 235 Đường D2 (Nguyễn Gia Trí), Phường Thạnh Mỹ Tây, TP.HCM",
+      "status": "available",
+      "db_ward_id": 25,
+      "current_ward": "Phường Thạnh Mỹ Tây",
+      "coordinates": {
+        "latitude": "10.8031000",
+        "longitude": "106.7180000"
+      },
+      "distance_to_current_ward_reference_km": 0.22,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26956",
+          "name": "Phường Thạnh Mỹ Tây"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 11,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Sư phạm TP.HCM (HCMUE) (26m²)",
+      "address": "Số 242 Đường Tô Hiến Thành, Phường Bình Lợi Trung, TP.HCM",
+      "status": "available",
+      "db_ward_id": 26,
+      "current_ward": "Phường Bình Lợi Trung",
+      "coordinates": {
+        "latitude": "10.7651000",
+        "longitude": "106.6795000"
+      },
+      "distance_to_current_ward_reference_km": 6.15,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26905",
+          "name": "Phường Bình Lợi Trung"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 12,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Y Dược TP.HCM (UMP) (20m²)",
+      "address": "Số 120 Đường Sư Vạn Hạnh, Phường Xóm Chiếu, TP.HCM",
+      "status": "available",
+      "db_ward_id": 27,
+      "current_ward": "Phường Xóm Chiếu",
+      "coordinates": {
+        "latitude": "10.7519000",
+        "longitude": "106.6655000"
+      },
+      "distance_to_current_ward_reference_km": 4.35,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27259",
+          "name": "Phường Xóm Chiếu"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 13,
+      "title": "Studio full nội thất gần trường - Gần ĐH Luật TP.HCM (HCMULAW) (37m²)",
+      "address": "Số 124 Đường Lý Thường Kiệt, Phường Hạnh Thông, TP.HCM",
+      "status": "available",
+      "db_ward_id": 28,
+      "current_ward": "Phường Hạnh Thông",
+      "coordinates": {
+        "latitude": "10.7681000",
+        "longitude": "106.7040000"
+      },
+      "distance_to_current_ward_reference_km": 6.27,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "26890",
+          "name": "Phường Hạnh Thông"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 14,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Ngân hàng TP.HCM (HUB) (16m²)",
+      "address": "Số 211 Đường Nguyễn Văn Cừ, Phường Chợ Lớn, TP.HCM",
+      "status": "available",
+      "db_ward_id": 29,
+      "current_ward": "Phường Chợ Lớn",
+      "coordinates": {
+        "latitude": "10.7696000",
+        "longitude": "106.7026000"
+      },
+      "distance_to_current_ward_reference_km": 4.57,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27343",
+          "name": "Phường Chợ Lớn"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 15,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Nông Lâm TP.HCM (NLU) (109m²)",
+      "address": "Số 118 Đường Đinh Tiên Hoàng, Phường Tân Hưng, TP.HCM",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.8741000",
+        "longitude": "106.7890000"
+      },
+      "distance_to_current_ward_reference_km": 17.92,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 16,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Văn Lang (VLU) (25m²)",
+      "address": "Số 214 Đường Võ Văn Ngân, Phường Thảo Điền, TP.HCM",
+      "status": "available",
+      "db_ward_id": 31,
+      "current_ward": "Phường Thảo Điền",
+      "coordinates": {
+        "latitude": "10.8290000",
+        "longitude": "106.7001000"
+      },
+      "distance_to_current_ward_reference_km": 4.32,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27094",
+          "name": "Phường An Khánh"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 17,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Bách Khoa Hà Nội (HUST) (21m²)",
+      "address": "Số 205 Đường Xuân Thủy, Phường Dịch Vọng Hậu, Hà Nội",
+      "status": "available",
+      "db_ward_id": 1,
+      "current_ward": "Phường Dịch Vọng Hậu",
+      "coordinates": {
+        "latitude": "21.0028000",
+        "longitude": "105.8450000"
+      },
+      "distance_to_current_ward_reference_km": 6.97,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 18,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐHQG Hà Nội - ĐH Công nghệ (UET) (29m²)",
+      "address": "Số 170 Đường Hồ Tùng Mậu, Phường Bách Khoa, Hà Nội",
+      "status": "available",
+      "db_ward_id": 2,
+      "current_ward": "Phường Bách Khoa",
+      "coordinates": {
+        "latitude": "21.0356000",
+        "longitude": "105.7858000"
+      },
+      "distance_to_current_ward_reference_km": 7.02,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 19,
+      "title": "Studio full nội thất gần trường - Gần ĐH Kinh tế Quốc dân (NEU) (34m²)",
+      "address": "Số 54 Đường Đại Cồ Việt, Phường Đồng Tâm, Hà Nội",
+      "status": "available",
+      "db_ward_id": 3,
+      "current_ward": "Phường Đồng Tâm",
+      "coordinates": {
+        "latitude": "20.9985000",
+        "longitude": "105.8461000"
+      },
+      "distance_to_current_ward_reference_km": 0.43,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 20,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Ngoại thương (FTU) (21m²)",
+      "address": "Số 143 Đường Giải Phóng, Phường Láng Thượng, Hà Nội",
+      "status": "available",
+      "db_ward_id": 4,
+      "current_ward": "Phường Láng Thượng",
+      "coordinates": {
+        "latitude": "21.0222000",
+        "longitude": "105.8027000"
+      },
+      "distance_to_current_ward_reference_km": 0.25,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 21,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần Học viện Ngân hàng (BA) (91m²)",
+      "address": "Số 215 Đường Chùa Láng, Phường Trung Liệt, Hà Nội",
+      "status": "available",
+      "db_ward_id": 5,
+      "current_ward": "Phường Trung Liệt",
+      "coordinates": {
+        "latitude": "21.0102000",
+        "longitude": "105.8309000"
+      },
+      "distance_to_current_ward_reference_km": 0.82,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 22,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Xây dựng Hà Nội (HUCE) (23m²)",
+      "address": "Số 195 Đường Chùa Bộc, Phường Quang Trung, Hà Nội",
+      "status": "available",
+      "db_ward_id": 6,
+      "current_ward": "Phường Quang Trung",
+      "coordinates": {
+        "latitude": "20.9983000",
+        "longitude": "105.8406000"
+      },
+      "distance_to_current_ward_reference_km": 2.08,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 23,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Giao thông Vận tải (UTC) (26m²)",
+      "address": "Số 92 Phố Tôn Thất Tùng, Phường Mai Dịch, Hà Nội",
+      "status": "available",
+      "db_ward_id": 7,
+      "current_ward": "Phường Mai Dịch",
+      "coordinates": {
+        "latitude": "21.0264000",
+        "longitude": "105.7987000"
+      },
+      "distance_to_current_ward_reference_km": 2.8,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 24,
+      "title": "Studio full nội thất gần trường - Gần ĐH Thương mại (TMU) (38m²)",
+      "address": "Số 16 Đường Nguyễn Trãi, Phường Phan Chu Trinh, Hà Nội",
+      "status": "available",
+      "db_ward_id": 8,
+      "current_ward": "Phường Phan Chu Trinh",
+      "coordinates": {
+        "latitude": "21.0394000",
+        "longitude": "105.7733000"
+      },
+      "distance_to_current_ward_reference_km": 8.82,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 25,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Sư phạm Hà Nội (HNUE) (19m²)",
+      "address": "Số 206 Đường Cầu Giấy, Phường Đức Thắng, Hà Nội",
+      "status": "available",
+      "db_ward_id": 9,
+      "current_ward": "Phường Đức Thắng",
+      "coordinates": {
+        "latitude": "21.0366000",
+        "longitude": "105.7807000"
+      },
+      "distance_to_current_ward_reference_km": 4.52,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 26,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Y Hà Nội (HMU) (99m²)",
+      "address": "Số 68 Đường Trần Đại Nghĩa, Phường Mộ Lao, Hà Nội",
+      "status": "available",
+      "db_ward_id": 10,
+      "current_ward": "Phường Mộ Lao",
+      "coordinates": {
+        "latitude": "21.0024000",
+        "longitude": "105.8299000"
+      },
+      "distance_to_current_ward_reference_km": 5,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 27,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Dược Hà Nội (HUP) (20m²)",
+      "address": "Số 202 Đường Lê Thanh Nghị, Phường Thanh Xuân Bắc, Hà Nội",
+      "status": "available",
+      "db_ward_id": 11,
+      "current_ward": "Phường Thanh Xuân Bắc",
+      "coordinates": {
+        "latitude": "21.0230000",
+        "longitude": "105.8552000"
+      },
+      "distance_to_current_ward_reference_km": 6.65,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 28,
+      "title": "Phòng khép kín ban công thoáng mát - Gần Học viện Tài chính (AOF) (26m²)",
+      "address": "Số 78 Đường Duy Tân, Phường Thanh Xuân Trung, Hà Nội",
+      "status": "available",
+      "db_ward_id": 12,
+      "current_ward": "Phường Thanh Xuân Trung",
+      "coordinates": {
+        "latitude": "21.0750000",
+        "longitude": "105.7800000"
+      },
+      "distance_to_current_ward_reference_km": 9.15,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 29,
+      "title": "Studio full nội thất gần trường - Gần Học viện Báo chí & Tuyên truyền (AJC) (31m²)",
+      "address": "Số 200 Đường Xuân Thủy, Phường Minh Khai, Hà Nội",
+      "status": "available",
+      "db_ward_id": 13,
+      "current_ward": "Phường Minh Khai",
+      "coordinates": {
+        "latitude": "21.0351000",
+        "longitude": "105.7897000"
+      },
+      "distance_to_current_ward_reference_km": 6.02,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 30,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần Học viện Công nghệ Bưu chính Viễn thông (PTIT) (15m²)",
+      "address": "Số 252 Đường Hồ Tùng Mậu, Phường Quan Hoa, Hà Nội",
+      "status": "available",
+      "db_ward_id": 14,
+      "current_ward": "Phường Quan Hoa",
+      "coordinates": {
+        "latitude": "20.9778000",
+        "longitude": "105.7871000"
+      },
+      "distance_to_current_ward_reference_km": 6.52,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 31,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Luật Hà Nội (HLU) (105m²)",
+      "address": "Số 148 Đường Đại Cồ Việt, Phường Nghĩa Tân, Hà Nội",
+      "status": "available",
+      "db_ward_id": 15,
+      "current_ward": "Phường Nghĩa Tân",
+      "coordinates": {
+        "latitude": "21.0166000",
+        "longitude": "105.8091000"
+      },
+      "distance_to_current_ward_reference_km": 3.33,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 32,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Công nghiệp Hà Nội (HaUI) (27m²)",
+      "address": "Số 110 Đường Giải Phóng, Phường Dịch Vọng Hậu, Hà Nội",
+      "status": "available",
+      "db_ward_id": 1,
+      "current_ward": "Phường Dịch Vọng Hậu",
+      "coordinates": {
+        "latitude": "21.0569000",
+        "longitude": "105.7322000"
+      },
+      "distance_to_current_ward_reference_km": 6.2,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 33,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Bách Khoa - ĐH Đà Nẵng (DUT) (28m²)",
+      "address": "Số 177 Đường Nguyễn Lương Bằng, Phường Hòa Khánh Bắc, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 33,
+      "current_ward": "Phường Hòa Khánh Bắc",
+      "coordinates": {
+        "latitude": "16.0758000",
+        "longitude": "108.1562000"
+      },
+      "distance_to_current_ward_reference_km": 0.35,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 34,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Kinh tế - ĐH Đà Nẵng (DUE) (21m²)",
+      "address": "Số 158 Đường Ngũ Hành Sơn, Phường Hòa Khánh Nam, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 34,
+      "current_ward": "Phường Hòa Khánh Nam",
+      "coordinates": {
+        "latitude": "16.0463000",
+        "longitude": "108.2425000"
+      },
+      "distance_to_current_ward_reference_km": 9.18,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 35,
+      "title": "Studio full nội thất gần trường - Gần ĐH Sư phạm - ĐH Đà Nẵng (UED) (35m²)",
+      "address": "Số 136 Đường Tôn Đức Thắng, Phường Mỹ An, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 35,
+      "current_ward": "Phường Mỹ An",
+      "coordinates": {
+        "latitude": "16.0592000",
+        "longitude": "108.1595000"
+      },
+      "distance_to_current_ward_reference_km": 8.8,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 36,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Ngoại ngữ - ĐH Đà Nẵng (UFL) (22m²)",
+      "address": "Số 245 Đường Lương Nhữ Hộc, Phường Khuê Trung, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 36,
+      "current_ward": "Phường Khuê Trung",
+      "coordinates": {
+        "latitude": "16.0354000",
+        "longitude": "108.2139000"
+      },
+      "distance_to_current_ward_reference_km": 0.85,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 37,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH Sư phạm Kỹ thuật - ĐH Đà Nẵng (UTE DN) (109m²)",
+      "address": "Số 1 Đường Nguyễn Văn Linh, Phường Thanh Bình, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 37,
+      "current_ward": "Phường Thanh Bình",
+      "coordinates": {
+        "latitude": "16.0777000",
+        "longitude": "108.2126000"
+      },
+      "distance_to_current_ward_reference_km": 0.21,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 38,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH CNTT & Truyền thông Việt - Hàn (VKU) (19m²)",
+      "address": "Số 238 Đường Núi Thành, Phường Hòa Quý, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 38,
+      "current_ward": "Phường Hòa Quý",
+      "coordinates": {
+        "latitude": "15.9730000",
+        "longitude": "108.2551000"
+      },
+      "distance_to_current_ward_reference_km": 1.1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 39,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Duy Tân - CS Nguyễn Văn Linh (DTU) (30m²)",
+      "address": "Số 59 Đường Xô Viết Nghệ Tĩnh, Phường Thạc Gián, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 39,
+      "current_ward": "Phường Thạc Gián",
+      "coordinates": {
+        "latitude": "16.0588000",
+        "longitude": "108.2093000"
+      },
+      "distance_to_current_ward_reference_km": 0.25,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 40,
+      "title": "Studio full nội thất gần trường - Gần ĐH Duy Tân - CS Hòa Khánh (DTU HK) (31m²)",
+      "address": "Số 79 Đường Trần Đại Nghĩa, Phường Hòa Cường Nam, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 40,
+      "current_ward": "Phường Hòa Cường Nam",
+      "coordinates": {
+        "latitude": "16.0705000",
+        "longitude": "108.1485000"
+      },
+      "distance_to_current_ward_reference_km": 8.56,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 41,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần ĐH Đông Á (UDA) (18m²)",
+      "address": "Số 152 Đường Dũng Sĩ Thanh Khê, Phường Hòa Hải, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 41,
+      "current_ward": "Phường Hòa Hải",
+      "coordinates": {
+        "latitude": "16.0301000",
+        "longitude": "108.2170000"
+      },
+      "distance_to_current_ward_reference_km": 6.1,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 42,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần ĐH FPT Đà Nẵng (FPT DN) (72m²)",
+      "address": "Số 102 Đường Cao Thắng, Phường Hải Châu, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 42,
+      "current_ward": "Phường Hải Châu",
+      "coordinates": {
+        "latitude": "15.9856000",
+        "longitude": "108.2590000"
+      },
+      "distance_to_current_ward_reference_km": 10.07,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 44,
+      "title": "Phòng khép kín ban công thoáng mát - Gần ĐH Kiến trúc Đà Nẵng (DAU) (26m²)",
+      "address": "Số 12 Đường Hải Phòng, Phường An Hải Bắc, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 44,
+      "current_ward": "Phường An Hải Bắc",
+      "coordinates": {
+        "latitude": "16.0349000",
+        "longitude": "108.2188000"
+      },
+      "distance_to_current_ward_reference_km": 4.97,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 45,
+      "title": "Studio full nội thất gần trường - Gần Khoa Y - Dược - ĐH Đà Nẵng (SMP DN) (32m²)",
+      "address": "Số 2 Đường Nguyễn Lương Bằng, Phường Thanh Khê Tây, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 45,
+      "current_ward": "Phường Thanh Khê Tây",
+      "coordinates": {
+        "latitude": "15.9905000",
+        "longitude": "108.2508000"
+      },
+      "distance_to_current_ward_reference_km": 11.23,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 46,
+      "title": "Phòng trọ sinh viên giá rẻ an ninh - Gần Viện Nghiên cứu & Đào tạo Việt - Anh (VNUK) (21m²)",
+      "address": "Số 88 Đường Ngũ Hành Sơn, Phường Hòa Khánh Bắc, Đà Nẵng",
+      "status": "rented",
+      "db_ward_id": 33,
+      "current_ward": "Phường Hòa Khánh Bắc",
+      "coordinates": {
+        "latitude": "16.0724000",
+        "longitude": "108.2180000"
+      },
+      "distance_to_current_ward_reference_km": 6.95,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 47,
+      "title": "Nhà nguyên căn chia phòng cho nhóm sinh viên - Gần Học viện Chính trị Khu vực III (77m²)",
+      "address": "Số 199 Đường Tôn Đức Thắng, Phường Hòa Khánh Nam, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 34,
+      "current_ward": "Phường Hòa Khánh Nam",
+      "coordinates": {
+        "latitude": "16.0619000",
+        "longitude": "108.2383000"
+      },
+      "distance_to_current_ward_reference_km": 8.58,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 48,
+      "title": "Phòng trọ cao cấp gác lửng - Gần ĐH Greenwich Việt Nam - CS Đà Nẵng (22m²)",
+      "address": "Số 167 Đường Lương Nhữ Hộc, Phường Mỹ An, Đà Nẵng",
+      "status": "available",
+      "db_ward_id": 35,
+      "current_ward": "Phường Mỹ An",
+      "coordinates": {
+        "latitude": "16.0818000",
+        "longitude": "108.2380000"
+      },
+      "distance_to_current_ward_reference_km": 3.77,
+      "scope_status": "outside_scope",
+      "administrative_targets": [],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Đang thuộc thành phố ngoài phạm vi theo quan hệ ward_id."
+    },
+    {
+      "listing_id": 51,
+      "title": "Phòng trọ gác lửng có máy lạnh, bếp riêng và WC khép kín",
+      "address": "350 Huỳnh Tấn Phát, Tân Thuận, Hồ Chí Minh",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7485750",
+        "longitude": "106.7285880"
+      },
+      "distance_to_current_ward_reference_km": 3.74,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27478",
+          "name": "Phường Tân Thuận"
+        }
+      ],
+      "address_evidence": "Địa chỉ hiện ghi Tân Thuận, khác ward_id đang gắn Tân Hưng. Cần xác nhận địa chỉ/ghim thực tế.",
+      "review_flags": [
+        "address_requires_confirmation"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 52,
+      "title": "Phòng trọ gác lửng có máy lạnh, tủ lạnh và khu bếp riêng",
+      "address": "1025 Huỳnh Tấn Phát, Phú Thuận, Hồ Chí Minh",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7270940",
+        "longitude": "106.7336540"
+      },
+      "distance_to_current_ward_reference_km": 4.54,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27484",
+          "name": "Phường Phú Thuận"
+        }
+      ],
+      "address_evidence": "Địa chỉ hiện ghi Phú Thuận, khác ward_id đang gắn Tân Hưng. Đối chiếu khoản 19.",
+      "review_flags": [
+        "address_requires_confirmation"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 53,
+      "title": "Phòng trọ gác lửng thoáng sáng, cửa kính, khu Tân Quy",
+      "address": "Đường số 47, khu vực giao Lâm Văn Bền, Tân Quy, TP. Hồ Chí Minh",
+      "status": "rented",
+      "db_ward_id": 24,
+      "current_ward": "Phường Tân Phong",
+      "coordinates": {
+        "latitude": "10.7430070",
+        "longitude": "106.7177490"
+      },
+      "distance_to_current_ward_reference_km": 2.18,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_evidence": "Địa chỉ ghi khu vực Tân Quy. Khoản 21 đưa Tân Quy vào Tân Hưng. Cần xác nhận vị trí phòng.",
+      "review_flags": [
+        "address_requires_confirmation",
+        "current_ward_uses_old_name"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 54,
+      "title": "Phòng trọ có gác lửng, máy lạnh – E39 Hoàng Quốc Việt",
+      "address": "E39 Hoàng Quốc Việt, Phường Phú Thuận, TPHCM",
+      "status": "hidden",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7154930",
+        "longitude": "106.7371560"
+      },
+      "distance_to_current_ward_reference_km": 5.47,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27484",
+          "name": "Phường Phú Thuận"
+        }
+      ],
+      "address_evidence": "Địa chỉ ghi Phú Thuận, khác ward_id đang gắn Tân Hưng. Đối chiếu khoản 19.",
+      "review_flags": [
+        "distance_over_5km_from_current_ward_reference",
+        "address_requires_confirmation"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 55,
+      "title": "Cho thuê phòng trọ có gác lửng, bếp riêng, khu vực Phước Kiển, Nhà Bè",
+      "address": "Đường B4, xã Phước Kiển, huyện Nhà Bè, TP. Hồ Chí Minh.",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7113410",
+        "longitude": "106.7047380"
+      },
+      "distance_to_current_ward_reference_km": 3.57,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27655",
+          "name": "Xã Nhà Bè"
+        }
+      ],
+      "address_evidence": "Địa chỉ ghi xã Phước Kiển cũ. Khoản 134 đưa Phước Kiển vào xã Nhà Bè. Cần xác nhận vị trí phòng.",
+      "review_flags": [
+        "address_requires_confirmation"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 56,
+      "title": "Cho thuê phòng trọ có gác lửng, WC riêng tại Trần Xuân Soạn, Tân Hưng",
+      "address": "Đường Trần Xuân Soạn, phường Tân Hưng, TP. Hồ Chí Minh.",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7410000",
+        "longitude": "106.7040000"
+      },
+      "distance_to_current_ward_reference_km": 0.99,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [],
+      "address_evidence": null,
+      "review_flags": [],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    },
+    {
+      "listing_id": 61,
+      "title": "Trọ ở Huỳnh Tấn Phát",
+      "address": "350 Huỳnh Tấn Phát, Phường Tân Hưng, TP.HCM",
+      "status": "available",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
+      "coordinates": {
+        "latitude": "10.7485320",
+        "longitude": "106.7286040"
+      },
+      "distance_to_current_ward_reference_km": 3.74,
+      "scope_status": "hcm_database_label",
+      "administrative_targets": [
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_target_candidates": [
+        {
+          "code": "27478",
+          "name": "Phường Tân Thuận"
+        },
+        {
+          "code": "27475",
+          "name": "Phường Tân Hưng"
+        }
+      ],
+      "address_evidence": "Địa chỉ 350 Huỳnh Tấn Phát ghi Tân Hưng, còn tin 51 cùng số nhà/đường ghi Tân Thuận và hai ghim rất gần nhau. Cần xác minh địa chỉ thực tế.",
+      "review_flags": [
+        "address_requires_confirmation"
+      ],
+      "review_note": "Cần đối chiếu địa chỉ và ghim thực tế trước khi áp dụng đích cho tin phòng."
+    }
+  ],
+  "coordinate_followup": {
+    "code": "27544",
+    "name": "Xã Bình Mỹ",
+    "source_coordinates": {
+      "latitude": "10.66",
+      "longitude": "106.77"
+    },
+    "reference_place": "Công an xã Bình Mỹ",
+    "reference_address": "76 Hà Duy Phiên, ấp 6, xã Bình Mỹ",
+    "reference_source": "https://congan.hochiminhcity.gov.vn/wps/portal/Home/trang-chu/noi-dung-chi-tiet/danh%2Bba",
+    "status": "replacement_coordinates_unverified",
+    "note": "Địa chỉ công khai dùng làm một mốc đối chiếu vị trí. Tọa độ tham chiếu cho toàn xã cần xác minh và ghi rõ cách chọn điểm."
+  },
+  "deletion_effects_observed": [
+    "listings.ward_id -> wards.id ON DELETE CASCADE",
+    "schools.ward_id -> wards.id ON DELETE SET NULL",
+    "users.school_id -> schools.id ON DELETE SET NULL",
+    "listing_images, reviews, favorites, amenity_listing, conversation_listing tham chiếu listings bằng ON DELETE CASCADE",
+    "conversations.listing_id -> listings.id ON DELETE SET NULL"
+  ]
+}

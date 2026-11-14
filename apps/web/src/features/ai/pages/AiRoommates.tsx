@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES, route } from "@/shared/constants/routes";
 import { aiRoommates } from "@/features/ai/api/aiApi";
-import { errStatus } from "@/shared/api/axiosClient";
+import { errMessage, errStatus } from "@/shared/api/axiosClient";
 import type { AiRoommate } from "@/shared/types/api";
 import { Button } from "@/shared/ui/button";
 import { Avatar } from "@/shared/ui/avatar";
@@ -12,20 +12,21 @@ import { AiUnavailableIllustration } from "@/shared/ui/icons";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { startDirectConversation } from "@/features/messaging/api/messagingApi";
 import { formatHobby } from "@/features/profile/lib/hobbies";
+import { aiErrorMessage } from "../lib/aiErrorMessage";
+import { toast } from "@/shared/ui/toast";
 
 export default function AiRoommates() {
   useDocumentTitle("Gợi ý bạn cùng phòng · TROSV");
   const navigate = useNavigate();
   const [rows, setRows] = useState<AiRoommate[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [errorState, setErrorState] = useState<"unavailable" | "profile" | null>(null);
+  const [error, setError] = useState<{ status: number | null; message: string } | null>(null);
 
   useEffect(() => {
     aiRoommates()
       .then(setRows)
       .catch((err: unknown) => {
-        if (errStatus(err) === 503) setErrorState("unavailable");
-        else setErrorState("profile");
+        setError({ status: errStatus(err), message: aiErrorMessage(err) });
       })
       .finally(() => {
         setLoading(false);
@@ -37,8 +38,8 @@ export default function AiRoommates() {
     try {
       const conv = await startDirectConversation(userId);
       void navigate(route(ROUTES.CONVERSATION, { id: conv.id }));
-    } catch {
-      /* stay put; toast via optimistic-less failure path */
+    } catch (err) {
+      toast(errMessage(err, "Không mở được cuộc trò chuyện. Bạn thử lại nhé."));
     }
   }
 
@@ -60,38 +61,33 @@ export default function AiRoommates() {
             />
             <p className="text-sm text-muted">Trợ lý AI đang tìm bạn cùng phòng phù hợp…</p>
           </div>
-        ) : errorState === "unavailable" ? (
+        ) : error ? (
           <EmptyState
             illustration={<AiUnavailableIllustration />}
-            title="Trợ lý AI đang bận"
-            description="Bạn thử lại sau ít phút nhé."
+            title="Chưa tìm được bạn cùng phòng"
+            description={error.message}
             action={
-              <Button
-                variant="outline"
-                onClick={() => {
-                  location.reload();
-                }}
-              >
-                Thử lại
-              </Button>
-            }
-            className="pt-10"
-          />
-        ) : errorState === "profile" ? (
-          <EmptyState
-            title="Hồ sơ chưa đủ thông tin"
-            description="Bổ sung sở thích và bật tìm bạn cùng phòng trong hồ sơ để nhận gợi ý."
-            action={
-              <Button asChild variant="outline">
-                <a href={ROUTES.PROFILE}>Mở hồ sơ</a>
-              </Button>
+              error.status === 422 ? (
+                <Button asChild variant="outline">
+                  <a href={ROUTES.PROFILE}>Mở hồ sơ</a>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    location.reload();
+                  }}
+                >
+                  Thử lại
+                </Button>
+              )
             }
             className="pt-10"
           />
         ) : !rows || rows.length === 0 ? (
           <EmptyState
             title="Chưa có gợi ý nào"
-            description="Hồ sơ của bạn hoặc của người khác chưa đủ dữ liệu để ghép cặp."
+            description="Chưa có sinh viên đang tìm bạn cùng phòng trong cùng tỉnh/thành phố và khoảng ngân sách của bạn."
             className="pt-10"
           />
         ) : (

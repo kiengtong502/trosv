@@ -12,7 +12,7 @@ class RoommateMatcher
     /**
      * Roommate matching: profile must be complete and looking_for_roommate
      * set, otherwise 422. Candidates: other students with intersecting
-     * budgets, max 20. Response rows get name/school/phone re-attached by
+     * budgets and schools in the same city, max 20. Response rows get name/school/phone re-attached by
      * Backend (AI only ever sees the anonymous profile shape).
      *
      * @return list<array<string, mixed>>
@@ -25,18 +25,26 @@ class RoommateMatcher
             ]);
         }
 
+        $me->load('school:id,name,city_id');
+        $cityId = $me->school?->city_id;
+        if ($cityId === null) {
+            throw ValidationException::withMessages([
+                'school_id' => ['Trường trong hồ sơ chưa có tỉnh/thành phố. Hãy chọn trường có thông tin khu vực.'],
+            ]);
+        }
+
         $candidates = User::query()
             ->where('role', User::ROLE_STUDENT)
             ->where('looking_for_roommate', true)
             ->where('id', '!=', $me->id)
             ->where('budget_min', '<=', $me->budget_max)
             ->where('budget_max', '>=', $me->budget_min)
+            ->whereHas('school', fn ($q) => $q->where('city_id', $cityId))
             ->with('school:id,name')
+            ->orderBy('id')
             ->limit(20)
             ->get();
 
-        // The requester comes from the auth guard without eager loads.
-        $me->load('school:id,name');
         $myInterests = $this->interestList($me->interests);
 
         if ($candidates->isEmpty()) {

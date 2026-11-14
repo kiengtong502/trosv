@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { aiChat } from "@/features/ai/api/aiApi";
-import type { AiChatTurn } from "@/shared/types/api";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAiChat } from "../hooks/useAiChat";
 import { AI_CHAT_OPEN_EVENT } from "@/shared/constants/events";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
@@ -13,18 +13,17 @@ import { Bot, X, Send } from "lucide-react";
   ~30s latency (spinner in the thread) and 503 (friendly note).
 */
 
-const WELCOME: AiChatTurn = {
-  role: "assistant",
-  content:
-    "Chào bạn. Mình là trợ lý AI của TROSV. Bạn hỏi mình về giá phòng, khu vực, hay phong trọ nhé.",
-};
-
 export function AiChatWidget() {
+  const { pathname } = useLocation();
+  const { user } = useAuth();
+  if (/^\/(messages|login|register|landlord)(\/|$)/.test(pathname)) return null;
+  const listingId = Number(/^\/rooms\/(\d+)\/?$/.exec(pathname)?.[1]) || null;
+  return <ChatWidget key={`${user?.id ?? "guest"}-${listingId}`} listingId={listingId} />;
+}
+
+function ChatWidget({ listingId }: { listingId: number | null }) {
   const [open, setOpen] = useState(false);
-  const [turns, setTurns] = useState<AiChatTurn[]>([WELCOME]);
-  const [draft, setDraft] = useState("");
-  const [busy, setBusy] = useState(false);
-  const location = useLocation();
+  const { turns, draft, setDraft, busy, send } = useAiChat(listingId);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,43 +41,8 @@ export function AiChatWidget() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [turns, busy]);
 
-  async function send(): Promise<void> {
-    const text = draft.trim();
-    if (!text || busy) return;
-    setDraft("");
-    const next: AiChatTurn[] = [...turns, { role: "user", content: text }];
-    setTurns(next);
-    setBusy(true);
-    try {
-      const { reply } = await aiChat(
-        text,
-        next.filter((t) => t !== WELCOME),
-      );
-      setTurns((cur) => [...cur, { role: "assistant", content: reply ?? "" }]);
-    } catch {
-      setTurns((cur) => [
-        ...cur,
-        {
-          role: "assistant",
-          content: "Trợ lý AI đang bận. Bạn thử lại sau ít phút nhé.",
-        },
-      ]);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  /* Hidden on messages (avoids blocking chat input/send), auth, and landlord screens */
-  const isMessagesPage = location.pathname.startsWith("/messages");
-  const isAuthPage =
-    location.pathname.startsWith("/login") || location.pathname.startsWith("/register");
-  const isLandlordPage = location.pathname.startsWith("/landlord");
-  if (isMessagesPage || isAuthPage || isLandlordPage) return null;
-
-  const isRoomDetail = /^\/rooms\/\d+/.test(location.pathname);
-
   return (
-    <div className={cn("fixed right-4 z-40 lg:bottom-6", isRoomDetail ? "bottom-32" : "bottom-20")}>
+    <div className={cn("fixed right-4 z-40 lg:bottom-6", listingId ? "bottom-32" : "bottom-20")}>
       {open ? (
         <div
           role="dialog"

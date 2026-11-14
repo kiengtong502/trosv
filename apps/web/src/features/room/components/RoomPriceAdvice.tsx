@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { formatVnd } from "@/shared/lib/format";
 import type { AiPriceAdvice } from "@/shared/types/api";
+import { aiErrorMessage } from "@/features/ai/lib/aiErrorMessage";
 
 /** "Gợi ý giá": students ask the AI whether this room's price is fair. */
 export function RoomPriceAdvice({ listingId }: { listingId: number }) {
@@ -18,8 +19,8 @@ export function RoomPriceAdvice({ listingId }: { listingId: number }) {
     setError("");
     try {
       setAdvice(await aiPriceAdvice(listingId));
-    } catch {
-      setError("Trợ lý AI đang bận. Bạn thử lại sau ít phút nhé.");
+    } catch (err) {
+      setError(aiErrorMessage(err));
     } finally {
       setBusy(false);
     }
