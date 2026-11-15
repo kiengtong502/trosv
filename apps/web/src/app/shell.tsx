@@ -8,28 +8,15 @@ import {
   useNavigate,
   useNavigationType,
 } from "react-router-dom";
-import { LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown, Menu } from "lucide-react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES, route } from "@/shared/constants/routes";
-import {
-  RailSearchIcon,
-  RailHeartIcon,
-  RailMessageIcon,
-  RailBuildingIcon,
-} from "@/shared/ui/icons";
+import { RailHomeIcon, RailHeartIcon, RailMessageIcon, RailBuildingIcon } from "@/shared/ui/icons";
 import { Badge } from "@/shared/ui/badge";
 import { Avatar } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/shared/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/popover";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "@/shared/ui/toast";
 import { Footer } from "@/shared/layout/footer";
@@ -38,98 +25,150 @@ import { AiChatWidget } from "@/features/ai/components/AiChatWidget";
 
 /* ---------- Header ---------- */
 
+const STUDENT_NAV_ITEMS = [
+  { to: ROUTES.AI_ROOMMATES, label: "Tìm bạn cùng phòng" },
+  { to: ROUTES.AI_AREA_SUGGESTIONS, label: "Gợi ý khu vực" },
+] as const;
+
+function MobileNavigation({ role }: { role: string | undefined }) {
+  if (!role) return null;
+  const items: { to: string; label: string }[] = [
+    { to: ROUTES.ROOMS, label: role === "landlord" ? "Xem phòng" : "Tìm phòng" },
+  ];
+  if (role === "student") {
+    items.push(...STUDENT_NAV_ITEMS);
+  }
+  if (role === "landlord") {
+    items.push(
+      { to: ROUTES.LANDLORD, label: "Quản lý tin đăng" },
+      { to: ROUTES.LANDLORD_NEW, label: "Đăng tin mới" },
+    );
+  }
+  return (
+    <DropdownMenuPrimitive.Root>
+      <DropdownMenuPrimitive.Trigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 lg:hidden"
+          aria-label="Menu điều hướng"
+        >
+          <Menu className="size-5" aria-hidden />
+        </Button>
+      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          align="start"
+          sideOffset={8}
+          className="z-50 min-w-52 max-w-[calc(100vw-1.5rem)] rounded-xl border border-line bg-card p-1.5 shadow-pop lg:hidden"
+        >
+          {items.map((item) => (
+            <DropdownMenuPrimitive.Item key={item.to} asChild>
+              <Link
+                to={item.to}
+                className="block rounded-lg px-3 py-3 text-sm text-ink outline-none data-[highlighted]:bg-tint"
+              >
+                {item.label}
+              </Link>
+            </DropdownMenuPrimitive.Item>
+          ))}
+        </DropdownMenuPrimitive.Content>
+      </DropdownMenuPrimitive.Portal>
+    </DropdownMenuPrimitive.Root>
+  );
+}
+
+/** "Trang chủ" plus the room categories, with the active one marked from the URL. */
+function useRoomLinks() {
+  const { pathname, search } = useLocation();
+  const roomType = new URLSearchParams(search).get("type");
+  const onRooms = pathname === ROUTES.ROOMS;
+  const category = (label: string, type: string) => ({
+    label,
+    to: `${ROUTES.ROOMS}?type=${type}`,
+    active: onRooms && roomType === type,
+  });
+  return [
+    { label: "Trang chủ", to: ROUTES.HOME, active: pathname === ROUTES.HOME },
+    category("Phòng trọ", "room"),
+    category("Căn hộ", "apartment"),
+    category("Nhà nguyên căn", "house"),
+    { label: "Bản đồ", to: ROUTES.MAP, active: pathname === ROUTES.MAP },
+  ];
+}
+
+function RoomLinks() {
+  return useRoomLinks().map((item) => (
+    <Link
+      key={item.label}
+      to={item.to}
+      aria-current={item.active ? "page" : undefined}
+      className={cn(
+        "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
+        item.active && "bg-plate font-semibold text-white hover:bg-plate-hover",
+      )}
+    >
+      {item.label}
+    </Link>
+  ));
+}
+
 function Header() {
   const { user, logout } = useAuth();
-  const [aiOpen, setAiOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  /* Note: keyboard/aria wiring stays handled by Radix for both menus. */
+  /* Keyboard/aria wiring for the navigation and account menus stays handled by Radix. */
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-30 grid h-14 grid-cols-2 items-center gap-4 border-b border-line bg-card px-5",
-        "min-[890px]:h-[72px] lg:grid-cols-[1fr_auto_1fr]",
-      )}
-    >
-      {/* Left: product nav (desktop, like Zillow's left group). */}
-      <div className="hidden items-center gap-1 justify-self-start lg:flex">
-        <NavLink
-          to={ROUTES.ROOMS}
-          className={({ isActive }) =>
-            cn(
-              "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-              isActive && "bg-line",
-            )
-          }
-        >
-          Thuê phòng
-        </NavLink>
+    <header className="sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6">
+      <MobileNavigation role={user?.role} />
+      <Link to={ROUTES.HOME} className="flex shrink-0 items-center" aria-label="TROSV trang chủ">
+        <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
+      </Link>
+      <nav aria-label="Điều hướng chính" className="hidden items-center gap-1 lg:flex">
+        <RoomLinks />
 
-        {user?.role === "student" ? (
-          <Popover open={aiOpen} onOpenChange={setAiOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className={cn(
-                  "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium",
-                  "text-ink transition-colors hover:bg-line",
-                )}
-                aria-expanded={aiOpen}
-                aria-haspopup="menu"
+        {user?.role === "student"
+          ? STUDENT_NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
+                    isActive && "bg-line",
+                  )
+                }
               >
-                Gợi ý AI
-                <ChevronDown className="size-4" aria-hidden />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-auto min-w-52 p-2 bg-card">
-              <Link
-                to={ROUTES.AI_ROOMMATES}
-                className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => {
-                  setAiOpen(false);
-                }}
-              >
-                Bạn cùng phòng
-              </Link>
-              <Link
-                to={ROUTES.AI_AREA_SUGGESTIONS}
-                className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => {
-                  setAiOpen(false);
-                }}
-              >
-                Khu vực phù hợp
-              </Link>
-            </PopoverContent>
-          </Popover>
-        ) : null}
+                {item.label}
+              </NavLink>
+            ))
+          : null}
 
         {user?.role === "landlord" ? (
           <NavLink
             to={ROUTES.LANDLORD}
+            end
             className={({ isActive }) =>
               cn(
                 "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-                isActive && "bg-line",
+                isActive && "bg-plate font-semibold text-white hover:bg-plate-hover",
               )
             }
           >
-            Đăng tin
+            Quản lý tin đăng
           </NavLink>
         ) : null}
-      </div>
-
-      {/* Center: wordmark (Zillow puts the logo mid-header on desktop). */}
-      <div className="flex items-center gap-3 justify-self-start lg:justify-self-center">
-        <Link to={ROUTES.HOME} className="flex items-center" aria-label="TROSV trang chủ">
-          <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-6 w-auto" />
-        </Link>
-      </div>
+      </nav>
 
       {/* Right: account (always right-aligned). */}
-      <div className="flex items-center gap-2 justify-self-end">
+      <div className="ml-auto flex shrink-0 items-center gap-2">
+        {user?.role === "landlord" ? (
+          <Button asChild size="sm" className="hidden px-3 text-sm lg:inline-flex">
+            <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
+          </Button>
+        ) : null}
         {user ? (
           <DropdownMenuPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuPrimitive.Trigger asChild>
@@ -210,6 +249,8 @@ interface RailItem {
   icon: React.ElementType;
   /** undefined = no badge. */
   badge: number | undefined;
+  /** Only in the bottom bar (phones); on desktop the header already has it. */
+  mobileOnly?: boolean;
 }
 
 function RailItems(): (RailItem & { active: boolean })[] {
@@ -219,7 +260,7 @@ function RailItems(): (RailItem & { active: boolean })[] {
   /** Student-only heart, landlord swaps it for a listings icon. */
   const isLandlord = user?.role === "landlord";
   const items: RailItem[] = [
-    { to: ROUTES.HOME, label: "Tìm phòng", icon: RailSearchIcon, badge: undefined },
+    { to: ROUTES.HOME, label: "Trang chủ", icon: RailHomeIcon, badge: undefined, mobileOnly: true },
     isLandlord
       ? { to: ROUTES.LANDLORD, label: "Quản lý tin đăng", icon: RailBuildingIcon, badge: undefined }
       : { to: ROUTES.FAVORITES, label: "Yêu thích", icon: RailHeartIcon, badge: undefined },
@@ -248,7 +289,7 @@ function Rail() {
         className={cn(
           "relative z-30 flex items-center justify-around bg-card border-t border-line lg:border-t-0 lg:border-r",
           "h-14 fixed bottom-0 left-0 right-0",
-          "lg:sticky lg:top-[72px] lg:h-[calc(100vh-72px)] lg:w-16 lg:flex-col",
+          "lg:sticky lg:top-[var(--nav-h)] lg:h-[calc(100vh-var(--nav-h))] lg:w-16 lg:flex-col",
           "lg:items-center lg:justify-start lg:gap-4 lg:p-2",
           isConversationThread && "hidden lg:flex",
         )}
@@ -266,6 +307,7 @@ function Rail() {
                 aria-current={item.active ? "page" : undefined}
                 className={cn(
                   "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors",
+                  item.mobileOnly && "lg:hidden",
                   "text-ink-2 hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
                   item.active && "bg-plate-tint text-plate font-medium",
                 )}

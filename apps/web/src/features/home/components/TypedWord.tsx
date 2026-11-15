@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /** The phrases the hero keyword types out, one after another. */
-export const HERO_WORDS = ["Gần trường.", "Giá rẻ.", "Tiện lợi."] as const;
+export const HERO_WORDS = ["Gần trường", "Giá rẻ", "Tiện lợi"] as const;
 
 interface Phase {
   word: number;
