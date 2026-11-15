@@ -20,11 +20,14 @@ def get_api_key() -> str | None:
     return os.getenv("GEMINI_API_KEY") or os.getenv("LLM_API_KEY") or None
 
 
+def is_fake_mode() -> bool:
+    """Only an explicit FAKE_MODE=false turns fake mode off (anything else stays free)."""
+    return os.getenv("FAKE_MODE", "true").strip().lower() != "false"
+
+
 def is_gemini_enabled() -> bool:
     """Return True if Gemini is configured and FAKE_MODE is not forced."""
-    fake_mode = os.getenv("FAKE_MODE", "true").lower() == "true"
-    api_key = get_api_key()
-    return bool(api_key) and not fake_mode
+    return bool(get_api_key()) and not is_fake_mode()
 
 
 def get_client() -> genai.Client | None:

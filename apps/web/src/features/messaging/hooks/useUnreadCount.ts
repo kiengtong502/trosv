@@ -6,9 +6,10 @@ import type { EchoReactive } from "@/features/messaging/api/echo";
 import { ignoreError } from "@/shared/lib/async";
 
 /**
- * Total unread count for the messages rail badge. Loaded once per
- * session, then kept live by the private user channel (badge sync),
- * without re-fetching on every navigation.
+ * Total unread count for the messages rail badge. The server's per-
+ * conversation unread_count is the only source of truth: every event on
+ * the private user channel (sent / deleted / seen) re-reads it, so reading
+ * a thread or an unsend can never leave a stale or drifting badge.
  */
 export function useUnreadCount(): number {
   const { user } = useAuth();
@@ -18,33 +19,23 @@ export function useUnreadCount(): number {
     if (!user) return;
     let cancelled = false;
 
-    getConversations()
-      .then((convs) => {
-        if (cancelled) return;
-        setUnread(convs.reduce((sum, c) => sum + (c.unread_count ?? 0), 0));
-      })
-      .catch(ignoreError("unread count refresh"));
+    const refresh = () => {
+      getConversations()
+        .then((convs) => {
+          if (cancelled) return;
+          setUnread(convs.reduce((sum, c) => sum + (c.unread_count ?? 0), 0));
+        })
+        .catch(ignoreError("unread count refresh"));
+    };
+    refresh();
 
-    /* Realtime badge sync on App.Models.User.{id}. Uses getEcho() which
-       returns null while logged out. */
+    /* getEcho() returns null while logged out. */
     const e = getEcho();
     if (e) {
       const userChan: EchoReactive = e.private(`App.Models.User.${user.id}`);
-      userChan.listen(".message.sent", (payload: unknown) => {
-        const p = payload as { sender_id?: number };
-        /* Own outgoing messages do not increment my own badge. */
-        if (p.sender_id !== user.id) setUnread((n) => n + 1);
-      });
-      userChan.listen(".message.deleted", (payload: unknown) => {
-        const p = payload as {
-          sender_id?: number;
-          removed?: boolean;
-          deleted_for?: number[];
-        };
-        if (p.sender_id !== user.id && p.removed) {
-          setUnread((n) => Math.max(0, n - 1));
-        }
-      });
+      userChan.listen(".message.sent", refresh);
+      userChan.listen(".message.deleted", refresh);
+      userChan.listen(".message.seen", refresh);
     }
 
     return () => {

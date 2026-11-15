@@ -134,4 +134,16 @@ class MessageSeenTest extends TestCase
                 && $event->reader->id === $this->landlord->id;
         });
     }
+
+    public function test_seen_also_reaches_the_readers_own_channel_for_the_badge(): void
+    {
+        $event = new MessageSeen($this->conversation, $this->student, now()->toISOString());
+
+        $names = array_map(fn ($c) => $c->name, $event->broadcastOn());
+
+        $this->assertSame([
+            'private-conversation.'.$this->conversation->id,
+            'private-App.Models.User.'.$this->student->id,
+        ], $names);
+    }
 }

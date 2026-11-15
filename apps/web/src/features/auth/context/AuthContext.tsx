@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import * as authApi from "@/features/auth/api/authApi";
 import { clearSession, getToken } from "@/shared/api/axiosClient";
+import { TOKEN_KEY, USER_KEY } from "@/shared/constants/storage";
 import type { RegisterPayload, User } from "@/shared/types/api";
 import { ignoreError } from "@/shared/lib/async";
 
@@ -19,11 +20,11 @@ function readStoredUser(): User | null {
   // User ma khong token la du lieu stale (sau reseed server/401 truoc do) -
   // bo qua de tranh vong lap 401 -> redirect -> reload (bug da xay ra).
   if (!getToken()) {
-    localStorage.removeItem("user");
+    localStorage.removeItem(USER_KEY);
     return null;
   }
   try {
-    const raw = localStorage.getItem("user");
+    const raw = localStorage.getItem(USER_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as User;
   } catch {
@@ -35,15 +36,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => readStoredUser());
   const [loading, setLoading] = useState<boolean>(!!getToken());
 
+  function saveUser(u: User): User {
+    localStorage.setItem(USER_KEY, JSON.stringify(u));
+    setUser(u);
+    return u;
+  }
+
+  /** login and register both end here: store the token, then the user. */
+  function startSession({ token, user: u }: { token: string; user: User }): User {
+    localStorage.setItem(TOKEN_KEY, token);
+    return saveUser(u);
+  }
+
   // Refresh the profile on first load if a token exists.
   useEffect(() => {
     if (!getToken()) return;
     authApi
       .me()
-      .then((u) => {
-        setUser(u);
-        localStorage.setItem("user", JSON.stringify(u));
-      })
+      .then(saveUser)
       .catch(ignoreError("refresh current user"))
       .finally(() => {
         setLoading(false);
@@ -51,19 +61,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function login(email: string, password: string): Promise<User> {
-    const { token, user: u } = await authApi.login(email, password);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(u));
-    setUser(u);
-    return u;
+    return startSession(await authApi.login(email, password));
   }
 
   async function register(payload: RegisterPayload): Promise<User> {
-    const { token, user: u } = await authApi.register(payload);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(u));
-    setUser(u);
-    return u;
+    return startSession(await authApi.register(payload));
   }
 
   async function logout(): Promise<void> {
@@ -77,10 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function refreshUser(): Promise<User> {
-    const u = await authApi.me();
-    localStorage.setItem("user", JSON.stringify(u));
-    setUser(u);
-    return u;
+    return saveUser(await authApi.me());
   }
 
   return (

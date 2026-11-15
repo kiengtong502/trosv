@@ -51,6 +51,24 @@ class FavoriteTest extends TestCase
         ]);
     }
 
+    public function test_hidden_listings_leave_favorites_and_cannot_be_added(): void
+    {
+        $listing = $this->makeListing();
+        $this->student->favorites()->attach($listing->id);
+        $listing->update(['status' => Listing::STATUS_HIDDEN]);
+
+        $this->actingAs($this->student, 'sanctum')
+            ->getJson('/api/favorites')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+
+        $hidden = Listing::factory()->create(['status' => Listing::STATUS_HIDDEN]);
+
+        $this->actingAs($this->student, 'sanctum')
+            ->putJson("/api/favorites/{$hidden->id}")
+            ->assertNotFound();
+    }
+
     public function test_adding_twice_is_idempotent(): void
     {
         $listing = $this->makeListing();

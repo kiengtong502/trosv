@@ -329,8 +329,8 @@ class AiProxyTest extends TestCase
         $school = School::factory()->create(['latitude' => 10.87, 'longitude' => 106.78]);
         $this->student->forceFill(['school_id' => $school->id])->save();
 
-        $near = Ward::factory()->create(['latitude' => 10.87, 'longitude' => 106.78]);
-        $far = Ward::factory()->create(['latitude' => 10.75, 'longitude' => 106.66]);
+        $near = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.87, 'longitude' => 106.78]);
+        $far = Ward::factory()->create(['city_id' => $school->city_id, 'latitude' => 10.75, 'longitude' => 106.66]);
 
         $amenity = Amenity::factory()->create();
         Listing::factory()->count(3)->create([
@@ -387,6 +387,34 @@ class AiProxyTest extends TestCase
             return collect($areas)->every(fn ($area) => array_key_exists('name', $area))
                 && $areas[0]['name'] === $near->name;
         });
+    }
+
+    public function test_area_suggestions_skip_other_cities_and_rented_rooms(): void
+    {
+        $this->completeProfile($this->student);
+        $school = School::factory()->create();
+        $this->student->forceFill(['school_id' => $school->id])->save();
+
+        $home = Ward::factory()->create(['city_id' => $school->city_id]);
+        $rentedOnly = Ward::factory()->create(['city_id' => $school->city_id]);
+        $otherCity = Ward::factory()->create();
+
+        foreach ([[$home, 'available'], [$rentedOnly, 'rented'], [$otherCity, 'available']] as [$ward, $status]) {
+            Listing::factory()->create([
+                'user_id' => $this->landlord->id,
+                'ward_id' => $ward->id,
+                'price' => 2_000_000,
+                'status' => $status,
+            ]);
+        }
+
+        Http::fake(['*/areas' => Http::response(['results' => []])]);
+
+        $this->actingAs($this->student, 'sanctum')
+            ->postJson('/api/ai/area-suggestions')
+            ->assertOk();
+
+        Http::assertSent(fn ($request) => collect($request->data()['areas'])->pluck('ward_id')->all() === [$home->id]);
     }
 
     public function test_area_suggestions_without_any_budget_returns_422(): void

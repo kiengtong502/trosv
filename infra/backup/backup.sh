@@ -81,16 +81,7 @@ fi
 # ------------------------------------------------------------
 # 4. Xoa ban cu: giu KEEP_DAILY ban gan nhat + KEEP_WEEKLY ban chu nhat
 # ------------------------------------------------------------
-ls -1t "$BACKUP_DIR"/db-*.sql.gz 2>/dev/null | tail -n +$((KEEP_DAILY + 1)) | while read -r f; do
-    ts="$(basename "$f")"; ts="${ts#db-}"; ts="${ts%.sql.gz}"
-    dow="$(date -d "${ts:0:8}" +%u 2>/dev/null || echo 0)"
-    if [ "$dow" != "7" ]; then rm -f "$f" "$BACKUP_DIR/uploads-$ts.tar.gz" "$BACKUP_DIR/env-$ts.bak"; fi
-done
-ls -1t "$BACKUP_DIR"/db-*.sql.gz 2>/dev/null | tail -n +$((KEEP_WEEKLY + 1)) | while read -r f; do
-    ts="$(basename "$f")"; ts="${ts#db-}"; ts="${ts%.sql.gz}"
-    dow="$(date -d "${ts:0:8}" +%u 2>/dev/null || echo 1)"
-    if [ "$dow" = "7" ]; then rm -f "$f" "$BACKUP_DIR/uploads-$ts.tar.gz" "$BACKUP_DIR/env-$ts.bak"; fi
-done
+KEEP_DAILY=$KEEP_DAILY KEEP_WEEKLY=$KEEP_WEEKLY bash "$ROOT/infra/backup/prune.sh" "$BACKUP_DIR"
 
 # ------------------------------------------------------------
 # 5. Verify (--verify): dump la plain-SQL gzip - dem lenh CREATE TABLE

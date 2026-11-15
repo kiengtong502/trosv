@@ -3,9 +3,12 @@
 namespace App\Modules\Ai\Services;
 
 use App\Modules\Auth\Models\User;
+use App\Modules\Listing\Models\Listing;
 use App\Modules\Reference\Models\School;
 use App\Modules\Reference\Models\Ward;
 use App\Shared\Support\Geo;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
@@ -39,12 +42,15 @@ class AreaRecommender
         /** @var School|null $school */
         $school = $schoolId !== null ? School::find($schoolId) : null;
 
+        // Only rooms a student can still rent, and only the school's city:
+        // rented rooms and far-away wards make suggestions that lead nowhere.
+        $rentable = fn (Builder|Relation $q) => $q->where('status', Listing::STATUS_AVAILABLE)
+            ->whereBetween('price', [$budgetMin, $budgetMax]);
+
         $wards = Ward::query()
-            ->whereHas('listings', fn ($q) => $q->visible()
-                ->whereBetween('price', [$budgetMin, $budgetMax]))
-            ->with(['listings' => fn ($q) => $q->visible()
-                ->whereBetween('price', [$budgetMin, $budgetMax])
-                ->withAvg('reviews', 'listing_rating')])
+            ->whereHas('listings', $rentable)
+            ->when($school?->city_id, fn ($q, $cityId) => $q->where('city_id', $cityId))
+            ->with(['listings' => fn (Relation $q) => $rentable($q->withAvg('reviews', 'listing_rating'))])
             ->get();
 
         $areas = $wards->map(function (Ward $ward) use ($school) {
