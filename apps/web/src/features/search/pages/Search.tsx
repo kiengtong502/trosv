@@ -62,6 +62,17 @@ function SearchMapPane({
   );
 }
 
+/** What to call the results for each room type, so "10 căn hộ" never reads "10 phòng trọ". */
+const TYPE_NOUN: Record<string, string> = {
+  room: "phòng trọ",
+  apartment: "căn hộ",
+  house: "nhà nguyên căn",
+};
+
+function resultNoun(type: string): string {
+  return TYPE_NOUN[type] ?? "phòng";
+}
+
 export default function Search() {
   useDocumentTitle("Tìm phòng · TROSV");
   const search = useListingSearch();
@@ -102,7 +113,7 @@ export default function Search() {
               <span className="text-muted">Đang tìm phòng…</span>
             ) : (
               <>
-                <span className="tabular-nums">{totalCount}</span> phòng trọ
+                <span className="tabular-nums">{totalCount}</span> {resultNoun(search.filters.type)}
                 {area ? <span className="font-normal text-muted"> tại {area}</span> : null}
               </>
             )}

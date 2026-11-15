@@ -51,15 +51,18 @@ test.describe("home hero", () => {
     await expect(page.locator('img[src*="hero-art"]')).toHaveCount(0);
   });
 
-  test("the header menu sits on one row with Trang chủ", async ({ page }) => {
+  test("the header menu is centered and Tìm phòng opens the room types", async ({ page }) => {
     await page.setViewportSize({ width: 1360, height: 900 });
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Điều hướng chính" });
-    const find = await nav.getByRole("link", { name: "Trang chủ" }).boundingBox();
-    for (const name of ["Phòng trọ", "Căn hộ", "Nhà nguyên căn", "Bản đồ"]) {
-      const box = await nav.getByRole("link", { name }).boundingBox();
-      expect(Math.abs(box!.y - find!.y)).toBeLessThanOrEqual(2);
+    const box = await nav.boundingBox();
+    expect(Math.abs(box!.x + box!.width / 2 - 1360 / 2)).toBeLessThanOrEqual(40);
+    await nav.getByRole("button", { name: "Tìm phòng" }).click();
+    for (const name of ["Tất cả phòng", "Phòng trọ", "Căn hộ", "Nhà nguyên căn"]) {
+      await expect(page.getByRole("link", { name })).toBeVisible();
     }
+    await page.getByRole("link", { name: "Căn hộ" }).click();
+    await expect(page).toHaveURL(/type=apartment/);
     await expect(page.getByTestId("hero-deck")).toHaveCount(0);
   });
 });
