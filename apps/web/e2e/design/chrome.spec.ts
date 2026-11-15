@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("navy chrome", () => {
-  test("login art side is a navy plate that frames the art", async ({ page }) => {
+  test("login is one centered card on the same navy band as the home hero", async ({ page }) => {
     await page.setViewportSize({ width: 1360, height: 900 });
     await page.goto("/login");
-    const panel = page.getByTestId("login-art");
-    await expect(panel).toBeVisible();
-    const bg = await panel.evaluate((el) => getComputedStyle(el).backgroundImage);
+    const bg = await page
+      .getByTestId("auth-page")
+      .evaluate((el) => getComputedStyle(el).backgroundImage);
     expect(bg).toContain("linear-gradient");
-    const p = await panel.boundingBox();
-    const art = await panel.locator("img").boundingBox();
-    // The art is inset from the panel edge so the navy shows around it.
-    expect(art!.x).toBeGreaterThan(p!.x + 16);
-    expect(art!.width).toBeLessThan(p!.width - 32);
+    const card = await page.getByTestId("auth-card").boundingBox();
+    expect(card).not.toBeNull();
+    // Horizontally centered in the viewport, and no side illustration.
+    expect(Math.abs(card!.x + card!.width / 2 - 1360 / 2)).toBeLessThanOrEqual(2);
+    await expect(page.getByTestId("login-art")).toHaveCount(0);
   });
 
   test("footer stays on cream with readable links", async ({ page }) => {
