@@ -1,8 +1,6 @@
 import axios from "axios";
 import { API_URL } from "@/shared/config/env";
-import { TOKEN_KEY } from "@/shared/constants/storage";
-
-const USER_KEY = "user";
+import { TOKEN_KEY, USER_KEY } from "@/shared/constants/storage";
 
 export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
 

@@ -29,6 +29,8 @@ class MessageSeen implements ShouldBroadcastNow
     {
         return [
             new PrivateChannel('conversation.'.$this->conversation->id),
+            // The reader's own badge (nav rail) drops once they have read.
+            new PrivateChannel('App.Models.User.'.$this->reader->id),
         ];
     }
 

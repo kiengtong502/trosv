@@ -28,17 +28,10 @@ def client():
 
 
 def set_fake_mode(monkeypatch, enabled: bool):
-    """Set FAKE_MODE in environment and loaded modules, unsetting LLM keys."""
+    """Set FAKE_MODE (read per request) and unset LLM keys."""
     monkeypatch.setenv("FAKE_MODE", "true" if enabled else "false")
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("LLM_API_KEY", raising=False)
-    for mod_name in ["main", "app.main", "app", "config", "app.config", "routers", "app.routers"]:
-        try:
-            mod = __import__(mod_name, fromlist=["FAKE_MODE", "guard_fake"])
-            if hasattr(mod, "FAKE_MODE"):
-                monkeypatch.setattr(mod, "FAKE_MODE", enabled)
-        except ImportError:
-            pass
 
 
 # ----------------------------------------------------------------------
@@ -159,6 +152,17 @@ def test_price_advice_contract_shape(client):
         assert isinstance(tip, str)
     assert isinstance(data["message"], str)
     assert len(data["message"]) > 0
+
+
+def test_price_advice_verdict_matches_fair_range(client, monkeypatch):
+    """A "low" price must sit below the fair range, never inside it."""
+    set_fake_mode(monkeypatch, True)
+    listing = {"price": 2000000, "area_m2": 20, "ward": "X", "amenities": []}
+    stats = {"count": 5, "min": 1500000, "median": 3000000, "max": 5000000}
+    data = client.post("/price-advice", json={"listing": listing, "stats": stats}).json()
+
+    assert data["verdict"] == "low"
+    assert 2000000 < data["fair_min"] <= data["fair_max"]
 
 
 # ----------------------------------------------------------------------

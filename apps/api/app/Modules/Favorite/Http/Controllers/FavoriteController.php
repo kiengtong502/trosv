@@ -21,6 +21,7 @@ class FavoriteController extends Controller
     {
         $page = $this->authUser($request)
             ->favorites()
+            ->visible() // a hidden listing would only open a 404 page
             ->with(['ward.city', 'coverImage'])
             ->withCount('reviews')
             ->withAvg('reviews', 'listing_rating')
@@ -42,7 +43,7 @@ class FavoriteController extends Controller
      */
     public function attach(Request $request, int $listingId): JsonResponse
     {
-        $listing = Listing::find($listingId);
+        $listing = Listing::query()->visible()->find($listingId);
 
         if (! $listing) {
             abort(404);

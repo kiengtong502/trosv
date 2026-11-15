@@ -34,7 +34,10 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/repo:ro" --workdir /repo \
             koalaman/shellcheck-alpine@sha256:7366322e994f1b364289c7f7d4b792846fbc9337ae29c89a489fb57ba8f4a8dc \
-            shellcheck --severity=warning scripts/*.sh infra/backup/backup.sh infra/deploy/deploy.sh
+            shellcheck --severity=warning scripts/*.sh infra/backup/*.sh infra/deploy/deploy.sh
+
+      - name: backup retention test
+        run: bash infra/backup/prune-test.sh
 
       # Dummy values only: this validates the compose file, nothing is started.
       - name: docker compose config

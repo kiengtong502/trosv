@@ -54,6 +54,10 @@ def test_get_api_key_treats_empty_string_as_unset(monkeypatch):
         ("TRUE", "k", False),
         ("false", None, False),
         ("false", "k", True),
+        ("FALSE", "k", True),
+        # Ambiguous values stay fake: guard and router must agree (no paid calls).
+        ("1", "k", False),
+        ("", "k", False),
     ],
 )
 def test_is_gemini_enabled(monkeypatch, fake_mode, key, expected):

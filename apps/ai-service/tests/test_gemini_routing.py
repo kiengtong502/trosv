@@ -56,7 +56,6 @@ def live_gemini(monkeypatch):
     monkeypatch.setenv("FAKE_MODE", "false")
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     monkeypatch.delenv("LLM_API_KEY", raising=False)
-    monkeypatch.setattr(app_main, "FAKE_MODE", False)
 
 
 def stub_gemini(monkeypatch, package: str, fn_name: str, result: Any) -> list[tuple[Any, ...]]:
@@ -99,7 +98,6 @@ def test_gemini_is_not_called_in_fake_mode_even_with_a_key(
 ):
     monkeypatch.setenv("FAKE_MODE", "true")
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
-    monkeypatch.setattr(app_main, "FAKE_MODE", True)
     calls = stub_gemini(monkeypatch, package, fn_name, SENTINEL)
     response = client.post(endpoint, json=payload)
     assert response.status_code == 200

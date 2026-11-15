@@ -18,8 +18,9 @@ def advise_price(req: PriceAdviceReq) -> dict[str, Any]:
         verdict = "low"
     else:
         verdict = "fair"
-    fair_min = int_or(req.stats.get("min"), int(median * 0.9))
-    fair_max = int_or(req.stats.get("max"), int(median * 1.1))
+    # Same ±10% band the verdict uses, so "low"/"high" never sits inside it.
+    fair_min = int(median * 0.9)
+    fair_max = int(median * 1.1)
     compare = (
         "cao hon" if verdict == "high" else ("thap hon" if verdict == "low" else "tuong duong")
     )
