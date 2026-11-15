@@ -38,22 +38,55 @@ const STUDENT_NAV_ITEMS = [
   { to: ROUTES.AI_AREA_SUGGESTIONS, label: "Gợi ý khu vực" },
 ] as const;
 
-function MobileNavigation({ role }: { role: string | undefined }) {
-  if (!role) return null;
-  const items: { to: string; label: string }[] = [
-    { to: ROUTES.ROOMS, label: role === "landlord" ? "Xem phòng" : "Tìm phòng" },
+const ROOM_TYPES = [
+  { label: "Tất cả phòng", type: null },
+  { label: "Phòng trọ", type: "room" },
+  { label: "Căn hộ", type: "apartment" },
+  { label: "Nhà nguyên căn", type: "house" },
+] as const;
+
+function roomsHref(type: string | null): string {
+  return type ? `${ROUTES.ROOMS}?type=${type}` : ROUTES.ROOMS;
+}
+
+interface MobileEntry {
+  label: string;
+  /** A plain link when `to` is set, otherwise an expandable group of `links`. */
+  to?: string;
+  links?: { label: string; to: string }[];
+}
+
+function mobileEntries(role: string | undefined): MobileEntry[] {
+  const entries: MobileEntry[] = [
+    { label: "Trang chủ", to: ROUTES.HOME },
+    {
+      label: role === "landlord" ? "Xem phòng" : "Tìm phòng",
+      links: ROOM_TYPES.map((t) => ({ label: t.label, to: roomsHref(t.type) })),
+    },
+    { label: "Bản đồ", to: ROUTES.MAP },
   ];
-  if (role === "student") {
-    items.push(...STUDENT_NAV_ITEMS);
-  }
+  if (role === "student") entries.push({ label: "Gợi ý AI", links: [...STUDENT_NAV_ITEMS] });
   if (role === "landlord") {
-    items.push(
-      { to: ROUTES.LANDLORD, label: "Quản lý tin đăng" },
-      { to: ROUTES.LANDLORD_NEW, label: "Đăng tin mới" },
+    entries.push(
+      { label: "Quản lý tin đăng", to: ROUTES.LANDLORD },
+      { label: "Đăng tin mới", to: ROUTES.LANDLORD_NEW },
     );
   }
+  return entries;
+}
+
+const MOBILE_ITEM =
+  "block rounded-lg px-3 py-3 text-sm text-ink outline-none data-[highlighted]:bg-tint";
+
+/** Phone menu (hamburger): same structure as the desktop header, groups expand in place. */
+function MobileNavigation({ role }: { role: string | undefined }) {
+  const [expanded, setExpanded] = React.useState<string | null>(null);
   return (
-    <DropdownMenuPrimitive.Root>
+    <DropdownMenuPrimitive.Root
+      onOpenChange={() => {
+        setExpanded(null);
+      }}
+    >
       <DropdownMenuPrimitive.Trigger asChild>
         <Button
           variant="ghost"
@@ -68,18 +101,49 @@ function MobileNavigation({ role }: { role: string | undefined }) {
         <DropdownMenuPrimitive.Content
           align="start"
           sideOffset={8}
-          className="z-50 min-w-52 max-w-[calc(100vw-1.5rem)] rounded-xl border border-line bg-card p-1.5 shadow-pop lg:hidden"
+          className="z-50 min-w-56 max-w-[calc(100vw-1.5rem)] rounded-xl border border-line bg-card p-1.5 shadow-pop lg:hidden"
         >
-          {items.map((item) => (
-            <DropdownMenuPrimitive.Item key={item.to} asChild>
-              <Link
-                to={item.to}
-                className="block rounded-lg px-3 py-3 text-sm text-ink outline-none data-[highlighted]:bg-tint"
-              >
-                {item.label}
-              </Link>
-            </DropdownMenuPrimitive.Item>
-          ))}
+          {mobileEntries(role).map((entry) =>
+            entry.to ? (
+              <DropdownMenuPrimitive.Item key={entry.label} asChild>
+                <Link to={entry.to} className={MOBILE_ITEM}>
+                  {entry.label}
+                </Link>
+              </DropdownMenuPrimitive.Item>
+            ) : (
+              <div key={entry.label}>
+                <DropdownMenuPrimitive.Item
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    /* Not an updater: if Radix fires select twice for one tap, both calls agree. */
+                    setExpanded(expanded === entry.label ? null : entry.label);
+                  }}
+                  className={cn(MOBILE_ITEM, "flex cursor-pointer items-center justify-between")}
+                >
+                  {entry.label}
+                  <ChevronDown
+                    className={cn(
+                      "size-4 transition-transform",
+                      expanded === entry.label && "rotate-180",
+                    )}
+                    aria-hidden
+                  />
+                </DropdownMenuPrimitive.Item>
+                {expanded === entry.label
+                  ? entry.links?.map((l) => (
+                      <DropdownMenuPrimitive.Item key={l.to} asChild>
+                        <Link
+                          to={l.to}
+                          className={cn(MOBILE_ITEM, "ml-3 border-l border-line pl-4")}
+                        >
+                          {l.label}
+                        </Link>
+                      </DropdownMenuPrimitive.Item>
+                    ))
+                  : null}
+              </div>
+            ),
+          )}
         </DropdownMenuPrimitive.Content>
       </DropdownMenuPrimitive.Portal>
     </DropdownMenuPrimitive.Root>
@@ -147,15 +211,9 @@ function RoomsMenu({ role }: { role: string | undefined }) {
   const { pathname, search } = useLocation();
   const roomType = new URLSearchParams(search).get("type");
   const onRooms = pathname === ROUTES.ROOMS;
-  const types = [
-    { label: "Tất cả phòng", type: null },
-    { label: "Phòng trọ", type: "room" },
-    { label: "Căn hộ", type: "apartment" },
-    { label: "Nhà nguyên căn", type: "house" },
-  ];
-  const links = types.map(({ label, type }) => ({
+  const links = ROOM_TYPES.map(({ label, type }) => ({
     label,
-    to: type ? `${ROUTES.ROOMS}?type=${type}` : ROUTES.ROOMS,
+    to: roomsHref(type),
     current: onRooms && roomType === type,
   }));
   return (
