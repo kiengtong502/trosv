@@ -12,12 +12,7 @@ import { LogOut, ChevronDown, Menu } from "lucide-react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES, route } from "@/shared/constants/routes";
-import {
-  RailSearchIcon,
-  RailHeartIcon,
-  RailMessageIcon,
-  RailBuildingIcon,
-} from "@/shared/ui/icons";
+import { RailHomeIcon, RailHeartIcon, RailMessageIcon, RailBuildingIcon } from "@/shared/ui/icons";
 import { Badge } from "@/shared/ui/badge";
 import { Avatar } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
@@ -83,6 +78,41 @@ function MobileNavigation({ role }: { role: string | undefined }) {
   );
 }
 
+/** "Trang chủ" plus the room categories, with the active one marked from the URL. */
+function useRoomLinks() {
+  const { pathname, search } = useLocation();
+  const roomType = new URLSearchParams(search).get("type");
+  const onRooms = pathname === ROUTES.ROOMS;
+  const category = (label: string, type: string) => ({
+    label,
+    to: `${ROUTES.ROOMS}?type=${type}`,
+    active: onRooms && roomType === type,
+  });
+  return [
+    { label: "Trang chủ", to: ROUTES.HOME, active: pathname === ROUTES.HOME },
+    category("Phòng trọ", "room"),
+    category("Căn hộ", "apartment"),
+    category("Nhà nguyên căn", "house"),
+    { label: "Bản đồ", to: ROUTES.MAP, active: pathname === ROUTES.MAP },
+  ];
+}
+
+function RoomLinks() {
+  return useRoomLinks().map((item) => (
+    <Link
+      key={item.label}
+      to={item.to}
+      aria-current={item.active ? "page" : undefined}
+      className={cn(
+        "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
+        item.active && "bg-plate font-semibold text-white hover:bg-plate-hover",
+      )}
+    >
+      {item.label}
+    </Link>
+  ));
+}
+
 function Header() {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -97,17 +127,7 @@ function Header() {
         <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
       </Link>
       <nav aria-label="Điều hướng chính" className="hidden items-center gap-1 lg:flex">
-        <NavLink
-          to={ROUTES.ROOMS}
-          className={({ isActive }) =>
-            cn(
-              "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-              isActive && "bg-line",
-            )
-          }
-        >
-          {user?.role === "landlord" ? "Xem phòng" : "Tìm phòng"}
-        </NavLink>
+        <RoomLinks />
 
         {user?.role === "student"
           ? STUDENT_NAV_ITEMS.map((item) => (
@@ -133,7 +153,7 @@ function Header() {
             className={({ isActive }) =>
               cn(
                 "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-                isActive && "bg-line",
+                isActive && "bg-plate font-semibold text-white hover:bg-plate-hover",
               )
             }
           >
@@ -229,6 +249,8 @@ interface RailItem {
   icon: React.ElementType;
   /** undefined = no badge. */
   badge: number | undefined;
+  /** Only in the bottom bar (phones); on desktop the header already has it. */
+  mobileOnly?: boolean;
 }
 
 function RailItems(): (RailItem & { active: boolean })[] {
@@ -238,7 +260,7 @@ function RailItems(): (RailItem & { active: boolean })[] {
   /** Student-only heart, landlord swaps it for a listings icon. */
   const isLandlord = user?.role === "landlord";
   const items: RailItem[] = [
-    { to: ROUTES.HOME, label: "Tìm phòng", icon: RailSearchIcon, badge: undefined },
+    { to: ROUTES.HOME, label: "Trang chủ", icon: RailHomeIcon, badge: undefined, mobileOnly: true },
     isLandlord
       ? { to: ROUTES.LANDLORD, label: "Quản lý tin đăng", icon: RailBuildingIcon, badge: undefined }
       : { to: ROUTES.FAVORITES, label: "Yêu thích", icon: RailHeartIcon, badge: undefined },
@@ -285,6 +307,7 @@ function Rail() {
                 aria-current={item.active ? "page" : undefined}
                 className={cn(
                   "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors",
+                  item.mobileOnly && "lg:hidden",
                   "text-ink-2 hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate",
                   item.active && "bg-plate-tint text-plate font-medium",
                 )}

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ROUTES } from "@/shared/constants/routes";
-import { ART_ASSETS } from "@/shared/constants/assets";
 import { errMessage } from "@/shared/api/axiosClient";
 import { FormValidationError, useAuthForm } from "@/features/auth/hooks/useAuthForm";
 import { Button } from "@/shared/ui/button";
@@ -61,7 +60,7 @@ export default function Login() {
   });
 
   return (
-    <AuthSplit artSrc={ART_ASSETS.AUTH_STUDENT} title="Đăng nhập" artTestId="login-art">
+    <AuthSplit title="Đăng nhập">
       <form
         onSubmit={(e) => {
           void form.handleSubmit(e);

@@ -51,23 +51,23 @@ test.describe("home hero", () => {
     await expect(page.locator('img[src*="hero-art"]')).toHaveCount(0);
   });
 
-  test("three drawn room cards float at the right of the hero on wide screens", async ({
-    page,
-  }) => {
+  test("the header menu sits on one row with Trang chủ", async ({ page }) => {
+    await page.setViewportSize({ width: 1360, height: 900 });
     await page.goto("/");
-    const deck = page.getByTestId("hero-deck");
-    await expect(deck).toBeVisible();
-    await expect(deck.getByTestId("hero-deck-card")).toHaveCount(3);
-    await expect(deck.locator("a, img")).toHaveCount(0);
-    const box = await deck.boundingBox();
-    expect(box!.x).toBeGreaterThan(560);
+    const nav = page.getByRole("navigation", { name: "Điều hướng chính" });
+    const find = await nav.getByRole("link", { name: "Trang chủ" }).boundingBox();
+    for (const name of ["Phòng trọ", "Căn hộ", "Nhà nguyên căn", "Bản đồ"]) {
+      const box = await nav.getByRole("link", { name }).boundingBox();
+      expect(Math.abs(box!.y - find!.y)).toBeLessThanOrEqual(2);
+    }
+    await expect(page.getByTestId("hero-deck")).toHaveCount(0);
   });
 });
 
-test.describe("recent rooms on a clothesline", () => {
+test.describe("recent rooms row", () => {
   test.use({ viewport: { width: 1360, height: 900 } });
 
-  test("the clothesline starts above the fold, right under the hero", async ({ page }) => {
+  test("the room row starts above the fold, right under the hero", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("hang-card").first()).toBeVisible();
     const heading = await page.getByRole("heading", { name: "Mới đăng" }).boundingBox();
@@ -76,25 +76,22 @@ test.describe("recent rooms on a clothesline", () => {
     expect(card!.y).toBeLessThan(900);
   });
 
-  test("every room has a peg and the first card lines up with the heading", async ({ page }) => {
+  test("the first card lines up with the heading", async ({ page }) => {
     await page.goto("/");
     const cards = page.getByTestId("hang-card");
     await expect(cards.first()).toBeVisible();
-    expect(await page.getByTestId("hang-peg").count()).toBe(await cards.count());
     const h = await page.getByRole("heading", { name: "Mới đăng" }).boundingBox();
     const c = await cards.first().boundingBox();
     expect(Math.abs(h!.x - c!.x)).toBeLessThanOrEqual(1);
   });
 
   test("a card opens its room", async ({ page }) => {
-    // The cards sway forever; reduced motion keeps them still so the click can land.
-    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
     await page.getByTestId("hang-card").first().click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);
   });
 
-  test("arrows hide at either end of the line", async ({ page }) => {
+  test("arrows hide at either end of the row", async ({ page }) => {
     await page.goto("/");
     const row = page.getByTestId("hang-row");
     await expect(page.getByTestId("hang-card").first()).toBeVisible();
@@ -118,7 +115,7 @@ test.describe("recent rooms on a clothesline", () => {
     await expect(next).toHaveAttribute("data-visible", "true");
   });
 
-  test("the arrow scrolls the line", async ({ page }) => {
+  test("the arrow scrolls the row", async ({ page }) => {
     await page.goto("/");
     const row = page.getByTestId("hang-row");
     await expect(page.getByTestId("hang-card").first()).toBeVisible();
@@ -151,10 +148,9 @@ test.describe("quick search strip", () => {
 test.describe("home on a phone", () => {
   test.use({ viewport: { width: 390, height: 800 } });
 
-  test("no floating deck or arrows, and the line swipes", async ({ page }) => {
+  test("no arrows, and the row swipes", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("hang-card").first()).toBeVisible();
-    await expect(page.getByTestId("hero-deck")).toBeHidden();
     await expect(page.getByRole("button", { name: "Cuộn sang phải" })).toBeHidden();
     const overflow = await page
       .getByTestId("hang-row")

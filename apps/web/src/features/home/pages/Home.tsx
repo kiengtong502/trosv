@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
-import { ART_ASSETS } from "@/shared/constants/assets";
+import { BandBackdrop } from "@/shared/ui/band-backdrop";
 import { getListings } from "@/features/listings/api/listingApi";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { useCities, useSchools } from "@/features/listings/hooks/useReferenceData";
@@ -11,7 +11,6 @@ import { ErrorState } from "@/shared/ui/empty-state";
 import { SearchEmptyIllustration } from "@/shared/ui/icons";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useReveal } from "@/shared/hooks/useReveal";
-import { HeroDeck } from "../components/HeroDeck";
 import { HomeQuickStrip } from "../components/HomeQuickStrip";
 import { RoomClothesline } from "../components/RoomClothesline";
 import { TypedWord } from "../components/TypedWord";
@@ -41,7 +40,7 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
   const hasSuggestions = matchedSchools.length > 0 || matchedCities.length > 0;
 
   return (
-    <form onSubmit={submit} className="w-full max-w-xl">
+    <form onSubmit={submit} className="mx-auto w-full max-w-2xl">
       <div className="relative">
         <div className="flex h-16 items-center gap-2 rounded-xl border border-line-strong bg-card p-2 pl-4 shadow-pop">
           <SearchIcon className="size-5 flex-none text-muted" aria-hidden />
@@ -114,13 +113,6 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
   );
 }
 
-const QUICK_FILTERS = [
-  { label: "Phòng trọ", params: { type: "room" } },
-  { label: "Căn hộ", params: { type: "apartment" } },
-  { label: "Nhà nguyên căn", params: { type: "house" } },
-  { label: "Dưới 2.000.000đ", params: { price_max: "2000000" } },
-];
-
 export default function Home() {
   const { user } = useAuth();
   useDocumentTitle("Trang chủ · TROSV");
@@ -147,52 +139,37 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero: navy band, a quiet doodle pattern, the typed keyword and the newest rooms floating at the right */}
+      {/* Hero: navy band with a quiet icon pattern, the typed keyword and the search box, all centered */}
       <PlateBand
         size="hero"
         className="md:min-h-0"
-        contentClassName="px-5 py-8 sm:px-5 md:px-5 md:py-10 min-[1180px]:pr-[508px]"
-        headingClassName="max-w-xl lg:text-5xl"
+        contentClassName="items-center px-5 py-12 text-center sm:px-5 md:px-5 md:py-16"
+        headingClassName="mx-auto max-w-3xl lg:text-5xl"
         title={
           <>
-            Phòng trọ. Căn hộ.
+            Tìm nơi ở cùng TROSV
             <br />
-            <TypedWord />
+            {/* Invisible longest phrase reserves the width, so the centered line never jitters while typing. */}
+            <span className="relative inline-block">
+              <span aria-hidden="true" className="invisible whitespace-nowrap">
+                Gần trường
+              </span>
+              <span className="absolute inset-0 flex justify-center">
+                <TypedWord />
+              </span>
+            </span>
           </>
         }
-        backdrop={
-          <>
-            <div
-              data-testid="hero-doodles"
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[length:260px_260px,auto,auto]"
-              style={{
-                backgroundImage: `url(${ART_ASSETS.HERO_DOODLES}), radial-gradient(ellipse 60% 80% at 88% 8%, rgb(255 255 255 / 0.13), transparent 60%), radial-gradient(ellipse 50% 70% at 0% 100%, rgb(0 0 0 / 0.18), transparent 65%)`,
-              }}
-            />
-          </>
-        }
+        backdrop={<BandBackdrop testId="hero-doodles" />}
       >
-        <p className="-mt-2 max-w-xl text-base text-white/85 sm:text-lg">
-          Tìm phòng theo trường, nhắn thẳng chủ nhà, để AI gợi ý giá hợp lý.
+        <p className="-mt-2 max-w-4xl text-balance text-center text-lg font-medium text-white [text-shadow:0_1px_8px_rgb(5_20_60/0.45)] sm:text-xl lg:whitespace-nowrap">
+          Tìm trọ sát trường, lọc giá thông minh và kết nối bạn cùng phòng lý tưởng
         </p>
         <HeroSearch cities={cities} schools={schools} />
-        <div className="flex flex-wrap gap-2">
-          {QUICK_FILTERS.map(({ label, params }) => (
-            <Link
-              key={label}
-              to={`${ROUTES.ROOMS}?${new URLSearchParams(params).toString()}`}
-              className="inline-flex h-9 items-center rounded-full border border-white/25 bg-white/15 px-4 text-sm font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-        <HeroDeck />
       </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">
-        {/* Mới đăng: recent rooms on a clothesline, right under the hero */}
+        {/* Mới đăng: one swipeable row of recent rooms, right under the hero */}
         <section className="pb-6 pt-8">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight text-ink">Mới đăng</h2>
