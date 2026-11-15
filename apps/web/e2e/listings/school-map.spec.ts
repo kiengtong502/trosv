@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const API = "http://localhost:8000/api";
+
 interface School {
   id: number;
   name: string;
@@ -11,7 +13,7 @@ test("selected school has a separate pin, campus popup and optional radius", asy
   page,
   request,
 }) => {
-  const response = await request.get("/api/schools");
+  const response = await request.get(`${API}/schools`);
   expect(response.ok()).toBe(true);
   const { data } = (await response.json()) as { data: School[] };
   const school = data.find((item) => item.name === "Đại học Bách khoa (HCMUT)")!;
@@ -54,7 +56,7 @@ test("mobile shows and switches Đông Hòa references even with no matching roo
   request,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const response = await request.get("/api/schools");
+  const response = await request.get(`${API}/schools`);
   const { data } = (await response.json()) as { data: School[] };
   const first = data.find((school) => school.name === "Đại học Quốc tế (HCMIU)")!;
   const second = data.find((school) => school.name === "Đại học Khoa học Sức khỏe (UHS)")!;

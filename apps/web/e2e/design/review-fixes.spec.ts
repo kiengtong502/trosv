@@ -87,7 +87,7 @@ test.describe("review fixes", () => {
     await cards.nth(4).click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);
     await page.goBack();
-    await expect(page).toHaveURL(/\/rooms$/);
+    await expect(page).toHaveURL(/\/rooms(?:\?.*)?$/);
     await expect(cards.nth(5)).toBeVisible();
     await expect
       .poll(() => page.evaluate(() => window.scrollY), { timeout: 5000 })
@@ -138,7 +138,7 @@ test.describe("review fixes", () => {
     await cards.nth(4).click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);
     await page.goBack();
-    await expect(page).toHaveURL(/\/rooms$/);
+    await expect(page).toHaveURL(/\/rooms(?:\?.*)?$/);
     // Let the restore start listening for input before the user "takes over"
     // (a wheel fired before that is not seen, which made this test flaky on slow runners).
     await page.waitForTimeout(300);

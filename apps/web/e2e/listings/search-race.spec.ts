@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
 import type { Listing } from "../../src/shared/types/api";
 
+const API = "http://localhost:8000/api";
+
 test("late search responses cannot replace the latest room list or map", async ({
   page,
   request,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  const fixture = await request.get("/api/listings?per_page=1");
+  const fixture = await request.get(`${API}/listings?per_page=1`);
   expect(fixture.ok()).toBe(true);
   const { data } = (await fixture.json()) as { data: Listing[] };
   expect(data.length).toBeGreaterThan(0);

@@ -587,7 +587,18 @@ test.describe("thread scrolling", () => {
     // The room card grows the thread once its data arrives, after the first scroll.
     await page.route("http://localhost:8000/api/listings/48", async (route) => {
       await new Promise((r) => setTimeout(r, 700));
-      await route.continue();
+      await route.fulfill({
+        json: {
+          data: {
+            ...GAC_LUNG,
+            type: "room",
+            price: 2900000,
+            area_m2: 24,
+            address: "36 Nguyễn Hữu Thọ, Tân Hưng, TP.HCM",
+            images: [],
+          },
+        },
+      });
     });
     await page.goto("/messages/1");
     const thread = page.getByTestId("thread");
@@ -619,7 +630,18 @@ test.describe("thread scrolling", () => {
     });
     await page.route("http://localhost:8000/api/listings/48", async (route) => {
       await new Promise((r) => setTimeout(r, 900));
-      await route.continue();
+      await route.fulfill({
+        json: {
+          data: {
+            ...GAC_LUNG,
+            type: "room",
+            price: 2900000,
+            area_m2: 24,
+            address: "36 Nguyễn Hữu Thọ, Tân Hưng, TP.HCM",
+            images: [],
+          },
+        },
+      });
     });
     await page.goto("/messages/1");
     const thread = page.getByTestId("thread");
