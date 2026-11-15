@@ -9,10 +9,17 @@ export interface SearchFilterBarProps {
   search: SearchState;
   showMap: boolean;
   onToggleMap: () => void;
+  /** Phones only: hide the list/map switch when the page has no map. */
+  showMapToggle?: boolean;
 }
 
 /** The navy strip under the header: search box and the filter pills. */
-export function SearchFilterBar({ search, showMap, onToggleMap }: SearchFilterBarProps) {
+export function SearchFilterBar({
+  search,
+  showMap,
+  onToggleMap,
+  showMapToggle = true,
+}: SearchFilterBarProps) {
   return (
     <PlateBand
       size="strip"
@@ -35,25 +42,27 @@ export function SearchFilterBar({ search, showMap, onToggleMap }: SearchFilterBa
       <TypePill search={search} />
       <AmenitiesPill search={search} />
 
-      <button
-        type="button"
-        onClick={onToggleMap}
-        className={
-          "ml-auto flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
-          "bg-flyer px-3 text-sm font-semibold text-flyer-ink lg:hidden"
-        }
-        aria-pressed={showMap}
-      >
-        {showMap ? (
-          <>
-            <ListIcon className="size-4" aria-hidden /> Danh sách
-          </>
-        ) : (
-          <>
-            <MapIcon className="size-4" aria-hidden /> Bản đồ
-          </>
-        )}
-      </button>
+      {showMapToggle ? (
+        <button
+          type="button"
+          onClick={onToggleMap}
+          className={
+            "ml-auto flex h-9 flex-none items-center gap-1.5 rounded-lg border border-flyer " +
+            "bg-flyer px-3 text-sm font-semibold text-flyer-ink lg:hidden"
+          }
+          aria-pressed={showMap}
+        >
+          {showMap ? (
+            <>
+              <ListIcon className="size-4" aria-hidden /> Danh sách
+            </>
+          ) : (
+            <>
+              <MapIcon className="size-4" aria-hidden /> Bản đồ
+            </>
+          )}
+        </button>
+      ) : null}
     </PlateBand>
   );
 }

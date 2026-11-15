@@ -10,12 +10,68 @@ import { ListingResults } from "../components/ListingResults";
 import { MobileViewToggle, type MobileTab } from "../components/MobileViewToggle";
 import { Pagination } from "../components/Pagination";
 import { SearchFilterBar } from "../components/SearchFilterBar";
+import type { SearchState } from "../lib/types";
 import { SortMenu } from "../components/SortMenu";
 import { areaName, buildFilterChips } from "../lib/filterChips";
 import { useFavoriteToggle } from "../hooks/useFavoriteToggle";
 
-export default function Search() {
+function SearchMapPane({
+  search,
+  mobileTab,
+  hoveredListing,
+  onHover,
+}: {
+  search: SearchState;
+  mobileTab: MobileTab;
+  hoveredListing: number | null;
+  onHover: (id: number | null) => void;
+}) {
   const navigate = useNavigate();
+  return (
+    <div
+      data-testid="map-pane"
+      className={cn(
+        "animate-fade-in lg:animate-none lg:order-1 lg:block",
+        mobileTab === "map"
+          ? "block h-[calc(100dvh-var(--nav-h)-115px)] w-full"
+          : "hidden lg:block",
+      )}
+    >
+      <div
+        className={
+          "h-full w-full lg:sticky lg:top-[calc(var(--nav-h)+55px)] " +
+          "lg:h-[calc(100vh-var(--nav-h)-55px)]"
+        }
+      >
+        <ListingMap
+          listings={search.mapListings.length > 0 ? search.mapListings : search.listings}
+          selectedId={hoveredListing}
+          onSelect={(id) => {
+            void navigate(route(ROUTES.ROOM_DETAIL, { id }));
+          }}
+          onHover={onHover}
+          hasLocationFilter={Boolean(
+            search.filters.city_id || search.filters.ward_id || search.filters.school_id,
+          )}
+          ariaLabel="Bản đồ phòng trọ"
+        />
+      </div>
+    </div>
+  );
+}
+
+/** What to call the results for each room type, so "10 căn hộ" never reads "10 phòng trọ". */
+const TYPE_NOUN: Record<string, string> = {
+  room: "phòng trọ",
+  apartment: "căn hộ",
+  house: "nhà nguyên căn",
+};
+
+function resultNoun(type: string): string {
+  return TYPE_NOUN[type] ?? "phòng";
+}
+
+export default function Search() {
   useDocumentTitle("Tìm phòng · TROSV");
   const search = useListingSearch();
   const [mobileTab, setMobileTab] = useState<MobileTab>("list");
@@ -31,6 +87,8 @@ export default function Search() {
   }, []);
   const totalCount = search.meta?.total ?? search.listings.length;
   const area = areaName(search.filters, search);
+  /* Picking a room type (header tabs: Phòng trọ, Căn hộ, Nhà nguyên căn) shows listings only. */
+  const listOnly = Boolean(search.filters.type);
 
   return (
     <div className="flex min-h-[calc(100svh-var(--nav-h))] flex-col bg-paper">
@@ -39,6 +97,7 @@ export default function Search() {
         search={search}
         showMap={mobileTab === "map"}
         onToggleMap={toggleMobileTab}
+        showMapToggle={!listOnly}
       />
 
       {/* Result metadata + Active filter chips */}
@@ -49,7 +108,7 @@ export default function Search() {
               <span className="text-muted">Đang tìm phòng…</span>
             ) : (
               <>
-                <span className="tabular-nums">{totalCount}</span> phòng trọ
+                <span className="tabular-nums">{totalCount}</span> {resultNoun(search.filters.type)}
                 {area ? <span className="font-normal text-muted"> tại {area}</span> : null}
               </>
             )}
@@ -65,13 +124,22 @@ export default function Search() {
       </div>
 
       {/* Split view: List | Map (Responsive Desktop Split + Mobile Tab) */}
-      <div className="flex flex-1 flex-col pt-3 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(420px,50%)]">
+      <div
+        className={cn(
+          "flex flex-1 flex-col pt-3",
+          !listOnly && "lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(420px,50%)]",
+        )}
+      >
         {/* Listings column: Always on desktop, conditional on mobile */}
         <div
           data-testid="list-pane"
           className={cn(
             "animate-fade-in px-4 pb-20 lg:order-2 lg:animate-none lg:px-6 lg:pb-16",
-            mobileTab === "map" ? "hidden lg:block" : "block",
+            listOnly
+              ? "mx-auto block w-full max-w-7xl"
+              : mobileTab === "map"
+                ? "hidden lg:block"
+                : "block",
           )}
         >
           <ListingResults
@@ -83,6 +151,7 @@ export default function Search() {
               void toggleFavorite(l);
             }}
             onResetFilters={search.resetFilters}
+            wide={listOnly}
           />
           <Pagination
             page={search.page}
@@ -91,39 +160,18 @@ export default function Search() {
           />
         </div>
 
-        {/* Map column: Always on desktop, conditional on mobile */}
-        <div
-          data-testid="map-pane"
-          className={cn(
-            "animate-fade-in lg:animate-none lg:order-1 lg:block",
-            mobileTab === "map"
-              ? "block h-[calc(100dvh-var(--nav-h)-115px)] w-full"
-              : "hidden lg:block",
-          )}
-        >
-          <div
-            className={
-              "h-full w-full lg:sticky lg:top-[calc(var(--nav-h)+55px)] " +
-              "lg:h-[calc(100vh-var(--nav-h)-55px)]"
-            }
-          >
-            <ListingMap
-              listings={search.mapListings.length > 0 ? search.mapListings : search.listings}
-              selectedId={hoveredListing}
-              onSelect={(id) => {
-                void navigate(route(ROUTES.ROOM_DETAIL, { id }));
-              }}
-              onHover={onHover}
-              hasLocationFilter={Boolean(
-                search.filters.city_id || search.filters.ward_id || search.filters.school_id,
-              )}
-              ariaLabel="Bản đồ phòng trọ"
-            />
-          </div>
-        </div>
+        {/* Map column: Always on desktop, conditional on mobile; none for a single room type */}
+        {listOnly ? null : (
+          <SearchMapPane
+            search={search}
+            mobileTab={mobileTab}
+            hoveredListing={hoveredListing}
+            onHover={onHover}
+          />
+        )}
       </div>
 
-      <MobileViewToggle tab={mobileTab} onToggle={toggleMobileTab} />
+      {listOnly ? null : <MobileViewToggle tab={mobileTab} onToggle={toggleMobileTab} />}
     </div>
   );
 }

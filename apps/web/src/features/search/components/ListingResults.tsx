@@ -12,6 +12,8 @@ export interface ListingResultsProps {
   onHover: (id: number | null) => void;
   onFavoriteToggle: (listing: Listing) => void;
   onResetFilters: () => void;
+  /** No map beside the list: use the full width with more columns. */
+  wide?: boolean;
 }
 
 /** The result grid, or its loading skeleton, error or empty state. */
@@ -22,10 +24,14 @@ export function ListingResults({
   onHover,
   onFavoriteToggle,
   onResetFilters,
+  wide = false,
 }: ListingResultsProps) {
+  const cols = wide
+    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    : "grid-cols-1 sm:grid-cols-2";
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className={`grid gap-4 ${cols}`}>
         <ListingCardSkeleton />
         <ListingCardSkeleton />
         <ListingCardSkeleton />
@@ -57,7 +63,7 @@ export function ListingResults({
     );
   }
   return (
-    <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className={`motion-stagger grid gap-4 ${cols}`}>
       {listings.map((l) => (
         <ListingCard key={l.id} listing={l} onHover={onHover} onFavToggle={onFavoriteToggle} />
       ))}
