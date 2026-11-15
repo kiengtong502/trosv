@@ -16,7 +16,15 @@ import { RailHomeIcon, RailHeartIcon, RailMessageIcon, RailBuildingIcon } from "
 import { Badge } from "@/shared/ui/badge";
 import { Avatar } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/popover";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "@/shared/ui/toast";
 import { Footer } from "@/shared/layout/footer";
@@ -78,39 +86,130 @@ function MobileNavigation({ role }: { role: string | undefined }) {
   );
 }
 
-/** "Trang chủ" plus the room categories, with the active one marked from the URL. */
-function useRoomLinks() {
+const NAV_ITEM =
+  "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line";
+const NAV_ACTIVE = "bg-plate font-semibold text-white hover:bg-plate-hover";
+
+interface DropdownLink {
+  label: string;
+  to: string;
+  current: boolean;
+}
+
+/** A header button that opens a small menu of links (Tìm phòng, Gợi ý AI). */
+function NavDropdown({
+  label,
+  active,
+  links,
+}: {
+  label: string;
+  active: boolean;
+  links: DropdownLink[];
+}) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(NAV_ITEM, "flex items-center gap-1", active && NAV_ACTIVE)}
+          aria-expanded={open}
+          aria-haspopup="menu"
+        >
+          {label}
+          <ChevronDown className="size-4" aria-hidden />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto min-w-52 bg-card p-2">
+        {links.map((item) => (
+          <Link
+            key={item.label}
+            to={item.to}
+            aria-current={item.current ? "page" : undefined}
+            className={cn(
+              "block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint",
+              item.current && "bg-plate-tint font-semibold text-plate",
+            )}
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+/** "Tìm phòng": all rooms, then the three room types. */
+function RoomsMenu({ role }: { role: string | undefined }) {
   const { pathname, search } = useLocation();
   const roomType = new URLSearchParams(search).get("type");
   const onRooms = pathname === ROUTES.ROOMS;
-  const category = (label: string, type: string) => ({
-    label,
-    to: `${ROUTES.ROOMS}?type=${type}`,
-    active: onRooms && roomType === type,
-  });
-  return [
-    { label: "Trang chủ", to: ROUTES.HOME, active: pathname === ROUTES.HOME },
-    category("Phòng trọ", "room"),
-    category("Căn hộ", "apartment"),
-    category("Nhà nguyên căn", "house"),
-    { label: "Bản đồ", to: ROUTES.MAP, active: pathname === ROUTES.MAP },
+  const types = [
+    { label: "Tất cả phòng", type: null },
+    { label: "Phòng trọ", type: "room" },
+    { label: "Căn hộ", type: "apartment" },
+    { label: "Nhà nguyên căn", type: "house" },
   ];
+  const links = types.map(({ label, type }) => ({
+    label,
+    to: type ? `${ROUTES.ROOMS}?type=${type}` : ROUTES.ROOMS,
+    current: onRooms && roomType === type,
+  }));
+  return (
+    <NavDropdown
+      label={role === "landlord" ? "Xem phòng" : "Tìm phòng"}
+      active={onRooms}
+      links={links}
+    />
+  );
 }
 
-function RoomLinks() {
-  return useRoomLinks().map((item) => (
-    <Link
-      key={item.label}
-      to={item.to}
-      aria-current={item.active ? "page" : undefined}
-      className={cn(
-        "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-        item.active && "bg-plate font-semibold text-white hover:bg-plate-hover",
-      )}
+/** "Gợi ý AI": one menu holding the roommate and area suggestions. */
+function AiMenu() {
+  const { pathname } = useLocation();
+  const links = STUDENT_NAV_ITEMS.map((item) => ({
+    label: item.label,
+    to: item.to,
+    current: pathname === item.to,
+  }));
+  return <NavDropdown label="Gợi ý AI" active={links.some((l) => l.current)} links={links} />;
+}
+
+function NavItem({ to, end, children }: { to: string; end?: boolean; children: React.ReactNode }) {
+  return (
+    <NavLink
+      to={to}
+      end={end ?? false}
+      className={({ isActive }) => cn(NAV_ITEM, isActive && NAV_ACTIVE)}
     >
-      {item.label}
-    </Link>
-  ));
+      {children}
+    </NavLink>
+  );
+}
+
+/** Centered main menu: Trang chủ, Tìm phòng (submenu), Bản đồ, then the role's own links. */
+function MainNav({ role }: { role: string | undefined }) {
+  return (
+    <nav
+      aria-label="Điều hướng chính"
+      className="col-start-2 hidden items-center justify-center gap-1 lg:flex"
+    >
+      <NavItem to={ROUTES.HOME} end>
+        Trang chủ
+      </NavItem>
+      <RoomsMenu role={role} />
+      <NavItem to={ROUTES.MAP}>Bản đồ</NavItem>
+      {role === "student" ? <AiMenu /> : null}
+      {role === "landlord" ? (
+        <NavItem to={ROUTES.LANDLORD} end>
+          Quản lý tin đăng
+        </NavItem>
+      ) : null}
+    </nav>
+  );
 }
 
 function Header() {
@@ -121,49 +220,17 @@ function Header() {
   /* Keyboard/aria wiring for the navigation and account menus stays handled by Radix. */
 
   return (
-    <header className="sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6">
-      <MobileNavigation role={user?.role} />
-      <Link to={ROUTES.HOME} className="flex shrink-0 items-center" aria-label="TROSV trang chủ">
-        <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
-      </Link>
-      <nav aria-label="Điều hướng chính" className="hidden items-center gap-1 lg:flex">
-        <RoomLinks />
-
-        {user?.role === "student"
-          ? STUDENT_NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-                    isActive && "bg-line",
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))
-          : null}
-
-        {user?.role === "landlord" ? (
-          <NavLink
-            to={ROUTES.LANDLORD}
-            end
-            className={({ isActive }) =>
-              cn(
-                "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
-                isActive && "bg-plate font-semibold text-white hover:bg-plate-hover",
-              )
-            }
-          >
-            Quản lý tin đăng
-          </NavLink>
-        ) : null}
-      </nav>
+    <header className="sticky top-0 z-30 grid h-[var(--nav-h)] shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6">
+      <div className="col-start-1 flex items-center gap-3">
+        <MobileNavigation role={user?.role} />
+        <Link to={ROUTES.HOME} className="flex shrink-0 items-center" aria-label="TROSV trang chủ">
+          <img src="/trosv-logo.svg" alt="TROSV" className="trosv-logo h-7 w-auto sm:h-8" />
+        </Link>
+      </div>
+      <MainNav role={user?.role} />
 
       {/* Right: account (always right-aligned). */}
-      <div className="ml-auto flex shrink-0 items-center gap-2">
+      <div className="col-start-3 flex shrink-0 items-center gap-2 justify-self-end">
         {user?.role === "landlord" ? (
           <Button asChild size="sm" className="hidden px-3 text-sm lg:inline-flex">
             <Link to={ROUTES.LANDLORD_NEW}>Đăng tin mới</Link>
