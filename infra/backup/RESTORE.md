@@ -10,6 +10,10 @@ Chạy trên máy chủ Debian, trong thư mục repo (ví dụ `/srv/trosv`).
 
 ## 0. Chọn bản backup
 
+Script giữ 7 bản mới nhất và 4 bản Chủ nhật mới nhất; bản thuộc cả hai nhóm
+chỉ tính một lần. Các tệp database, uploads và `.env` cùng timestamp được
+giữ hoặc xóa cùng nhau. Chính sách này không khôi phục những bản đã bị xóa trước đó.
+
 ```bash
 ls -1t backups/db-*.sql.gz | head -5
 TS=20260927-023000   # ts của bản muốn restore

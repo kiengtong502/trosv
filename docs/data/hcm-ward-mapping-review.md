@@ -4,6 +4,8 @@ Cập nhật ngày **15/11/2026**, snapshot lúc **00:56:37 (UTC+07:00)** của 
 
 Báo cáo này thay số liệu ngày 13/11/2026. Chi tiết từng bản ghi nằm trong [JSON đối chiếu](hcm-ward-mapping-review.json); số liệu cũ chỉ giữ ở `previous_review` để so sánh, không còn là hiện trạng.
 
+Bổ sung ngày 15/11/2026: ĐH Cảnh sát nhân dân (PPU) được cập nhật theo người dùng với địa chỉ **36 Nguyễn Hữu Thọ, Tân Hưng, Hồ Chí Minh, Việt Nam**, liên kết **Phường Tân Hưng (27475, DB ID 30)** và tọa độ **10.735428719307626, 106.697951233798** (DB lưu **10.7354287, 106.6979512**). Chỉ mục trường này được cập nhật trong JSON; các số liệu tổng hợp còn lại vẫn thuộc snapshot 00:56:37, chưa phản ánh các lượt dọn dữ liệu sau đó. Vị trí thực tế chưa được xác minh độc lập.
+
 ## Kết quả hiện tại
 
 **Đã đồng bộ đủ 102 phường/xã và 61 trường TP.HCM. Không còn thiếu 92 phường/xã như báo cáo cũ.** Phạm vi phòng là địa bàn TP.HCM trước sáp nhập tỉnh năm 2025, dùng tên phường/xã mới. Hai cơ sở Đông Hòa vẫn được phép làm mốc tìm phòng theo lựa chọn của người dùng.

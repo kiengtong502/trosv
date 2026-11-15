@@ -14,12 +14,12 @@ test("selected school has a separate pin, campus popup and optional radius", asy
   const response = await request.get("/api/schools");
   expect(response.ok()).toBe(true);
   const { data } = (await response.json()) as { data: School[] };
-  const school = data.find((item) => item.name === "ĐH Bách khoa")!;
+  const school = data.find((item) => item.name === "Đại học Bách khoa (HCMUT)")!;
   expect(school.address).toContain("268 Lý Thường Kiệt");
 
   await page.goto("/rooms");
   await expect(page.locator(".trosv-school-marker")).toHaveCount(0);
-  await page.getByRole("button", { name: "Gần trường", exact: true }).click();
+  await page.getByRole("button", { name: "Chọn trường", exact: true }).click();
   await page.locator("#filter-school").selectOption(String(school.id));
   await page.keyboard.press("Escape");
   const marker = page.locator(".trosv-school-marker");
@@ -34,7 +34,7 @@ test("selected school has a separate pin, campus popup and optional radius", asy
   await expect(popup).toContainText(school.campus_name);
   await expect(popup).toContainText(school.address);
 
-  await page.getByRole("button", { name: "Gần trường", exact: true }).click();
+  await page.getByRole("button", { name: "Chọn trường", exact: true }).click();
   await page.locator("#filter-radius").selectOption("2");
   await page.keyboard.press("Escape");
   await expect(page.locator(".trosv-school-radius")).toHaveCount(1);
@@ -42,7 +42,7 @@ test("selected school has a separate pin, campus popup and optional radius", asy
   await expect(page.getByTestId("school-map-legend")).toContainText(
     "Bán kính 2 km · đường chim bay",
   );
-  await page.getByRole("button", { name: "Gần trường", exact: true }).click();
+  await page.getByRole("button", { name: "Chọn trường", exact: true }).click();
   await page.getByRole("button", { name: "Xóa lọc này", exact: true }).click();
   await expect(marker).toHaveCount(0);
   await expect(page.locator(".trosv-school-radius")).toHaveCount(0);
@@ -56,8 +56,8 @@ test("mobile shows and switches Đông Hòa references even with no matching roo
   await page.setViewportSize({ width: 390, height: 844 });
   const response = await request.get("/api/schools");
   const { data } = (await response.json()) as { data: School[] };
-  const first = data.find((school) => school.name === "ĐH Quốc tế")!;
-  const second = data.find((school) => school.name === "ĐH Khoa học Sức khỏe")!;
+  const first = data.find((school) => school.name === "Đại học Quốc tế (HCMIU)")!;
+  const second = data.find((school) => school.name === "Đại học Khoa học Sức khỏe (UHS)")!;
   await page.route("**/api/listings?**", (route) =>
     route.fulfill({
       json: {
@@ -82,7 +82,7 @@ test("mobile shows and switches Đông Hòa references even with no matching roo
   expect(pinBox!.y + pinBox!.height / 2).toBeLessThan(mapBox!.y + mapBox!.height);
   await marker.click();
   await expect(page.locator(".trosv-school-popup")).toContainText(first.address);
-  await page.getByRole("button", { name: "Gần trường", exact: true }).click();
+  await page.getByRole("button", { name: "Chọn trường", exact: true }).click();
   await page.locator("#filter-school").selectOption(String(second.id));
   await page.keyboard.press("Escape");
   await expect(marker).toHaveCount(1);

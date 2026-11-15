@@ -76,11 +76,19 @@ class SeedAndRelationsTest extends TestCase
         $this->assertNull($schools->get('ĐH Quốc tế')->ward_id);
         $this->assertNull($schools->get('ĐH Khoa học Sức khỏe')->ward_id);
         $response = $this->getJson('/api/schools?city_id='.$hcmc->id)->assertOk()->assertJsonCount(61, 'data');
-        $publicSchools = collect($response->json('data'))->keyBy('name');
+        $publicSchools = collect($response->json('data'))->keyBy('id');
         foreach ($data['schools'] as $row) {
-            $this->assertSame($row['campus_name'], $publicSchools[$row['name']]['campus_name']);
-            $this->assertSame($row['address'], $publicSchools[$row['name']]['address']);
+            $publicSchool = $publicSchools[$schools[$row['name']]->id];
+            $expectedName = preg_replace('/^ĐH /u', 'Đại học ', $row['name']);
+            if (isset($row['abbreviation'])) {
+                $expectedName .= ' ('.$row['abbreviation'].')';
+            }
+            $this->assertSame($expectedName, $publicSchool['name']);
+            $this->assertSame($row['campus_name'], $publicSchool['campus_name']);
+            $this->assertSame($row['address'], $publicSchool['address']);
         }
+        $this->assertContains('Đại học Kinh tế TP.HCM (UEH)', $publicSchools->pluck('name'));
+        $this->assertContains('Đại học Công nghệ TP.HCM (HUTECH)', $publicSchools->pluck('name'));
     }
 
     public function test_reference_seeds_leave_existing_outside_city_data_unchanged(): void

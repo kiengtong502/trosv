@@ -1,6 +1,10 @@
 import { FilterPill } from "./FilterPill";
-import { LocationSelects, SELECT_FIELD_CLASS } from "./LocationSelects";
-import { schoolPlaceholder, schoolsFor } from "../lib/locationOptions";
+import { SELECT_FIELD_CLASS } from "./LocationSelects";
+import { Input } from "@/shared/ui/input";
+import {
+  ALL_CITIES,
+  filterSchools,
+} from "@/features/profile/components/school-combobox/schoolSearch";
 import type { SearchState } from "../lib/types";
 
 export const RADIUS_OPTIONS = [
@@ -12,22 +16,36 @@ export const RADIUS_OPTIONS = [
 
 const LABEL_CLASS = "flex flex-col gap-1 text-xs font-medium text-ink-2";
 
-/** "Gần trường": city, optional ward, school, then a radius. */
+/** Pick a school directly by name; the room's ward stays independent. */
 export function NearSchoolPill({ search }: { search: SearchState }) {
-  const { city_id: cityId, ward_id: wardId, school_id: schoolId, max_km: maxKm } = search.filters;
-  const schools = schoolsFor(search.schools, { cityId, wardId });
+  const { school_id: schoolId, max_km: maxKm } = search.filters;
+  const schools = filterSchools(search.schools, search.schoolQuery, ALL_CITIES);
+  // Keep the active selection visible while looking for a different school.
+  const options =
+    search.selectedSchool && !schools.some((school) => school.id === search.selectedSchool?.id)
+      ? [search.selectedSchool, ...schools]
+      : schools;
 
   return (
     <FilterPill
-      label="Gần trường"
+      label="Chọn trường"
       active={schoolId !== "" || maxKm !== ""}
       onClear={() => {
         search.setFilter("school_id", "");
-        search.setFilter("max_km", "");
       }}
     >
       <div className="flex flex-col gap-3 min-w-[250px]">
-        <LocationSelects idPrefix="near-school" search={search} />
+        <label htmlFor="filter-school-query" className={LABEL_CLASS}>
+          Tìm theo tên trường
+          <Input
+            id="filter-school-query"
+            value={search.schoolQuery}
+            onChange={(e) => {
+              search.setSchoolQuery(e.target.value);
+            }}
+            placeholder="Ví dụ: Bách khoa"
+          />
+        </label>
 
         <div>
           <label htmlFor="filter-school" className={LABEL_CLASS}>
@@ -38,11 +56,11 @@ export function NearSchoolPill({ search }: { search: SearchState }) {
               onChange={(e) => {
                 search.setFilter("school_id", e.target.value);
               }}
-              disabled={cityId === ""}
+              disabled={search.schools.length === 0}
               className={SELECT_FIELD_CLASS}
             >
-              <option value="">{schoolPlaceholder(cityId, wardId)}</option>
-              {schools.map((s) => (
+              <option value="">Chọn trường</option>
+              {options.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -50,6 +68,12 @@ export function NearSchoolPill({ search }: { search: SearchState }) {
             </select>
           </label>
         </div>
+
+        {schools.length === 0 && search.schoolQuery.trim() !== "" ? (
+          <p role="status" className="text-xs text-muted">
+            Không tìm thấy trường phù hợp.
+          </p>
+        ) : null}
 
         {schoolId !== "" ? (
           <label htmlFor="filter-radius" className={LABEL_CLASS}>

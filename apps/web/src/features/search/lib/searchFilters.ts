@@ -1,7 +1,6 @@
 /*
   Pure model of the /rooms filters: what they look like, how they round-trip
-  through the URL, what the API is asked for, and the city -> ward -> school
-  cascade. No React.
+  through the URL, what the API is asked for, and independent room/school filters. No React.
 */
 
 export interface ListingFilters {
@@ -92,12 +91,29 @@ export function filtersToApiParams(
   return params;
 }
 
+/** Removing the school must also remove filters that require its coordinates. */
+export function withFilter(
+  filters: ListingFilters,
+  key: keyof ListingFilters,
+  value: string,
+): ListingFilters {
+  if (key === "school_id" && value === "") {
+    return {
+      ...filters,
+      school_id: "",
+      max_km: "",
+      sort: filters.sort === "distance" ? "newest" : filters.sort,
+    };
+  }
+  return { ...filters, [key]: value };
+}
+
 /** Another city: the ward, school and radius no longer apply. */
 export function withCity(filters: ListingFilters, cityId: string): ListingFilters {
   return { ...filters, city_id: cityId, ward_id: "", school_id: "", max_km: "" };
 }
 
-/** Another ward: the school list is per ward, so the school and radius reset. */
+/** The room's ward is independent of the selected school and radius. */
 export function withWard(filters: ListingFilters, wardId: string): ListingFilters {
-  return { ...filters, ward_id: wardId, school_id: "", max_km: "" };
+  return { ...filters, ward_id: wardId };
 }

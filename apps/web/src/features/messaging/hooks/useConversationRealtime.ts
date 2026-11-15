@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { markRead } from "@/features/messaging/api/messagingApi";
 import { getEcho } from "@/features/messaging/api/echo";
 import type { EchoReactive } from "@/features/messaging/api/echo";
 import { useAuth } from "@/features/auth/context/AuthContext";
@@ -12,7 +11,7 @@ import type {
   MessageSentEvent,
   TypingWhisper,
 } from "@/shared/types/api";
-import { ignoreError } from "@/shared/lib/async";
+import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
 
 /**
  * Realtime layer for the /messages/:id thread over the private
@@ -28,44 +27,56 @@ import { ignoreError } from "@/shared/lib/async";
  */
 export function useConversationRealtime(
   id: string | number,
-  setMessages: Dispatch<SetStateAction<Message[]>>,
-  lastIdRef: { current: number },
+  {
+    setMessages,
+    lastIdRef,
+    syncMessages,
+  }: {
+    setMessages: Dispatch<SetStateAction<Message[]>>;
+    lastIdRef: { current: number };
+    syncMessages: () => void;
+  },
   onPreviewEvent?: (msg: Message) => void,
 ): { otherTyping: boolean; setOtherTyping: Dispatch<SetStateAction<boolean>> } {
   const { user } = useAuth();
   const [otherTyping, setOtherTyping] = useState(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onPreviewRef = useRef(onPreviewEvent);
+  const syncRef = useRef(syncMessages);
 
   useEffect(() => {
     onPreviewRef.current = onPreviewEvent;
-  }, [onPreviewEvent]);
+    syncRef.current = syncMessages;
+  }, [onPreviewEvent, syncMessages]);
 
   useEffect(() => {
     const echo = getEcho();
     if (!echo) return undefined;
 
     const privateChan = echo.private(`conversation.${id}`) as unknown as EchoReactive;
+    let active = true;
+    privateChan.subscribed(() => {
+      if (active) syncRef.current();
+    });
     privateChan.listen(".message.sent", (e: unknown) => {
       const msg = (e as MessageSentEvent).message;
       setOtherTyping(false); // tin đến = người kia ngừng soạn
       setMessages((prev) => {
         if (prev.some((m) => m.id === msg.id)) return prev;
-        return [
-          ...prev,
+        return mergeMessages(prev, [
           {
             ...msg,
             is_unsent: false,
             is_mine: msg.sender_id === user?.id,
             seen_at: null,
           },
-        ];
+        ]);
       });
       lastIdRef.current = Math.max(lastIdRef.current, msg.id);
       // Sidebar preview (Messenger): thread là nguồn sự thật khi đang
       // mở - phát event để Messages.tsx cập nhật item tương ứng.
       onPreviewRef.current?.(msg);
-      if (msg.sender_id !== user?.id) markRead(id).catch(ignoreError("mark conversation read"));
+      if (msg.sender_id !== user?.id) syncRef.current();
     });
 
     // Typing qua client-event (whisper) - không qua backend. Debounce 2.5s.
@@ -117,6 +128,7 @@ export function useConversationRealtime(
     });
 
     return () => {
+      active = false;
       if (typingTimer.current) clearTimeout(typingTimer.current);
       // CHỈ leave kênh conversation (riêng của thread này). Kênh
       // App.Models.User.{id} là DÙNG CHUNG với Navbar + sidebar -

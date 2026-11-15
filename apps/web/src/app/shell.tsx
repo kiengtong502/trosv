@@ -21,15 +21,7 @@ import {
 import { Badge } from "@/shared/ui/badge";
 import { Avatar } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/shared/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/popover";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "@/shared/ui/toast";
 import { Footer } from "@/shared/layout/footer";
@@ -38,16 +30,18 @@ import { AiChatWidget } from "@/features/ai/components/AiChatWidget";
 
 /* ---------- Header ---------- */
 
+const STUDENT_NAV_ITEMS = [
+  { to: ROUTES.AI_ROOMMATES, label: "Tìm bạn cùng phòng" },
+  { to: ROUTES.AI_AREA_SUGGESTIONS, label: "Gợi ý khu vực" },
+] as const;
+
 function MobileNavigation({ role }: { role: string | undefined }) {
   if (!role) return null;
   const items: { to: string; label: string }[] = [
     { to: ROUTES.ROOMS, label: role === "landlord" ? "Xem phòng" : "Tìm phòng" },
   ];
   if (role === "student") {
-    items.push(
-      { to: ROUTES.AI_ROOMMATES, label: "Bạn cùng phòng" },
-      { to: ROUTES.AI_AREA_SUGGESTIONS, label: "Khu vực phù hợp" },
-    );
+    items.push(...STUDENT_NAV_ITEMS);
   }
   if (role === "landlord") {
     items.push(
@@ -91,11 +85,10 @@ function MobileNavigation({ role }: { role: string | undefined }) {
 
 function Header() {
   const { user, logout } = useAuth();
-  const [aiOpen, setAiOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  /* Note: keyboard/aria wiring stays handled by Radix for both menus. */
+  /* Keyboard/aria wiring for the navigation and account menus stays handled by Radix. */
 
   return (
     <header className="sticky top-0 z-30 flex h-[var(--nav-h)] shrink-0 items-center gap-3 border-b border-line bg-card px-3 sm:gap-6 sm:px-6">
@@ -116,44 +109,22 @@ function Header() {
           {user?.role === "landlord" ? "Xem phòng" : "Tìm phòng"}
         </NavLink>
 
-        {user?.role === "student" ? (
-          <Popover open={aiOpen} onOpenChange={setAiOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className={cn(
-                  "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium",
-                  "text-ink transition-colors hover:bg-line",
-                )}
-                aria-expanded={aiOpen}
-                aria-haspopup="menu"
+        {user?.role === "student"
+          ? STUDENT_NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    "rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-line",
+                    isActive && "bg-line",
+                  )
+                }
               >
-                Gợi ý AI
-                <ChevronDown className="size-4" aria-hidden />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-auto min-w-52 p-2 bg-card">
-              <Link
-                to={ROUTES.AI_ROOMMATES}
-                className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => {
-                  setAiOpen(false);
-                }}
-              >
-                Bạn cùng phòng
-              </Link>
-              <Link
-                to={ROUTES.AI_AREA_SUGGESTIONS}
-                className="block rounded-lg px-3 py-2 text-sm text-ink hover:bg-tint"
-                onClick={() => {
-                  setAiOpen(false);
-                }}
-              >
-                Khu vực phù hợp
-              </Link>
-            </PopoverContent>
-          </Popover>
-        ) : null}
+                {item.label}
+              </NavLink>
+            ))
+          : null}
 
         {user?.role === "landlord" ? (
           <NavLink

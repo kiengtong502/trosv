@@ -26,8 +26,8 @@
 #   * APP_ENV/APP_DEBUG/APP_KEY bat buoc tu .env - khong co gia tri mac
 #     dinh an toan gia: thieu la compose TU CHOI chay (fail-fast thay vi
 #     boot voi cau hinh yeu). Backend con tu choi serve neu APP_DEBUG=true.
-#   * TLS mode: backend/reverb khong publish port ra host - moi traffic
-#     vao qua Caddy (80/443), TRUSTED_PROXIES de rate-limit thay IP that.
+#   * Cong phu chi bind loopback; TLS public chi qua Caddy (80/443).
+#     Bat TRUSTED_PROXIES trong .env khi Caddy la diem vao public duy nhat.
 #
 # Tao APP_KEY khong can PHP tren may:
 #   echo "APP_KEY=$(docker run --rm php:8.3-cli php -r 'echo "base64:".base64_encode(random_bytes(32));')" >> .env
@@ -69,9 +69,9 @@ x-backend-env: &backend-env
   REVERB_HOST: reverb
   REVERB_PORT: 8080
   REVERB_SCHEME: http
-  # Moi traffic den backend deu qua proxy (nginx/Caddy trong stack nay) -
-  # tin X-Forwarded-For de rate-limit thay IP that cua client.
-  TRUSTED_PROXIES: "*"
+  # Mac dinh khong tin header proxy do client tu gui khi goi API truc tiep.
+  # TLS: opt-in trong .env khi chi Caddy duoc cong khai (xem DEPLOY.md).
+  TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
 
 services:
   db:
@@ -99,21 +99,20 @@ services:
     env_file:
       - path: ./apps/api/.env
         required: false # bo sung bien phu (khong ghi de block ben duoi)
-    # migrate luon chay (idempotent, seeder idempotent nen SEED_ON_BOOT=1
-    # chi don gian chay them db:seed - an toan reboot bat ky luc nao).
+    # Migrate/seed/storage:link must succeed before starting the web server.
     # Fail-fast neu volume storage khong ghi duoc (vd. volume cu do root tao truoc khi
     # image chuyen sang www-data): neu khong, upload "thanh cong" nhung file mat.
     command: >
       sh -c "[ -w storage/app ] || { echo 'LOI: storage/app khong ghi duoc boi www-data. Chay: docker compose run --rm --no-deps --user root --entrypoint chown backend -R www-data:www-data /var/www/html/storage/app' >&2; exit 1; }
       && php artisan migrate --force
       && if [ \"$$SEED_ON_BOOT\" = \"1\" ]; then php artisan db:seed --force; fi
-      && php artisan storage:link --relative --force || true
+      && { [ public/storage -ef storage/app/public ] || php artisan storage:link --relative --force; }
       && exec frankenphp run --config /etc/frankenphp/Caddyfile --adapter caddyfile"
     environment:
       <<: *backend-env
       SEED_ON_BOOT: ${SEED_ON_BOOT:-0}
     ports:
-      - "${API_PORT:-8000}:8000" # TLS mode: traffic that qua Caddy, port nay chi cho local
+      - "127.0.0.1:${API_PORT:-8000}:8000"
     volumes:
       - trosv-storage:/var/www/html/storage/app # uploads song sot khi recreate
     healthcheck:
@@ -163,7 +162,7 @@ services:
         required: false
     environment: *backend-env
     ports:
-      - "${REVERB_PORT:-8080}:8080" # TLS mode: wss qua Caddy, port nay chi cho local
+      - "127.0.0.1:${REVERB_PORT:-8080}:8080"
     healthcheck:
       # Reverb khong phuc vu HTTP thong thuong - chi kiem tra TCP lang nghe
       # (curl se treo cho den timeout => unhealthy gia). $$ de escape khoi
@@ -229,7 +228,7 @@ services:
       # set NGINX_DNS_RESOLVER trong override file - xem nginx.conf.template.
       NGINX_DNS_RESOLVER: ${NGINX_DNS_RESOLVER:-127.0.0.11}
     ports:
-      - "${FRONTEND_PORT:-5174}:80" # TLS mode: traffic that qua Caddy
+      - "127.0.0.1:${FRONTEND_PORT:-5174}:80"
     healthcheck:
       # nginx:1.29-trixie (Debian) khong co wget nhu alpine - dung curl
       # (Dockerfile runtime stage cai curl). Override chi de-dat interval

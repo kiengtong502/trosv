@@ -1,8 +1,9 @@
 {
     "title": "Trường và cơ sở chính do người dùng cung cấp",
     "source_markdown": "docs/data/danh-sach-truong-va-co-so-tphcm.md",
-    "source_sha256": "ff07efefd0d0b759d84dfd894587ea3ce636708e9d225362c775391d29ad9d00",
+    "source_sha256": "b381819d324e95637df9208975b44fcbdb5030374f40d84d9f81ab93c1beee4d",
     "prepared_on": "2026-11-14",
+    "updated_on": "2026-11-15",
     "counts": {
         "schools": 61,
         "within_102_wards_by_address": 59,
@@ -14,6 +15,7 @@
     "schools": [
         {
             "name": "ĐH Bách khoa",
+            "abbreviation": "HCMUT",
             "campus_name": "Lý Thường Kiệt",
             "address": "268 Lý Thường Kiệt, Phường Diên Hồng, TP.HCM",
             "latitude": "10.773109131523094",
@@ -26,6 +28,7 @@
         },
         {
             "name": "ĐH Khoa học Tự nhiên",
+            "abbreviation": "HCMUS",
             "campus_name": "Cơ sở Nguyễn Văn Cừ",
             "address": "227 Nguyễn Văn Cừ, Chợ Quán, TP.HCM",
             "latitude": "10.76381893861049",
@@ -38,6 +41,7 @@
         },
         {
             "name": "ĐH Khoa học Xã hội và Nhân văn",
+            "abbreviation": "USSH",
             "campus_name": "Sài Gòn",
             "address": "10–12 Đinh Tiên Hoàng, Phường Sài Gòn, TP.HCM",
             "latitude": "10.785881415244278",
@@ -50,6 +54,7 @@
         },
         {
             "name": "ĐH Quốc tế",
+            "abbreviation": "HCMIU",
             "campus_name": "Cơ sở",
             "address": "khu phố 6, Đông Hòa, TP.HCM",
             "latitude": "10.877805211582135",
@@ -62,6 +67,7 @@
         },
         {
             "name": "ĐH Công nghệ Thông tin",
+            "abbreviation": "UIT",
             "campus_name": "Cơ sở",
             "address": "Hàn Thuyên, khu phố 6 P, Linh Xuân, TP.HCM",
             "latitude": "10.870272297536696",
@@ -74,6 +80,7 @@
         },
         {
             "name": "ĐH Kinh tế – Luật",
+            "abbreviation": "UEL",
             "campus_name": "Cơ sở",
             "address": "669 Đỗ Mười, khu phố 13, Linh Xuân, Hồ Chí Minh, Việt Nam",
             "latitude": "10.870519723564703",
@@ -86,6 +93,7 @@
         },
         {
             "name": "ĐH Khoa học Sức khỏe",
+            "abbreviation": "UHS",
             "campus_name": "Cơ sở",
             "address": "Tòa nhà hành chính YA1, Đ. Hải Thượng Lãn Ông, Khu Đô thị ĐHQG-HCM, Đông Hòa, Hồ Chí Minh, Việt Nam",
             "latitude": "10.888599966830997",
@@ -97,6 +105,7 @@
         },
         {
             "name": "Đại học Kinh tế TP.HCM",
+            "abbreviation": "UEH",
             "campus_name": "Cơ sở A",
             "address": "59C Nguyễn Đình Chiểu, Phường Xuân Hòa, TP.HCM",
             "latitude": "10.783093693257293",
@@ -109,6 +118,7 @@
         },
         {
             "name": "ĐH Công nghiệp TP.HCM",
+            "abbreviation": "IUH",
             "campus_name": "Cơ sở",
             "address": "12 Nguyễn Văn Bảo, Hạnh Thông, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.837321120972073",
@@ -121,6 +131,7 @@
         },
         {
             "name": "ĐH Công Thương TP.HCM",
+            "abbreviation": "HUIT",
             "campus_name": "Cơ sở",
             "address": "140 Lê Trọng Tấn, Tây Thạnh, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.821265051181388",
@@ -132,6 +143,7 @@
         },
         {
             "name": "ĐH Giao thông vận tải TP.HCM",
+            "abbreviation": "UTH",
             "campus_name": "Cơ sở",
             "address": "02 Võ Oanh, Thạnh Mỹ Tây, Hồ Chí Minh, Việt Nam",
             "latitude": "10.819154326070672",
@@ -143,6 +155,7 @@
         },
         {
             "name": "ĐH Kiến trúc TP.HCM",
+            "abbreviation": "UAH",
             "campus_name": "Cơ sở",
             "address": "196 Pasteur, Xuân Hòa, Hồ Chí Minh, Việt Nam",
             "latitude": "10.782271753857222",
@@ -154,6 +167,7 @@
         },
         {
             "name": "ĐH Luật TP.HCM",
+            "abbreviation": "HCMULAW",
             "campus_name": "Cơ sở",
             "address": "2 Đ. Nguyễn Tất Thành, Xóm Chiếu, Hồ Chí Minh, Việt Nam",
             "latitude": "10.773226065094759",
@@ -166,6 +180,7 @@
         },
         {
             "name": "ĐH Mở TP.HCM",
+            "abbreviation": "HCMCOU",
             "campus_name": "Võ Văn Tần",
             "address": "97 Võ Văn Tần, Phường Xuân Hòa, TP.HCM",
             "latitude": "10.777662976762308",
@@ -178,6 +193,7 @@
         },
         {
             "name": "ĐH Ngân hàng TP.HCM",
+            "abbreviation": "HUB",
             "campus_name": "Trụ sở chính",
             "address": "36 Tôn Thất Đạm, Phường Sài Gòn, TP.HCM",
             "latitude": "10.770226687393139",
@@ -190,6 +206,7 @@
         },
         {
             "name": "ĐH Nông Lâm TP.HCM",
+            "abbreviation": "NLU",
             "campus_name": "Cơ sở",
             "address": "Khu Phố 9, Linh Xuân, Hồ Chí Minh, Việt Nam",
             "latitude": "10.87152926013617",
@@ -202,6 +219,7 @@
         },
         {
             "name": "ĐH Sài Gòn",
+            "abbreviation": "SGU",
             "campus_name": "Trụ sở chính",
             "address": "273 An Dương Vương, Phường Chợ Quán, TP.HCM",
             "latitude": "10.76015951395803",
@@ -214,6 +232,7 @@
         },
         {
             "name": "ĐH Sư phạm TP.HCM",
+            "abbreviation": "HCMUE",
             "campus_name": "An Dương Vương",
             "address": "280 An Dương Vương, Phường Chợ Quán, TP.HCM",
             "latitude": "10.761614036021957",
@@ -226,6 +245,7 @@
         },
         {
             "name": "ĐH Sư phạm Kỹ thuật TP.HCM",
+            "abbreviation": "HCMUTE",
             "campus_name": "Cơ sở",
             "address": "01 Đ. Võ Văn Ngân, Thủ Đức, Hồ Chí Minh, Việt Nam",
             "latitude": "10.852470661502585",
@@ -238,6 +258,7 @@
         },
         {
             "name": "ĐH Tài chính – Marketing",
+            "abbreviation": "UFM",
             "campus_name": "Cơ sở",
             "address": "1A Đ. Số 385, Tăng Nhơn Phú, Hồ Chí Minh, Việt Nam",
             "latitude": "10.854987893294314",
@@ -249,6 +270,7 @@
         },
         {
             "name": "ĐH Tài nguyên và Môi trường TP.HCM",
+            "abbreviation": "HCMUNRE",
             "campus_name": "Cơ sở",
             "address": "236 Đ. Lê Văn Sỹ, Tân Sơn Hòa, Hồ Chí Minh, Việt Nam",
             "latitude": "10.83052386616633",
@@ -260,6 +282,7 @@
         },
         {
             "name": "ĐH Tôn Đức Thắng",
+            "abbreviation": "TDTU",
             "campus_name": "Tân Hưng",
             "address": "19 Nguyễn Hữu Thọ, Phường Tân Hưng, TP.HCM",
             "latitude": "10.732194918799419",
@@ -272,6 +295,7 @@
         },
         {
             "name": "ĐH Văn hóa TP.HCM",
+            "abbreviation": "HCMUC",
             "campus_name": "Cơ sở",
             "address": "51 Quốc Hương, An Khánh, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.805705861397097",
@@ -283,6 +307,7 @@
         },
         {
             "name": "ĐH Y Dược TP.HCM",
+            "abbreviation": "UMP",
             "campus_name": "Cơ sở",
             "address": "201 Nguyễn Chí Thanh, Chợ Lớn, Hồ Chí Minh, Việt Nam",
             "latitude": "10.758870258215127",
@@ -295,6 +320,7 @@
         },
         {
             "name": "ĐH Y khoa Phạm Ngọc Thạch",
+            "abbreviation": "PNTU",
             "campus_name": "Cơ sở",
             "address": "2 Đ. Dương Quang Trung, Hòa Hưng, Hồ Chí Minh, Việt Nam",
             "latitude": "10.773913706241537",
@@ -306,6 +332,7 @@
         },
         {
             "name": "ĐH Mỹ thuật TP.HCM",
+            "abbreviation": "HCMUFA",
             "campus_name": "Cơ sở",
             "address": "5 Phan Đăng Lưu, Gia Định, Hồ Chí Minh, Việt Nam",
             "latitude": "10.802660263538101",
@@ -317,6 +344,7 @@
         },
         {
             "name": "ĐH Sân khấu – Điện ảnh TP.HCM",
+            "abbreviation": "SKĐA",
             "campus_name": "Cơ sở",
             "address": "125 Đ. Cống Quỳnh, Cầu Ông Lãnh, Hồ Chí Minh, Việt Nam",
             "latitude": "10.765915409321877",
@@ -328,6 +356,7 @@
         },
         {
             "name": "ĐH Thể dục Thể thao TP.HCM",
+            "abbreviation": "USH",
             "campus_name": "Cơ sở",
             "address": "Linh Xuân, Hồ Chí Minh, Việt Nam",
             "latitude": "10.875649799509688",
@@ -339,6 +368,7 @@
         },
         {
             "name": "ĐH Sư phạm Thể dục Thể thao TP.HCM",
+            "abbreviation": "UPES",
             "campus_name": "Cơ sở",
             "address": "639 Nguyễn Trãi, Chợ Lớn, Hồ Chí Minh 72000, Việt Nam",
             "latitude": "10.75713031382278",
@@ -350,6 +380,7 @@
         },
         {
             "name": "Học Viện An Ninh Nhân Dân - Phân hiệu TP.HCM",
+            "abbreviation": "ANND",
             "campus_name": "Cơ sở",
             "address": "Km18 XLHN, Linh Xuân, Hồ Chí Minh, Việt Nam",
             "latitude": "10.873671432407754",
@@ -361,17 +392,19 @@
         },
         {
             "name": "ĐH Cảnh sát nhân dân",
+            "abbreviation": "PPU",
             "campus_name": "Cơ sở",
-            "address": "179a Kha Vạn Cân, Linh Xuân, Hồ Chí Minh, Việt Nam",
-            "latitude": "10.858219393582948",
-            "longitude": "106.75576269499523",
+            "address": "36 Nguyễn Hữu Thọ, Tân Hưng, Hồ Chí Minh, Việt Nam",
+            "latitude": "10.735428719307626",
+            "longitude": "106.697951233798",
             "coordinate_status": "user_provided",
-            "ward_name": "Phường Linh Xuân",
-            "ward_code": "26800",
+            "ward_name": "Phường Tân Hưng",
+            "ward_code": "27475",
             "scope_status": "within_102_wards_by_address"
         },
         {
             "name": "ĐH Trần Đại Nghĩa",
+            "abbreviation": "TDNU",
             "campus_name": "Cơ sở",
             "address": "189 Nguyễn Oanh, Gò Vấp, Hồ Chí Minh, Việt Nam",
             "latitude": "10.835771777779083",
@@ -383,6 +416,7 @@
         },
         {
             "name": "ĐH Hoa Sen",
+            "abbreviation": "HSU",
             "campus_name": "Nguyễn Văn Tráng",
             "address": "8 Nguyễn Văn Tráng, Phường Bến Thành, TP.HCM",
             "latitude": "10.77037226511735",
@@ -394,6 +428,7 @@
         },
         {
             "name": "ĐH Ngoại ngữ – Tin học TP.HCM",
+            "abbreviation": "HUFLIT",
             "campus_name": "Sư Vạn Hạnh",
             "address": "828 Sư Vạn Hạnh, Phường Hòa Hưng, TP.HCM",
             "latitude": "10.7765951130462",
@@ -405,6 +440,7 @@
         },
         {
             "name": "ĐH Hùng Vương TP.HCM",
+            "abbreviation": "DHV",
             "campus_name": "Cơ sở",
             "address": "736 Nguyễn Trãi, Chợ Lớn, Hồ Chí Minh, Việt Nam",
             "latitude": "10.756392325971309",
@@ -416,6 +452,7 @@
         },
         {
             "name": "ĐH Văn Lang",
+            "abbreviation": "VLU",
             "campus_name": "Cơ sở",
             "address": "69/68 Đ. Đặng Thuỳ Trâm, An Nhơn, Hồ Chí Minh 70000, Việt Nam",
             "latitude": "10.828897721463237",
@@ -428,6 +465,7 @@
         },
         {
             "name": "ĐH Công nghệ TP.HCM",
+            "abbreviation": "HUTECH",
             "campus_name": "Trụ sở Điện Biên Phủ",
             "address": "475A Điện Biên Phủ, Phường Thạnh Mỹ Tây, TP.HCM",
             "latitude": "10.805082068582093",
@@ -440,6 +478,7 @@
         },
         {
             "name": "ĐH Quốc tế Hồng Bàng",
+            "abbreviation": "HIU",
             "campus_name": "Cơ sở",
             "address": "215 Điện Biên Phủ, Gia Định, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.800535848670911",
@@ -451,6 +490,7 @@
         },
         {
             "name": "ĐH Văn Hiến",
+            "abbreviation": "VHU",
             "campus_name": "Cơ sở",
             "address": "665-667-669 Điện Biên Phủ, Bàn Cờ, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.769758301352573",
@@ -462,6 +502,7 @@
         },
         {
             "name": "ĐH Công nghệ Sài Gòn",
+            "abbreviation": "STU",
             "campus_name": "Cơ sở",
             "address": "180 Cao Lỗ, Phường, Chánh Hưng, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.738176385821978",
@@ -473,6 +514,7 @@
         },
         {
             "name": "ĐH Nguyễn Tất Thành",
+            "abbreviation": "NTTU",
             "campus_name": "Quận 4 cũ",
             "address": "298A–300A Nguyễn Tất Thành, Phường Xóm Chiếu, TP.HCM",
             "latitude": "10.7615762799509",
@@ -484,6 +526,7 @@
         },
         {
             "name": "ĐH Gia Định",
+            "abbreviation": "GDU",
             "campus_name": "Cơ sở",
             "address": "Nguyễn Kiệm/371 Đ. Hạnh Thông, Phường, Hạnh Thông, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.817344529605148",
@@ -495,6 +538,7 @@
         },
         {
             "name": "ĐH Kinh tế – Tài chính TP.HCM",
+            "abbreviation": "UEF",
             "campus_name": "Cơ sở",
             "address": "141 - 145, 145 Điện Biên Phủ, Gia Định, Hồ Chí Minh 00700, Việt Nam",
             "latitude": "10.797647956902303",
@@ -506,6 +550,7 @@
         },
         {
             "name": "ĐH Quốc tế Sài Gòn",
+            "abbreviation": "SIU",
             "campus_name": "Cơ sở",
             "address": "8C, 9, 10, 16, 18, 8C Tống Hữu Định, An Khánh, Hồ Chí Minh, Việt Nam",
             "latitude": "10.805664616733045",
@@ -517,6 +562,7 @@
         },
         {
             "name": "ĐH Quản lý và Công nghệ TP.HCM",
+            "abbreviation": "UMT",
             "campus_name": "Cơ sở",
             "address": "Số 2 đường số 60CL, Cát Lái, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.77487796241394",
@@ -528,6 +574,7 @@
         },
         {
             "name": "ĐH FPT",
+            "abbreviation": "FPT",
             "campus_name": "Phân hiệu TP.HCM",
             "address": "7 Đ. D1, Tăng Nhơn Phú, Hồ Chí Minh 700000, Việt Nam",
             "latitude": "10.841348873650166",
@@ -539,6 +586,7 @@
         },
         {
             "name": "ĐH Ngoại thương",
+            "abbreviation": "FTU",
             "campus_name": "Cơ sở II",
             "address": "15 D5, Thạnh Mỹ Tây, Hồ Chí Minh, Việt Nam",
             "latitude": "10.806962594830262",
@@ -550,6 +598,7 @@
         },
         {
             "name": "ĐH Giao thông vận tải",
+            "abbreviation": "UTC",
             "campus_name": "Phân hiệu TP.HCM",
             "address": "450-451 Đ. Lê Văn Việt, Tăng Nhơn Phú, Hồ Chí Minh, Việt Nam",
             "latitude": "10.845959419000065",
@@ -561,6 +610,7 @@
         },
         {
             "name": "ĐH Thủy lợi",
+            "abbreviation": "TLU",
             "campus_name": "Phân hiệu miền Nam",
             "address": "2 Trường Sa, Gia Định, Hồ Chí Minh 70000, Việt Nam",
             "latitude": "10.792921224557276",
@@ -572,6 +622,7 @@
         },
         {
             "name": "ĐH Lao động – Xã hội",
+            "abbreviation": "ULSA",
             "campus_name": "Cơ sở II",
             "address": "1018 Tô Ký, Trung Mỹ Tây, Hồ Chí Minh 70000, Việt Nam",
             "latitude": "10.867321500144122",
@@ -583,6 +634,7 @@
         },
         {
             "name": "Học viện Hàng không Việt Nam",
+            "abbreviation": "VAA",
             "campus_name": "Cơ sở",
             "address": "104 Đ. Nguyễn Văn Trỗi, Phú Nhuận, Hồ Chí Minh, Việt Nam",
             "latitude": "10.797114767434973",
@@ -594,6 +646,7 @@
         },
         {
             "name": "Học viện Cán bộ TP.HCM",
+            "abbreviation": "HCA",
             "campus_name": "Cơ sở",
             "address": "324 Chu Văn An, Bình Thạnh, Hồ Chí Minh, Việt Nam",
             "latitude": "10.812676348305148",
@@ -605,6 +658,7 @@
         },
         {
             "name": "Học viện Công nghệ Bưu chính Viễn thông",
+            "abbreviation": "PTIT",
             "campus_name": "Cơ sở TP.HCM",
             "address": "11 Đường Nguyễn Đình Chiểu, Sài Gòn, Hồ Chí Minh, Việt Nam",
             "latitude": "10.789553087213752",
@@ -616,6 +670,7 @@
         },
         {
             "name": "Học viện Hành chính và Quản trị công",
+            "abbreviation": "APAG",
             "campus_name": "Phân hiệu TP.HCM",
             "address": "10 3 Tháng 2, Hòa Hưng, Hồ Chí Minh, Việt Nam",
             "latitude": "10.773626669472478",
@@ -627,6 +682,7 @@
         },
         {
             "name": "Học viện Kỹ thuật Mật mã",
+            "abbreviation": "ACT",
             "campus_name": "Phân hiệu phía Nam",
             "address": "17A Cộng Hòa, Tân Sơn Nhất, Hồ Chí Minh, Việt Nam",
             "latitude": "10.801028780996367",
@@ -638,6 +694,7 @@
         },
         {
             "name": "Học viện Thanh thiếu niên Việt Nam",
+            "abbreviation": "VYA",
             "campus_name": "Phân viện miền Nam",
             "address": "261 Hoàng Hữu Nam, Tăng Nhơn Phú, Hồ Chí Minh, Việt Nam",
             "latitude": "10.863128685051544",
@@ -649,6 +706,7 @@
         },
         {
             "name": "Nhạc viện TP.HCM",
+            "abbreviation": "HCMCONS",
             "campus_name": "Cơ sở",
             "address": "112 Nguyễn Du, Bến Thành, Hồ Chí Minh, Việt Nam",
             "latitude": "10.77441147907964",
@@ -672,6 +730,7 @@
         },
         {
             "name": "Đại học Fulbright Việt Nam",
+            "abbreviation": "FUV",
             "campus_name": "Cơ sở",
             "address": "105 Đ. Tôn Dật Tiên, Khu đô thị Phú Mỹ Hưng, Tân Mỹ, Hồ Chí Minh, Việt Nam",
             "latitude": "10.727263126910339",

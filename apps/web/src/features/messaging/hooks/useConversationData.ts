@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getConversations, getMessages, markRead } from "@/features/messaging/api/messagingApi";
 import type { Conversation, Message } from "@/shared/types/api";
 import { ignoreError } from "@/shared/lib/async";
+import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
 
 /**
  * Conversation header + message list for the /messages/:id thread.
@@ -17,12 +18,17 @@ export function useConversationData(id: string | number): {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   loaded: boolean;
   lastIdRef: { current: number };
+  syncMessages: () => void;
 } {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [convLoaded, setConvLoaded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loaded, setLoaded] = useState(false);
   const lastIdRef = useRef(0);
+  const syncRef = useRef<() => void>(() => undefined);
+  const syncMessages = useCallback(() => {
+    syncRef.current();
+  }, []);
 
   // Per-conversation state reset during render (React's recommended
   // "adjust state when props change" idiom) instead of setState inside
@@ -52,26 +58,41 @@ export function useConversationData(id: string | number): {
     };
   }, [id]);
 
-  // Initial load (polls replaced by the Reverb WebSocket subscription).
-  // Render-phase reset above already cleared lastIdRef for the new id; the
-  // previous thread's realtime subscription is torn down in cleanup before
-  // this runs, so no new id can read a stale last id.
+  // Only HTTP-confirmed IDs advance the cursor; a newer realtime ID may have gaps.
   useEffect(() => {
     let active = true;
+    let cursor = 0;
+    let pending = false;
+    let queued = false;
     lastIdRef.current = 0;
-    getMessages(id)
-      .then((rows) => {
-        if (!active) return;
-        lastIdRef.current = rows.length > 0 ? (rows[rows.length - 1] as { id: number }).id : 0;
-        setMessages(rows);
-        markRead(id).catch(ignoreError("mark read after load"));
-      })
-      .catch(ignoreError("load messages"))
-      .finally(() => {
-        if (active) setLoaded(true);
-      });
+    function sync(): void {
+      if (pending) {
+        queued = true;
+        return;
+      }
+      pending = true;
+      queued = false;
+      getMessages(id, cursor || null)
+        .then((rows) => {
+          if (!active) return;
+          cursor = rows.at(-1)?.id ?? cursor;
+          lastIdRef.current = Math.max(lastIdRef.current, cursor);
+          setMessages((current) => mergeMessages(current, rows));
+          if (!queued) markRead(id).catch(ignoreError("mark read after sync"));
+        })
+        .catch(ignoreError("load messages"))
+        .finally(() => {
+          pending = false;
+          if (!active) return;
+          if (queued) sync();
+          else setLoaded(true);
+        });
+    }
+    syncRef.current = sync;
+    sync();
     return () => {
       active = false;
+      syncRef.current = () => undefined;
     };
   }, [id]);
 
@@ -82,5 +103,6 @@ export function useConversationData(id: string | number): {
     setMessages,
     loaded,
     lastIdRef,
+    syncMessages,
   };
 }

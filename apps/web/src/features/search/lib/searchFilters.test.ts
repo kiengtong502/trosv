@@ -6,6 +6,7 @@ import {
   filtersToApiParams,
   filtersToUrlParams,
   withCity,
+  withFilter,
   withWard,
   type ListingFilters,
 } from "./searchFilters";
@@ -102,7 +103,7 @@ describe("filtersToApiParams", () => {
   });
 });
 
-describe("cascade", () => {
+describe("independent location filters", () => {
   const set = filters({ city_id: "1", ward_id: "2", school_id: "3", max_km: "5", q: "keep" });
 
   it("a new city clears ward, school and radius, and keeps the rest", () => {
@@ -115,18 +116,46 @@ describe("cascade", () => {
     });
   });
 
-  it("a new ward clears school and radius, keeps the city", () => {
+  it("a new room ward preserves the selected school, radius and city", () => {
     expect(withWard(set, "8")).toMatchObject({
       city_id: "1",
       ward_id: "8",
-      school_id: "",
-      max_km: "",
+      school_id: "3",
+      max_km: "5",
     });
+  });
+
+  it("clearing the room ward also preserves the selected school and radius", () => {
+    expect(withWard(set, "")).toMatchObject({ ward_id: "", school_id: "3", max_km: "5" });
   });
 
   it("never mutates the filters it is given", () => {
     withCity(set, "9");
     withWard(set, "8");
+    withFilter(set, "school_id", "");
     expect(set.school_id).toBe("3");
+  });
+
+  it("clearing the school clears its radius and distance sort but preserves the room ward", () => {
+    expect(withFilter({ ...set, sort: "distance" }, "school_id", "")).toMatchObject({
+      ward_id: "2",
+      school_id: "",
+      max_km: "",
+      sort: "newest",
+    });
+  });
+
+  it("changing the school or another filter preserves independent constraints", () => {
+    expect(withFilter(set, "school_id", "9")).toMatchObject({
+      ward_id: "2",
+      school_id: "9",
+      max_km: "5",
+    });
+    expect(withFilter(set, "q", "new")).toMatchObject({
+      ward_id: "2",
+      school_id: "3",
+      max_km: "5",
+      q: "new",
+    });
   });
 });

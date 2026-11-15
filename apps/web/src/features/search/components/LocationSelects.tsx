@@ -21,7 +21,7 @@ export function LocationSelects({ idPrefix, search }: { idPrefix: string; search
 
       <div>
         <label htmlFor={`${idPrefix}-ward`} className={LABEL_CLASS}>
-          Phường / Xã
+          Phường/xã của phòng
           <select
             id={`${idPrefix}-ward`}
             value={wardId}

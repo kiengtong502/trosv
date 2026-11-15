@@ -17,7 +17,7 @@ Khởi tạo database mới bằng seeder chỉ tạo dữ liệu TP.HCM: 1 thà
 
 | Tính năng | Ghi chú |
 |---|---|
-| Duyệt và lọc phòng | Từ khóa, loại tin, giá, khu vực (tỉnh/TP → phường), gần trường (bán kính km), tiện ích, sắp xếp |
+| Duyệt và lọc phòng | Từ khóa, loại tin, giá, khu vực (phường/xã của phòng), chọn trường bằng tên và bán kính km, hai lựa chọn độc lập, tiện ích, sắp xếp |
 | Bản đồ | Leaflet, điểm tin đăng và trường được chọn, popup cơ sở/địa chỉ, vòng bán kính theo đường chim bay |
 | Tài khoản | Sinh viên / chủ nhà, hồ sơ sở thích và lối sống |
 | Nhắn tin | Chat realtime (WebSocket), gửi tệp đính kèm, đánh dấu đã đọc |
@@ -54,6 +54,10 @@ make up                 # khởi động container (hoặc COMPOSE="docker compo
 | Web | http://localhost:5174 |
 | API | http://localhost:5174/api (same-origin) hoặc :8000/api |
 | AI service (tùy chọn) | `docker compose --profile ai up -d` → :8001/docs |
+
+Các cổng demo chỉ bind `127.0.0.1`, dùng trên chính máy chạy Docker.
+Khi triển khai công khai, dùng Caddy/HTTPS theo [runbook](docs/runbooks/DEPLOY.md);
+proxy trust mặc định tắt và chỉ bật tường minh khi cấu hình điểm vào tin cậy.
 
 Dữ liệu demo: đặt `SEED_ON_BOOT=1` trong `.env`, hoặc chạy tay
 `docker compose exec backend php artisan migrate:fresh --seed --force`.

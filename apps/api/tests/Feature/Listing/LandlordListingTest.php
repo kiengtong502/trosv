@@ -9,6 +9,7 @@ use App\Modules\Reference\Models\Ward;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class LandlordListingTest extends TestCase
@@ -323,6 +324,40 @@ class LandlordListingTest extends TestCase
         $this->assertMatchesRegularExpression('#^listings/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.jpg$#', $images[0]->path);
         $this->assertMatchesRegularExpression('#^listings/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.png$#', $images[1]->path);
         $this->assertMatchesRegularExpression('#^listings/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$#', $images[2]->path);
+    }
+
+    public function test_failed_image_write_rolls_back_batch_and_preserves_existing_images(): void
+    {
+        $listing = $this->makeOwnedListing();
+        $disk = Storage::disk('public');
+        $disk->put('listings/existing.jpg', 'existing image');
+        $existing = $listing->images()->create(['path' => 'listings/existing.jpg']);
+        $attempts = 0;
+        $failingDisk = Mockery::mock($disk);
+        $failingDisk->shouldReceive('put')->twice()->andReturnUsing(
+            function ($path, $contents) use ($disk, &$attempts) {
+                if (++$attempts === 2) {
+                    return false;
+                }
+
+                return $disk->put($path, $contents);
+            }
+        );
+        Storage::set('public', $failingDisk);
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->postJson("/api/listings/{$listing->id}/images", [
+                'images' => [
+                    UploadedFile::fake()->create('first.jpg', 100, 'image/jpeg'),
+                    UploadedFile::fake()->create('second.jpg', 100, 'image/jpeg'),
+                ],
+            ])
+            ->assertStatus(500)
+            ->assertJsonPath('message', 'Không thể lưu ảnh. Vui lòng thử lại sau.');
+
+        $this->assertDatabaseCount('listing_images', 1);
+        $this->assertDatabaseHas('listing_images', ['id' => $existing->id]);
+        $this->assertSame(['listings/existing.jpg'], $disk->allFiles());
     }
 
     public function test_upload_rejects_more_than_five_total_images(): void

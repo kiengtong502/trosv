@@ -24,6 +24,8 @@ export function AiChatWidget() {
 function ChatWidget({ listingId }: { listingId: number | null }) {
   const [open, setOpen] = useState(false);
   const { turns, draft, setDraft, busy, send } = useAiChat(listingId);
+  const [readTurnCount, setReadTurnCount] = useState(turns.length);
+  const hasUnread = !open && turns.slice(readTurnCount).some((turn) => turn.role === "assistant");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,6 +67,7 @@ function ChatWidget({ listingId }: { listingId: number | null }) {
             <button
               type="button"
               onClick={() => {
+                setReadTurnCount(turns.length);
                 setOpen(false);
               }}
               aria-label="Đóng trò chuyện"
@@ -141,10 +144,16 @@ function ChatWidget({ listingId }: { listingId: number | null }) {
           className="group relative flex size-13 items-center justify-center rounded-full bg-plate text-white shadow-lg transition-all hover:bg-plate-hover hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate focus-visible:ring-offset-2"
         >
           <Bot className="size-6 transition-transform group-hover:rotate-6" aria-hidden />
-          <span className="absolute -top-0.5 -right-0.5 flex size-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flyer opacity-75" />
-            <span className="relative inline-flex size-3 rounded-full bg-flyer border-2 border-white" />
-          </span>
+          {hasUnread ? (
+            <span
+              role="status"
+              aria-label="Có phản hồi AI chưa đọc"
+              className="absolute -top-0.5 -right-0.5 flex size-3"
+            >
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flyer opacity-75" />
+              <span className="relative inline-flex size-3 rounded-full bg-flyer border-2 border-white" />
+            </span>
+          ) : null}
         </button>
       )}
     </div>

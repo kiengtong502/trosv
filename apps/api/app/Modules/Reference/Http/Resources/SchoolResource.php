@@ -19,13 +19,17 @@ class SchoolResource extends JsonResource
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
-        /** @var array<string, array{campus_name: string, address: string}> $details */
+        /** @var array<string, array{campus_name: string, address: string, abbreviation?: string}> $details */
         $details = $request->attributes->get('school_details', []);
         $schoolDetails = $details[$this->name] ?? null;
+        $name = preg_replace('/^ĐH /u', 'Đại học ', $this->name);
+        if (isset($schoolDetails['abbreviation'])) {
+            $name .= ' ('.$schoolDetails['abbreviation'].')';
+        }
 
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $name,
             'campus_name' => $schoolDetails['campus_name'] ?? null,
             'address' => $schoolDetails['address'] ?? null,
             'city' => $this->whenLoaded('city', fn () => $this->city === null ? null : [

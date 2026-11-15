@@ -59,8 +59,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // X-Forwarded-For is attacker-controlled when the app is reached
         // directly (docker demo publishes :8000), so honoring it would let
         // anyone rotate IPs and defeat the per-IP rate limiter. Behind Caddy
-        // (TLS profile) set TRUSTED_PROXIES="*": the ONLY route to the backend
-        // is the compose-internal proxy, so request->ip() becomes the real
+        // (TLS profile) opt in to TRUSTED_PROXIES="*" only with Caddy as the
+        // sole public entry and auxiliary ports bound to loopback. Then the
+        // compose-internal proxy sets request->ip() to the real
         // client IP (rate limiting, logging, signed-URL cookies).
         $trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? $_ENV['TRUSTED_PROXIES'] ?? null;
         if (is_string($trustedProxies) && $trustedProxies !== '') {

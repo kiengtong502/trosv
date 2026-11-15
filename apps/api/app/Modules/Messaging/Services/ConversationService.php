@@ -29,16 +29,15 @@ class ConversationService
             $q->where('student_id', $userAId)->where('landlord_id', $userBId);
         })->orWhere(function ($q) use ($userAId, $userBId) {
             $q->where('student_id', $userBId)->where('landlord_id', $userAId);
-        })->first();
+        })->firstOrCreate([], [
+            'student_id' => $userAId,
+            'landlord_id' => $userBId,
+            'listing_id' => $listingId,
+        ]);
 
-        $wasCreated = $conversation === null;
-        if (! $conversation) {
-            $conversation = Conversation::create([
-                'student_id' => $userAId,
-                'landlord_id' => $userBId,
-                'listing_id' => $listingId,
-            ]);
-        }
+        // Laravel retries the lookup after a unique collision, using a savepoint
+        // when called inside startListingConversation's PostgreSQL transaction.
+        $wasCreated = $conversation->wasRecentlyCreated;
 
         if ($listingId !== null) {
             $listingIds = array_unique(array_filter([$conversation->listing_id, $listingId]));
@@ -175,7 +174,10 @@ class ConversationService
             $rawName = $file->getClientOriginalName();
             // Sanitize against path traversal and HTTP header splitting (CRLF) in Content-Disposition
             $attachmentName = preg_replace('/[\r\n\x00-\x1F\x7F]/', '', basename($rawName)) ?: 'attachment';
-            $attachmentPath = $file->store(StoragePath::attachment($conversation->id));
+            $attachmentPath = $file->store(StoragePath::attachment($conversation->id), 'local');
+            if ($attachmentPath === false) {
+                abort(500, 'Không thể lưu tệp đính kèm. Vui lòng thử lại sau.');
+            }
         }
 
         try {

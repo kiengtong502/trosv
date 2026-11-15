@@ -23,18 +23,18 @@ class ListingImageService
      */
     public function uploadImages(Listing $listing, array $files): Collection
     {
-        $existingCount = $listing->images()->count();
-
-        if ($existingCount + count($files) > 5) {
-            throw new HttpResponseException(response()->json([
-                'message' => 'Tin đăng chỉ có tối đa 5 ảnh.',
-                'errors' => ['images' => ['Tin đăng chỉ có tối đa 5 ảnh (hiện có '.$existingCount.').']],
-            ], 422));
-        }
-
         $createdPaths = [];
         try {
             DB::transaction(function () use ($listing, $files, &$createdPaths) {
+                $listing = Listing::query()->lockForUpdate()->findOrFail($listing->id);
+                $existingCount = $listing->images()->count();
+                if ($existingCount + count($files) > 5) {
+                    throw new HttpResponseException(response()->json([
+                        'message' => 'Tin đăng chỉ có tối đa 5 ảnh.',
+                        'errors' => ['images' => ['Tin đăng chỉ có tối đa 5 ảnh (hiện có '.$existingCount.').']],
+                    ], 422));
+                }
+
                 foreach ($files as $file) {
                     $extension = match ($file->getMimeType()) {
                         'image/jpeg' => 'jpg',
@@ -43,8 +43,10 @@ class ListingImageService
                         default => $file->extension(),
                     };
                     $path = StoragePath::listingImage(Str::uuid()->toString(), $extension);
-                    Storage::disk('public')->put($path, $file->getContent());
                     $createdPaths[] = $path;
+                    if (! Storage::disk('public')->put($path, $file->getContent())) {
+                        abort(500, 'Không thể lưu ảnh. Vui lòng thử lại sau.');
+                    }
                     $listing->images()->create(['path' => $path]);
                 }
             });

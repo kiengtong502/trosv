@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * POST /api/listings/{id}/images (landlord) - 1..n images, jpg/png/webp,
- * 2 MB each. The "max 5 images per listing" check stays in the controller
+ * 2 MB each. The "max 5 images per listing" check stays in the service
  * (it depends on the persisted image count and returns a custom body).
  */
 class ListingImageUploadRequest extends FormRequest

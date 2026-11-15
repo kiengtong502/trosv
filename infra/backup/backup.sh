@@ -81,15 +81,17 @@ fi
 # ------------------------------------------------------------
 # 4. Xoa ban cu: giu KEEP_DAILY ban gan nhat + KEEP_WEEKLY ban chu nhat
 # ------------------------------------------------------------
-ls -1t "$BACKUP_DIR"/db-*.sql.gz 2>/dev/null | tail -n +$((KEEP_DAILY + 1)) | while read -r f; do
+daily_count=0
+weekly_count=0
+ls -1t -- "$BACKUP_DIR"/db-*.sql.gz 2>/dev/null | while read -r f; do
     ts="$(basename "$f")"; ts="${ts#db-}"; ts="${ts%.sql.gz}"
     dow="$(date -d "${ts:0:8}" +%u 2>/dev/null || echo 0)"
-    if [ "$dow" != "7" ]; then rm -f "$f" "$BACKUP_DIR/uploads-$ts.tar.gz" "$BACKUP_DIR/env-$ts.bak"; fi
-done
-ls -1t "$BACKUP_DIR"/db-*.sql.gz 2>/dev/null | tail -n +$((KEEP_WEEKLY + 1)) | while read -r f; do
-    ts="$(basename "$f")"; ts="${ts#db-}"; ts="${ts%.sql.gz}"
-    dow="$(date -d "${ts:0:8}" +%u 2>/dev/null || echo 1)"
-    if [ "$dow" = "7" ]; then rm -f "$f" "$BACKUP_DIR/uploads-$ts.tar.gz" "$BACKUP_DIR/env-$ts.bak"; fi
+    daily_count=$((daily_count + 1))
+    if [ "$dow" = "7" ]; then weekly_count=$((weekly_count + 1)); fi
+    if [ "$daily_count" -gt "$KEEP_DAILY" ] &&
+        { [ "$dow" != "7" ] || [ "$weekly_count" -gt "$KEEP_WEEKLY" ]; }; then
+        rm -f -- "$f" "$BACKUP_DIR/uploads-$ts.tar.gz" "$BACKUP_DIR/env-$ts.bak"
+    fi
 done
 
 # ------------------------------------------------------------

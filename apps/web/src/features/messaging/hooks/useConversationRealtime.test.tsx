@@ -8,10 +8,10 @@ const mocks = vi.hoisted(() => ({
   handlers: new Map<string, (payload: unknown) => void>(),
   subscribe: vi.fn(),
   leave: vi.fn(),
-  markRead: vi.fn(),
+  sync: vi.fn(),
+  subscribed: vi.fn(),
 }));
 vi.mock("@/features/auth/context/AuthContext", () => ({ useAuth: () => ({ user: { id: 1 } }) }));
-vi.mock("@/features/messaging/api/messagingApi", () => ({ markRead: mocks.markRead }));
 vi.mock("@/features/messaging/api/echo", () => ({
   getEcho: () => ({ private: mocks.subscribe, leave: mocks.leave }),
 }));
@@ -19,8 +19,10 @@ vi.mock("@/features/messaging/api/echo", () => ({
 beforeEach(() => {
   mocks.handlers.clear();
   mocks.leave.mockReset();
-  mocks.markRead.mockReset().mockResolvedValue(undefined);
+  mocks.sync.mockReset();
+  mocks.subscribed.mockReset();
   mocks.subscribe.mockReset().mockReturnValue({
+    subscribed: mocks.subscribed,
     listen: (name: string, handler: (payload: unknown) => void) => {
       mocks.handlers.set(name, handler);
     },
@@ -34,7 +36,12 @@ it("keeps the thread subscribed across renders and uses the latest preview callb
   const originalPreview = vi.fn();
   const latestPreview = vi.fn();
   const { rerender } = renderHook(
-    ({ preview }) => useConversationRealtime(9, setMessages, lastId, preview),
+    ({ preview }) =>
+      useConversationRealtime(
+        9,
+        { setMessages, lastIdRef: lastId, syncMessages: mocks.sync },
+        preview,
+      ),
     { initialProps: { preview: originalPreview } },
   );
   rerender({ preview: latestPreview });
@@ -49,5 +56,25 @@ it("keeps the thread subscribed across renders and uses the latest preview callb
   expect(lastId.current).toBe(12);
   expect(latestPreview).toHaveBeenCalledWith(message);
   expect(originalPreview).not.toHaveBeenCalled();
-  expect(mocks.markRead).toHaveBeenCalledWith(9);
+  expect(mocks.sync).toHaveBeenCalledOnce();
+});
+
+it("requests catch-up on every successful subscription and ignores it after unmount", () => {
+  const setMessages = vi.fn<Dispatch<SetStateAction<Message[]>>>();
+  const { unmount } = renderHook(() =>
+    useConversationRealtime(9, {
+      setMessages,
+      lastIdRef: { current: 0 },
+      syncMessages: mocks.sync,
+    }),
+  );
+  const subscribed = mocks.subscribed.mock.calls[0]?.[0] as () => void;
+  act(() => {
+    subscribed();
+    subscribed();
+  });
+  expect(mocks.sync).toHaveBeenCalledTimes(2);
+  unmount();
+  subscribed();
+  expect(mocks.sync).toHaveBeenCalledTimes(2);
 });

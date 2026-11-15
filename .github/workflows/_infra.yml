@@ -36,6 +36,9 @@ jobs:
             koalaman/shellcheck-alpine@sha256:7366322e994f1b364289c7f7d4b792846fbc9337ae29c89a489fb57ba8f4a8dc \
             shellcheck --severity=warning scripts/*.sh infra/backup/backup.sh infra/deploy/deploy.sh
 
+      - name: Backup retention regression
+        run: python3 scripts/test-backup-retention.py
+
       # Dummy values only: this validates the compose file, nothing is started.
       - name: docker compose config
         env:
@@ -47,6 +50,9 @@ jobs:
           cp .env.example .env
           docker compose config --quiet
           docker compose --profile tls --profile test config --quiet
+          docker compose config --format json | python3 scripts/test-backend-startup.py
+          docker compose config --format json | python3 scripts/test-default-network.py
+          docker compose --profile tls --profile test config --format json | python3 scripts/test-default-network.py
 
   # Every image must still build; this catches Dockerfile and lockfile drift
   # before the deploy does.

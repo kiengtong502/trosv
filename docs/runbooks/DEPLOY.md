@@ -9,12 +9,17 @@ Một file `docker-compose.yml` duy nhất phục dev, demo và production:
 
 | Chế độ | Lệnh | Cổng browser dùng |
 |---|---|---|
-| Demo HTTP | `docker compose up -d --build` | `http://<host>:5174`, API `:8000`, WS `:8080` |
+| Demo HTTP trên máy host | `docker compose up -d --build` | `http://localhost:5174`, API `localhost:8000`, WS `localhost:8080` |
 | **Production TLS (khuyên dùng)** | `docker compose --profile tls up -d --build` | Chỉ `https://$DOMAIN` (80 → 301 HTTPS, WS là `wss://$DOMAIN/app/*`) |
 
 TLS mode: Caddy tự cấp + tự gia hạn chứng chỉ Let's Encrypt. Cần đúng một
 tên miền (DNS A record trỏ về máy chủ) - IP trần không lấy được chứng chỉ
 tin cậy. Chưa có miền? DuckDNS miễn phí (`yourname.duckdns.org`).
+
+Các cổng phụ `5174`, `8000`, `8080` chỉ bind `127.0.0.1` ở cả hai chế độ.
+Chỉ Caddy công khai cổng `80/443`. Mặc định backend bỏ qua header proxy.
+Với TLS, đặt `TRUSTED_PROXIES=*` trong `.env` khi Caddy là điểm vào public
+duy nhất; có thể dùng danh sách IP/CIDR proxy tin cậy thay cho `*`.
 
 > Đây là setup demo/production-lite: dữ liệu seed, mật khẩu demo công
 > khai. Trước khi đưa dữ liệu thật vào: đổi mật khẩu tất cả tài khoản,
@@ -24,7 +29,9 @@ tin cậy. Chưa có miền? DuckDNS miễn phí (`yourname.duckdns.org`).
 
 - Debian 12/13, 2 GB RAM là đủ (stack: PostgreSQL + PHP + nginx + Caddy +
   Reverb + queue).
-- Docker Engine + plugin compose (cách nhanh nhất, nếu chưa có):
+- Docker Engine **28 trở lên** + plugin Compose. Bản Docker cũ hơn có hạn chế
+  bảo vệ cổng loopback trên cùng mạng LAN; xem [tài liệu Docker](https://docs.docker.com/engine/network/port-publishing/).
+  Cách cài nếu chưa có:
 
   ```bash
   curl -fsSL https://get.docker.com | sh
@@ -44,8 +51,8 @@ tin cậy. Chưa có miền? DuckDNS miễn phí (`yourname.duckdns.org`).
   sudo ufw enable
   ```
 
-  Demo HTTP mode (không TLS): mở 5174, 8000, 8080 thay cho 80/443 - nhưng
-  khuyên dùng TLS mode, không mở cổng nào khác.
+  Demo HTTP chỉ truy cập trên host; để demo từ xa, dùng SSH tunnel hoặc
+  profile TLS. Không mở các cổng phụ `5174`, `8000`, `8080` ra Internet.
 
 ## 1. Lấy code + cấu hình
 
@@ -63,6 +70,7 @@ APP_KEY=base64:...            # lệnh sinh ở dưới đây
 DOMAIN=trosv.example.com
 FRONTEND_URL=https://trosv.example.com
 WS_HOST=trosv.example.com
+TRUSTED_PROXIES=*            # Caddy la diem vao public duy nhat; cong phu bind loopback
 APP_ENV=production
 APP_DEBUG=false
 DB_PASSWORD=<mật-khau-db-manh>

@@ -75,18 +75,23 @@ class MessageDeletionController extends Controller
         }
 
         // scope=self: hidden only for this viewer; idempotent per user.
-        // Re-read via fresh() so a concurrent delete-for-self from the same
-        // user (double-tap) is not clobbered by a stale array.
-        $fresh = $message->fresh() ?? $message;
-        $hidden = $fresh->deleted_for_user_ids ?? [];
-        if (! in_array($user->id, $hidden, true)) {
+        $hiddenMessage = DB::transaction(function () use ($message, $user): ?Message {
+            $fresh = Message::query()->lockForUpdate()->findOrFail($message->id);
+            $hidden = $fresh->deleted_for_user_ids ?? [];
+            if (in_array($user->id, $hidden, true)) {
+                return null;
+            }
             $hidden[] = $user->id;
-            $message->deleted_for_user_ids = $hidden;
-            $message->save();
+            $fresh->deleted_for_user_ids = $hidden;
+            $fresh->save();
 
+            return $fresh;
+        });
+
+        if ($hiddenMessage !== null) {
             // Local effect only - other clients must not hide it, so the
             // payload marks the caller as the sole "deleted_for" recipient.
-            rescue(fn () => event(new MessageDeleted($message, false, [$user->id])), report: false);
+            rescue(fn () => event(new MessageDeleted($hiddenMessage, false, [$user->id])), report: false);
         }
 
         return response()->json(['data' => null]);

@@ -6,6 +6,19 @@
   "database": "rental",
   "target_data": "apps/api/database/data/hcm-wards-102.json",
   "school_source_data": "apps/api/database/data/hcm-schools-main-campuses.json",
+  "school_coordinate_corrections": [
+    {
+      "date": "2026-11-15",
+      "school_id": 74,
+      "name": "ĐH Cảnh sát nhân dân",
+      "latitude": "10.735428719307626",
+      "longitude": "106.697951233798",
+      "address": "36 Nguyễn Hữu Thọ, Tân Hưng, Hồ Chí Minh, Việt Nam",
+      "ward_name": "Phường Tân Hưng",
+      "ward_code": "27475",
+      "note": "Cập nhật tọa độ, địa chỉ và liên kết phường của trường theo người dùng. Các số liệu khác vẫn là snapshot captured_at, chưa rà soát lại toàn bộ database."
+    }
+  ],
   "resolution_source": "https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-1685-nq-ubtvqh15-sap-xep-cac-dvhc-cap-xa-cua-thanh-pho-ho-chi-minh-nam-2025-119250616211341304.htm",
   "method": "Một truy vấn SELECT tổng hợp trong kết nối đặt default_transaction_read_only=on; transaction_read_only được quan sát là on. Đối chiếu tên/phường, tọa độ và khóa tham chiếu với hai JSON nguồn. Mã hành chính được lưu riêng với ID database. Không chạy seed/migration hoặc sửa database.",
   "limitations": [
@@ -4456,24 +4469,24 @@
       "school_id": 74,
       "name": "ĐH Cảnh sát nhân dân",
       "city": "TP.HCM",
-      "db_ward_id": 21,
-      "current_ward": "Phường Linh Xuân",
+      "db_ward_id": 30,
+      "current_ward": "Phường Tân Hưng",
       "campus_name": "Cơ sở",
-      "address": "179a Kha Vạn Cân, Linh Xuân, Hồ Chí Minh, Việt Nam",
+      "address": "36 Nguyễn Hữu Thọ, Tân Hưng, Hồ Chí Minh, Việt Nam",
       "coordinates": {
-        "latitude": "10.8582194",
-        "longitude": "106.7557627"
+        "latitude": "10.7354287",
+        "longitude": "106.6979512"
       },
       "coordinates_match_source": true,
       "linked_profiles": 0,
       "scope_status": "within_102_wards",
       "administrative_targets": [
         {
-          "code": "26800",
-          "name": "Phường Linh Xuân"
+          "code": "27475",
+          "name": "Phường Tân Hưng"
         }
       ],
-      "review_note": "Đã khớp tọa độ và phường theo dữ liệu người dùng; chưa kiểm chứng độc lập vị trí thực tế."
+      "review_note": "Tọa độ và địa chỉ 36 Nguyễn Hữu Thọ được cập nhật ngày 15/11/2026 theo người dùng; liên kết phường đổi sang Tân Hưng. Chưa xác minh độc lập vị trí thực tế."
     },
     {
       "school_id": 75,

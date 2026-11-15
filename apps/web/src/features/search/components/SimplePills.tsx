@@ -6,14 +6,14 @@ import { LocationSelects } from "./LocationSelects";
 import { TYPE_OPTIONS } from "../lib/filterChips";
 import type { SearchState } from "../lib/types";
 
-/** "Bộ lọc": province and ward, plus a reset for everything. */
+/** "Khu vực": the room's location, plus a reset for everything. */
 export function AreaPill({ search }: { search: SearchState }) {
   return (
     <FilterPill
-      label="Bộ lọc"
+      label="Khu vực"
       active={search.filters.ward_id !== ""}
       onClear={() => {
-        search.setCity("");
+        search.setWard("");
       }}
     >
       <div className="flex flex-col gap-3 min-w-[240px]">

@@ -13,6 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class ConversationTest extends TestCase
@@ -298,6 +299,31 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.0.body', 'Còn, bạn đến xem nhé');
     }
 
+    public function test_history_over_500_messages_can_be_loaded_with_after_id(): void
+    {
+        $conv = $this->createConversation();
+        $messages = Message::factory()->count(501)->create([
+            'conversation_id' => $conv->id,
+            'sender_id' => $this->student->id,
+        ])->sortBy('id')->values();
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->getJson("/api/conversations/{$conv->id}/messages")
+            ->assertOk()
+            ->assertJsonCount(500, 'data')
+            ->assertJsonPath('data.499.id', $messages[499]->id);
+
+        $cursor = $messages[499]->id;
+        $lastId = $messages[500]->id;
+        $this->getJson("/api/conversations/{$conv->id}/messages?after_id={$cursor}")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $lastId);
+        $this->getJson("/api/conversations/{$conv->id}/messages?after_id={$lastId}")
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
     public function test_message_body_over_1000_chars_rejected(): void
     {
         $conv = $this->createConversation();
@@ -458,8 +484,34 @@ class ConversationTest extends TestCase
         $this->assertSame(0, Message::where('conversation_id', $conv->id)->count());
     }
 
+    public function test_failed_attachment_write_does_not_create_or_broadcast_message(): void
+    {
+        $conv = $this->createConversation();
+        Event::fake([MessageSent::class]);
+        $disk = Storage::disk('local');
+        $failingDisk = Mockery::mock($disk);
+        $failingDisk->shouldReceive('putFileAs')->twice()->andReturn(false);
+        Storage::set('local', $failingDisk);
+
+        foreach (['', 'Gửi bạn hợp đồng'] as $body) {
+            $this->actingAs($this->landlord, 'sanctum')
+                ->post("/api/conversations/{$conv->id}/messages", [
+                    'body' => $body,
+                    'file' => UploadedFile::fake()->create('hop-dong.pdf', 100, 'application/pdf'),
+                ], ['Accept' => 'application/json'])
+                ->assertStatus(500)
+                ->assertJsonPath('message', 'Không thể lưu tệp đính kèm. Vui lòng thử lại sau.');
+        }
+
+        $this->assertSame(0, $conv->messages()->count());
+        $this->assertSame([], $disk->allFiles());
+        Event::assertNotDispatched(MessageSent::class);
+    }
+
     public function test_attachment_upload_and_signed_url_download(): void
     {
+        config(['filesystems.default' => 'public']);
+        Storage::fake('public');
         $conv = $this->createConversation();
 
         $response = $this->actingAs($this->landlord, 'sanctum')
@@ -477,6 +529,7 @@ class ConversationTest extends TestCase
         $relativePath = Message::where('conversation_id', $conv->id)->value('attachment_path');
         $this->assertNotNull($relativePath);
         Storage::disk('local')->assertExists($relativePath);
+        $this->assertSame([], Storage::disk('public')->allFiles());
 
         // Signed URL opens in a browser without any token, inline with the
         // correct content type (contract: "Mở thẳng trong tab trình duyệt").

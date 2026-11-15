@@ -261,6 +261,27 @@ class ListingBrowseTest extends TestCase
             ->assertJsonValidationErrors(['school_id']);
     }
 
+    public function test_room_ward_and_school_ward_are_independent(): void
+    {
+        $this->school->update(['ward_id' => $this->wardA->id]);
+        $nearOtherWard = $this->makeListing([
+            'ward_id' => $this->wardB->id, 'latitude' => 10.8745, 'longitude' => 106.8030,
+        ]);
+        $this->makeListing([
+            'ward_id' => $this->wardA->id, 'latitude' => 10.8701, 'longitude' => 106.8030,
+        ]);
+        $this->makeListing([
+            'ward_id' => $this->wardB->id, 'latitude' => 10.8300, 'longitude' => 106.8000,
+        ]);
+
+        $nearSchool = '/api/listings?school_id='.$this->school->id.'&max_km=1';
+        $this->getJson($nearSchool)->assertOk()->assertJsonCount(2, 'data');
+        $this->getJson($nearSchool.'&ward_id='.$this->wardB->id)
+            ->assertOk()->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $nearOtherWard->id)
+            ->assertJsonPath('data.0.ward.id', $this->wardB->id);
+    }
+
     public function test_sort_distance_without_school_id_returns_422(): void
     {
         $this->getJson('/api/listings?sort=distance')

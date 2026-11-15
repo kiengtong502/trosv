@@ -29,15 +29,26 @@ export const startConversation = (listingId: number): Promise<Conversation> =>
 export const startDirectConversation = (userId: number): Promise<Conversation> =>
   api.post(`/users/${userId}/message`).then((r) => envelope<Conversation>(r).data);
 
-export const getMessages = (
+export const getMessages = async (
   conversationId: number | string,
   afterId: number | null = null,
-): Promise<Message[]> =>
-  api
-    .get(`/conversations/${conversationId}/messages`, {
-      params: { after_id: afterId || undefined },
-    })
-    .then((r) => envelopeArray<Message>(r).data);
+): Promise<Message[]> => {
+  const messages: Message[] = [];
+  let cursor = afterId;
+  for (;;) {
+    const response = await api.get(`/conversations/${conversationId}/messages`, {
+      params: { after_id: cursor || undefined },
+    });
+    const rows = envelopeArray<Message>(response).data;
+    messages.push(...rows);
+    if (rows.length < 500) return messages;
+    const next = rows.at(-1)?.id;
+    if (next == null || next <= (cursor ?? 0)) {
+      throw new Error("Không thể tải tiếp tin nhắn.");
+    }
+    cursor = next;
+  }
+};
 
 export interface SendMessagePayload extends MessagePayload {
   file?: File | null;

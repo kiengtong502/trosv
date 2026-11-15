@@ -8,14 +8,13 @@ use App\Modules\Messaging\Models\Message;
 use App\Shared\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Messenger-style reactions: PUT để đặt/đổi emoji của mình trên một tin
  * (map { user_id: emoji }), DELETE để bỏ. Mỗi user MỘT reaction - gọi PUT
- * lần nữa với cùng emoji là bỏ (idempotent cho nút toggle). Mỗi handler
- * re-read reactions qua fresh() trước khi ghi: two nearly-simultaneous
- * reactions from DIFFERENT users (rare in a 1-1 chat, but the menu allows
- * it in group-like reuse) no longer overwrite each other.
+ * lần nữa với cùng emoji là bỏ. Khóa bản ghi khi đọc–sửa–ghi để giữ
+ * reaction của người kia khi hai yêu cầu chạy đồng thời.
  */
 class MessageReactionController extends Controller
 {
@@ -27,25 +26,24 @@ class MessageReactionController extends Controller
 
         $validated = $request->validated();
 
-        // fresh(): re-read the row so a reaction arriving milliseconds
-        // earlier (double-tap on slow networks, other device) is never
-        // clobbered by a stale in-memory reactions map.
-        $fresh = $message->fresh() ?? $message;
-        $reactions = $fresh->reactions ?? [];
-        $mine = (string) $user->id;
+        $message = DB::transaction(function () use ($message, $user, $validated): Message {
+            $fresh = Message::query()->lockForUpdate()->findOrFail($message->id);
+            $reactions = $fresh->reactions ?? [];
+            $mine = (string) $user->id;
+            if (($reactions[$mine] ?? null) === $validated['emoji']) {
+                unset($reactions[$mine]);
+            } else {
+                $reactions[$mine] = $validated['emoji'];
+            }
+            $fresh->reactions = $reactions;
+            $fresh->save();
 
-        if (($reactions[$mine] ?? null) === $validated['emoji']) {
-            unset($reactions[$mine]); // toggle: cùng emoji lần nữa = bỏ
-        } else {
-            $reactions[$mine] = $validated['emoji']; // đặt / đổi
-        }
-
-        $message->reactions = $reactions;
-        $message->save();
+            return $fresh;
+        });
 
         rescue(fn () => event(new MessageReacted($message, $user->id)), report: false);
 
-        return response()->json(['data' => ['reactions' => $reactions]]);
+        return response()->json(['data' => ['reactions' => $message->reactions ?? []]]);
     }
 
     public function destroy(Request $request, Message $message): JsonResponse
@@ -54,14 +52,18 @@ class MessageReactionController extends Controller
 
         $user = $this->authUser($request);
 
-        $fresh = $message->fresh() ?? $message;
-        $reactions = $fresh->reactions ?? [];
-        unset($reactions[(string) $user->id]);
-        $message->reactions = $reactions;
-        $message->save();
+        $message = DB::transaction(function () use ($message, $user): Message {
+            $fresh = Message::query()->lockForUpdate()->findOrFail($message->id);
+            $reactions = $fresh->reactions ?? [];
+            unset($reactions[(string) $user->id]);
+            $fresh->reactions = $reactions;
+            $fresh->save();
+
+            return $fresh;
+        });
 
         rescue(fn () => event(new MessageReacted($message, $user->id)), report: false);
 
-        return response()->json(['data' => ['reactions' => $reactions]]);
+        return response()->json(['data' => ['reactions' => $message->reactions ?? []]]);
     }
 }

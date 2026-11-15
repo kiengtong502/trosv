@@ -115,7 +115,7 @@ rồi lọc phường/xã và trường theo `city_id`.
 |---|---|---|
 | `GET /cities` | Công khai | `data: [{ id, name, type: "city\|"province", latitude, longitude }]` (xếp theo tên A-Z, được cache tăng tốc) |
 | `GET /wards?city_id=` | Công khai | `data: [{ id, name, city: { id, name, type }, latitude, longitude }]` |
-| `GET /schools?city_id=` | Công khai | `data: [{ id, name, campus_name, address, city: { id, name, type }, ward: { id, name } \| null, latitude, longitude }]` - `ward` la phuong chua truong, dung `ward.id` de goi `GET /listings?ward_id=` | `campus_name` và `address` lấy từ danh mục cơ sở, có thể `null` nếu chưa có thông tin.
+| `GET /schools?city_id=` | Công khai | `data: [{ id, name, campus_name, address, city: { id, name, type }, ward: { id, name } \| null, latitude, longitude }]`. `name` là tên hiển thị: viết đầy đủ “Đại học”, kèm viết tắt trong ngoặc nếu danh mục có cung cấp (ví dụ “Đại học Kinh tế TP.HCM (UEH)”). ID và tên lưu trong database không đổi. `ward` mô tả phường/xã của trường, không ràng buộc phường/xã của phòng cần tìm. `campus_name` và `address` lấy từ danh mục cơ sở, có thể `null` nếu chưa có thông tin. |
 | `GET /amenities` | Công khai | `data: [{ id, name }]` (được cache tăng tốc) |
 
 ### Duyệt tin đăng
@@ -127,6 +127,8 @@ rồi lọc phường/xã và trường theo `city_id`.
 | `GET /listings/{id}/reviews` | Công khai | `page` | `Review` có phân trang, mới nhất trước |
 
 Bản đồ hiển thị riêng trường được chọn, cho bấm xem cơ sở và địa chỉ. Khi có `max_km`, vòng tròn quanh trường biểu diễn bán kính theo đường chim bay. Trường vẫn hiện khi không có phòng phù hợp; xóa lựa chọn trường sẽ bỏ dấu trường và vòng tròn.
+
+Trong bộ lọc tìm phòng, “Khu vực” chọn `ward_id` của phòng, còn “Chọn trường” chọn `school_id` và bán kính `max_km`. Hai lựa chọn độc lập, được phép thuộc hai phường khác nhau. Ô tìm tên trường hỗ trợ gõ không dấu, chỉ thu hẹp danh mục trường trên giao diện; không có bước chọn phường của trường và không gửi từ khóa này vào `q` của API. Xóa/đổi khu vực giữ trường và bán kính; xóa trường cũng xóa `max_km` và bỏ sắp xếp theo khoảng cách. “Đặt lại” xóa cả từ khóa tìm tên trường.
 
 Với bản đồ, Frontend gọi `GET /listings` với cùng bộ lọc và `per_page=50`, rồi vẽ các điểm theo `latitude`, `longitude` của kết quả.
 
@@ -156,7 +158,7 @@ Với bản đồ, Frontend gọi `GET /listings` với cùng bộ lọc và `pe
 | `POST /conversations` | Student | `listing_id` | `data: Conversation`. Nếu đã có thì trả hội thoại cũ |
 | `POST /users/{id}/message` | Student | không có | Get-or-create hội thoại **trực tiếp** giữa 2 sinh viên (không qua tin đăng, `listing` = null). Đích là chủ nhà hoặc chính mình → 404. Trả `201` khi tạo mới, `200` khi đã có |
 | `GET /conversations` | User | | `data: [Conversation]`, hoạt động mới nhất trước (không phân trang) |
-| `GET /conversations/{id}/messages` | Participant | `after_id` (tùy chọn, chỉ lấy tin mới hơn) | `data: [Message]` cũ nhất trước, đã ẩn các tin bị xóa "chỉ ở phía mình" với người gọi. Dùng cho lần tải đầu; tin mới đến qua WebSocket (xem mục *WebSocket realtime* bên dưới), không còn polling 5 giây |
+| `GET /conversations/{id}/messages` | Participant | `after_id` (tùy chọn, chỉ lấy tin mới hơn) | `data: [Message]` cũ nhất trước, tối đa 500 tin mỗi lần, đã ẩn các tin bị xóa "chỉ ở phía mình" với người gọi. Frontend tải tiếp bằng ID cuối đợt HTTP trước cho tới khi nhận ít hơn 500 tin. Tin mới đến qua WebSocket (xem mục *WebSocket realtime* bên dưới), không còn polling 5 giây |
 | `POST /conversations/{id}/messages` | Participant | JSON `{ body }` (tối đa 1000 ký tự), hoặc multipart `body` + `file` (pdf, jpg, png, docx, tối đa 5 MB) | 201 `data: Message`. Đồng thời broadcast `.message.sent` qua WebSocket (xem mục *WebSocket realtime* bên dưới) |
 | `POST /conversations/{id}/read` | Participant | | `data: null`. Đánh dấu đã đọc các tin của người kia |
 | `DELETE /messages/{id}` | Participant | query `scope` = `unsent` hoặc `self` (mặc định) | `data: null`. `unsent` = **Thu hồi** cho cả hai phía: tin thành tombstone (`is_unsent: true`), chỉ người gửi được gọi (403 nếu không phải), chỉ trong 1 giờ sau khi gửi (422 nếu quá), gọi hai lần vẫn an toàn. `self` = **Xóa chỉ ở phía mình**: ẩn tin với người gọi, người kia vẫn thấy bình thường, không có confirm, gọi hai lần vẫn an toàn |
@@ -211,7 +213,7 @@ Client chỉ xử lý khi `reader_id` khác mình: cập nhật `seen_at` cho c�
 ```
 Client chỉ cần thay map `reactions` của tin tương ứng bằng giá trị payload. Endpoint: `PUT /messages/{id}/reactions` body `{ emoji }` - đặt/đổi, gọi lần nữa với cùng emoji là bỏ; `DELETE /messages/{id}/reactions` - bỏ. `Message` có thêm trường `reactions` (map `{ "userId": "emoji" }`, `{}` khi không có).
 
-**Quy tắc fallback:** không còn poll `after_id` lặp lại. `GET /conversations/{id}/messages` chỉ chạy lần đầu khi mở hội thoại và khi Echo mất kết nối (tự reconnect); logout gọi `disconnect()` để đóng socket.
+**Đồng bộ tin nhắn:** không polling theo chu kỳ. Frontend tải lịch sử khi mở hội thoại, lấy bù bằng `after_id` khi đăng ký kênh thành công (kể cả sau reconnect) và khi nhận tin realtime từ người kia. Mốc lấy bù là ID đã tải qua HTTP, không lấy ID realtime mới nhất để tránh bỏ sót tin ở giữa. Các đợt tải được tuần tự hóa, gộp theo ID và chỉ đánh dấu đã đọc khi đồng bộ thành công. Logout gọi `disconnect()` để đóng socket.
 
 ### Đánh giá (sinh viên)
 

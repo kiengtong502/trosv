@@ -17,6 +17,7 @@ import {
   filtersToApiParams,
   filtersToUrlParams,
   withCity,
+  withFilter,
   withWard,
   type ListingFilters,
 } from "../lib/searchFilters";
@@ -35,6 +36,7 @@ export function useListingSearch() {
   const { data: wards } = useWards();
   const { data: schools } = useSchools();
   const { data: amenities } = useAmenities();
+  const [schoolQuery, setSchoolQuery] = useState("");
 
   const [storedFilters, setFilters] = useState<ListingFilters>(() =>
     filtersFromParams(searchParams),
@@ -44,12 +46,14 @@ export function useListingSearch() {
     [storedFilters, cities],
   );
   const [page, setPage] = useState(1);
+  const selectedSchool = schools.find((school) => String(school.id) === filters.school_id) ?? null;
   const [listings, setListings] = useState<Listing[]>([]);
   const [mapListings, setMapListings] = useState<Listing[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const prevParamsStringRef = useRef(searchParams.toString());
+  const latestRequestRef = useRef(0);
 
   // Sync state if searchParams change externally (e.g. navigation / back / direct link)
   const currentParamsString = searchParams.toString();
@@ -57,13 +61,14 @@ export function useListingSearch() {
     if (currentParamsString !== prevParamsStringRef.current) {
       prevParamsStringRef.current = currentParamsString;
       setFilters(filtersFromParams(searchParams));
+      setSchoolQuery("");
       setPage(1);
     }
   }, [currentParamsString, searchParams]);
 
   // Build query from filters and fetch.
   const fetchListings = useCallback(
-    async (currentPage: number) => {
+    async (currentPage: number, request: number) => {
       setLoading(true);
       setError("");
       const params = filtersToApiParams(filters, currentPage);
@@ -71,15 +76,18 @@ export function useListingSearch() {
       try {
         const mapParams = filtersToApiParams(filters, 1, MAP_PAGE_SIZE);
         const [pagedRes, mapRes] = await Promise.all([getListings(params), getListings(mapParams)]);
+        if (request !== latestRequestRef.current) return;
         setListings(pagedRes.data);
         setMeta(pagedRes.meta);
         setMapListings(mapRes.data);
       } catch (err) {
+        if (request !== latestRequestRef.current) return;
         setError(errMessage(err));
         setListings([]);
         setMapListings([]);
+        setMeta(null);
       } finally {
-        setLoading(false);
+        if (request === latestRequestRef.current) setLoading(false);
       }
     },
     [filters],
@@ -87,8 +95,9 @@ export function useListingSearch() {
 
   // Refetch whenever filters change (debounced) or page changes.
   useEffect(() => {
+    const request = ++latestRequestRef.current;
     const t = setTimeout(() => {
-      void fetchListings(page);
+      void fetchListings(page, request);
       const next = filtersToUrlParams(filters);
       const nextString = new URLSearchParams(next).toString();
       // Only touch the URL when it actually differs (so first load never rewrites it,
@@ -100,22 +109,26 @@ export function useListingSearch() {
     }, 300);
     return () => {
       clearTimeout(t);
+      // Invalidate in-flight results immediately, including the next debounce window.
+      latestRequestRef.current += 1;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, page]);
 
   const setFilter = (key: keyof ListingFilters, value: string): void => {
+    if (key === "school_id") setSchoolQuery("");
     setPage(1);
-    setFilters((f) => ({ ...f, [key]: value }));
+    setFilters((f) => withFilter(f, key, value));
   };
 
   // Another city: ward, school and radius reset so the cascade stays valid.
   const setCity = (cityId: string): void => {
+    setSchoolQuery("");
     setPage(1);
     setFilters((f) => withCity(f, cityId));
   };
 
-  // Another ward: the school list is per ward, so school and radius reset.
+  // Choosing a room's ward must preserve the selected school and radius.
   const setWard = (wardId: string): void => {
     setPage(1);
     setFilters((f) => withWard(f, wardId));
@@ -127,6 +140,7 @@ export function useListingSearch() {
   };
 
   const resetFilters = (): void => {
+    setSchoolQuery("");
     setPage(1);
     setFilters({ ...EMPTY_FILTERS });
   };
@@ -136,7 +150,9 @@ export function useListingSearch() {
     cities,
     wards,
     schools,
-    selectedSchool: schools.find((school) => String(school.id) === filters.school_id) ?? null,
+    selectedSchool,
+    schoolQuery,
+    setSchoolQuery,
     amenities,
     // search state
     filters,
