@@ -2,6 +2,8 @@
 
 Tài liệu này tóm tắt các quy ước phát triển chính của dự án TROSV.
 
+> Mọi Pull Request phải tuân thủ checklist trong [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md). Bot **PR Guard** tự động từ chối PR vi phạm (giới hạn diff, một app mỗi PR, bắt buộc ảnh chụp màn hình với frontend).
+
 ## 1. Cấu trúc ứng dụng
 
 Mã nguồn của 3 ứng dụng nằm độc lập trong thư mục `apps/`:
