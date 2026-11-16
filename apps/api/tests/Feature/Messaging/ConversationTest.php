@@ -261,9 +261,13 @@ class ConversationTest extends TestCase
             'landlord_id' => $this->landlord->id,
         ]);
 
-        // Older conversation gets the most recent message AFTER the other
-        // was touched, so it must come first (activity, not creation order).
-        $newer->touch();
+        // Deterministic activity timestamps: timestamp(0) columns have 1s
+        // resolution, so factory rows can tie and make the sort order
+        // arbitrary. The older conversation must have the latest activity
+        // (Message::factory does not touch the conversation, unlike
+        // ConversationService::sendMessage).
+        Conversation::where('id', $newer->id)->update(['updated_at' => now()->subMinutes(5)]);
+        Conversation::where('id', $older->id)->update(['updated_at' => now()]);
         Message::factory()->create([
             'conversation_id' => $older->id,
             'sender_id' => $this->student->id,
