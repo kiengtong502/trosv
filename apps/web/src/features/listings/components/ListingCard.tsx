@@ -116,7 +116,7 @@ export function ListingCard({
         onHover?.(null);
       }}
       className={cn(
-        "group relative flex flex-col rounded-xl border border-line bg-card shadow-card motion-card hover:border-line-strong hover:shadow-card-hover",
+        "group relative isolate flex flex-col rounded-xl border border-line bg-card shadow-card motion-card hover:border-line-strong hover:shadow-card-hover",
         className,
       )}
     >
