@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("navy chrome", () => {
-  test("login art side is a navy plate that frames the art", async ({ page }) => {
+  test("login art fills its navy panel edge to edge", async ({ page }) => {
     await page.setViewportSize({ width: 1360, height: 900 });
     await page.goto("/login");
     const panel = page.getByTestId("login-art");
@@ -10,9 +10,10 @@ test.describe("navy chrome", () => {
     expect(bg).toContain("linear-gradient");
     const p = await panel.boundingBox();
     const art = await panel.locator("img").boundingBox();
-    // The art is inset from the panel edge so the navy shows around it.
-    expect(art!.x).toBeGreaterThan(p!.x + 16);
-    expect(art!.width).toBeLessThan(p!.width - 32);
+    // No frame: the art covers the whole panel.
+    expect(Math.abs(art!.x - p!.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(art!.width - p!.width)).toBeLessThanOrEqual(1);
+    expect(Math.abs(art!.height - p!.height)).toBeLessThanOrEqual(1);
   });
 
   test("footer stays on cream with readable links", async ({ page }) => {

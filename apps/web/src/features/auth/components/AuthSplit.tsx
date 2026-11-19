@@ -2,24 +2,22 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
 
-/* USER ART: real art file, cover-fills the full-height panel (hidden on
-   mobile). Swap `src` to change the art; geometry stays. */
+/* USER ART: real art file, cover-fills the whole full-height panel (hidden
+   on mobile). Swap `src` to change the art; geometry stays. */
 export function AuthArt({ src, testId }: { src: string; testId: string }) {
   return (
     <div
       data-testid={testId}
-      className="relative hidden min-h-screen flex-1 items-center justify-center bg-band p-10 md:flex"
+      className="relative hidden min-h-screen flex-1 overflow-hidden bg-band md:block"
       aria-hidden
     >
-      <div className="relative h-full max-h-[760px] w-full max-w-[720px] overflow-hidden rounded-xl shadow-pop">
-        <img
-          src={src}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      </div>
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
     </div>
   );
 }
