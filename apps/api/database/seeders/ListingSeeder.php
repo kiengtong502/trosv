@@ -9,6 +9,7 @@ use App\Modules\Reference\Models\Amenity;
 use App\Modules\Reference\Models\City;
 use App\Modules\Reference\Models\School;
 use App\Modules\Reference\Models\Ward;
+use Database\Seeders\Support\SeedPrice;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -115,8 +116,8 @@ class ListingSeeder extends Seeder
                 $tpl = $listingTemplates[$i % count($listingTemplates)];
                 $street = $streets[$i % count($streets)];
 
-                $price = mt_rand((int) ($tpl['min_price'] / 100_000), (int) ($tpl['max_price'] / 100_000)) * 100_000;
                 $area = mt_rand($tpl['min_area'], $tpl['max_area']);
+                $price = SeedPrice::forArea($area, $tpl['min_price'], $tpl['max_price'], $tpl['min_area'], $tpl['max_area'], $globalIndex);
                 $houseNumber = mt_rand(1, 280);
 
                 // Gần một trường cụ thể để demo tính năng lọc khoảng cách
