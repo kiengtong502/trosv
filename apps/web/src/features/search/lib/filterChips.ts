@@ -93,7 +93,7 @@ export function buildFilterChips(
   return chips;
 }
 
-/** Name shown after "N phòng trọ tại …": the most specific area filter set. */
+/** Name shown after "N kết quả tại …": the most specific area filter set. */
 export function areaName(
   filters: Pick<ListingFilters, "ward_id" | "school_id" | "city_id">,
   refs: FilterRefs,
