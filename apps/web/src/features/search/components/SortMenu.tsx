@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { cn } from "@/shared/lib/utils";
@@ -5,10 +6,33 @@ import { SORT_OPTIONS, sortLabel } from "../lib/filterChips";
 
 /** "Sắp xếp: Mới nhất ▾" dropdown. */
 export function SortMenu({ sort, onChange }: { sort: string; onChange: (sort: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const closedByScroll = useRef(false);
+
+  // Portalled above the page, so it would float over the sticky header and filter bar when the
+  // page scrolls under it. Like a native select, it closes instead.
+  useEffect(() => {
+    if (!open) return;
+    const close = () => {
+      closedByScroll.current = true;
+      setOpen(false);
+    };
+    window.addEventListener("scroll", close, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", close);
+    };
+  }, [open]);
+
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs text-muted hidden sm:inline">Sắp xếp:</span>
-      <Popover>
+      <Popover
+        open={open}
+        onOpenChange={(next) => {
+          if (next) closedByScroll.current = false;
+          setOpen(next);
+        }}
+      >
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -22,7 +46,14 @@ export function SortMenu({ sort, onChange }: { sort: string; onChange: (sort: st
             <ChevronDown className="size-3.5 text-muted" aria-hidden />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-44 p-1">
+        <PopoverContent
+          align="end"
+          className="w-44 p-1"
+          // Closed by scrolling: do not hand focus back to the button, the browser would scroll to it.
+          onCloseAutoFocus={(e) => {
+            if (closedByScroll.current) e.preventDefault();
+          }}
+        >
           {SORT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
