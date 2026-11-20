@@ -87,7 +87,7 @@ def test_get_client_builds_client_with_key(monkeypatch):
     monkeypatch.setattr(gemini_client.genai, "Client", FakeClient)
     assert isinstance(get_client(), FakeClient)
     # Bounded per call: a hung Gemini must not hold a worker forever.
-    assert seen == {"api_key": "secret", "timeout": 10_000}
+    assert seen == {"api_key": "secret", "timeout": 6_000}
 
 
 def test_get_client_swallows_constructor_errors(monkeypatch):
