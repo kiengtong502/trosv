@@ -103,8 +103,7 @@ export function HeroDeck() {
           <div
             key={i}
             data-testid="hero-deck-card"
-            className={`motion-float absolute w-[188px] overflow-hidden rounded-xl border border-line bg-card shadow-pop ${c.place}`}
-            style={{ animationDelay: `${-i * 2}s` }}
+            className={`absolute w-[188px] overflow-hidden rounded-xl border border-line bg-card shadow-pop ${c.place}`}
           >
             <div className="aspect-4/3">{c.art}</div>
             <div className="flex items-center gap-2 px-3 py-3">
