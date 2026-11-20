@@ -178,7 +178,6 @@ export function AiChatWidget() {
         >
           <Bot className="size-6 transition-transform group-hover:rotate-6" aria-hidden />
           <span className="absolute -top-0.5 -right-0.5 flex size-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flyer opacity-75" />
             <span className="relative inline-flex size-3 rounded-full bg-flyer border-2 border-white" />
           </span>
         </button>

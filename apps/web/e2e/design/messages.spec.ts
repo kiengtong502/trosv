@@ -519,13 +519,13 @@ test.describe("messages motion and small touches", () => {
     expect(increasing((await delays(chips)).map(ms))).toBe(true);
   });
 
-  test("the empty pane art floats gently", async ({ page }) => {
+  test("the empty pane art stays still", async ({ page }) => {
     const { user } = (await loginAs(page, STUDENT)) as { user: { id: number } };
     await mockMessaging(page, user.id);
     await page.goto("/messages");
     await expect(page.getByTestId("messages-empty-pane").locator("img")).toHaveCSS(
       "animation-name",
-      "float-y",
+      "none",
     );
   });
 
