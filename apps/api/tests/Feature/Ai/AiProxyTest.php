@@ -627,6 +627,9 @@ class AiProxyTest extends TestCase
                 ->assertOk();
         }
 
+        // A few seconds later, still inside the 1-minute window (decay is in seconds).
+        $this->travel(5)->seconds();
+
         $this->actingAs($this->student, 'sanctum')
             ->postJson('/api/ai/chat', ['message' => 'lần 11'])
             ->assertStatus(429)

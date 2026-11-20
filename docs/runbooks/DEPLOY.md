@@ -9,7 +9,7 @@ Một file `docker-compose.yml` duy nhất phục dev, demo và production:
 
 | Chế độ | Lệnh | Cổng browser dùng |
 |---|---|---|
-| Demo HTTP | `docker compose up -d --build` | `http://<host>:5174`, API `:8000`, WS `:8080` |
+| Demo HTTP | `docker compose up -d --build` | `http://<host>:5174`, API same-origin `/api` (`:8000` chỉ trên 127.0.0.1), WS `:8080` |
 | **Production TLS (khuyên dùng)** | `docker compose --profile tls up -d --build` | Chỉ `https://$DOMAIN` (80 → 301 HTTPS, WS là `wss://$DOMAIN/app/*`) |
 
 TLS mode: Caddy tự cấp + tự gia hạn chứng chỉ Let's Encrypt. Cần đúng một
@@ -44,7 +44,7 @@ tin cậy. Chưa có miền? DuckDNS miễn phí (`yourname.duckdns.org`).
   sudo ufw enable
   ```
 
-  Demo HTTP mode (không TLS): mở 5174, 8000, 8080 thay cho 80/443 - nhưng
+  Demo HTTP mode (không TLS): mở 5174, 8080 thay cho 80/443 - nhưng
   khuyên dùng TLS mode, không mở cổng nào khác.
 
 ## 1. Lấy code + cấu hình

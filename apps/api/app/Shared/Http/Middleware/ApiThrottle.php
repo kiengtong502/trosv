@@ -7,6 +7,7 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Route;
 use Illuminate\Support\InteractsWithTime;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,7 +27,11 @@ class ApiThrottle
     {
         $user = $request->user();
         $identifier = $user ? 'u:'.$user->id : 'ip:'.$request->ip();
-        $key = 'api-throttle:'.$identifier.':'.sha1($request->method().'|'.$request->getPathInfo());
+        // Route template (conversations/{conversation}/messages), not the concrete path:
+        // otherwise every conversation id gets its own bucket and the limit multiplies.
+        $route = $request->route();
+        $path = $route instanceof Route ? $route->uri() : $request->getPathInfo();
+        $key = 'api-throttle:'.$identifier.':'.sha1($request->method().'|'.$path);
 
         // Count BEFORE handling, using the atomic increment's result: parallel
         // requests must not all pass a check that only sees finished requests.

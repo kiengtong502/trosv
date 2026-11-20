@@ -2,6 +2,7 @@
 
 namespace App\Modules\Listing\Http\Controllers;
 
+use App\Modules\Auth\Models\User;
 use App\Modules\Listing\Http\Requests\ReviewStoreRequest;
 use App\Modules\Listing\Http\Resources\ReviewResource;
 use App\Modules\Listing\Models\Listing;
@@ -22,6 +23,14 @@ class ReviewController extends Controller
      */
     public function index(Request $request, Listing $listing): JsonResponse
     {
+        // Same rule as GET /listings/{id}: hidden listings 404 except for the owner.
+        $viewer = $request->user('sanctum');
+        abort_if(
+            $listing->status === Listing::STATUS_HIDDEN
+                && (! $viewer instanceof User || $viewer->id !== $listing->user_id),
+            404
+        );
+
         $page = $listing->reviews()
             ->with('student:id,name')
             ->orderByDesc('id')

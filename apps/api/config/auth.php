@@ -114,4 +114,8 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    // POST /login and /register: attempts per minute per IP. Only CI e2e (one IP,
+    // a real login per test) raises it; production keeps the default.
+    'throttle_per_minute' => (int) env('AUTH_THROTTLE_PER_MINUTE', 10),
+
 ];

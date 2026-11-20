@@ -195,6 +195,9 @@ class AuthTest extends TestCase
             ])->assertStatus(422);
         }
 
+        // A few seconds later, still inside the 1-minute window (decay is in seconds).
+        $this->travel(5)->seconds();
+
         // The 11th attempt within the same minute is rate limited (429).
         $this->postJson('/api/login', [
             'email' => $user->email,

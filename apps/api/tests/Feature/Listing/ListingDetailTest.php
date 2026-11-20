@@ -223,6 +223,19 @@ class ListingDetailTest extends TestCase
     // GET /listings/{id}/reviews
     // ------------------------------------------------------------------
 
+    public function test_reviews_of_hidden_listing_return_404_except_for_owner(): void
+    {
+        Review::factory()->create(['listing_id' => $this->listing->id]);
+        $this->listing->update(['status' => 'hidden']);
+
+        $this->getJson("/api/listings/{$this->listing->id}/reviews")->assertStatus(404);
+
+        $this->actingAs($this->listing->landlord, 'sanctum')
+            ->getJson("/api/listings/{$this->listing->id}/reviews")
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
+    }
+
     public function test_reviews_list_newest_first_and_paginated(): void
     {
         $older = Review::factory()->create([
