@@ -93,7 +93,7 @@ export function buildFilterChips(
   return chips;
 }
 
-/** Name shown after "N kết quả tại …": the most specific area filter set. */
+/** Name shown after "N phòng trọ tại …": the most specific area filter set. */
 export function areaName(
   filters: Pick<ListingFilters, "ward_id" | "school_id" | "city_id">,
   refs: FilterRefs,
@@ -112,7 +112,7 @@ export function sortLabel(sort: string): string {
 
 /** Up to 5 page numbers around the current page. */
 export function paginationWindow(page: number, lastPage: number): number[] {
-  const start = Math.max(0, (page || 1) - 2);
+  const start = Math.max(0, Math.min((page || 1) - 3, lastPage - 5));
   const end = Math.min(lastPage, start + 5);
   return Array.from({ length: Math.max(0, end - start) }, (_, i) => start + i + 1);
 }
