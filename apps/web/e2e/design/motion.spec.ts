@@ -106,7 +106,7 @@ test.describe("route fade, image fade-in, scroll reveal", () => {
   });
 
   test("home sections below the fold reveal on scroll", async ({ page }) => {
-    // The clothesline right under the hero is never held back; the quick strip below it reveals.
+    // The newest-rooms row right under the hero is never held back; the quick strip below it reveals.
     await page.goto("/");
     const reveal = page.getByTestId("quick-strip").locator("xpath=..");
     await reveal.scrollIntoViewIfNeeded();
