@@ -1,5 +1,6 @@
 import api from "@/shared/api/axiosClient";
 import { envelope, envelopeArray } from "@/shared/api/envelope";
+import { CONVERSATION_READ_EVENT } from "@/shared/constants/events";
 import type { Conversation, Message, MessagePayload } from "@/shared/types/api";
 
 // API_CONTRACT §4 - "Nhắn tin"
@@ -28,15 +29,26 @@ export const startConversation = (listingId: number): Promise<Conversation> =>
 export const startDirectConversation = (userId: number): Promise<Conversation> =>
   api.post(`/users/${userId}/message`).then((r) => envelope<Conversation>(r).data);
 
-export const getMessages = (
+export const getMessages = async (
   conversationId: number | string,
   afterId: number | null = null,
-): Promise<Message[]> =>
-  api
-    .get(`/conversations/${conversationId}/messages`, {
-      params: { after_id: afterId || undefined },
-    })
-    .then((r) => envelopeArray<Message>(r).data);
+): Promise<Message[]> => {
+  const messages: Message[] = [];
+  let cursor = afterId;
+  for (;;) {
+    const response = await api.get(`/conversations/${conversationId}/messages`, {
+      params: { after_id: cursor || undefined },
+    });
+    const rows = envelopeArray<Message>(response).data;
+    messages.push(...rows);
+    if (rows.length < 500) return messages;
+    const next = rows.at(-1)?.id;
+    if (next == null || next <= (cursor ?? 0)) {
+      throw new Error("Không thể tải tiếp tin nhắn.");
+    }
+    cursor = next;
+  }
+};
 
 export interface SendMessagePayload extends MessagePayload {
   file?: File | null;
@@ -62,4 +74,7 @@ export const sendMessage = (
 };
 
 export const markRead = (conversationId: number | string): Promise<unknown> =>
-  api.post(`/conversations/${conversationId}/read`);
+  api.post(`/conversations/${conversationId}/read`).then((response) => {
+    window.dispatchEvent(new CustomEvent(CONVERSATION_READ_EVENT, { detail: { conversationId } }));
+    return response;
+  });

@@ -1,0 +1,82 @@
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, expect, it, vi } from "vitest";
+import type { Dispatch, SetStateAction } from "react";
+import type { Message } from "@/shared/types/api";
+import { useConversationRealtime } from "./useConversationRealtime";
+
+const mocks = vi.hoisted(() => ({
+  handlers: new Map<string, (payload: unknown) => void>(),
+  subscribe: vi.fn(),
+  leave: vi.fn(),
+  sync: vi.fn(),
+  subscribed: vi.fn(),
+}));
+vi.mock("@/features/auth/context/AuthContext", () => ({ useAuth: () => ({ user: { id: 1 } }) }));
+vi.mock("@/features/messaging/api/echo", () => ({
+  getEcho: () => ({ private: mocks.subscribe, leave: mocks.leave }),
+}));
+
+beforeEach(() => {
+  mocks.handlers.clear();
+  mocks.leave.mockReset();
+  mocks.sync.mockReset();
+  mocks.subscribed.mockReset();
+  mocks.subscribe.mockReset().mockReturnValue({
+    subscribed: mocks.subscribed,
+    listen: (name: string, handler: (payload: unknown) => void) => {
+      mocks.handlers.set(name, handler);
+    },
+    listenForWhisper: vi.fn(),
+  });
+});
+
+it("keeps the thread subscribed across renders and uses the latest preview callback", () => {
+  const setMessages = vi.fn<Dispatch<SetStateAction<Message[]>>>();
+  const lastId = { current: 0 };
+  const originalPreview = vi.fn();
+  const latestPreview = vi.fn();
+  const { rerender } = renderHook(
+    ({ preview }) =>
+      useConversationRealtime(
+        9,
+        { setMessages, lastIdRef: lastId, syncMessages: mocks.sync },
+        preview,
+      ),
+    { initialProps: { preview: originalPreview } },
+  );
+  rerender({ preview: latestPreview });
+  expect(mocks.subscribe).toHaveBeenCalledOnce();
+  expect(mocks.leave).not.toHaveBeenCalled();
+
+  const message = { id: 12, sender_id: 2, body: "New message" };
+  act(() => {
+    mocks.handlers.get(".message.sent")?.({ message });
+  });
+  expect(setMessages).toHaveBeenCalledOnce();
+  expect(lastId.current).toBe(12);
+  expect(latestPreview).toHaveBeenCalledWith(message);
+  expect(originalPreview).not.toHaveBeenCalled();
+  expect(mocks.sync).toHaveBeenCalledOnce();
+});
+
+it("requests catch-up on every successful subscription and ignores it after unmount", () => {
+  const setMessages = vi.fn<Dispatch<SetStateAction<Message[]>>>();
+  const { unmount } = renderHook(() =>
+    useConversationRealtime(9, {
+      setMessages,
+      lastIdRef: { current: 0 },
+      syncMessages: mocks.sync,
+    }),
+  );
+  const subscribed = mocks.subscribed.mock.calls[0]?.[0] as () => void;
+  act(() => {
+    subscribed();
+    subscribed();
+  });
+  expect(mocks.sync).toHaveBeenCalledTimes(2);
+  expect(mocks.sync).toHaveBeenNthCalledWith(1, true);
+  expect(mocks.sync).toHaveBeenNthCalledWith(2, true);
+  unmount();
+  subscribed();
+  expect(mocks.sync).toHaveBeenCalledTimes(2);
+});

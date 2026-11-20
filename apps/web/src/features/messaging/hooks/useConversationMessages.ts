@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { deleteMessage, reactToMessage, sendMessage } from "@/features/messaging/api/messagingApi";
 import { errMessage } from "@/shared/api/axiosClient";
 import type { Message } from "@/shared/types/api";
+import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
 
 /**
  * Message actions for the thread: send (with dedup against the WS event),
@@ -33,7 +34,7 @@ export function useConversationMessages(
       const msg = await sendMessage(id, { body: text, file });
       // The sender's own .message.sent WS event usually lands BEFORE
       // this HTTP response resolves - skip if already drawn.
-      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+      setMessages((prev) => mergeMessages(prev, [msg]));
       lastIdRef.current = Math.max(lastIdRef.current, msg.id);
       return msg;
     } catch (err) {

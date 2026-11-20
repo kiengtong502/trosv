@@ -52,7 +52,7 @@ interface Baseline {
 function Thread({ id }: { id: string }) {
   const { user } = useAuth();
   const data = useConversationData(id);
-  const realtime = useConversationRealtime(id, data.setMessages, data.lastIdRef, (msg) => {
+  const realtime = useConversationRealtime(id, data, (msg) => {
     announcePreview(Number(id), msg);
   });
   const actions = useConversationMessages(id, data.setMessages, data.lastIdRef);

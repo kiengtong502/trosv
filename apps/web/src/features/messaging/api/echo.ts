@@ -76,8 +76,10 @@ export function getEcho(): Echo<"reverb"> | null {
 
 /** Private conversation channel - minimal typed surface for hooks. */
 export interface EchoReactive {
+  subscribed(callback: () => void): unknown;
   // Generic payload: hook goi listen<MessageSentEvent>('.message.sent', ...).
   listen(eventName: string, callback: (payload: unknown) => void): unknown;
+  stopListening(eventName: string, callback: (payload: unknown) => void): unknown;
   listenForWhisper(eventName: string, callback: (payload: unknown) => void): unknown;
 }
 
