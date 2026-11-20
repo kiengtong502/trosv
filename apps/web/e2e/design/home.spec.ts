@@ -64,21 +64,21 @@ test.describe("home hero", () => {
   });
 });
 
-test.describe("recent rooms on a clothesline", () => {
+test.describe("newest rooms row", () => {
   test.use({ viewport: { width: 1360, height: 900 } });
 
-  test("the clothesline starts above the fold, right under the hero", async ({ page }) => {
+  test("the row starts above the fold, right under the hero", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByTestId("hang-card").first()).toBeVisible();
+    await expect(page.getByTestId("newest-card").first()).toBeVisible();
     const heading = await page.getByRole("heading", { name: "Mới đăng" }).boundingBox();
     expect(heading!.y).toBeLessThan(700);
-    const card = await page.getByTestId("hang-card").first().boundingBox();
+    const card = await page.getByTestId("newest-card").first().boundingBox();
     expect(card!.y).toBeLessThan(900);
   });
 
   test("the first card lines up with the heading", async ({ page }) => {
     await page.goto("/");
-    const cards = page.getByTestId("hang-card");
+    const cards = page.getByTestId("newest-card");
     await expect(cards.first()).toBeVisible();
     const h = await page.getByRole("heading", { name: "Mới đăng" }).boundingBox();
     const c = await cards.first().boundingBox();
@@ -87,19 +87,19 @@ test.describe("recent rooms on a clothesline", () => {
 
   test("a card opens its room", async ({ page }) => {
     await page.goto("/");
-    await page.getByTestId("hang-card").first().click();
+    await page.getByTestId("newest-card").first().click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);
   });
 
-  test("arrows hide at either end of the line", async ({ page }) => {
+  test("arrows hide at either end of the row", async ({ page }) => {
     await page.goto("/");
-    const row = page.getByTestId("hang-row");
-    await expect(page.getByTestId("hang-card").first()).toBeVisible();
+    const row = page.getByTestId("newest-row");
+    await expect(page.getByTestId("newest-card").first()).toBeVisible();
     const scrollable = await row.evaluate((el) => el.scrollWidth > el.clientWidth + 4);
     test.skip(!scrollable, "not enough rooms to scroll");
     // A hidden arrow is also hidden from the accessibility tree, so look them up by test id.
-    const prev = page.getByTestId("hang-prev");
-    const next = page.getByTestId("hang-next");
+    const prev = page.getByTestId("newest-prev");
+    const next = page.getByTestId("newest-next");
     await expect(prev).toHaveAttribute("data-visible", "false");
     await expect(prev).toHaveCSS("opacity", "0");
     await expect(next).toHaveAttribute("data-visible", "true");
@@ -115,10 +115,10 @@ test.describe("recent rooms on a clothesline", () => {
     await expect(next).toHaveAttribute("data-visible", "true");
   });
 
-  test("the arrow scrolls the line", async ({ page }) => {
+  test("the arrow scrolls the row", async ({ page }) => {
     await page.goto("/");
-    const row = page.getByTestId("hang-row");
-    await expect(page.getByTestId("hang-card").first()).toBeVisible();
+    const row = page.getByTestId("newest-row");
+    await expect(page.getByTestId("newest-card").first()).toBeVisible();
     test.skip(
       !(await row.evaluate((el) => el.scrollWidth > el.clientWidth + 4)),
       "not enough rooms to scroll",
@@ -148,13 +148,13 @@ test.describe("quick search strip", () => {
 test.describe("home on a phone", () => {
   test.use({ viewport: { width: 390, height: 800 } });
 
-  test("no floating deck or arrows, and the line swipes", async ({ page }) => {
+  test("no floating deck or arrows, and the row swipes", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByTestId("hang-card").first()).toBeVisible();
+    await expect(page.getByTestId("newest-card").first()).toBeVisible();
     await expect(page.getByTestId("hero-deck")).toBeHidden();
     await expect(page.getByRole("button", { name: "Cuộn sang phải" })).toBeHidden();
     const overflow = await page
-      .getByTestId("hang-row")
+      .getByTestId("newest-row")
       .evaluate((el) => getComputedStyle(el).overflowX);
     expect(overflow).toBe("auto");
     const noXScroll = await page.evaluate(
@@ -165,7 +165,7 @@ test.describe("home on a phone", () => {
 
   test("the first room is visible without scrolling past a wall of tiles", async ({ page }) => {
     await page.goto("/");
-    const card = await page.getByTestId("hang-card").first().boundingBox();
+    const card = await page.getByTestId("newest-card").first().boundingBox();
     expect(card!.y).toBeLessThan(900);
   });
 });

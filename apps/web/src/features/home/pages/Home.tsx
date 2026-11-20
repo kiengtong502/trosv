@@ -12,7 +12,7 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useReveal } from "@/shared/hooks/useReveal";
 import { HeroDeck } from "../components/HeroDeck";
 import { HomeQuickStrip } from "../components/HomeQuickStrip";
-import { RoomClothesline } from "../components/RoomClothesline";
+import { NewestRooms } from "../components/NewestRooms";
 import { TypedWord } from "../components/TypedWord";
 import { Search as SearchIcon, GraduationCap, MapPin } from "lucide-react";
 
@@ -190,7 +190,7 @@ export default function Home() {
       </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">
-        {/* Mới đăng: recent rooms on a clothesline, right under the hero */}
+        {/* Mới đăng: the newest rooms in one swipeable row, right under the hero */}
         <section className="pb-6 pt-8">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight text-ink">Mới đăng</h2>
@@ -207,7 +207,7 @@ export default function Home() {
           ) : !loading && newest.length === 0 ? (
             <SearchEmptyIllustration className="max-w-xs self-center" />
           ) : (
-            <RoomClothesline listings={newest} loading={loading} />
+            <NewestRooms listings={newest} loading={loading} />
           )}
         </section>
 

@@ -8,12 +8,12 @@ import { HousePlaceholder } from "@/shared/ui/icons";
 import { Skeleton } from "@/shared/ui/badge";
 import type { Listing } from "@/shared/types/api";
 
-function Hang({ listing }: { listing: Listing }) {
+function RoomSlide({ listing }: { listing: Listing }) {
   const photo = listing.cover_image ?? listing.images?.[0]?.url ?? null;
   return (
     <li className="w-[62%] flex-none snap-start px-2.5 md:w-[268px]">
       <Link
-        data-testid="hang-card"
+        data-testid="newest-card"
         to={route(ROUTES.ROOM_DETAIL, { id: listing.id })}
         className="motion-card block overflow-hidden rounded-xl border border-line bg-card shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
       >
@@ -50,7 +50,7 @@ function Arrow({ dir, visible, onClick }: { dir: -1 | 1; visible: boolean; onCli
     <button
       type="button"
       onClick={onClick}
-      data-testid={dir < 0 ? "hang-prev" : "hang-next"}
+      data-testid={dir < 0 ? "newest-prev" : "newest-next"}
       aria-label={dir < 0 ? "Cuộn sang trái" : "Cuộn sang phải"}
       data-visible={visible}
       aria-hidden={!visible}
@@ -66,13 +66,13 @@ function Arrow({ dir, visible, onClick }: { dir: -1 | 1; visible: boolean; onCli
   );
 }
 
-export interface RoomClotheslineProps {
+export interface NewestRoomsProps {
   listings: Listing[];
   loading: boolean;
 }
 
 /** One swipeable row of the newest rooms; arrows hide at either end. */
-export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
+export function NewestRooms({ listings, loading }: NewestRoomsProps) {
   const rowRef = useRef<HTMLUListElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
 
@@ -118,12 +118,12 @@ export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
       />
       <ul
         ref={rowRef}
-        data-testid="hang-row"
+        data-testid="newest-row"
         onScroll={measure}
         className="-ml-2.5 -mr-5 flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-pl-0 pb-6 pr-5 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {listings.map((l) => (
-          <Hang key={l.id} listing={l} />
+          <RoomSlide key={l.id} listing={l} />
         ))}
       </ul>
       <Arrow
