@@ -175,12 +175,20 @@ add a feature that imports back into one that already imports it.
   never rounded to "tr". Landlord form price stays a single number box.
 - **Radius scale** is only `xs…xl` (no `2xl`).
 - **Motion**: shared utilities in `styles.css` (`motion-stagger`, `motion-enter`,
-  `motion-press`, `motion-float`, `typing-dot`…). Rules: stagger animations use
+  `motion-press`, `typing-dot`…). Rules: no endless decorative loops (floating art,
+  swaying, pinging halos); loops are only for status (typing dots, the typed-keyword
+  caret, skeletons, spinners). Stagger animations use
   `backwards` fill so hover transforms still work; reduced motion removes
   durations and delays globally; nothing may stay hidden if an animation or an
   IntersectionObserver never runs.
-- **Illustrations** in `public/art` are hand-drawn SVGs: thick `#17171C` outline,
-  slight displacement wobble, flat earthy fills.
+- **Illustrations** in `public/art` are SVGs with flat earthy fills and a
+  `#17171C` outline. The login/register art (`book-and-fern.svg`,
+  `house-and-tree.svg`) is hand-drawn (thick outline, slight displacement
+  wobble). The hero doodles are plain white line icons at 10% opacity. The
+  signed-out gate arts (`favorites-gate.svg`,
+  `inbox-gate.svg`) and the hero drawing (`hero-town.svg`) are the clean variant:
+  thin outline, no wobble filter, no paper-grain overlay (it shows as a box on
+  the page).
 
 ### Behaviour notes
 
@@ -196,14 +204,21 @@ add a feature that imports back into one that already imports it.
   (`public/art/hero-doodles.svg`), the headline "Phòng trọ. Căn hộ." and a
   typed keyword that cycles "Gần trường." → "Giá rẻ." → "Tiện lợi." with a caret
   (`pages/home/TypedWord.tsx`; screen readers get the list once, reduced motion
-  shows the first phrase). Three drawn room cards float at the right on wide
-  screens (`HeroDeck`, now three hand-drawn room scenes rather than real listings): a fixed-size cluster inside the same `max-w-6xl` column as
-  the page below, so it looks the same at every resolution and never clips text. Right under the hero, "Mới đăng" is one swipeable
-  clothesline: each of the 8 newest rooms hangs from a rope with a peg
-  (`RoomClothesline`, `Peg`); desktop arrows hide at either end. Below it, one
+  shows the first phrase). A small drawing of a colourful town at night
+  (`HeroArt`) sits at the right on wide screens (1180px and up); the search bar
+  is fully rounded. On phones the description is hidden and the quick-filter
+  chips sit in one row that scrolls sideways. Right under the hero, "Mới đăng" is
+  one swipeable row of the 8 newest rooms (`NewestRooms`); desktop arrows hide at
+  either end. Below it, one
   slim card (`HomeQuickStrip`) holds school chips and four shortcuts, then the
   landlord banner. Rooms must stay reachable without scrolling past tiles, so
-  keep new Home sections below the clothesline.
+  keep new Home sections below that row.
+- **Search** (`/rooms`): the list, with the map beside it on wide screens.
+  "Ẩn bản đồ" hides the map (it is not mounted, so it loads no tiles) and widens
+  the grid; a filter never hides it. On phones the floating button switches
+  between list and map. The sort menu closes when the page scrolls: it is
+  portalled above the sticky header and filter bar, and handing focus back to its
+  button would scroll the page back up.
 - **Room page** (`/rooms/:id`): a bento grid. Row 1 is the gallery (big photo,
   arrows, thumbnails) beside the contact card and the AI price tile; then
   colored quick-fact tiles (only facts the API has: area, distance, type, age),
