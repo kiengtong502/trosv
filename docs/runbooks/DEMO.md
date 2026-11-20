@@ -38,10 +38,10 @@ docker compose up -d --build
 ### Bước 4: Kiểm tra và truy cập
 Đợi khoảng 30–60 giây cho các container đạt trạng thái healthy, sau đó truy cập:
 
-- **Web UI**: [http://localhost:5174](http://localhost:5174)
-- **API**: [http://localhost:5174/api](http://localhost:5174/api) *(same-origin định tuyến qua Nginx)*
+- **Web UI**: [http://localhost:3000](http://localhost:3000)
+- **API**: [http://localhost:3000/api](http://localhost:3000/api) *(same-origin định tuyến qua Nginx)*
 
-> Các thiết bị khác trong cùng mạng LAN có thể truy cập qua: `http://<IP-may-host>:5174`
+> Các thiết bị khác trong cùng mạng LAN có thể truy cập qua: `http://<IP-may-host>:3000`
 
 ---
 

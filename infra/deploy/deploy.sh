@@ -7,7 +7,7 @@
 #                                         # up -d --build + doi healthy + kiem tra API
 #   bash infra/deploy/deploy.sh           # khong Docker: PHP + Node truc tiep tren may
 #                                         # (PostgreSQL local, artisan serve :8000,
-#                                         #  vite dev :5173, reverb :8080)
+#                                         #  vite dev :3001, reverb :8080)
 #   bash infra/deploy/deploy.sh --quick   # (che do local) bo qua install, GIU DB
 #   bash infra/deploy/deploy.sh --dry-run # in cac duong dan da resolve va thoat
 #   bash infra/deploy/deploy.sh --stop    # dung toan bo service
@@ -76,8 +76,8 @@ run_docker() {
         sleep 2
     done
     curl -sf http://127.0.0.1:8000/api/cities >/dev/null || die "API khong tra loi - xem: docker compose logs backend"
-    curl -sf http://127.0.0.1:5174/ >/dev/null || die "Web khong tra loi - xem: docker compose logs frontend"
-    ok "API: http://localhost:8000/api - Web: http://localhost:5174"
+    curl -sf http://127.0.0.1:3000/ >/dev/null || die "Web khong tra loi - xem: docker compose logs frontend"
+    ok "API: http://localhost:8000/api - Web: http://localhost:3000"
     ok "Smoke: bash scripts/e2e-smoke.sh"
 }
 
@@ -204,7 +204,7 @@ echo ">> start Reverb WebSocket :8080 ..."
 setsid nohup php artisan reverb:start --host=0.0.0.0 --port=8080 >> "$API_LOG" 2>&1 &
 echo $! >> "$PID_FILE"
 
-echo ">> start Vite dev server :5173 ..."
+echo ">> start Vite dev server :3001 ..."
 cd "$FRONTEND"
 setsid nohup npm run dev -- --host 0.0.0.0 >> "$WEB_LOG" 2>&1 &
 echo $! >> "$PID_FILE"
@@ -222,14 +222,14 @@ wait_for() { # $1=url  $2=ten
 
 wait_for "http://127.0.0.1:8000/api/cities" "Laravel API" "$API_LOG"
 ok "API san sang: http://localhost:8000/api"
-wait_for "http://127.0.0.1:5173" "Frontend" "$WEB_LOG"
-ok "Web san sang:  http://localhost:5173"
+wait_for "http://127.0.0.1:3001" "Frontend" "$WEB_LOG"
+ok "Web san sang:  http://localhost:3001"
 
 echo ""
 echo "=============================================="
 echo -e " ${c_green}DEMO SAN SANG${c_off}"
 echo "=============================================="
-echo "  Web : http://localhost:5173"
+echo "  Web : http://localhost:3001"
 echo "  API : http://localhost:8000/api"
 echo "  WS  : ws://localhost:8080 (Reverb)"
 echo ""

@@ -2,13 +2,13 @@
 React render that (co noi dung that trong #root, khong trang trang).
 
 Usage: python3 scripts/smoke-ts.py [base_url]
-Mặc định http://localhost:5174 (dev compose stack).
+Mặc định http://localhost:3000 (dev compose stack).
 """
 import sys
 
 from playwright.sync_api import sync_playwright
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5174"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:3000"
 
 console_errors: list[str] = []
 page_errors: list[str] = []

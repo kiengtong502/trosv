@@ -7,7 +7,7 @@ Python standard library. Exit code 0 = every check passed.
     python3 scripts/stack-smoke.py
 
 Env (defaults match docker-compose.yml with default ports):
-    STACK_WEB_URL     http://localhost:5174   nginx, the URL browsers use (proxies /api, /storage)
+    STACK_WEB_URL     http://localhost:3000   nginx, the URL browsers use (proxies /api, /storage)
     STACK_API_URL     http://localhost:8000   backend directly (server-level behaviour)
     STACK_REVERB      localhost:8080          Reverb host:port
     REVERB_APP_KEY    app key of Reverb (same value as in the stack's .env)
@@ -36,7 +36,7 @@ import uuid
 import zlib
 from typing import Any
 
-WEB = os.environ.get("STACK_WEB_URL", "http://localhost:5174").rstrip("/")
+WEB = os.environ.get("STACK_WEB_URL", "http://localhost:3000").rstrip("/")
 API = os.environ.get("STACK_API_URL", "http://localhost:8000").rstrip("/")
 REVERB = os.environ.get("STACK_REVERB", "localhost:8080")
 REVERB_KEY = os.environ.get("REVERB_APP_KEY", "ci-key")

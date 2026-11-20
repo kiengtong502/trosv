@@ -10,7 +10,7 @@ const ROOM_INTRO = /^Chào bạn,\s*mình quan tâm đến phòng trọ:/i;
 
 /**
  * Chuẩn hóa attachment_url sang đường dẫn tương đối (/attachments/...)
- * để browser gọi đúng port của ứng dụng (5174 hoặc 5173).
+ * để browser gọi đúng port của ứng dụng (3000 hoặc 3001).
  */
 export function resolveAttachmentUrl(url: string | null | undefined): string | null {
   if (!url) return null;

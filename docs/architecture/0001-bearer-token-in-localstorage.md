@@ -26,7 +26,7 @@ Chung toi quyet dinh su dung **Bearer token duoc luu trong `localStorage`** cua 
    - Trong tuong lai, cung mot he thong API co the phuc vu ung dung di dong (React Native / Flutter) hoac cac client ben thu ba ma khong can xu ly co che cookie domain / SameSite.
 
 3. **Don gian hoa moi truong phat trien va proxy**:
-   - Trong moi truong dev/demo, frontend chay tren cong `5174` (hoac `5173`/`4173`) va backend chay tren `8000`. Bearer token hoat dong nhat quan ma khong gap cac van de ve cookie scope, HTTPS requirements (Secure flag), hay CORS credentials configuration.
+   - Trong moi truong dev/demo, frontend chay tren cong `3000` (hoac `3001`/`3002`) va backend chay tren `8000`. Bearer token hoat dong nhat quan ma khong gap cac van de ve cookie scope, HTTPS requirements (Secure flag), hay CORS credentials configuration.
 
 ## Hau qua & Bien phap giam thieu (Consequences & Mitigations)
 

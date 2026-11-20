@@ -12,7 +12,7 @@ import { expect, test } from "@playwright/test";
  * that signature: image requests returning 404/HTML, or images that never
  * decode.
  *
- * In cross-origin setups (CI: backend :8000 + preview :4173) the same checks
+ * In cross-origin setups (CI: backend :8000 + preview :3002) the same checks
  * still catch URL-generation drift (dead host/path) and undecodable payloads.
  */
 test.describe("listing images", () => {

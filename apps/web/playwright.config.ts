@@ -3,11 +3,11 @@ import { defineConfig, devices } from "@playwright/test";
 // CI-grade smoke suite (docs/reports/PLAN.md Phase 1). Feature-grouped specs in
 // e2e/ (npm run test:e2e); this is what CI runs.
 //
-// Requires the demo stack to be up (API :8000 + Vite :5173), e.g.:
+// Requires the demo stack to be up (API :8000 + Vite :3001), e.g.:
 //   bash infra/deploy/deploy.sh --quick
 // Overridable in CI: E2E_BASE_URL / E2E_API_URL.
 
-const baseURL = process.env.E2E_BASE_URL || "http://localhost:5173";
+const baseURL = process.env.E2E_BASE_URL || "http://localhost:3001";
 
 export default defineConfig({
   testDir: "./e2e",
