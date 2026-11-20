@@ -273,7 +273,6 @@ export interface AiRoommate {
   name?: string;
   score?: number | string;
   similarity?: number;
-  phone?: string;
   school?: string;
   interests?: string[];
   interests_shared?: string[];

@@ -57,6 +57,17 @@ class BroadcastChannelTest extends TestCase
         $this->authChannel($this->conversation->landlord, $channel)->assertOk();
     }
 
+    public function test_opening_many_chats_in_a_minute_is_not_throttled(): void
+    {
+        // A landlord clicking through 60 chats re-auths 60 channels in one minute.
+        $landlord = $this->conversation->landlord;
+        $channel = 'private-conversation.'.$this->conversation->id;
+
+        for ($i = 0; $i < 60; $i++) {
+            $this->authChannel($landlord, $channel)->assertOk();
+        }
+    }
+
     public function test_outsider_cannot_subscribe_to_conversation_channel(): void
     {
         $outsider = User::factory()->student()->create();
