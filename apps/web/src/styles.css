@@ -327,7 +327,7 @@
   }
 }
 
-/* Home: typed hero keyword and the clothesline. */
+/* Home: typed hero keyword. */
 .typed-caret {
   display: inline-block;
   width: 0.07em;
@@ -343,22 +343,6 @@
 @keyframes caret-blink {
   50% {
     opacity: 0;
-  }
-}
-.hang-sway {
-  transform-origin: 50% 0;
-  animation: hang-sway 6s ease-in-out infinite;
-}
-.hang-sway:hover {
-  animation-play-state: paused;
-}
-@keyframes hang-sway {
-  0%,
-  100% {
-    transform: rotate(-0.9deg);
-  }
-  50% {
-    transform: rotate(0.9deg);
   }
 }
 
