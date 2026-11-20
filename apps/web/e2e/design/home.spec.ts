@@ -76,19 +76,16 @@ test.describe("recent rooms on a clothesline", () => {
     expect(card!.y).toBeLessThan(900);
   });
 
-  test("every room has a peg and the first card lines up with the heading", async ({ page }) => {
+  test("the first card lines up with the heading", async ({ page }) => {
     await page.goto("/");
     const cards = page.getByTestId("hang-card");
     await expect(cards.first()).toBeVisible();
-    expect(await page.getByTestId("hang-peg").count()).toBe(await cards.count());
     const h = await page.getByRole("heading", { name: "Mới đăng" }).boundingBox();
     const c = await cards.first().boundingBox();
     expect(Math.abs(h!.x - c!.x)).toBeLessThanOrEqual(1);
   });
 
   test("a card opens its room", async ({ page }) => {
-    // The cards sway forever; reduced motion keeps them still so the click can land.
-    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
     await page.getByTestId("hang-card").first().click();
     await expect(page).toHaveURL(/\/rooms\/\d+/);

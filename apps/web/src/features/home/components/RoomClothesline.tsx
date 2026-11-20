@@ -7,82 +7,39 @@ import { cn } from "@/shared/lib/utils";
 import { HousePlaceholder } from "@/shared/ui/icons";
 import { Skeleton } from "@/shared/ui/badge";
 import type { Listing } from "@/shared/types/api";
-import { PEG_COLORS, Peg } from "./Peg";
 
-/** The rope segment behind one card; neighbours join into one continuous line. */
-function Rope() {
-  return (
-    <svg
-      viewBox="0 0 268 22"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      className="pointer-events-none absolute left-0 top-0 h-[22px] w-full overflow-visible"
-    >
-      <path
-        d="M0 7 Q134 11 268 7"
-        fill="none"
-        stroke="#7a5b3a"
-        strokeWidth="3.4"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-      <path
-        d="M0 7 Q134 11 268 7"
-        fill="none"
-        stroke="#d8b886"
-        strokeWidth="3.4"
-        strokeDasharray="2.5 6"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
-
-function Hang({ listing, index }: { listing: Listing; index: number }) {
+function Hang({ listing }: { listing: Listing }) {
   const photo = listing.cover_image ?? listing.images?.[0]?.url ?? null;
   return (
-    <li className="relative w-[62%] flex-none snap-start px-2.5 pt-[9px] md:w-[268px]">
-      <Rope />
-      <div className="hang-sway relative" style={{ animationDelay: `${-((index * 1.7) % 6)}s` }}>
-        <span
-          data-testid="hang-peg"
-          className="absolute left-1/2 top-[-25px] z-10 h-[62px] w-8 -translate-x-1/2 drop-shadow-[0_3px_2px_rgb(0_0_0/0.22)]"
-        >
-          <Peg
-            color={PEG_COLORS[index % PEG_COLORS.length] ?? PEG_COLORS[0]}
-            className="size-full"
-          />
-        </span>
-        <Link
-          data-testid="hang-card"
-          to={route(ROUTES.ROOM_DETAIL, { id: listing.id })}
-          className="motion-card block overflow-hidden rounded-xl border border-line bg-card shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
-        >
-          <div className="relative aspect-4/3 bg-sunken">
-            {photo ? (
-              <img
-                src={photo}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                className="size-full object-cover"
-              />
-            ) : (
-              <HousePlaceholder />
-            )}
-            <span className="absolute bottom-2.5 left-2.5 rounded-md bg-flyer px-2 py-0.5 text-sm font-extrabold tabular-nums text-flyer-ink">
-              {formatVnd(listing.price)}/th
-            </span>
-          </div>
-          <div className="px-3.5 pb-3.5 pt-3">
-            <p className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
-              {listing.title}
-            </p>
-            <p className="mt-1 truncate text-xs text-muted">{listing.address}</p>
-          </div>
-        </Link>
-      </div>
+    <li className="w-[62%] flex-none snap-start px-2.5 md:w-[268px]">
+      <Link
+        data-testid="hang-card"
+        to={route(ROUTES.ROOM_DETAIL, { id: listing.id })}
+        className="motion-card block overflow-hidden rounded-xl border border-line bg-card shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+      >
+        <div className="relative aspect-4/3 bg-sunken">
+          {photo ? (
+            <img
+              src={photo}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="size-full object-cover"
+            />
+          ) : (
+            <HousePlaceholder />
+          )}
+          <span className="absolute bottom-2.5 left-2.5 rounded-md bg-flyer px-2 py-0.5 text-sm font-extrabold tabular-nums text-flyer-ink">
+            {formatVnd(listing.price)}/th
+          </span>
+        </div>
+        <div className="px-3.5 pb-3.5 pt-3">
+          <p className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
+            {listing.title}
+          </p>
+          <p className="mt-1 truncate text-xs text-muted">{listing.address}</p>
+        </div>
+      </Link>
     </li>
   );
 }
@@ -114,7 +71,7 @@ export interface RoomClotheslineProps {
   loading: boolean;
 }
 
-/** One swipeable line of recent rooms, each clipped to a rope with a peg. */
+/** One swipeable row of the newest rooms; arrows hide at either end. */
 export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
   const rowRef = useRef<HTMLUListElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
@@ -163,10 +120,10 @@ export function RoomClothesline({ listings, loading }: RoomClotheslineProps) {
         ref={rowRef}
         data-testid="hang-row"
         onScroll={measure}
-        className="-ml-2.5 -mr-5 flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-pl-0 pb-8 pr-5 pt-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-ml-2.5 -mr-5 flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-pl-0 pb-6 pr-5 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {listings.map((l, i) => (
-          <Hang key={l.id} listing={l} index={i} />
+        {listings.map((l) => (
+          <Hang key={l.id} listing={l} />
         ))}
       </ul>
       <Arrow
