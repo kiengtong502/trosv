@@ -33,8 +33,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // not the web cookie session, so /broadcasting/auth must run inside the
         // "api" middleware group with sanctum. The web group is kept as well so
         // default Laravel behavior still works if a session-based client appears.
+        // 120/min per user: every opened chat and every reconnect re-auths a channel,
+        // and a 429 here silently stops realtime for that chat.
         __DIR__.'/../routes/channels.php',
-        ['middleware' => ['api', 'auth:sanctum', 'throttle.api:30,60']],
+        ['middleware' => ['api', 'auth:sanctum', 'throttle.api:120,60']],
     )
     ->withMiddleware(function (Middleware $middleware) {
         // API-only app: no named "login" route exists, so the framework default

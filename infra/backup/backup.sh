@@ -16,6 +16,8 @@
 # Restore: xem infra/backup/RESTORE.md. Rollback code: docs/runbooks/ROLLBACK.md.
 # ============================================================
 set -euo pipefail
+# Dump/uploads hold password hashes, phones and private chat files: owner-only (600/700).
+umask 077
 
 # Mot file compose duy nhat; TLS profile de khop dung stack dang chay.
 # Docker hoac Podman - tu dong chon runtime co san (may chu bat ky).

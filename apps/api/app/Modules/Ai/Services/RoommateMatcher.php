@@ -12,7 +12,7 @@ class RoommateMatcher
     /**
      * Roommate matching: profile must be complete and looking_for_roommate
      * set, otherwise 422. Candidates: other students with intersecting
-     * budgets, max 20. Response rows get name/school/phone re-attached by
+     * budgets, max 20. Response rows get name/school re-attached by
      * Backend (AI only ever sees the anonymous profile shape).
      *
      * @return list<array<string, mixed>>
@@ -71,7 +71,6 @@ class RoommateMatcher
                 'user_id' => $candidate->id,
                 'name' => $candidate->name,
                 'school' => $candidate->school?->name,
-                'phone' => $candidate->phone,
                 'interests' => $this->interestList($candidate->interests),
                 'interests_shared' => array_values(
                     array_intersect($myInterests, $this->interestList($candidate->interests))

@@ -141,7 +141,8 @@ class AiProxyTest extends TestCase
         $this->assertSame(['music'], $row['interests_shared']);
         $this->assertNotNull($row['name']);
         $this->assertNotNull($row['school']);
-        $this->assertNotNull($row['phone']);
+        // Phone numbers are PII and never shown in the Roommates UI.
+        $this->assertArrayNotHasKey('phone', $row);
 
         // Payload sent to the AI service: no names, emails, phones.
         Http::assertSent(fn ($request) => ! str_contains($request->body(), $match->name)
