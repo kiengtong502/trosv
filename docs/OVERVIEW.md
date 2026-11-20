@@ -30,8 +30,8 @@ Browser (React SPA)  ──JSON + Bearer token──▶  Laravel API  ──▶ 
 
 | What | Where |
 |---|---|
-| Web (Vite dev, hot reload) | http://localhost:5173 (`cd apps/web && npm run dev`) |
-| Web (Docker, production build, serves `/storage`) | http://localhost:5174 |
+| Web (Vite dev, hot reload) | http://localhost:3001 (`cd apps/web && npm run dev`) |
+| Web (Docker, production build, serves `/storage`) | http://localhost:3000 |
 | API | http://localhost:8000/api |
 | AI service (loopback only, not exposed to the network) | http://localhost:8001 |
 | Reverb websocket | `:8080` |
@@ -243,7 +243,7 @@ add a feature that imports back into one that already imports it.
   `--max-warnings 0`, covers `src` and `e2e`), `npm run format:check`
   (Prettier, 2 spaces), Vitest unit tests (`npm test`, jsdom, `*.test.ts(x)` next to
   the code: pure logic and hooks) and Playwright e2e (`npm run test:e2e`, needs the API on
-  `:8000` and the web app on `:5173`; no retries, a flaky test is a bug). Specs
+  `:8000` and the web app on `:3001`; no retries, a flaky test is a bug). Specs
   in `e2e/design/` mock the messaging API so they never write to the demo
   database; `e2e/design/helpers.ts` has `loginAs`.
 - Backend: Pint, PHPStan/Larastan at level `max` (`apps/api/phpstan.neon`; the
@@ -287,7 +287,7 @@ add a feature that imports back into one that already imports it.
   hash, so a lock written by e.g. 2.8 fails CI's `composer validate --strict`. Without a local
   PHP 8.3 + current Composer: `docker run --rm -u $(id -u):$(id -g) -e COMPOSER_HOME=/tmp
   -v "$PWD/apps/api:/app" -w /app composer:2 update` (or `update --lock` to refresh the hash only).
-- Known gotchas: seed photos are served from the Docker web container on `:5174`
+- Known gotchas: seed photos are served from the Docker web container on `:3000`
   (`e2e/listings/images.spec.ts` fails without it).
 
 ## 7. Working agreements

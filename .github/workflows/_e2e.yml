@@ -58,7 +58,7 @@ jobs:
         working-directory: apps/api
         run: |
           # CORS must accept the preview origin the browser will use.
-          PHP_CLI_SERVER_WORKERS=4 FRONTEND_URL=http://localhost:4173 nohup php artisan serve \
+          PHP_CLI_SERVER_WORKERS=4 FRONTEND_URL=http://localhost:3002 nohup php artisan serve \
             --host=127.0.0.1 --port=8000 --no-reload > /tmp/api.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf http://127.0.0.1:8000/api/cities > /dev/null && break
@@ -67,7 +67,7 @@ jobs:
           done
           echo "API ready"
 
-      # ---- Web: the bundle built by the web job, served on :4173 ----
+      # ---- Web: the bundle built by the web job, served on :3002 ----
       - uses: ./.github/actions/setup-node
 
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -91,24 +91,24 @@ jobs:
             npx playwright install --with-deps chromium
           fi
 
-      - name: Serve bundle on :4173
+      - name: Serve bundle on :3002
         working-directory: apps/web
         run: |
-          nohup npx vite preview --host 127.0.0.1 --port 4173 > /tmp/web.log 2>&1 &
+          nohup npx vite preview --host 127.0.0.1 --port 3002 > /tmp/web.log 2>&1 &
           for i in $(seq 1 30); do
-            curl -sf http://127.0.0.1:4173/ > /dev/null && break
+            curl -sf http://127.0.0.1:3002/ > /dev/null && break
             [ "$i" = 30 ] && { cat /tmp/web.log; exit 1; }
             sleep 1
           done
           echo "web ready"
 
       # The bundle bakes VITE_API_URL (default http://localhost:8000/api) at build
-      # time; FRONTEND_URL=4173 on the API allows that origin.
+      # time; FRONTEND_URL=3002 on the API allows that origin.
       - name: Playwright tests
         working-directory: apps/web
         run: npx playwright test
         env:
-          E2E_BASE_URL: http://localhost:4173
+          E2E_BASE_URL: http://localhost:3002
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()

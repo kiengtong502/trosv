@@ -32,7 +32,11 @@ export default defineConfig({
   // Optional: put the dependency cache outside node_modules (some sandboxes leave
   // root-owned files in node_modules/.vite, which makes Vite 404 every route).
   cacheDir: process.env["VITE_CACHE_DIR"],
+  // Fixed, easy-to-remember ports (Docker web is 3000): fail instead of drifting to another port.
+  preview: { port: 3002, strictPort: true },
   server: {
+    port: 3001,
+    strictPort: true,
     proxy: {
       "/attachments": {
         target: "http://127.0.0.1:8000",

@@ -71,7 +71,7 @@ describe("parseMessageBody", () => {
   });
 
   it("extracts a room id from a full url", () => {
-    expect(parseMessageBody("http://localhost:5173/rooms/7")).toEqual({ roomId: 7, text: "" });
+    expect(parseMessageBody("http://localhost:3001/rooms/7")).toEqual({ roomId: 7, text: "" });
   });
 
   it("rewrites the auto-generated intro so it reads naturally next to the card", () => {

@@ -29,7 +29,7 @@ cp .env.example .env     # điền APP_KEY (lệnh tạo có sẵn trong file)
 docker compose up -d --build
 ```
 
-- Web: http://localhost:5174 · API: http://localhost:5174/api
+- Web: http://localhost:3000 · API: http://localhost:3000/api
 - Dữ liệu demo: `SEED_ON_BOOT=1` trong `.env` (đặt trước khi boot), hoặc
   `docker compose exec backend php artisan migrate:fresh --seed --force`
 - Tài khoản demo (mật khẩu `password`): `student1@example.com` (sinh

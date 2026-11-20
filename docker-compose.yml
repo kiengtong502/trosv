@@ -7,7 +7,7 @@
 #   Dev/demo local (HTTP):
 #     cp .env.example .env   # dat APP_KEY (lenh ben duoi)
 #     docker compose up -d --build
-#     -> web http://localhost:5174 , API same-origin /api qua nginx
+#     -> web http://localhost:3000 , API same-origin /api qua nginx
 #
 #   Production (HTTPS-only, Caddy TLS):
 #     # .env: DOMAIN=tenmien.com , FRONTEND_URL=https://tenmien.com ,
@@ -48,7 +48,7 @@ x-backend-env: &backend-env
   APP_DEBUG: "false"
   # Bat buoc: khong co gia tri mac dinh an toan (fail-fast neu thieu).
   APP_KEY: ${APP_KEY:?Set APP_KEY=base64:... trong .env}
-  APP_URL: ${FRONTEND_URL:-http://localhost:5174}
+  APP_URL: ${FRONTEND_URL:-http://localhost:3000}
   DB_CONNECTION: pgsql
   DB_HOST: db
   DB_PORT: 5432
@@ -58,9 +58,9 @@ x-backend-env: &backend-env
   AI_URL: http://ai-service:8001
   # Origin ma browser dang dung - bat buoc khai bao dung trong .env cho
   # production (CORS + cookie context). Local dev lay mac dinh ben duoi.
-  FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5174}
-  # Vite dev (5173) va vite preview (4173) khi chay API dockerized.
-  FRONTEND_EXTRA_URLS: ${FRONTEND_EXTRA_URLS:-http://localhost:5173,http://localhost:4173}
+  FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+  # Vite dev (3001) va vite preview (3002) khi chay API dockerized.
+  FRONTEND_EXTRA_URLS: ${FRONTEND_EXTRA_URLS:-http://localhost:3001,http://localhost:3002}
   BROADCAST_CONNECTION: reverb
   REVERB_APP_ID: ${REVERB_APP_ID:?Set REVERB_APP_ID trong .env}
   REVERB_APP_KEY: ${REVERB_APP_KEY:?Set REVERB_APP_KEY trong .env}
@@ -231,7 +231,7 @@ services:
       # set NGINX_DNS_RESOLVER trong override file - xem nginx.conf.template.
       NGINX_DNS_RESOLVER: ${NGINX_DNS_RESOLVER:-127.0.0.11}
     ports:
-      - "${FRONTEND_PORT:-5174}:80" # TLS mode: traffic that qua Caddy
+      - "${FRONTEND_PORT:-3000}:80" # TLS mode: traffic that qua Caddy
     healthcheck:
       # nginx:1.29-trixie (Debian) khong co wget nhu alpine - dung curl
       # (Dockerfile runtime stage cai curl). Override chi de-dat interval

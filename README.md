@@ -43,8 +43,8 @@ make up                 # khởi động container (hoặc COMPOSE="docker compo
 
 | Dịch vụ | Địa chỉ |
 |---|---|
-| Web | http://localhost:5174 |
-| API | http://localhost:5174/api (same-origin) hoặc :8000/api |
+| Web | http://localhost:3000 |
+| API | http://localhost:3000/api (same-origin) hoặc :8000/api |
 | AI service (tùy chọn) | `docker compose --profile ai up -d` → :8001/docs |
 
 Dữ liệu demo: đặt `SEED_ON_BOOT=1` trong `.env`, hoặc chạy tay
@@ -79,7 +79,7 @@ Chạy không Docker (PHP + Node trực tiếp): `bash infra/deploy/deploy.sh` (
 | `php artisan test` (trong thư mục `apps/api/`) | 210+ Feature test, gồm ma trận phân quyền |
 | `./vendor/bin/pint --test` | Code style backend |
 | `npm run lint && npm run build` (thư mục `apps/web/`) | ESLint + kiểm CSS + TypeScript strict + build |
-| `npx playwright test` (thư mục `apps/web/`) | E2E trình duyệt thật, cần API :8000 + web :4173 |
+| `npx playwright test` (thư mục `apps/web/`) | E2E trình duyệt thật, cần API :8000 + web :3002 |
 | `bash scripts/e2e-smoke.sh` | Smoke mọi API theo luồng người dùng, AI tắt vẫn xanh |
 
 CI (GitHub Actions) chạy đủ 4 job: backend, frontend, e2e, quét secret.

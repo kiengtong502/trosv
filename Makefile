@@ -58,7 +58,7 @@ smoke: ## Chay bo kiem thu smoke test API va quy trinh nghiep vu
 
 smoke-stack: ## Smoke test stack docker compose dang chay (nginx + FrankenPHP + Reverb), xem scripts/stack-smoke.py
 	@set -a; [ -f .env ] && . ./.env; set +a; \
-	STACK_WEB_URL=http://localhost:$${FRONTEND_PORT:-5174} STACK_API_URL=http://localhost:$${API_PORT:-8000} \
+	STACK_WEB_URL=http://localhost:$${FRONTEND_PORT:-3000} STACK_API_URL=http://localhost:$${API_PORT:-8000} \
 	STACK_REVERB=localhost:$${REVERB_PORT:-8080} python3 scripts/stack-smoke.py
 
 backup: ## Chay sao luu database va storage volume vao thu muc backups

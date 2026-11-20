@@ -9,11 +9,11 @@ Gọi toàn bộ API qua Backend theo [docs/contracts/API_CONTRACT.md](../../doc
 ```bash
 npm install
 cp .env.example .env   # VITE_API_URL=http://localhost:8000/api
-npm run dev            # http://localhost:5173
+npm run dev            # http://localhost:3001
 ```
 
 Cần Backend chạy ở `:8000`. Khi chạy full Docker stack, web ở
-http://localhost:5174 và API same-origin `/api`.
+http://localhost:3000 và API same-origin `/api`.
 
 ## Tài khoản demo (mật khẩu `password`)
 
@@ -45,13 +45,13 @@ http://localhost:5174 và API same-origin `/api`.
 | --------------------------------- | --------------------------------------------------------------------------------- |
 | `npm run lint`                    | ESLint (TypeScript parser, quy tắc a11y và hooks)                                 |
 | `npm run build`                   | `tsc --noEmit && vite build` - biên dịch TypeScript và đóng gói Vite              |
-| `npx playwright test`             | 11+ spec E2E trình duyệt thật; cần API :8000 đã seed + web :4173 (`E2E_BASE_URL`) |
+| `npx playwright test`             | 11+ spec E2E trình duyệt thật; cần API :8000 đã seed + web :3002 (`E2E_BASE_URL`) |
 | `bash ../../scripts/e2e-smoke.sh` | Smoke mọi API theo luồng người dùng, AI tắt vẫn xanh                              |
 | `npm run test:e2e`                | Hành trình người dùng đầy đủ (Python + Chromium hệ thống)                         |
 
 ```bash
 # Playwright với Docker stack local:
-E2E_BASE_URL=http://localhost:5174 npx playwright test
+E2E_BASE_URL=http://localhost:3000 npx playwright test
 ```
 
 ## Ghi chú kỹ thuật
