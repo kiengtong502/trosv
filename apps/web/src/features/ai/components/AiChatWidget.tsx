@@ -83,12 +83,12 @@ export function AiChatWidget() {
         <div
           role="dialog"
           aria-label="Trợ lý AI"
-          className="flex h-[30rem] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-line bg-card shadow-pop animate-scale-in"
+          className="flex h-[30rem] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border border-line bg-card shadow-pop animate-scale-in"
         >
           {/* Header */}
           <div className="flex items-center justify-between bg-plate px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-white/15 text-white">
+              <div className="flex size-8 items-center justify-center rounded-full bg-white/15 text-white">
                 <Bot className="size-4.5" aria-hidden />
               </div>
               <div>
@@ -104,7 +104,7 @@ export function AiChatWidget() {
                 setOpen(false);
               }}
               aria-label="Đóng trò chuyện"
-              className="rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="rounded-full p-1.5 text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <X className="size-4" aria-hidden />
             </button>
@@ -121,8 +121,8 @@ export function AiChatWidget() {
                 className={cn(
                   "max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
                   t.role === "user"
-                    ? "self-end rounded-2xl rounded-br-xs bg-plate text-white shadow-xs"
-                    : "self-start rounded-2xl rounded-bl-xs bg-card text-ink border border-line shadow-xs",
+                    ? "self-end rounded-xl rounded-br-xs bg-plate text-white shadow-xs"
+                    : "self-start rounded-xl rounded-bl-xs bg-card text-ink border border-line shadow-xs",
                 )}
               >
                 {t.content}
@@ -130,7 +130,7 @@ export function AiChatWidget() {
             ))}
             {busy ? (
               <div
-                className="self-start rounded-2xl rounded-bl-xs bg-card px-3.5 py-2 text-xs text-muted border border-line"
+                className="self-start rounded-xl rounded-bl-xs bg-card px-3.5 py-2 text-xs text-muted border border-line"
                 aria-live="polite"
               >
                 Trợ lý AI đang tìm câu trả lời…
@@ -153,13 +153,13 @@ export function AiChatWidget() {
               }}
               aria-label="Hỏi trợ lý AI"
               placeholder="Nhập câu hỏi..."
-              className="h-10 flex-1 rounded-xl border border-line-strong bg-card text-ink px-3.5 text-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+              className="h-10 flex-1 rounded-full border border-line-strong bg-card text-ink px-4 text-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
             />
             <Button
               type="submit"
               size="sm"
               variant="primary"
-              className="h-10 px-3.5"
+              className="h-10 rounded-full px-3.5"
               disabled={busy || !draft.trim()}
             >
               <Send className="size-4" aria-hidden />
