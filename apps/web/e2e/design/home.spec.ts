@@ -51,16 +51,26 @@ test.describe("home hero", () => {
     await expect(page.locator('img[src*="hero-art"]')).toHaveCount(0);
   });
 
-  test("three drawn room cards float at the right of the hero on wide screens", async ({
+  test("a small drawing of a town sits at the right of the hero on wide screens", async ({
     page,
   }) => {
     await page.goto("/");
-    const deck = page.getByTestId("hero-deck");
-    await expect(deck).toBeVisible();
-    await expect(deck.getByTestId("hero-deck-card")).toHaveCount(3);
-    await expect(deck.locator("a, img")).toHaveCount(0);
-    const box = await deck.boundingBox();
-    expect(box!.x).toBeGreaterThan(560);
+    const art = page.getByTestId("hero-art");
+    await expect(art).toBeVisible();
+    await expect(art.locator("img")).toHaveCount(1);
+    expect((await art.boundingBox())!.x).toBeGreaterThan(560);
+  });
+
+  test("the search bar is fully rounded", async ({ page }) => {
+    await page.goto("/");
+    const box = await page.getByRole("searchbox", { name: "Tìm phòng" }).evaluate((el) => {
+      const bar = el.parentElement!;
+      return {
+        height: bar.getBoundingClientRect().height,
+        radius: parseFloat(getComputedStyle(bar).borderTopLeftRadius),
+      };
+    });
+    expect(box.radius).toBeGreaterThanOrEqual(box.height / 2);
   });
 });
 
@@ -148,10 +158,16 @@ test.describe("quick search strip", () => {
 test.describe("home on a phone", () => {
   test.use({ viewport: { width: 390, height: 800 } });
 
-  test("no floating deck or arrows, and the row swipes", async ({ page }) => {
+  test("no description or arrows, the chips and the row swipe", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("newest-card").first()).toBeVisible();
-    await expect(page.getByTestId("hero-deck")).toBeHidden();
+    await expect(page.getByTestId("hero-art")).toBeHidden();
+    await expect(page.getByText("Tìm phòng theo trường, nhắn thẳng chủ nhà")).toBeHidden();
+    const chipsOverflow = await page
+      .getByRole("link", { name: "Phòng trọ" })
+      .first()
+      .evaluate((el) => getComputedStyle(el.parentElement!).overflowX);
+    expect(chipsOverflow).toBe("auto");
     await expect(page.getByRole("button", { name: "Cuộn sang phải" })).toBeHidden();
     const overflow = await page
       .getByTestId("newest-row")
