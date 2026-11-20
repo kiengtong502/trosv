@@ -113,7 +113,9 @@ services:
       <<: *backend-env
       SEED_ON_BOOT: ${SEED_ON_BOOT:-0}
     ports:
-      - "${API_PORT:-8000}:8000" # TLS mode: traffic that qua Caddy, port nay chi cho local
+      # Chi loopback: Docker publish di vong qua ufw, ma TRUSTED_PROXIES="*" thi goi thang
+      # :8000 voi X-Forwarded-For gia se vuot rate-limit theo IP. Browser di qua nginx/Caddy.
+      - "127.0.0.1:${API_PORT:-8000}:8000"
     volumes:
       - trosv-storage:/var/www/html/storage/app # uploads song sot khi recreate
     healthcheck:

@@ -583,6 +583,50 @@ class ConversationTest extends TestCase
         $this->get($url)->assertNotFound();
     }
 
+    public function test_unsend_deletes_attachment_file_from_disk(): void
+    {
+        $conv = $this->createConversation();
+
+        $messageId = $this->actingAs($this->landlord, 'sanctum')
+            ->post("/api/conversations/{$conv->id}/messages", [
+                'body' => 'CCCD',
+                'file' => UploadedFile::fake()->create('cccd.pdf', 100, 'application/pdf'),
+            ])
+            ->assertStatus(201)
+            ->json('data.id');
+
+        $path = Message::findOrFail($messageId)->attachment_path;
+        Storage::disk('local')->assertExists($path);
+
+        $this->actingAs($this->landlord, 'sanctum')
+            ->deleteJson("/api/messages/{$messageId}?scope=unsent")
+            ->assertOk();
+
+        Storage::disk('local')->assertMissing($path);
+        $this->assertNull(Message::findOrFail($messageId)->attachment_path);
+    }
+
+    public function test_send_message_throttle_is_shared_across_conversations(): void
+    {
+        $first = $this->createConversation();
+        $secondLandlord = User::factory()->landlord()->create();
+        $second = Conversation::factory()->create([
+            'student_id' => $this->student->id,
+            'landlord_id' => $secondLandlord->id,
+        ]);
+
+        for ($i = 0; $i < 30; $i++) {
+            $this->actingAs($this->student, 'sanctum')
+                ->postJson("/api/conversations/{$first->id}/messages", ['body' => "tin {$i}"])
+                ->assertStatus(201);
+        }
+
+        // Same route, another conversation id: still the same per-user bucket.
+        $this->actingAs($this->student, 'sanctum')
+            ->postJson("/api/conversations/{$second->id}/messages", ['body' => 'tin 31'])
+            ->assertStatus(429);
+    }
+
     public function test_attachment_wrong_type_rejected(): void
     {
         $conv = $this->createConversation();

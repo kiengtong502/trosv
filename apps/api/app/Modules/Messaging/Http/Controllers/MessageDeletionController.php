@@ -8,6 +8,7 @@ use App\Shared\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Facebook-style message deletion (API_CONTRACT §4 extension):
@@ -49,7 +50,8 @@ class MessageDeletionController extends Controller
             // re-read under lock inside the transaction and the window is
             // re-checked on the FRESH row, so the loser sees isUnsent() and
             // short-circuits idempotently.
-            $unsent = DB::transaction(function () use ($message): bool {
+            $attachmentPath = null;
+            $unsent = DB::transaction(function () use ($message, &$attachmentPath): bool {
                 /** @var Message|null $fresh */
                 $fresh = Message::query()
                     ->whereKey($message->getKey())
@@ -58,8 +60,10 @@ class MessageDeletionController extends Controller
                 if ($fresh === null || $fresh->isUnsent()) {
                     return false;
                 }
+                $attachmentPath = $fresh->attachment_path;
                 $fresh->deleted_at = now();
                 $fresh->deleted_for_user_ids = null;
+                $fresh->attachment_path = null;
                 $fresh->save();
 
                 return true;
@@ -69,21 +73,41 @@ class MessageDeletionController extends Controller
                 return response()->json(['data' => null]); // racing loser
             }
 
+            // Unsent means gone for both sides: the file goes too (only after the row committed).
+            if (is_string($attachmentPath)) {
+                Storage::disk('local')->delete($attachmentPath);
+            }
+
             rescue(fn () => event(new MessageDeleted($message, true, [])), report: false);
 
             return response()->json(['data' => null]);
         }
 
         // scope=self: hidden only for this viewer; idempotent per user.
-        // Re-read via fresh() so a concurrent delete-for-self from the same
-        // user (double-tap) is not clobbered by a stale array.
-        $fresh = $message->fresh() ?? $message;
-        $hidden = $fresh->deleted_for_user_ids ?? [];
-        if (! in_array($user->id, $hidden, true)) {
+        // Read-modify-write under a row lock: both participants hiding at
+        // once must not overwrite each other's entry in the array.
+        $hiddenNow = DB::transaction(function () use ($message, $user): bool {
+            /** @var Message|null $fresh */
+            $fresh = Message::query()
+                ->whereKey($message->getKey())
+                ->lockForUpdate()
+                ->first();
+            if ($fresh === null) {
+                return false;
+            }
+            $hidden = $fresh->deleted_for_user_ids ?? [];
+            if (in_array($user->id, $hidden, true)) {
+                return false;
+            }
             $hidden[] = $user->id;
+            $fresh->deleted_for_user_ids = $hidden;
+            $fresh->save();
             $message->deleted_for_user_ids = $hidden;
-            $message->save();
 
+            return true;
+        });
+
+        if ($hiddenNow) {
             // Local effect only - other clients must not hide it, so the
             // payload marks the caller as the sole "deleted_for" recipient.
             rescue(fn () => event(new MessageDeleted($message, false, [$user->id])), report: false);

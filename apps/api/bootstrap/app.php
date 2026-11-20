@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // "api" middleware group with sanctum. The web group is kept as well so
         // default Laravel behavior still works if a session-based client appears.
         __DIR__.'/../routes/channels.php',
-        ['middleware' => ['api', 'auth:sanctum', 'throttle.api:30,1']],
+        ['middleware' => ['api', 'auth:sanctum', 'throttle.api:30,60']],
     )
     ->withMiddleware(function (Middleware $middleware) {
         // API-only app: no named "login" route exists, so the framework default

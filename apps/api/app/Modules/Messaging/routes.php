@@ -15,7 +15,7 @@ Route::get('/conversations', [ConversationController::class, 'index'])->middlewa
 Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])
     ->middleware('auth:sanctum')->whereNumber('conversation');
 Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage'])
-    ->middleware(['auth:sanctum', 'throttle.api:30,1'])->whereNumber('conversation');
+    ->middleware(['auth:sanctum', 'throttle.api:30,60'])->whereNumber('conversation');
 Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])
     ->middleware('auth:sanctum')->whereNumber('conversation');
 
