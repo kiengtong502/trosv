@@ -6,6 +6,7 @@ import {
   filtersToApiParams,
   filtersToUrlParams,
   withCity,
+  withFilter,
   withWard,
   type ListingFilters,
 } from "./searchFilters";
@@ -128,5 +129,24 @@ describe("cascade", () => {
     withCity(set, "9");
     withWard(set, "8");
     expect(set.school_id).toBe("3");
+  });
+});
+
+describe("withFilter", () => {
+  it("clears max_km and resets distance sort when school_id is cleared", () => {
+    const active = filters({ school_id: "5", max_km: "2", sort: "distance" });
+    expect(withFilter(active, "school_id", "")).toMatchObject({
+      school_id: "",
+      max_km: "",
+      sort: "newest",
+    });
+  });
+
+  it("sets normal filters without touching others", () => {
+    const active = filters({ city_id: "1" });
+    expect(withFilter(active, "type", "room")).toMatchObject({
+      city_id: "1",
+      type: "room",
+    });
   });
 });

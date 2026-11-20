@@ -17,6 +17,7 @@ import {
   filtersToApiParams,
   filtersToUrlParams,
   withCity,
+  withFilter,
   withWard,
   type ListingFilters,
 } from "../lib/searchFilters";
@@ -100,7 +101,7 @@ export function useListingSearch() {
 
   const setFilter = (key: keyof ListingFilters, value: string): void => {
     setPage(1);
-    setFilters((f) => ({ ...f, [key]: value }));
+    setFilters((f) => withFilter(f, key, value));
   };
 
   // Another city: ward, school and radius reset so the cascade stays valid.

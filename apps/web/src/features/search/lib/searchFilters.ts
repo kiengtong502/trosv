@@ -97,6 +97,23 @@ export function withCity(filters: ListingFilters, cityId: string): ListingFilter
   return { ...filters, city_id: cityId, ward_id: "", school_id: "", max_km: "" };
 }
 
+/** Setting or clearing a filter: clearing school_id also clears max_km and resets distance sort. */
+export function withFilter(
+  filters: ListingFilters,
+  key: keyof ListingFilters,
+  value: string,
+): ListingFilters {
+  if (key === "school_id" && value === "") {
+    return {
+      ...filters,
+      school_id: "",
+      max_km: "",
+      sort: filters.sort === "distance" ? "newest" : filters.sort,
+    };
+  }
+  return { ...filters, [key]: value };
+}
+
 /** Another ward: the school list is per ward, so the school and radius reset. */
 export function withWard(filters: ListingFilters, wardId: string): ListingFilters {
   return { ...filters, ward_id: wardId, school_id: "", max_km: "" };

@@ -38,7 +38,7 @@ export function NearSchoolPill({ search }: { search: SearchState }) {
               onChange={(e) => {
                 search.setFilter("school_id", e.target.value);
               }}
-              disabled={wardId === ""}
+              disabled={cityId === ""}
               className={SELECT_FIELD_CLASS}
             >
               <option value="">{schoolPlaceholder(cityId, wardId)}</option>

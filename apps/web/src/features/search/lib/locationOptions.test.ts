@@ -63,7 +63,7 @@ describe("placeholders", () => {
     expect(wardPlaceholder("")).toBe("Chọn Tỉnh/TP trước");
     expect(wardPlaceholder("10")).toBe("Tất cả phường");
     expect(schoolPlaceholder("", "")).toBe("Chọn Tỉnh/TP trước");
-    expect(schoolPlaceholder("10", "")).toBe("Chọn Phường trước");
+    expect(schoolPlaceholder("10", "")).toBe("Chọn trường");
     expect(schoolPlaceholder("10", "1")).toBe("Chọn trường trong phường này");
   });
 });
