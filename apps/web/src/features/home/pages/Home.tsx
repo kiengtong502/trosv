@@ -10,7 +10,7 @@ import { ErrorState } from "@/shared/ui/empty-state";
 import { SearchEmptyIllustration } from "@/shared/ui/icons";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useReveal } from "@/shared/hooks/useReveal";
-import { HeroDeck } from "../components/HeroDeck";
+import { HeroArt } from "../components/HeroArt";
 import { HomeQuickStrip } from "../components/HomeQuickStrip";
 import { NewestRooms } from "../components/NewestRooms";
 import { TypedWord } from "../components/TypedWord";
@@ -42,11 +42,11 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
   return (
     <form onSubmit={submit} className="w-full max-w-xl">
       <div className="relative">
-        <div className="flex h-16 items-center gap-2 rounded-xl border border-line-strong bg-card p-2 pl-4 shadow-pop">
+        <div className="flex h-16 items-center gap-2 rounded-full border border-line-strong bg-card p-2 pl-6 shadow-pop">
           <SearchIcon className="size-5 flex-none text-muted" aria-hidden />
           <input
             type="search"
-            placeholder="Nhập trường, phường hoặc tên đường..."
+            placeholder="Trường, phường, tên đường"
             aria-label="Tìm phòng"
             value={q}
             onChange={(e) => {
@@ -57,7 +57,7 @@ function HeroSearch({ cities, schools }: { cities: City[]; schools: School[] }) 
           <button
             type="submit"
             aria-label="Tìm phòng"
-            className="flex size-12 flex-none items-center justify-center rounded-lg bg-plate text-white transition-colors hover:bg-plate-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
+            className="flex size-12 flex-none items-center justify-center rounded-full bg-plate text-white transition-colors hover:bg-plate-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate"
           >
             <SearchIcon className="size-5" aria-hidden />
           </button>
@@ -149,7 +149,7 @@ export default function Home() {
       <PlateBand
         size="hero"
         className="md:min-h-0"
-        contentClassName="px-5 py-8 sm:px-5 md:px-5 md:py-10 min-[1180px]:pr-[508px]"
+        contentClassName="px-5 py-8 sm:px-5 md:px-5 md:py-10 min-[1180px]:pr-[360px]"
         headingClassName="max-w-xl lg:text-5xl"
         title={
           <>
@@ -171,22 +171,22 @@ export default function Home() {
           </>
         }
       >
-        <p className="-mt-2 max-w-xl text-base text-white/85 sm:text-lg">
+        <p className="-mt-2 hidden max-w-xl text-base text-white/85 sm:block sm:text-lg">
           Tìm phòng theo trường, nhắn thẳng chủ nhà, để AI gợi ý giá hợp lý.
         </p>
         <HeroSearch cities={cities} schools={schools} />
-        <div className="flex flex-wrap gap-2">
+        <div className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
           {QUICK_FILTERS.map(({ label, params }) => (
             <Link
               key={label}
               to={`${ROUTES.ROOMS}?${new URLSearchParams(params).toString()}`}
-              className="inline-flex h-9 items-center rounded-full border border-white/25 bg-white/15 px-4 text-sm font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="inline-flex h-9 flex-none items-center rounded-full border border-white/25 bg-white/15 px-4 text-sm font-semibold text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               {label}
             </Link>
           ))}
         </div>
-        <HeroDeck />
+        <HeroArt />
       </PlateBand>
 
       <div className="mx-auto w-full max-w-6xl px-5">
