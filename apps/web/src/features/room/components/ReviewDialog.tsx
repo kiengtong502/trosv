@@ -156,11 +156,21 @@ function ReviewForm({ listing, onClose, onSubmitted }: Omit<ReviewDialogProps, "
         </div>
       </div>
 
+      <p id="review-submit-note" className="mt-5 rounded-lg bg-tint p-3 text-sm text-ink-2">
+        Mỗi phòng chỉ được đánh giá một lần. Bạn không thể chỉnh sửa sau khi gửi. Vui lòng kiểm tra
+        số sao và nội dung trước khi gửi.
+      </p>
+
       <DialogFooter>
         <Button type="button" variant="ghost" onClick={onClose}>
           Hủy
         </Button>
-        <Button type="submit" variant="primary" loading={busy}>
+        <Button
+          type="submit"
+          variant="primary"
+          loading={busy}
+          aria-describedby="review-submit-note"
+        >
           Gửi đánh giá
         </Button>
       </DialogFooter>

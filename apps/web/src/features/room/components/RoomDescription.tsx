@@ -3,13 +3,12 @@ import { PANEL } from "../lib/panel";
 
 const HEADING = "mb-3 text-xs font-bold uppercase tracking-wider text-muted";
 
-/** Description and amenities side by side; renders nothing if there is neither. */
+/** Description and amenities side by side, including missing amenity information. */
 export function RoomDescription({ listing }: { listing: Listing }) {
   const amenities = listing.amenities ?? [];
-  if (!listing.description && amenities.length === 0) return null;
 
   return (
-    <div className="mt-4 grid gap-4 lg:grid-cols-[7fr_5fr]">
+    <div className={`mt-4 grid gap-4 ${listing.description ? "lg:grid-cols-[7fr_5fr]" : ""}`}>
       {listing.description ? (
         <section className={PANEL}>
           <h2 className={HEADING}>Mô tả</h2>
@@ -18,9 +17,9 @@ export function RoomDescription({ listing }: { listing: Listing }) {
           </p>
         </section>
       ) : null}
-      {amenities.length > 0 ? (
-        <section className={PANEL}>
-          <h2 className={HEADING}>Tiện ích</h2>
+      <section className={PANEL}>
+        <h2 className={HEADING}>Tiện ích</h2>
+        {amenities.length > 0 ? (
           <div className="grid grid-cols-2 gap-2">
             {amenities.map((a) => (
               <span
@@ -31,8 +30,10 @@ export function RoomDescription({ listing }: { listing: Listing }) {
               </span>
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : (
+          <p className="text-sm text-muted">Chủ nhà chưa cung cấp thông tin tiện ích.</p>
+        )}
+      </section>
     </div>
   );
 }

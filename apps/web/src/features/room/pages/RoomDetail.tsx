@@ -58,7 +58,7 @@ export default function RoomDetail() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-4 pb-28 lg:p-6 lg:pb-10">
+    <div className="mx-auto w-full min-w-0 max-w-6xl p-4 pb-28 lg:p-6 lg:pb-10">
       <Link
         to={ROUTES.ROOMS}
         className="inline-flex items-center gap-1 text-sm font-medium text-muted transition-colors hover:text-plate"
