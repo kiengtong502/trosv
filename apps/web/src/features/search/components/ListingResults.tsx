@@ -3,6 +3,7 @@ import { ListingCardSkeleton } from "@/features/listings/components/ListingCardS
 import { Button } from "@/shared/ui/button";
 import { EmptyState, ErrorState } from "@/shared/ui/empty-state";
 import { SearchEmptyIllustration } from "@/shared/ui/icons";
+import { cn } from "@/shared/lib/utils";
 import type { Listing } from "@/shared/types/api";
 
 export interface ListingResultsProps {
@@ -12,6 +13,8 @@ export interface ListingResultsProps {
   onHover: (id: number | null) => void;
   onFavoriteToggle: (listing: Listing) => void;
   onResetFilters: () => void;
+  /** No map beside the list (desktop): use the full width with more columns. */
+  wide?: boolean;
 }
 
 /** The result grid, or its loading skeleton, error or empty state. */
@@ -22,10 +25,12 @@ export function ListingResults({
   onHover,
   onFavoriteToggle,
   onResetFilters,
+  wide = false,
 }: ListingResultsProps) {
+  const grid = cn("grid grid-cols-1 gap-4 sm:grid-cols-2", wide && "lg:grid-cols-3 xl:grid-cols-4");
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className={grid}>
         <ListingCardSkeleton />
         <ListingCardSkeleton />
         <ListingCardSkeleton />
@@ -57,7 +62,7 @@ export function ListingResults({
     );
   }
   return (
-    <div className="motion-stagger grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className={cn("motion-stagger", grid)}>
       {listings.map((l) => (
         <ListingCard key={l.id} listing={l} onHover={onHover} onFavToggle={onFavoriteToggle} />
       ))}
