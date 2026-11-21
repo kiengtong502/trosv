@@ -28,10 +28,7 @@ class RoommatesResponseSchema(BaseModel):
 def rank_roommates_with_gemini(
     requester: dict[str, Any], candidates: list[dict[str, Any]], limit: int = 5
 ) -> dict[str, Any] | None:
-    """Rank with the deterministic score, then let Gemini explain each match.
-
-    Scores stay reproducible (same profiles -> same order); the model only writes `reason`.
-    """
+    """Deterministic scores (same profiles -> same order); Gemini only writes `reason`."""
     client = get_client()
     if not client or not candidates:
         return None

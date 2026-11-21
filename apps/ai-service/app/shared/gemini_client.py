@@ -66,8 +66,7 @@ def generate_with_fallback(
     started = time.monotonic()
     for i, model_name in enumerate(models):
         if i and time.monotonic() - started > FALLBACK_CUTOFF_S:
-            # Only fast failures (overload, unknown model) get a retry; a slow one used the time.
-            break
+            break  # only fast failures (overload, unknown model) get a retry
         try:
             response = client.models.generate_content(
                 model=model_name,
