@@ -4,6 +4,7 @@ from fastapi import HTTPException
 
 from app.features.price_advice.schemas import PriceAdviceReq
 from app.shared.parsing import int_or
+from app.shared.text import vnd
 
 
 def advise_price(req: PriceAdviceReq) -> dict[str, Any]:
@@ -21,20 +22,18 @@ def advise_price(req: PriceAdviceReq) -> dict[str, Any]:
     # Same ±10% band the verdict uses, so "low"/"high" never sits inside it.
     fair_min = int(median * 0.9)
     fair_max = int(median * 1.1)
-    compare = (
-        "cao hon" if verdict == "high" else ("thap hon" if verdict == "low" else "tuong duong")
-    )
+    compare = {"high": "cao hơn", "low": "thấp hơn"}.get(verdict, "tương đương")
     return {
         "verdict": verdict,
         "fair_min": fair_min,
         "fair_max": fair_max,
         "tips": [
-            "Hoi ve gia cho thue dai han tu 6 thang",
-            "So sanh voi cac phong co dien tich tuong tu trong khu vuc",
-            "Kiem tra tien dien, nuoc co tinh theo dong ho hay khoan cu",
+            "Hỏi giá khi thuê dài hạn từ 6 tháng trở lên",
+            "So sánh với các phòng cùng diện tích trong khu vực",
+            "Hỏi rõ tiền điện, nước tính theo đồng hồ hay khoán cố định",
         ],
         "message": (
-            f"Chao anh/chi, em thay muc gia {price:,} vay {compare} gia trung binh "
-            f" khu vuc (khoang {median:,}). Anh/chi co the xem xet chinh lai mot chut duoc khong ah?"
-        ).replace(" ,", ","),
+            f"Chào anh/chị, em thấy mức giá {vnd(price)} {compare} giá trung bình khu vực "
+            f"(khoảng {vnd(median)}). Anh/chị có thể xem xét lại giá một chút được không ạ?"
+        ),
     }
