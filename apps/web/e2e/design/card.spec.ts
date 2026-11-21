@@ -32,15 +32,16 @@ test.describe("listing card hierarchy", () => {
   });
 
   test("cards in one grid row keep equal height", async ({ page }) => {
-    // The staggered entrance moves cards by different amounts mid-flight; measure the settled layout.
-    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/rooms");
     const cards = page.locator('[data-testid^="listing-card-"]');
     await expect(cards.nth(1)).toBeVisible();
-    const a = await cards.nth(0).boundingBox();
-    const b = await cards.nth(1).boundingBox();
-    expect(Math.abs(a!.y - b!.y)).toBeLessThan(2);
-    expect(Math.abs(a!.height - b!.height)).toBeLessThan(2);
+    // offsetTop/offsetHeight ignore transforms, so the fade-up entrance (translateY 6px) can't skew it.
+    const box = (i: number) =>
+      cards.nth(i).evaluate((el: HTMLElement) => ({ top: el.offsetTop, height: el.offsetHeight }));
+    const a = await box(0);
+    const b = await box(1);
+    expect(Math.abs(a.top - b.top)).toBeLessThan(2);
+    expect(Math.abs(a.height - b.height)).toBeLessThan(2);
   });
 
   test("clicking blank space on the card opens the room; the heart does not", async ({ page }) => {
