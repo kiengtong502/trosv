@@ -4,13 +4,11 @@ import { cn } from "@/shared/lib/utils";
 /*
   PageHeader: the plain title block for pages that do not use the navy band
   (the band is reserved for the Home hero, the Search strip and the auth
-  panel). Dark title on the cream page, optional yellow-underlined keyword.
+  panel). Dark title on the cream page.
 */
 
 export interface PageHeaderProps {
   title: ReactNode;
-  /** Keyword drawn after the title with a flyer-yellow underline tab. */
-  highlight?: string;
   description?: ReactNode;
   /** Avatar or icon before the title. */
   leading?: ReactNode;
@@ -20,14 +18,7 @@ export interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({
-  title,
-  highlight,
-  description,
-  leading,
-  actions,
-  className,
-}: PageHeaderProps) {
+export function PageHeader({ title, description, leading, actions, className }: PageHeaderProps) {
   return (
     <header
       data-testid="page-header"
@@ -39,14 +30,6 @@ export function PageHeader({
           <div className="min-w-0">
             <h1 className="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
               {title}
-              {highlight ? (
-                <>
-                  {" "}
-                  <mark className="rounded-md bg-flyer px-2 text-flyer-ink box-decoration-clone">
-                    {highlight}
-                  </mark>
-                </>
-              ) : null}
             </h1>
             {description ? (
               <p className="mt-1 max-w-2xl text-sm text-muted sm:text-base">{description}</p>
