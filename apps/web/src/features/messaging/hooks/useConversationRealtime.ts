@@ -21,7 +21,7 @@ import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
  *  - .message.reacted / .message.seen / .message.deleted -> merge
  *
  * Shares the message state with useConversationData through the passed
- * setMessages + lastIdRef. Cleanup leaves ONLY the conversation channel
+ * setMessages / syncMessages. Cleanup leaves ONLY the conversation channel
  * (App.Models.User.{id} is shared with Navbar/sidebar - leaving it here
  * would break their subscriptions; see the ghost-listener bug).
  */
@@ -29,11 +29,10 @@ export function useConversationRealtime(
   id: string | number,
   {
     setMessages,
-    lastIdRef,
     syncMessages,
   }: {
     setMessages: Dispatch<SetStateAction<Message[]>>;
-    lastIdRef: { current: number };
+    /** Stable (useCallback) - safe as an effect dependency. */
     syncMessages: (refresh?: boolean) => void;
   },
   onPreviewEvent?: (msg: Message) => void,
@@ -41,13 +40,13 @@ export function useConversationRealtime(
   const { user } = useAuth();
   const [otherTyping, setOtherTyping] = useState(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Callers pass an inline callback: a ref keeps it out of the subscription
+  // effect's deps, or every render (each keystroke) would re-subscribe.
   const onPreviewRef = useRef(onPreviewEvent);
-  const syncRef = useRef(syncMessages);
 
   useEffect(() => {
     onPreviewRef.current = onPreviewEvent;
-    syncRef.current = syncMessages;
-  }, [onPreviewEvent, syncMessages]);
+  }, [onPreviewEvent]);
 
   useEffect(() => {
     const echo = getEcho();
@@ -56,27 +55,20 @@ export function useConversationRealtime(
     const privateChan = echo.private(`conversation.${id}`) as unknown as EchoReactive;
     let active = true;
     privateChan.subscribed(() => {
-      if (active) syncRef.current(true);
+      if (active) syncMessages(true);
     });
     privateChan.listen(".message.sent", (e: unknown) => {
       const msg = (e as MessageSentEvent).message;
       setOtherTyping(false); // tin đến = người kia ngừng soạn
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === msg.id)) return prev;
-        return mergeMessages(prev, [
-          {
-            ...msg,
-            is_unsent: false,
-            is_mine: msg.sender_id === user?.id,
-            seen_at: null,
-          },
-        ]);
-      });
-      lastIdRef.current = Math.max(lastIdRef.current, msg.id);
+      setMessages((prev) =>
+        mergeMessages(prev, [
+          { ...msg, is_unsent: false, is_mine: msg.sender_id === user?.id, seen_at: null },
+        ]),
+      );
       // Sidebar preview (Messenger): thread là nguồn sự thật khi đang
       // mở - phát event để Messages.tsx cập nhật item tương ứng.
       onPreviewRef.current?.(msg);
-      if (msg.sender_id !== user?.id) syncRef.current();
+      if (msg.sender_id !== user?.id) syncMessages();
     });
 
     // Typing qua client-event (whisper) - không qua backend. Debounce 2.5s.
@@ -136,7 +128,7 @@ export function useConversationRealtime(
       // của họ và sidebar/badge ngừng nhận realtime.
       echo.leave(`conversation.${id}`);
     };
-  }, [id, user?.id, setMessages, lastIdRef]);
+  }, [id, user?.id, setMessages, syncMessages]);
 
   return { otherTyping, setOtherTyping };
 }

@@ -15,7 +15,6 @@ import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
 export function useConversationMessages(
   id: string | number,
   setMessages: Dispatch<SetStateAction<Message[]>>,
-  lastIdRef: { current: number },
 ): {
   send: (text: string, file: File | null) => Promise<Message | null>;
   remove: (m: Message | number, scope: "unsent" | "self") => Promise<boolean>;
@@ -35,7 +34,6 @@ export function useConversationMessages(
       // The sender's own .message.sent WS event usually lands BEFORE
       // this HTTP response resolves - skip if already drawn.
       setMessages((prev) => mergeMessages(prev, [msg]));
-      lastIdRef.current = Math.max(lastIdRef.current, msg.id);
       return msg;
     } catch (err) {
       setError(errMessage(err));

@@ -32,16 +32,10 @@ beforeEach(() => {
 
 it("keeps the thread subscribed across renders and uses the latest preview callback", () => {
   const setMessages = vi.fn<Dispatch<SetStateAction<Message[]>>>();
-  const lastId = { current: 0 };
   const originalPreview = vi.fn();
   const latestPreview = vi.fn();
   const { rerender } = renderHook(
-    ({ preview }) =>
-      useConversationRealtime(
-        9,
-        { setMessages, lastIdRef: lastId, syncMessages: mocks.sync },
-        preview,
-      ),
+    ({ preview }) => useConversationRealtime(9, { setMessages, syncMessages: mocks.sync }, preview),
     { initialProps: { preview: originalPreview } },
   );
   rerender({ preview: latestPreview });
@@ -53,7 +47,6 @@ it("keeps the thread subscribed across renders and uses the latest preview callb
     mocks.handlers.get(".message.sent")?.({ message });
   });
   expect(setMessages).toHaveBeenCalledOnce();
-  expect(lastId.current).toBe(12);
   expect(latestPreview).toHaveBeenCalledWith(message);
   expect(originalPreview).not.toHaveBeenCalled();
   expect(mocks.sync).toHaveBeenCalledOnce();
@@ -64,7 +57,6 @@ it("requests catch-up on every successful subscription and ignores it after unmo
   const { unmount } = renderHook(() =>
     useConversationRealtime(9, {
       setMessages,
-      lastIdRef: { current: 0 },
       syncMessages: mocks.sync,
     }),
   );

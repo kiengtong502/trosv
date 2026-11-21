@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { ROUTES } from "@/shared/constants/routes";
-import { useConversations } from "@/features/messaging/hooks/useConversations";
+import { setConversations, useConversations } from "@/features/messaging/hooks/useConversations";
 import type { Conversation } from "@/shared/types/api";
 import { CONV_PREVIEW_EVENT, type ConvPreviewDetail } from "@/shared/constants/events";
 import { Skeleton } from "@/shared/ui/badge";
@@ -21,7 +21,7 @@ import { ConversationListItem } from "@/features/messaging/components/Conversati
 
 export default function MessagesList() {
   const { id } = useParams();
-  const { conversations: convs, setConversations: setConvs, loading } = useConversations();
+  const { conversations: convs, loading } = useConversations();
   const [query, setQuery] = useState("");
   const { user } = useAuth();
 
@@ -31,7 +31,7 @@ export default function MessagesList() {
   useEffect(() => {
     function onPreview(e: Event): void {
       const detail = (e as CustomEvent<ConvPreviewDetail>).detail;
-      setConvs((rows) =>
+      setConversations((rows) =>
         rows.map((c): Conversation =>
           c.id === detail.conversationId
             ? {
@@ -54,7 +54,7 @@ export default function MessagesList() {
     return () => {
       window.removeEventListener(CONV_PREVIEW_EVENT, onPreview);
     };
-  }, [setConvs]);
+  }, []);
 
   const isThreadOpen = id != null;
 

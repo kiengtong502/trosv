@@ -9,7 +9,7 @@ import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
  * Owns: header fetch, initial message load (with last-id tracking for
  * the realtime layer), markRead on open, and per-conversation reset.
  * Realtime updates arrive through useConversationRealtime, which shares
- * setMessages/lastIdRef with this hook via the returned refs/state.
+ * setMessages/syncMessages with this hook.
  */
 export function useConversationData(id: string | number): {
   conversation: Conversation | null;
@@ -17,7 +17,6 @@ export function useConversationData(id: string | number): {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   loaded: boolean;
-  lastIdRef: { current: number };
   syncMessages: (refresh?: boolean) => void;
 } {
   const [conversation, setConversation] = useState<Conversation | null>(null);
@@ -29,7 +28,6 @@ export function useConversationData(id: string | number): {
     setMessageRows(update);
   }, []);
   const [loaded, setLoaded] = useState(false);
-  const lastIdRef = useRef(0);
   const syncRef = useRef<(refresh?: boolean) => void>(() => undefined);
   const syncMessages = useCallback((refresh = false) => {
     syncRef.current(refresh);
@@ -70,7 +68,6 @@ export function useConversationData(id: string | number): {
     let pending = false;
     let queued = false;
     let refreshQueued = false;
-    lastIdRef.current = 0;
     function sync(refresh = false): void {
       refreshQueued ||= refresh;
       if (pending) {
@@ -92,7 +89,6 @@ export function useConversationData(id: string | number): {
             return;
           }
           cursor = rows.at(-1)?.id ?? cursor;
-          lastIdRef.current = Math.max(lastIdRef.current, cursor);
           setMessageRows((current) => (replace ? rows : mergeMessages(current, rows)));
           if (!queued) markRead(id).catch(ignoreError("mark read after sync"));
         })
@@ -121,7 +117,6 @@ export function useConversationData(id: string | number): {
     messages,
     setMessages,
     loaded,
-    lastIdRef,
     syncMessages,
   };
 }
