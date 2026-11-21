@@ -49,7 +49,7 @@ Request:
   "limit": 5
 }
 ```
-Response (tốt nhất trước, tối đa `limit` phần tử, `id` phải lấy từ danh sách ứng viên, `score` từ 0 đến 100):
+Response (tốt nhất trước, tối đa `limit` phần tử, `id` phải lấy từ danh sách ứng viên, `score` từ 0 đến 100). `score` luôn do công thức cố định tính (ngân sách, sở thích chung, giờ ngủ, sạch sẽ, thuốc lá) để cùng hồ sơ luôn ra cùng thứ tự; khi bật Gemini, model chỉ viết `reason`:
 ```json
 { "results": [ { "id": 45, "score": 87, "reason": "Cùng thích âm nhạc, ngân sách giao nhau, đều không hút thuốc." } ] }
 ```
@@ -81,13 +81,14 @@ Request:
 ```json
 {
   "preferences": { "budget_min": 1500000, "budget_max": 3000000,
-                   "priorities": ["cheap", "near_school"] },
+                   "priorities": ["cheap", "near_school"],
+                   "school": "ĐH Quốc gia TP.HCM", "city": "TP. Hồ Chí Minh" },
   "areas": [ { "ward_id": 1, "name": "Thủ Đức", "listings_count": 41, "avg_price": 2300000,
                "avg_rating": 4.2, "distance_to_school_km": 1.2 } ],
   "limit": 3
 }
 ```
-`avg_rating` và `distance_to_school_km` có thể là `null`. Response (tốt nhất trước, tối đa `limit` phần tử, `ward_id` lấy từ dữ liệu đầu vào):
+`preferences.school` và `preferences.city` (tên trường, tên thành phố) là tùy chọn, có thể `null`; dùng để prompt nêu đúng trường/thành phố. `avg_rating` và `distance_to_school_km` có thể là `null`. Response (tốt nhất trước, tối đa `limit` phần tử, `ward_id` lấy từ dữ liệu đầu vào):
 ```json
 { "results": [ { "ward_id": 1, "reason": "Giá trung bình 2,3 triệu nằm trong ngân sách, gần trường (1,2 km)." } ] }
 ```
