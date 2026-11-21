@@ -12,10 +12,6 @@ use App\Modules\Reference\Models\Ward;
 use Database\Seeders\Support\SeedPrice;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\Encoders\JpegEncoder;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Typography\FontFactory;
 
 class ListingSeeder extends Seeder
 {
@@ -26,11 +22,6 @@ class ListingSeeder extends Seeder
 
         // Xóa các ảnh seed cũ để không tích tụ file rác
         Storage::disk('public')->delete(Storage::disk('public')->files('listings'));
-
-        $manager = null;
-        if (extension_loaded('gd')) {
-            $manager = new ImageManager(new Driver);
-        }
 
         // 3 thành phố mục tiêu
         $cities = City::whereIn('name', ['TP.HCM', 'Hà Nội', 'Đà Nẵng'])->orderBy('id')->get();
@@ -153,40 +144,24 @@ class ListingSeeder extends Seeder
                 shuffle($shuffled);
                 $listing->amenities()->attach(array_slice($shuffled, 0, mt_rand(4, 7)));
 
-                // Tạo ảnh minh họa
-                if ($manager !== null) {
-                    $this->createSampleImage($manager, $listing, $globalIndex, $city->name);
-                }
+                // Ảnh thật (Wikimedia Commons, xem images/CREDITS.md) theo loại phòng
+                $this->attachSamplePhoto($listing, $globalIndex);
 
                 $globalIndex++;
             }
         }
     }
 
-    private function createSampleImage(ImageManager $manager, Listing $listing, int $i, string $cityName): void
+    private function attachSamplePhoto(Listing $listing, int $i): void
     {
-        $backgrounds = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899'];
-        $bg = $backgrounds[$i % count($backgrounds)];
-
-        $label = sprintf('TROSV #%d - %s', $i, $cityName);
-        $sub = sprintf('%.1f TRIEU / THANG - %dm2', $listing->price / 1_000_000, (int) $listing->area_m2);
-
-        $image = $manager->createImage(640, 424)->fill($bg);
-
-        $image->text($label, 320, 190, function (FontFactory $font): void {
-            $font->size(5);
-            $font->color('#FFFFFF');
-            $font->align('center', 'center');
-        });
-
-        $image->text($sub, 320, 230, function (FontFactory $font): void {
-            $font->size(4);
-            $font->color('#F3F4F6');
-            $font->align('center', 'center');
-        });
+        $photos = glob(__DIR__."/images/{$listing->type}-*.jpg") ?: [];
+        if ($photos === []) {
+            return;
+        }
+        sort($photos);
 
         $path = "listings/seed-{$i}.jpg";
-        Storage::disk('public')->put($path, (string) $image->encode(new JpegEncoder(85)));
+        Storage::disk('public')->put($path, (string) file_get_contents($photos[$i % count($photos)]));
 
         ListingImage::create(['listing_id' => $listing->id, 'path' => $path]);
     }
