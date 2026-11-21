@@ -438,3 +438,8 @@ footer {
 .price-range-input:focus {
   outline: none;
 }
+
+/* Leaflet panes/controls use z-index 400–1000; keep them inside the map so the sticky header and bars stay on top. */
+.leaflet-container {
+  isolation: isolate;
+}
