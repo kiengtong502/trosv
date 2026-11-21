@@ -1,9 +1,7 @@
-import { cn } from "@/shared/lib/utils";
+import type { LucideIcon } from "lucide-react";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 import { paginationWindow } from "../lib/filterChips";
-
-const NAVIGATION_BUTTON_CLASS =
-  "grid size-8 sm:size-9 place-items-center rounded-lg border border-line-strong bg-card text-ink hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate disabled:cursor-not-allowed disabled:opacity-40";
 
 /** Up to 5 page buttons around the current page; hidden when there is one page. */
 export function Pagination({
@@ -16,34 +14,30 @@ export function Pagination({
   onPage: (page: number) => void;
 }) {
   if (lastPage <= 1) return null;
+
+  /** First / previous / next / last: icon-only, so the label doubles as the tooltip. */
+  const navButton = (label: string, Icon: LucideIcon, target: number, disabled: boolean) => (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={() => {
+        onPage(target);
+      }}
+      className="grid size-8 place-items-center rounded-lg border border-line-strong bg-card text-ink hover:bg-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plate disabled:cursor-not-allowed disabled:opacity-40 sm:size-9"
+    >
+      <Icon className="size-4" aria-hidden />
+    </button>
+  );
+
   return (
     <nav
       aria-label="Phân trang kết quả tìm phòng"
       className="mt-8 flex flex-wrap items-center justify-center gap-0.5 sm:gap-1.5"
     >
-      <button
-        type="button"
-        aria-label="Trang đầu"
-        title="Trang đầu"
-        disabled={page <= 1}
-        onClick={() => {
-          onPage(1);
-        }}
-        className={NAVIGATION_BUTTON_CLASS}
-      >
-        <ChevronsLeft className="size-4" aria-hidden />
-      </button>
-      <button
-        type="button"
-        aria-label="Trang trước"
-        disabled={page <= 1}
-        onClick={() => {
-          onPage(page - 1);
-        }}
-        className={NAVIGATION_BUTTON_CLASS}
-      >
-        <ChevronLeft className="size-4" aria-hidden />
-      </button>
+      {navButton("Trang đầu", ChevronsLeft, 1, page <= 1)}
+      {navButton("Trang trước", ChevronLeft, page - 1, page <= 1)}
       {paginationWindow(page, lastPage).map((p) => (
         <button
           key={p}
@@ -64,29 +58,8 @@ export function Pagination({
           {p}
         </button>
       ))}
-      <button
-        type="button"
-        aria-label="Trang sau"
-        disabled={page >= lastPage}
-        onClick={() => {
-          onPage(page + 1);
-        }}
-        className={NAVIGATION_BUTTON_CLASS}
-      >
-        <ChevronRight className="size-4" aria-hidden />
-      </button>
-      <button
-        type="button"
-        aria-label="Trang cuối"
-        title="Trang cuối"
-        disabled={page >= lastPage}
-        onClick={() => {
-          onPage(lastPage);
-        }}
-        className={NAVIGATION_BUTTON_CLASS}
-      >
-        <ChevronsRight className="size-4" aria-hidden />
-      </button>
+      {navButton("Trang sau", ChevronRight, page + 1, page >= lastPage)}
+      {navButton("Trang cuối", ChevronsRight, lastPage, page >= lastPage)}
     </nav>
   );
 }
