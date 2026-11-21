@@ -3,6 +3,7 @@
 namespace App\Modules\Ai\Services;
 
 use App\Modules\Listing\Models\Listing;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
 class PriceAdvisor
@@ -10,9 +11,10 @@ class PriceAdvisor
     public function __construct(private readonly AiClient $ai) {}
 
     /**
-     * Price advice: comparable listings = same ward + type, area within 40%,
-     * available or rented, excluding the listing itself. Backend computes
-     * the stats; fewer than 3 comparables → 422.
+     * Price advice: comparable listings = same type, area within 40%,
+     * available or rented, excluding the listing itself - in the same ward,
+     * or in the same city when the ward has fewer than 3. Backend computes
+     * the stats; fewer than 3 comparables even city-wide → 422.
      *
      * @return array<string, mixed>
      */
@@ -24,20 +26,17 @@ class PriceAdvisor
             ->with(['amenities', 'ward'])
             ->findOrFail($listingId);
 
-        $minArea = (float) $listing->area_m2 * 0.6;
-        $maxArea = (float) $listing->area_m2 * 1.4;
-
-        /** @var list<int|float> $comparables */
-        $comparables = Listing::query()
-            ->visible()
-            ->where('id', '!=', $listing->id)
-            ->where('ward_id', $listing->ward_id)
-            ->where('type', $listing->type)
-            ->whereBetween('area_m2', [$minArea, $maxArea])
-            ->pluck('price')
-            ->map(fn (mixed $p): int => is_numeric($p) ? (int) $p : 0)
-            ->values()
-            ->all();
+        $scope = 'ward';
+        $comparables = $this->comparablePrices($listing, fn (Builder $q) => $q->where('ward_id', $listing->ward_id));
+        $cityId = $listing->ward?->city_id;
+        if (count($comparables) < 3 && $cityId !== null) {
+            // Wards are small: most hold one or two rooms, so widen to the city.
+            $scope = 'city';
+            $comparables = $this->comparablePrices(
+                $listing,
+                fn (Builder $q) => $q->whereHas('ward', fn (Builder $w) => $w->where('city_id', $cityId)),
+            );
+        }
 
         if (count($comparables) < 3) {
             throw ValidationException::withMessages([
@@ -52,6 +51,7 @@ class PriceAdvisor
             'min' => (int) $comparables[0],
             'median' => (int) round($this->median($comparables)),
             'max' => (int) $comparables[$count - 1],
+            'scope' => $scope,
         ];
 
         $response = $this->ai->post('/price-advice', [
@@ -77,6 +77,26 @@ class PriceAdvisor
             'message' => is_string($response['message'] ?? null) ? $response['message'] : '',
             'stats' => $stats,
         ];
+    }
+
+    /**
+     * Prices of visible listings like this one (same type, area within 40%), itself excluded.
+     *
+     * @param  callable(Builder<Listing>): mixed  $where  location filter
+     * @return list<int>
+     */
+    private function comparablePrices(Listing $listing, callable $where): array
+    {
+        $query = Listing::query()
+            ->visible()
+            ->where('id', '!=', $listing->id)
+            ->where('type', $listing->type)
+            ->whereBetween('area_m2', [(float) $listing->area_m2 * 0.6, (float) $listing->area_m2 * 1.4]);
+        $where($query);
+
+        return array_values($query->pluck('price')
+            ->map(fn (mixed $p): int => is_numeric($p) ? (int) $p : 0)
+            ->all());
     }
 
     /** @param  list<int|float>  $values  sorted ascending */

@@ -224,6 +224,7 @@ class AiProxyTest extends TestCase
         $this->assertSame(2_000_000, $response->json('data.stats.min'));
         $this->assertSame(2_000_000, $response->json('data.stats.median'));
         $this->assertSame(2_000_000, $response->json('data.stats.max'));
+        $this->assertSame('ward', $response->json('data.stats.scope'));
 
         // The listing itself must be excluded: count matches comparables only.
         Http::assertSent(function ($request) use ($listing) {
@@ -233,6 +234,32 @@ class AiProxyTest extends TestCase
                 && $body['listing']['ward'] === $listing->ward->name
                 && $body['stats']['count'] === 4;
         });
+    }
+
+    public function test_price_advice_widens_to_the_city_when_the_ward_has_too_few(): void
+    {
+        $listing = $this->makeListingWithComparables(1);
+        // Two more look-alikes in another ward of the same city, one in another city.
+        $sameCity = Ward::factory()->create(['city_id' => $listing->ward->city_id]);
+        Listing::factory()->count(2)->create([
+            'user_id' => $this->landlord->id, 'ward_id' => $sameCity->id, 'type' => 'room',
+            'price' => 3_000_000, 'area_m2' => 20, 'status' => 'available',
+        ]);
+        Listing::factory()->create([
+            'user_id' => $this->landlord->id, 'ward_id' => Ward::factory()->create()->id, 'type' => 'room',
+            'price' => 9_000_000, 'area_m2' => 20, 'status' => 'available',
+        ]);
+        Http::fake(['*/price-advice' => Http::response([
+            'verdict' => 'fair', 'fair_min' => 1, 'fair_max' => 2, 'tips' => [], 'message' => '',
+        ])]);
+
+        $response = $this->actingAs($this->student, 'sanctum')
+            ->postJson('/api/ai/price-advice', ['listing_id' => $listing->id])
+            ->assertOk();
+
+        $this->assertSame('city', $response->json('data.stats.scope'));
+        $this->assertSame(3, $response->json('data.stats.count'));
+        $this->assertSame(3_000_000, $response->json('data.stats.max'));
     }
 
     public function test_price_advice_needs_three_comparables(): void
