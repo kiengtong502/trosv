@@ -45,8 +45,7 @@ export default function AiRoommates() {
   return (
     <>
       <PageHeader
-        title="Bạn"
-        highlight="cùng phòng"
+        title="Bạn cùng phòng"
         description="Trợ lý AI đề xuất sinh viên có sở thích gần giống bạn nhất, dựa trên hồ sơ của hai bên."
         className="max-w-4xl px-5 sm:px-5 lg:px-5"
       />

@@ -22,10 +22,14 @@ test.describe("navy band is reserved for three places", () => {
     await page.goto("/profile");
     await expect(band(page)).toHaveCount(0);
     await expect(header(page).locator("h1")).toContainText(user.name);
-    for (const path of ["/ai/area-suggestions", "/ai/roommates"]) {
+    for (const [path, title] of [
+      ["/ai/area-suggestions", "Khu vực phù hợp"],
+      ["/ai/roommates", "Bạn cùng phòng"],
+    ] as const) {
       await page.goto(path);
       await expect(band(page), path).toHaveCount(0);
-      await expect(header(page).locator("h1 mark"), path).toBeVisible();
+      await expect(header(page).locator("h1"), path).toHaveText(title);
+      await expect(header(page).locator("h1 mark"), path).toHaveCount(0);
     }
   });
 
