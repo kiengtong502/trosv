@@ -1,4 +1,4 @@
-"""Gemini integration for roommate matching and ranking."""
+"""Gemini writes the reasons for a roommate ranking the heuristics already scored."""
 
 from __future__ import annotations
 
@@ -9,6 +9,8 @@ from typing import Any
 from google.genai import types
 from pydantic import BaseModel, Field
 
+from app.features.roommates.heuristics import describe_profile, score_roommates
+from app.features.roommates.schemas import RoommatesReq
 from app.shared.gemini_client import generate_with_fallback, get_client
 
 logger = logging.getLogger("ai_service.gemini.roommates")
@@ -16,50 +18,45 @@ logger = logging.getLogger("ai_service.gemini.roommates")
 
 class RoommateItem(BaseModel):
     id: int = Field(..., description="ID của ứng viên")
-    score: int = Field(..., description="Điểm tương thích từ 0 đến 100")
     reason: str = Field(..., description="Lý do tương thích ngắn gọn bằng tiếng Việt")
 
 
 class RoommatesResponseSchema(BaseModel):
-    results: list[RoommateItem] = Field(..., description="Danh sách xếp hạng bạn cùng phòng")
+    results: list[RoommateItem] = Field(..., description="Lý do cho từng ứng viên")
 
 
 def rank_roommates_with_gemini(
     requester: dict[str, Any], candidates: list[dict[str, Any]], limit: int = 5
 ) -> dict[str, Any] | None:
-    """Rank roommate candidates and generate personalized reasoning using Gemini."""
+    """Rank with the deterministic score, then let Gemini explain each match.
+
+    Scores stay reproducible (same profiles -> same order); the model only writes `reason`.
+    """
     client = get_client()
     if not client or not candidates:
         return None
 
-    prompt = (
-        f"Hãy phân tích độ tương thích và xếp hạng bạn cùng phòng cho sinh viên sau:\n"
-        f"Người tìm: Ngân sách {requester.get('budget_min')}-{requester.get('budget_max')} VNĐ, "
-        f"ngủ {requester.get('sleep_schedule')}, sạch sẽ {requester.get('cleanliness')}/5, "
-        f"hút thuốc: {requester.get('smoking')}, tính cách: {requester.get('personality')}, "
-        f"sở thích: {', '.join(requester.get('interests') or [])}\n\n"
-        f"Danh sách các ứng viên ({len(candidates)} người):\n"
-    )
-    for c in candidates:
-        prompt += (
-            f"- ID {c.get('id')}: Ngân sách {c.get('budget_min')}-{c.get('budget_max')} VNĐ, "
-            f"ngủ {c.get('sleep_schedule')}, sạch sẽ {c.get('cleanliness')}/5, "
-            f"hút thuốc: {c.get('smoking')}, tính cách: {c.get('personality')}, "
-            f"sở thích: {', '.join(c.get('interests') or [])}\n"
-        )
+    ranked = score_roommates(RoommatesReq(requester=requester, candidates=candidates, limit=limit))[
+        "results"
+    ]
+    by_id = {c["id"]: c for c in candidates}
 
+    prompt = (
+        f"Người tìm bạn cùng phòng: {describe_profile(requester)}\n\n"
+        f"Các ứng viên đã được xếp hạng (điểm 0-100 đã tính sẵn, KHÔNG thay đổi):\n"
+    )
+    for r in ranked:
+        prompt += f"- ID {r['id']} (điểm {r['score']}): {describe_profile(by_id[r['id']])}\n"
     prompt += (
-        f"\nYêu cầu:\n"
-        f"1. Chấm điểm tương thích 'score' từ 0 đến 100 cho mỗi ứng viên.\n"
-        f"2. Viết 'reason' ngắn gọn, súc tích (1-2 câu tiếng Việt) nêu điểm chung về lối sống, sở thích, ngân sách.\n"
-        f"3. Sắp xếp thứ tự từ cao xuống thấp theo 'score', tối đa {max(1, limit)} ứng viên.\n"
-        f"4. 'id' trong kết quả PHẢI thuộc danh sách ứng viên đầu vào."
+        "\nYêu cầu: với MỖI ứng viên ở trên, viết 'reason' 1-2 câu tiếng Việt có dấu, xưng 'bạn', "
+        "nêu điểm hợp cụ thể nhất (ngân sách, giờ ngủ, sạch sẽ, thuốc lá, sở thích) và nếu có "
+        "một điểm khác biệt đáng lưu ý thì nói nhẹ nhàng. Chỉ dùng thông tin ở trên, không bịa. "
+        "'id' PHẢI thuộc danh sách."
     )
 
     system_instruction = (
-        "Bạn là trợ lý ghép bạn cùng phòng sinh viên thông minh. Đánh giá kỹ sự hòa hợp "
-        "về ngân sách, nhịp sinh hoạt (ngủ/thức), mức độ sạch sẽ và thái độ với thuốc lá. "
-        "Luôn trả về kết quả JSON chuẩn xác."
+        "Bạn là trợ lý ghép bạn cùng phòng cho sinh viên. Viết ngắn, thân thiện, trung thực. "
+        "Luôn trả về JSON đúng cấu trúc."
     )
 
     try:
@@ -70,16 +67,21 @@ def rank_roommates_with_gemini(
                 system_instruction=system_instruction,
                 response_mime_type="application/json",
                 response_schema=RoommatesResponseSchema,
-                temperature=0.2,
+                temperature=0.4,
             ),
         )
         if not raw_text:
             return None
-        res_dict = json.loads(raw_text)
-        cand_ids = {c["id"] for c in candidates}
-        valid_results = [r for r in res_dict.get("results", []) if r.get("id") in cand_ids]
-        if valid_results:
-            return {"results": valid_results[:limit]}
+        rows = json.loads(raw_text).get("results", [])
+        reasons = {
+            row["id"]: row["reason"].strip()
+            for row in rows
+            if row.get("id") in by_id
+            and isinstance(row.get("reason"), str)
+            and row["reason"].strip()
+        }
+        if reasons:
+            return {"results": [{**r, "reason": reasons.get(r["id"], r["reason"])} for r in ranked]}
     except Exception as exc:
         logger.warning(f"Gemini rank_roommates failed: {exc}")
     return None

@@ -2,6 +2,14 @@ from typing import Any
 
 from app.features.areas.schemas import AreasReq
 from app.shared.parsing import int_or
+from app.shared.text import vnd
+
+PRIORITY_LABELS = {
+    "cheap": "giá rẻ",
+    "near_school": "gần trường",
+    "well_rated": "được đánh giá cao",
+    "many_options": "nhiều lựa chọn",
+}
 
 
 def _budget_bonus(avg: int, budget_min: int, budget_max: int) -> int:
@@ -29,13 +37,13 @@ def _priority_bonus(area: dict[str, Any], priorities: set[str], avg: int, budget
 
 def _describe_area(area: dict[str, Any], avg: int) -> str:
     """Mo ta mot dong tieng Viet ve khu vuc cho truong `reason`."""
-    bits = [f"Gia trung binh {avg:,}" if avg else "Chua co du lieu gia"]
+    bits = [f"Giá trung bình {vnd(avg)}" if avg else "Chưa có dữ liệu giá"]
     if area.get("avg_rating"):
-        bits.append(f"diem trung binh {area['avg_rating']}")
+        bits.append(f"điểm đánh giá {area['avg_rating']}/5")
     if area.get("distance_to_school_km") is not None:
-        bits.append(f"cach truong {area['distance_to_school_km']} km")
-    bits.append(f"{area.get('listings_count', 0)} tin dang")
-    return ("; ".join(bits) + ".").capitalize()
+        bits.append(f"cách trường {area['distance_to_school_km']} km")
+    bits.append(f"{area.get('listings_count', 0)} phòng phù hợp")
+    return "; ".join(bits) + "."
 
 
 def recommend_areas(req: AreasReq) -> dict[str, Any]:

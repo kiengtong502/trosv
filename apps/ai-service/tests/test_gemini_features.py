@@ -11,6 +11,8 @@ from app.features.chat import gemini as chat
 from app.features.description import gemini as description
 from app.features.price_advice import gemini as price_advice
 from app.features.roommates import gemini as roommates
+from app.features.roommates.heuristics import score_roommates
+from app.features.roommates.schemas import RoommatesReq
 
 
 @pytest.fixture
@@ -90,12 +92,23 @@ def test_areas_prompt_has_budget_priorities_and_area_data(llm):
     calls = llm(areas, dumps({"results": []}))
     areas.recommend_areas_with_gemini(PREFS, AREAS_IN, limit=2)
     prompt = calls[0].contents
-    assert "1,500,000 - 3,000,000" in prompt
-    assert "cheap, near" in prompt
+    assert "1.500.000đ - 3.000.000đ" in prompt
+    assert "giá rẻ, near" in prompt  # known priorities get Vietnamese labels, unknown pass through
+    assert "Trường: chưa chọn" in prompt
     assert "ward_id 1 (Thủ Đức)" in prompt
     assert "1.2 km" in prompt
     assert "4.2/5" in prompt
     assert "tối đa 2 khu vực" in prompt
+
+
+def test_areas_prompt_has_school_city_and_unbounded_budget(llm):
+    calls = llm(areas, dumps({"results": []}))
+    prefs = {"budget_max": 9223372036854775807, "school": "ĐH Bách khoa", "city": "Hà Nội"}
+    areas.recommend_areas_with_gemini(prefs, AREAS_IN)
+    prompt = calls[0].contents
+    assert "Trường: ĐH Bách khoa (Hà Nội)" in prompt
+    assert "0đ - không giới hạn" in prompt
+    assert "TP.HCM" not in calls[0].config.system_instruction
 
 
 def test_areas_prompt_handles_missing_optional_data(llm):
@@ -126,14 +139,16 @@ CANDIDATES = [
 ]
 
 
-def test_roommates_returns_valid_results_only(llm):
-    reply = {
-        "results": [{"id": 7, "score": 90, "reason": "hợp"}, {"id": 1, "score": 99, "reason": "?"}]
-    }
+def test_roommates_scores_stay_deterministic_and_model_only_writes_reasons(llm):
+    # The model tries to rescore and to add an unknown id; both are ignored.
+    reply = {"results": [{"id": 7, "score": 1, "reason": "hợp"}, {"id": 1, "reason": "?"}]}
     llm(roommates, dumps(reply))
-    assert roommates.rank_roommates_with_gemini(REQUESTER, CANDIDATES) == {
-        "results": [{"id": 7, "score": 90, "reason": "hợp"}]
-    }
+    results = roommates.rank_roommates_with_gemini(REQUESTER, CANDIDATES)["results"]
+    expected = score_roommates(RoommatesReq(requester=REQUESTER, candidates=CANDIDATES))["results"]
+    assert [(r["id"], r["score"]) for r in results] == [(r["id"], r["score"]) for r in expected]
+    assert results[0] == {"id": 7, "score": expected[0]["score"], "reason": "hợp"}
+    # Candidates the model skipped keep the heuristic reason.
+    assert results[1]["reason"] == expected[1]["reason"]
 
 
 def test_roommates_limit_truncates_results(llm):
@@ -165,13 +180,12 @@ def test_roommates_prompt_lists_requester_and_every_candidate(llm):
     calls = llm(roommates, dumps({"results": []}))
     roommates.rank_roommates_with_gemini(REQUESTER, CANDIDATES, limit=3)
     prompt = calls[0].contents
-    assert "1000000-2500000" in prompt
+    assert "ngân sách 1.000.000đ-2.500.000đ, ngủ sớm" in prompt
+    assert "không hút thuốc" in prompt
     assert "sở thích: music" in prompt
-    assert "Danh sách các ứng viên (3 người)" in prompt
     for cid in (7, 8, 9):
-        assert f"ID {cid}:" in prompt
+        assert f"ID {cid} (điểm " in prompt
     assert "music, film" in prompt
-    assert "tối đa 3 ứng viên" in prompt
 
 
 # ================================================================== price advice

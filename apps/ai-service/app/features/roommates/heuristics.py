@@ -1,6 +1,11 @@
 from typing import Any
 
 from app.features.roommates.schemas import RoommatesReq
+from app.shared.parsing import int_or
+from app.shared.text import vnd
+
+SLEEP_LABELS = {"early": "ngủ sớm", "normal": "ngủ bình thường", "late": "hay thức khuya"}
+PERSONALITY_LABELS = {"introvert": "hướng nội", "ambivert": "cân bằng", "extrovert": "hướng ngoại"}
 
 
 def _shared_interests(a: dict[str, Any], b: dict[str, Any]) -> list[str]:
@@ -10,30 +15,46 @@ def _shared_interests(a: dict[str, Any], b: dict[str, Any]) -> list[str]:
     return sorted(sa & sb)
 
 
+def _budget_overlap(a: dict[str, Any], b: dict[str, Any]) -> int:
+    return max(
+        0,
+        min(int_or(a.get("budget_max"), 0), int_or(b.get("budget_max"), 0))
+        - max(int_or(a.get("budget_min"), 0), int_or(b.get("budget_min"), 0)),
+    )
+
+
+def _same(a: dict[str, Any], b: dict[str, Any], key: str) -> bool:
+    return a.get(key) is not None and a.get(key) == b.get(key)
+
+
+def _close_cleanliness(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    ca, cb = a.get("cleanliness"), b.get("cleanliness")
+    return ca is not None and cb is not None and abs(int_or(ca, 0) - int_or(cb, 0)) <= 1
+
+
 def _score_candidate(req: RoommatesReq, cand: dict[str, Any]) -> tuple[int, str]:
     """Diem tuong thich 0-100 + ly do tieng Viet cho mot ung vien."""
     r = req.requester
     shared = _shared_interests(r, cand)
-    overlap = max(
-        0,
-        min(r.get("budget_max", 0), cand.get("budget_max", 0))
-        - max(r.get("budget_min", 0), cand.get("budget_min", 0)),
-    )
+    overlap = _budget_overlap(r, cand)
     score = (
         40
-        + 12 * len(shared)
+        + 10 * min(len(shared), 3)
         + (20 if overlap > 0 else 0)
-        + (8 if r.get("cleanliness") == cand.get("cleanliness") else 0)
-        + (8 if r.get("smoking") == cand.get("smoking") else 0)
+        + (8 if _same(r, cand, "sleep_schedule") else 0)
+        + (8 if _close_cleanliness(r, cand) else 0)
+        + (8 if _same(r, cand, "smoking") else 0)
     )
     bits = []
     if shared:
-        bits.append("Cung thich " + ", ".join(shared))
-    bits.append("ngan sach giao nhau" if overlap > 0 else "ngan sach lech nhau")
-    if r.get("personality") == cand.get("personality"):
-        bits.append("tinh cach tuong dong")
-    reason: str = (", ".join(bits) + ".").capitalize()
-    return min(score, 100), reason
+        bits.append("Cùng thích " + ", ".join(shared))
+    bits.append("ngân sách giao nhau" if overlap > 0 else "ngân sách lệch nhau")
+    if _same(r, cand, "sleep_schedule"):
+        bits.append("cùng " + SLEEP_LABELS.get(str(r["sleep_schedule"]), "giờ giấc"))
+    if _same(r, cand, "personality"):
+        bits.append("tính cách tương đồng")
+    reason = ", ".join(bits) + "."
+    return min(score, 100), reason[0].upper() + reason[1:]
 
 
 def score_roommates(req: RoommatesReq) -> dict[str, Any]:
@@ -48,3 +69,22 @@ def score_roommates(req: RoommatesReq) -> dict[str, Any]:
             for (sc, why), cid in scored[: max(1, req.limit)]
         ]
     }
+
+
+def describe_profile(p: dict[str, Any]) -> str:
+    """One readable Vietnamese line per profile for the LLM prompt."""
+    smoking = p.get("smoking")
+    return ", ".join(
+        [
+            f"ngân sách {vnd(int_or(p.get('budget_min'), 0))}-{vnd(int_or(p.get('budget_max'), 0))}",
+            SLEEP_LABELS.get(str(p.get("sleep_schedule")), "giờ ngủ chưa rõ"),
+            f"sạch sẽ {p['cleanliness']}/5"
+            if p.get("cleanliness") is not None
+            else "độ sạch sẽ chưa rõ",
+            "chưa rõ hút thuốc"
+            if smoking is None
+            else ("có hút thuốc" if smoking else "không hút thuốc"),
+            PERSONALITY_LABELS.get(str(p.get("personality")), "tính cách chưa rõ"),
+            "sở thích: " + (", ".join(p.get("interests") or []) or "chưa có"),
+        ]
+    )
