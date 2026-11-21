@@ -285,7 +285,13 @@ export interface AiPriceAdvice {
   listing_price?: number;
   fair_min?: number;
   fair_max?: number;
-  stats?: { count?: number; min?: number; median?: number; max?: number };
+  stats?: {
+    count?: number;
+    min?: number;
+    median?: number;
+    max?: number;
+    scope?: "ward" | "city";
+  };
   tips?: string[];
   message?: string;
 }
