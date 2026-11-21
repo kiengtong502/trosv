@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { markRead } from "@/features/messaging/api/messagingApi";
 import { getEcho } from "@/features/messaging/api/echo";
 import type { EchoReactive } from "@/features/messaging/api/echo";
 import { useAuth } from "@/features/auth/context/AuthContext";
@@ -12,7 +11,7 @@ import type {
   MessageSentEvent,
   TypingWhisper,
 } from "@/shared/types/api";
-import { ignoreError } from "@/shared/lib/async";
+import { mergeMessages } from "@/features/messaging/lib/mergeMessages";
 
 /**
  * Realtime layer for the /messages/:id thread over the private
@@ -22,45 +21,54 @@ import { ignoreError } from "@/shared/lib/async";
  *  - .message.reacted / .message.seen / .message.deleted -> merge
  *
  * Shares the message state with useConversationData through the passed
- * setMessages + lastIdRef. Cleanup leaves ONLY the conversation channel
+ * setMessages / syncMessages. Cleanup leaves ONLY the conversation channel
  * (App.Models.User.{id} is shared with Navbar/sidebar - leaving it here
  * would break their subscriptions; see the ghost-listener bug).
  */
 export function useConversationRealtime(
   id: string | number,
-  setMessages: Dispatch<SetStateAction<Message[]>>,
-  lastIdRef: { current: number },
+  {
+    setMessages,
+    syncMessages,
+  }: {
+    setMessages: Dispatch<SetStateAction<Message[]>>;
+    /** Stable (useCallback) - safe as an effect dependency. */
+    syncMessages: (refresh?: boolean) => void;
+  },
   onPreviewEvent?: (msg: Message) => void,
 ): { otherTyping: boolean; setOtherTyping: Dispatch<SetStateAction<boolean>> } {
   const { user } = useAuth();
   const [otherTyping, setOtherTyping] = useState(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Callers pass an inline callback: a ref keeps it out of the subscription
+  // effect's deps, or every render (each keystroke) would re-subscribe.
+  const onPreviewRef = useRef(onPreviewEvent);
+
+  useEffect(() => {
+    onPreviewRef.current = onPreviewEvent;
+  }, [onPreviewEvent]);
 
   useEffect(() => {
     const echo = getEcho();
     if (!echo) return undefined;
 
     const privateChan = echo.private(`conversation.${id}`) as unknown as EchoReactive;
+    let active = true;
+    privateChan.subscribed(() => {
+      if (active) syncMessages(true);
+    });
     privateChan.listen(".message.sent", (e: unknown) => {
       const msg = (e as MessageSentEvent).message;
       setOtherTyping(false); // tin đến = người kia ngừng soạn
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === msg.id)) return prev;
-        return [
-          ...prev,
-          {
-            ...msg,
-            is_unsent: false,
-            is_mine: msg.sender_id === user?.id,
-            seen_at: null,
-          },
-        ];
-      });
-      lastIdRef.current = Math.max(lastIdRef.current, msg.id);
+      setMessages((prev) =>
+        mergeMessages(prev, [
+          { ...msg, is_unsent: false, is_mine: msg.sender_id === user?.id, seen_at: null },
+        ]),
+      );
       // Sidebar preview (Messenger): thread là nguồn sự thật khi đang
       // mở - phát event để Messages.tsx cập nhật item tương ứng.
-      onPreviewEvent?.(msg);
-      if (msg.sender_id !== user?.id) markRead(id).catch(ignoreError("mark conversation read"));
+      onPreviewRef.current?.(msg);
+      if (msg.sender_id !== user?.id) syncMessages();
     });
 
     // Typing qua client-event (whisper) - không qua backend. Debounce 2.5s.
@@ -112,6 +120,7 @@ export function useConversationRealtime(
     });
 
     return () => {
+      active = false;
       if (typingTimer.current) clearTimeout(typingTimer.current);
       // CHỈ leave kênh conversation (riêng của thread này). Kênh
       // App.Models.User.{id} là DÙNG CHUNG với Navbar + sidebar -
@@ -119,7 +128,7 @@ export function useConversationRealtime(
       // của họ và sidebar/badge ngừng nhận realtime.
       echo.leave(`conversation.${id}`);
     };
-  }, [id, user?.id, setMessages, lastIdRef, onPreviewEvent]);
+  }, [id, user?.id, setMessages, syncMessages]);
 
   return { otherTyping, setOtherTyping };
 }

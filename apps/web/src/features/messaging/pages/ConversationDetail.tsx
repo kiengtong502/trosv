@@ -52,10 +52,10 @@ interface Baseline {
 function Thread({ id }: { id: string }) {
   const { user } = useAuth();
   const data = useConversationData(id);
-  const realtime = useConversationRealtime(id, data.setMessages, data.lastIdRef, (msg) => {
+  const realtime = useConversationRealtime(id, data, (msg) => {
     announcePreview(Number(id), msg);
   });
-  const actions = useConversationMessages(id, data.setMessages, data.lastIdRef);
+  const actions = useConversationMessages(id, data.setMessages);
   /* The thread element's ref is owned here (not by a hook) so attaching
      it and passing it down never touches a hook-returned ref in render. */
   const threadRef = useRef<HTMLDivElement>(null);
