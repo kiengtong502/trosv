@@ -85,6 +85,9 @@ class AreaRecommender
                 'budget_min' => $budgetMin,
                 'budget_max' => $budgetMax,
                 'priorities' => $data['priorities'] ?? [],
+                // Lets the model name the school and city instead of guessing one.
+                'school' => $school?->name,
+                'city' => $school?->city?->name,
             ],
             // Names go through: ward names are not personal data and the
             // AI contract includes them in the request (docs/contracts/AI_CONTRACT.md §4).

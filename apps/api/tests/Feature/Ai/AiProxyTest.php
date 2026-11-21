@@ -382,11 +382,14 @@ class AiProxyTest extends TestCase
 
         // AI receives the full area rows including names (not personal data;
         // docs/contracts/AI_CONTRACT.md §4 includes 'name' in the request) and no PII.
-        Http::assertSent(function ($request) use ($near) {
+        Http::assertSent(function ($request) use ($near, $school) {
             $areas = $request->data()['areas'];
+            $prefs = $request->data()['preferences'];
 
             return collect($areas)->every(fn ($area) => array_key_exists('name', $area))
-                && $areas[0]['name'] === $near->name;
+                && $areas[0]['name'] === $near->name
+                && $prefs['school'] === $school->name
+                && $prefs['city'] === $school->city?->name;
         });
     }
 
