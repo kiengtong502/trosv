@@ -1,4 +1,5 @@
 import type { Listing } from "@/shared/types/api";
+import { cn } from "@/shared/lib/utils";
 import { PANEL } from "../lib/panel";
 
 const HEADING = "mb-3 text-xs font-bold uppercase tracking-wider text-muted";
@@ -8,7 +9,7 @@ export function RoomDescription({ listing }: { listing: Listing }) {
   const amenities = listing.amenities ?? [];
 
   return (
-    <div className={`mt-4 grid gap-4 ${listing.description ? "lg:grid-cols-[7fr_5fr]" : ""}`}>
+    <div className={cn("mt-4 grid gap-4", listing.description && "lg:grid-cols-[7fr_5fr]")}>
       {listing.description ? (
         <section className={PANEL}>
           <h2 className={HEADING}>Mô tả</h2>
