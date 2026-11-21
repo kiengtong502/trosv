@@ -87,7 +87,7 @@ def test_get_client_builds_client_with_key(monkeypatch):
     monkeypatch.setattr(gemini_client.genai, "Client", FakeClient)
     assert isinstance(get_client(), FakeClient)
     # Bounded per call: a hung Gemini must not hold a worker forever.
-    assert seen == {"api_key": "secret", "timeout": 6_000}
+    assert seen == {"api_key": "secret", "timeout": 10_000}  # Gemini minimum
 
 
 def test_get_client_swallows_constructor_errors(monkeypatch):
@@ -139,6 +139,15 @@ def test_falls_back_to_next_model_after_error():
     client, models = make_client({DEFAULT_MODEL: RuntimeError("503"), "gemini-3.5-flash": "ok"})
     assert run(client) == "ok"
     assert models.tried == [DEFAULT_MODEL, "gemini-3.5-flash"]
+
+
+def test_slow_failure_skips_fallback_so_backend_15s_is_not_exceeded(monkeypatch):
+    # First call times out after ~10 s: a second 10 s call would outlive the backend's wait.
+    clock = iter([0.0, 10.5])
+    monkeypatch.setattr(gemini_client.time, "monotonic", lambda: next(clock))
+    client, models = make_client({DEFAULT_MODEL: TimeoutError(), "gemini-3.5-flash": "ok"})
+    assert run(client) is None
+    assert models.tried == [DEFAULT_MODEL]
 
 
 def test_empty_text_counts_as_failure_and_falls_back():

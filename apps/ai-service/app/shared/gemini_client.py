@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,10 @@ from google.genai import types
 logger = logging.getLogger("ai_service.gemini.client")
 
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
+# Gemini rejects per-call deadlines under 10 s (400 INVALID_ARGUMENT).
+CALL_TIMEOUT_MS = 10_000
+# The backend waits 15 s in total; a fallback call starting later than this could outlive it.
+FALLBACK_CUTOFF_S = 15 - CALL_TIMEOUT_MS / 1000 - 2
 
 
 def get_api_key() -> str | None:
@@ -36,8 +41,9 @@ def get_client() -> genai.Client | None:
     if not api_key:
         return None
     try:
-        # 6 s per model call (ms): two tries (main + fallback) must fit in the backend's 15 s.
-        return genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=6_000))
+        return genai.Client(
+            api_key=api_key, http_options=types.HttpOptions(timeout=CALL_TIMEOUT_MS)
+        )
     except Exception as exc:
         logger.error(f"Failed to initialize Google GenAI client: {exc}")
         return None
@@ -57,7 +63,11 @@ def generate_with_fallback(
             models.append(m)
 
     last_error: Exception | None = None
-    for model_name in models:
+    started = time.monotonic()
+    for i, model_name in enumerate(models):
+        if i and time.monotonic() - started > FALLBACK_CUTOFF_S:
+            # Only fast failures (overload, unknown model) get a retry; a slow one used the time.
+            break
         try:
             response = client.models.generate_content(
                 model=model_name,
