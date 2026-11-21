@@ -250,10 +250,16 @@ def test_price_advice_prompt_has_listing_and_market_stats(llm):
     price_advice.generate_price_advice_with_gemini(LISTING, STATS)
     prompt = calls[0].contents
     assert "2.500.000đ/tháng" in prompt
-    assert "Thống kê 12 tin tương tự" in prompt
+    assert "Thống kê 12 tin tương tự trong cùng phường" in prompt
     assert "trung vị 2.300.000đ" in prompt
     assert "hợp lý so với khu vực; khoảng hợp lý 2.070.000đ - 2.530.000đ" in prompt
     assert "Wi-Fi" in prompt
+
+
+def test_price_advice_prompt_says_when_stats_are_city_wide(llm):
+    calls = llm(price_advice, dumps(ADVICE))
+    price_advice.generate_price_advice_with_gemini(LISTING, {**STATS, "scope": "city"})
+    assert "trong cùng thành phố (phường này chưa đủ tin)" in calls[0].contents
 
 
 def test_price_advice_prompt_defaults_missing_count_to_zero(llm):
