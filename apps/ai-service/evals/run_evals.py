@@ -170,6 +170,7 @@ CASES: list[tuple[str, Callable[[], Any], list[Check]]] = [
                 "60-150 từ",
                 lambda r: 60 <= len(str((r or {}).get("description", "")).split()) <= 150,
             ),
+            ("giá có định dạng", lambda r: "2.500.000" in str((r or {}).get("description", ""))),
             (
                 "không nhắc máy lạnh",
                 lambda r: (
@@ -186,6 +187,12 @@ CASES: list[tuple[str, Callable[[], Any], list[Check]]] = [
         ),
         [
             ("verdict = high", lambda r: (r or {}).get("verdict") == "high"),
+            (
+                "khoảng hợp lý theo ±10%",
+                lambda r: (
+                    ((r or {}).get("fair_min"), (r or {}).get("fair_max")) == (2070000, 2530000)
+                ),
+            ),
             ("message có dấu", lambda r: accented(str((r or {}).get("message", "")))),
         ],
     ),

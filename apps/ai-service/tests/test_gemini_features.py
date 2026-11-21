@@ -202,21 +202,32 @@ ADVICE = {"verdict": "high", "fair_min": 2000000, "fair_max": 2400000,
           "tips": ["a", "b"], "message": "Chào anh"}  # fmt: skip
 
 
-def test_price_advice_returns_model_answer(llm):
+def test_price_advice_rule_decides_verdict_and_model_writes_text(llm):
+    # The model tries to override verdict and range; the ±10% rule wins (2.5M vs median 2.3M).
     llm(price_advice, dumps(ADVICE))
-    assert price_advice.generate_price_advice_with_gemini(LISTING, STATS) == ADVICE
+    assert price_advice.generate_price_advice_with_gemini(LISTING, STATS) == {
+        "verdict": "fair",
+        "fair_min": 2070000,
+        "fair_max": 2530000,
+        "tips": ["a", "b"],
+        "message": "Chào anh",
+    }
 
 
-@pytest.mark.parametrize("verdict", ["high", "fair", "low"])
-def test_price_advice_accepts_all_three_verdicts(llm, verdict):
-    llm(price_advice, dumps({**ADVICE, "verdict": verdict}))
-    result = price_advice.generate_price_advice_with_gemini(LISTING, STATS)
-    assert result is not None
-    assert result["verdict"] == verdict
+def test_price_advice_without_median_never_calls_llm(llm):
+    calls = llm(price_advice, dumps(ADVICE))
+    assert price_advice.generate_price_advice_with_gemini(LISTING, {"count": 3}) is None
+    assert calls == []
 
 
 @pytest.mark.parametrize(
-    "reply", [dumps({**ADVICE, "verdict": "expensive"}), dumps({}), dumps([1])]
+    "reply",
+    [
+        dumps({}),
+        dumps([1]),
+        dumps({"tips": [], "message": "x"}),
+        dumps({"tips": ["a"], "message": " "}),
+    ],
 )
 def test_price_advice_rejects_unknown_shapes(llm, reply):
     llm(price_advice, reply)
@@ -238,16 +249,17 @@ def test_price_advice_prompt_has_listing_and_market_stats(llm):
     calls = llm(price_advice, dumps(ADVICE))
     price_advice.generate_price_advice_with_gemini(LISTING, STATS)
     prompt = calls[0].contents
-    assert "2500000 VNĐ/tháng" in prompt
-    assert "từ 12 tin tương tự" in prompt
-    assert "Trung vị (median): 2300000" in prompt
+    assert "2.500.000đ/tháng" in prompt
+    assert "Thống kê 12 tin tương tự" in prompt
+    assert "trung vị 2.300.000đ" in prompt
+    assert "hợp lý so với khu vực; khoảng hợp lý 2.070.000đ - 2.530.000đ" in prompt
     assert "Wi-Fi" in prompt
 
 
 def test_price_advice_prompt_defaults_missing_count_to_zero(llm):
     calls = llm(price_advice, dumps(ADVICE))
-    price_advice.generate_price_advice_with_gemini({}, {})
-    assert "từ 0 tin tương tự" in calls[0].contents
+    price_advice.generate_price_advice_with_gemini({}, {"median": 2300000})
+    assert "Thống kê 0 tin tương tự" in calls[0].contents
 
 
 # ==================================================================== description
@@ -286,9 +298,10 @@ def test_description_prompt_uses_only_provided_data(llm):
          "address": "1 Võ Văn Ngân", "ward": "Thủ Đức", "amenities": ["Wi-Fi", "Máy lạnh"]}
     )  # fmt: skip
     prompt = calls[0].contents
-    for fragment in ("Phòng gần ĐHQG", "2500000", "22.5", "1 Võ Văn Ngân", "Wi-Fi, Máy lạnh"):
+    for fragment in ("Phòng gần ĐHQG", "2.500.000đ/tháng", "22.5", "1 Võ Văn Ngân, Thủ Đức",
+                     "Wi-Fi, Máy lạnh", "Loại: phòng trọ"):  # fmt: skip
         assert fragment in prompt
-    assert "KHÔNG tự bịa đặt" in prompt
+    assert "TUYỆT ĐỐI KHÔNG bịa" in prompt
 
 
 def test_description_prompt_defaults_for_missing_fields(llm):
@@ -297,7 +310,7 @@ def test_description_prompt_defaults_for_missing_fields(llm):
     prompt = calls[0].contents
     assert "thỏa thuận" in prompt
     assert "không rõ" in prompt
-    assert "cơ bản" in prompt
+    assert "Tiện ích: không ghi" in prompt  # not "cơ bản", which invited invented amenities
 
 
 # ========================================================================== chat

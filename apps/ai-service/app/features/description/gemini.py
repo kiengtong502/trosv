@@ -9,7 +9,10 @@ from typing import Any
 from google.genai import types
 from pydantic import BaseModel, Field
 
+from app.features.description.heuristics import TYPE_LABELS
 from app.shared.gemini_client import generate_with_fallback, get_client
+from app.shared.parsing import int_or
+from app.shared.text import vnd
 
 logger = logging.getLogger("ai_service.gemini.description")
 
@@ -27,18 +30,20 @@ def generate_description_with_gemini(data: dict[str, Any]) -> dict[str, str] | N
     if not client:
         return None
 
+    price = int_or(data.get("price"), 0)
     prompt = (
         f"Hãy viết mô tả phòng trọ cho tin đăng sau bằng tiếng Việt:\n"
         f"- Tiêu đề: {data.get('title', '')}\n"
-        f"- Loại phòng: {data.get('type', 'phòng trọ')}\n"
-        f"- Giá thuê: {data.get('price', 'thỏa thuận')} VNĐ/tháng\n"
-        f"- Diện tích: {data.get('area_m2', 'không rõ')} m²\n"
-        f"- Địa chỉ: {data.get('address', '')}, {data.get('ward', '')}\n"
-        f"- Tiện ích: {', '.join(data.get('amenities') or []) or 'cơ bản'}\n\n"
+        f"- Loại: {TYPE_LABELS.get(str(data.get('type')), 'phòng trọ').lower()}\n"
+        f"- Giá thuê: {f'{vnd(price)}/tháng' if price else 'thỏa thuận'}\n"
+        f"- Diện tích: {data.get('area_m2') or 'không rõ'} m²\n"
+        f"- Địa chỉ: {', '.join(x for x in [data.get('address'), data.get('ward')] if x) or 'không ghi'}\n"
+        f"- Tiện ích: {', '.join(data.get('amenities') or []) or 'không ghi'}\n\n"
         "Yêu cầu:\n"
         "1. Độ dài từ 80 đến 120 từ, giọng điệu thân thiện, rõ ràng, lịch sự.\n"
-        "2. CHỈ sử dụng các thông tin đã được cung cấp ở trên.\n"
-        "3. TUYỆT ĐỐI KHÔNG tự bịa đặt khoảng cách tới trường học, giá cả, hoặc tiện ích không có.\n"
+        "2. CHỈ sử dụng các thông tin đã được cung cấp ở trên. Ghi giá đúng định dạng đã cho.\n"
+        "3. TUYỆT ĐỐI KHÔNG bịa khoảng cách tới trường, tiện ích không có, hay đặc điểm chưa được "
+        "nêu (tốc độ mạng, an ninh, thoáng mát, yên tĩnh, nội thất...).\n"
         "4. Kêu gọi người thuê liên hệ trực tiếp qua tin nhắn để xem phòng."
     )
 
